@@ -1,0 +1,18 @@
+// Type definition
+abstract Type;
+
+abstract PrimitiveType : Type;
+
+BooleanType : PrimitiveType;
+
+IntegerType : PrimitiveType;
+
+RealType : PrimitiveType;
+
+MapType : PrimitiveType ::= KeyType:Type* ValueType:Type;
+
+BitvectorType : PrimitiveType ::= <Size:Integer>;
+
+DefinedType : Type;
+
+    

@@ -1,0 +1,13 @@
+plugins {
+		id 'scala'
+		id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+repositories {
+		mavenCentral()
+}
+
+dependencies {
+		implementation 'org.scala-lang:scala-library:2.13.8'
+		implementation project(':byteback-annotations')
+}

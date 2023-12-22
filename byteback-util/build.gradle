@@ -1,0 +1,3 @@
+plugins {
+		id 'byteback.java-common-conventions'
+}

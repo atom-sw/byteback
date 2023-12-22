@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+sourceSets {
+    integration {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration/java')
+        }
+    }
+}
+
+configurations {
+    integrationImplementation.extendsFrom testImplementation
+    integrationRuntime.extendsFrom testRuntime
+}
+
+def integration = tasks.register("integration", Test) {
+    description 'Runs the integration tests.'
+    group = 'Verification'
+    testClassesDirs = sourceSets.integration.output.classesDirs
+    classpath = sourceSets.integration.runtimeClasspath
+    mustRunAfter test
+}
+
+check.dependsOn integration

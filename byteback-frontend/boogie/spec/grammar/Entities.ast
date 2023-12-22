@@ -1,0 +1,14 @@
+// Entities
+abstract Entity ::= Declarator;
+
+Variable : Entity;
+
+TypeDefinition : Entity ::= DefinedType [Aliased:TypeAccess];
+
+abstract SignedEntity : Entity;
+
+Function : SignedEntity;
+
+Procedure : SignedEntity;
+
+Implementation : SignedEntity;

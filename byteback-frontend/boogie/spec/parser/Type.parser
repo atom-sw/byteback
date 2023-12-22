@@ -1,0 +1,66 @@
+TypeAccess type
+    = type_atom
+    | map_type
+    | unknown_type
+    ;
+
+List type_comma_list
+    = type.t
+    {: return new List(t); :}
+    | type_comma_list.tl COMMA type.t
+    {: return tl.add(t); :}
+    ;
+
+TypeAccess type_atom
+    = BOOL
+    {: return new BooleanTypeAccess(); :}
+    | INT
+    {: return new IntegerTypeAccess(); :}
+    | REAL
+    {: return new RealTypeAccess(); :}
+    | BVTYPE.n
+    {: return new BitvectorTypeAccess(n); :}
+    | LPAREN type.t RPAREN
+    {: return t; :}
+    ;
+
+MapTypeAccess map_type
+    = type_parameter_block_list.tdl? LBRACKET type_comma_list.tl RBRACKET type.t
+    {: return new MapTypeAccess(tdl, tl, t); :}
+    ;
+
+List type_parameter_block_list
+    = LT type_parameter_comma_list.tdl GT
+    {: return tdl; :}
+    ;
+
+TypeParameter type_parameter
+    = declarator.dl
+    {: return new TypeParameter(dl);  :}
+    ;
+
+List type_parameter_list
+    = type_parameter.tp
+    {: return new List(tp); :}
+    | type_parameter_list.tpl type_parameter.tp
+    {: return tpl.add(tp); :}
+    ;
+
+List type_parameter_comma_list
+    = type_parameter.tp
+    {: return new List(tp); :}
+    | type_parameter_comma_list.tdl COMMA type_parameter.tp
+    {: return tdl.add(tp); :}
+    ;
+
+UnknownTypeAccess unknown_type
+    = accessor.a type_constructor_list.tl?
+    {: return new UnknownTypeAccess(a, tl); :}
+    ;
+
+List type_constructor_list
+    = type_atom.t type_constructor_list.tl
+    {: return tl.add(t); :}
+    | type.t
+    {: return new List(t); :}
+    ;

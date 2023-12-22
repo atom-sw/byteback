@@ -1,0 +1,20 @@
+module("boogie") {
+    java {
+        basedir "build/generated-src"
+        include "**/*.java"
+    }
+
+    jastadd {
+        include "spec/grammar/*.ast"
+        include "spec/frontend/*.jadd"
+        include "spec/frontend/*.jrag"
+    }
+
+    scanner {
+        include "spec/scanner/*.flex"
+    }
+
+    parser {
+        include "spec/parser/*.parser"
+    }
+}
