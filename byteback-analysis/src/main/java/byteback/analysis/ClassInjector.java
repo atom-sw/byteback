@@ -49,7 +49,6 @@ public class ClassInjector {
 
 			for (final SootMethod attachedMethod : methodsSnapshot) {
 				final SootMethod hostMethod = hostClass.getMethodUnsafe(attachedMethod.getNumberedSubSignature());
-
 				attachedClass.removeMethod(attachedMethod);
 				attachedMethod.setDeclared(false);
 
