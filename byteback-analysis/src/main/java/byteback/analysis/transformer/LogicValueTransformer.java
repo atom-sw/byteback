@@ -15,6 +15,7 @@ import java.util.function.Function;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
+import soot.IntType;
 import soot.SootMethod;
 import soot.Type;
 import soot.TypeSwitch;

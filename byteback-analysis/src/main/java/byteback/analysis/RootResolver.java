@@ -56,7 +56,6 @@ public class RootResolver {
 
 			SootBodies.validateCalls(method.retrieveActiveBody());
 			final Body body = Grimp.v().newBody(method.getActiveBody(), "");
-
 			LogicUnitTransformer.v().transform(body);
 			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 
@@ -80,7 +79,6 @@ public class RootResolver {
 
 			UnusedLocalEliminator.v().transform(body);
 			QuantifierValueTransformer.v().transform(body);
-
 			ExceptionAssumptionTransformer.v().transform(body);
 			DynamicToStaticTransformer.v().transform(body);
 

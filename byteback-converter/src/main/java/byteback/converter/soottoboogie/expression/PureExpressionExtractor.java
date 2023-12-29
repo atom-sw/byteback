@@ -33,7 +33,10 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	public static final String LOCAL_PREFIX = "_";
 
 	public static String sanitizeName(final String name) {
-		return name.replace("<", "#lt#").replace(">", "#gt#").replace("-", "#m#");
+		return name
+			.replace("<", "#lt#")
+			.replace(">", "#gt#")
+			.replace("-", "#m#");
 	}
 
 	public static String localName(final Local local) {

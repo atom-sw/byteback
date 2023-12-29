@@ -1,7 +1,10 @@
 package byteback.converter.soottoboogie;
 
+import byteback.frontend.boogie.ast.AssertStatement;
+import byteback.frontend.boogie.ast.Attribute;
 import byteback.frontend.boogie.ast.BoundedBinding;
 import byteback.frontend.boogie.ast.Label;
+import byteback.frontend.boogie.ast.StringLiteral;
 import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.ast.ValueReference;
 import byteback.frontend.boogie.builder.BoundedBindingBuilder;
@@ -38,6 +41,13 @@ public class Convention {
 
 	public static String makeParameterName(final String name) {
 		return "!" + name;
+	}
+
+	public Attribute makeMessageAttribute(final String message) {
+		final Attribute attribute = new Attribute();
+		attribute.addArgument(new StringLiteral(message));
+
+		return attribute;
 	}
 
 }
