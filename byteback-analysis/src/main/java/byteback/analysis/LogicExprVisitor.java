@@ -49,7 +49,4 @@ public interface LogicExprVisitor<T> extends Visitor<Value, T> {
 		caseDefault(v);
 	}
 
-	default void caseDefault(final Value v) {
-	}
-
 }

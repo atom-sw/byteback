@@ -19,7 +19,4 @@ public interface LogicStmtVisitor<T> extends Visitor<Unit, T> {
 		caseDefault(s);
 	}
 
-	default void caseDefault(final Unit s) {
-	}
-
 }
