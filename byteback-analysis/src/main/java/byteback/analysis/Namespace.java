@@ -56,8 +56,6 @@ public class Namespace {
 
 	public static final String ATTACH_LABEL_ANNOTATION = "Lbyteback/annotations/Contract$AttachLabel;";
 
-	public static final String ISOLATED_ANNOTATION = "Lbyteback/annotations/Contract$Isolated;";
-
 	public static final String MODEL_NPE_ANNOTATION = "Lbyteback/annotations/Contract$ModelNPE;";
 
 	public static final String MODEL_IOBE_ANNOTATION = "Lbyteback/annotations/Contract$ModelIOBE;";
