@@ -1,6 +1,6 @@
 package byteback.analysis.vimp;
 
-import byteback.analysis.LogicStmtSwitch;
+import byteback.analysis.LogicStmtVisitor;
 import byteback.analysis.Vimp;
 import soot.UnitPrinter;
 import soot.Value;
@@ -13,21 +13,21 @@ public class InvariantStmt extends LogicStmt {
 	}
 
 	@Override
-	public void toString(final UnitPrinter up) {
-		up.literal("invariant ");
-		getCondition().toString(up);
-	}
-
-	@Override
 	public void apply(final Switch sw) {
-		if (sw instanceof LogicStmtSwitch) {
-			((LogicStmtSwitch<?>) sw).caseInvariantStmt(this);
+		if (sw instanceof LogicStmtVisitor<?> visitor) {
+			visitor.caseInvariantStmt(this);
 		}
 	}
 
 	@Override
 	public InvariantStmt clone() {
 		return new InvariantStmt(Vimp.cloneIfNecessary(getCondition()));
+	}
+
+	@Override
+	public void toString(final UnitPrinter up) {
+		up.literal("invariant ");
+		getCondition().toString(up);
 	}
 
 }

@@ -36,7 +36,6 @@ public abstract class LogicStmt extends AbstractStmt {
 	@Override
 	public List<ValueBox> getUseBoxes() {
 		final ArrayList<ValueBox> useBoxes = new ArrayList<>();
-
 		useBoxes.add(conditionBox);
 		useBoxes.addAll(conditionBox.getValue().getUseBoxes());
 

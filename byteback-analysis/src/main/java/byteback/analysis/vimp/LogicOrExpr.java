@@ -27,7 +27,9 @@ public class LogicOrExpr extends AbstractLogicBinopExpr implements OrExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprVisitor<?>) sw).caseLogicOrExpr(this);
+		if (sw instanceof LogicExprVisitor<?> visitor) {
+			visitor.caseLogicOrExpr(this);
+		}
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package byteback.analysis.vimp;
 
-import byteback.analysis.JimpleValueSwitch;
+import byteback.analysis.SpecialExprVisitor;
 import byteback.analysis.Vimp;
 import soot.Type;
 import soot.UnitPrinter;
@@ -20,7 +20,7 @@ public class OldExpr extends AbstractUnopExpr {
 	}
 
 	@Override
-	public void toString(UnitPrinter up) {
+	public void toString(final UnitPrinter up) {
 		up.literal("old");
 		up.literal("(");
 		getOp().toString(up);
@@ -29,7 +29,9 @@ public class OldExpr extends AbstractUnopExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((JimpleValueSwitch<?>) sw).caseOldExpr(this);
+		if (sw instanceof SpecialExprVisitor<?> visitor) {
+			visitor.caseOldExpr(this);
+		}
 	}
 
 	@Override

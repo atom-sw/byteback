@@ -21,7 +21,9 @@ public class LogicForallExpr extends QuantifierExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprVisitor<?>) sw).caseLogicForallExpr(this);
+		if (sw instanceof LogicExprVisitor<?> visitor) {
+			visitor.caseLogicForallExpr(this);
+		}
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package byteback.analysis.vimp;
 
-import byteback.analysis.LogicStmtSwitch;
+import byteback.analysis.LogicStmtVisitor;
 import byteback.analysis.Vimp;
 import soot.UnitPrinter;
 import soot.Value;
@@ -12,21 +12,22 @@ public class AssumptionStmt extends LogicStmt {
 		super(condition);
 	}
 
-	public void toString(final UnitPrinter up) {
-		up.literal("assume ");
-		getCondition().toString(up);
-	}
-
 	@Override
 	public void apply(final Switch sw) {
-		if (sw instanceof LogicStmtSwitch<?> logicSwitch) {
-			logicSwitch.caseAssumptionStmt(this);
+		if (sw instanceof LogicStmtVisitor<?> visitor) {
+			visitor.caseAssumptionStmt(this);
 		}
 	}
 
 	@Override
 	public AssumptionStmt clone() {
 		return new AssumptionStmt(Vimp.cloneIfNecessary(getCondition()));
+	}
+
+	@Override
+	public void toString(final UnitPrinter up) {
+		up.literal("assume ");
+		getCondition().toString(up);
 	}
 
 }

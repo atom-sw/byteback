@@ -1,6 +1,7 @@
 package byteback.analysis.vimp;
 
 import byteback.analysis.LogicExprSwitch;
+import byteback.analysis.LogicExprVisitor;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.NegExpr;
@@ -23,7 +24,9 @@ public class LogicNotExpr extends AbstractLogicUnopExpr implements LogicExpr, Ne
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprSwitch<?>) sw).caseLogicNotExpr(this);
+		if (sw instanceof LogicExprVisitor<?> visitor) {
+			visitor.caseLogicNotExpr(this);
+		}
 	}
 
 	@Override

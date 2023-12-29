@@ -1,6 +1,7 @@
 package byteback.analysis.vimp;
 
 import byteback.analysis.LogicExprSwitch;
+import byteback.analysis.LogicExprVisitor;
 import soot.UnitPrinter;
 import soot.jimple.Constant;
 import soot.util.Switch;
@@ -32,8 +33,8 @@ public class LogicConstant extends Constant implements LogicExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		if (sw instanceof LogicExprSwitch) {
-			((LogicExprSwitch<?>) sw).caseLogicConstant(this);
+		if (sw instanceof LogicExprVisitor visitor) {
+			visitor.caseLogicConstant(this);
 		}
 	}
 

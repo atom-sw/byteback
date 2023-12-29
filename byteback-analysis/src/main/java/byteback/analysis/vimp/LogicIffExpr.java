@@ -11,17 +11,21 @@ public class LogicIffExpr extends AbstractLogicBinopExpr {
 		super(op1, op2);
 	}
 
+	@Override
 	public String getSymbol() {
 		return " ↔ ";
 	}
 
+	@Override
 	public LogicIffExpr clone() {
 		return new LogicIffExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
 	}
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprVisitor<?>) sw).caseLogicIffExpr(this);
+		if (sw instanceof LogicExprVisitor<?> visitor) {
+			visitor.caseLogicIffExpr(this);
+		}
 	}
 
 	@Override

@@ -29,7 +29,9 @@ public class LogicXorExpr extends AbstractLogicBinopExpr implements XorExpr {
 
 	@Override
 	public void apply(final Switch sw) {
-		((LogicExprVisitor<?>) sw).caseLogicXorExpr(this);
+		if (sw instanceof LogicExprVisitor<?> visitor) {
+			visitor.caseLogicXorExpr(this);
+		}
 	}
 
 	@Override

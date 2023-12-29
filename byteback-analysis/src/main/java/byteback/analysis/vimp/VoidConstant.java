@@ -1,6 +1,7 @@
 package byteback.analysis.vimp;
 
 import byteback.analysis.JimpleValueSwitch;
+import byteback.analysis.SpecialExprVisitor;
 import byteback.util.Lazy;
 import soot.Type;
 import soot.VoidType;
@@ -25,8 +26,8 @@ public class VoidConstant extends Constant {
 
 	@Override
 	public void apply(Switch sw) {
-		if (sw instanceof JimpleValueSwitch<?> vs) {
-			vs.caseVoidConstant(this);
+		if (sw instanceof SpecialExprVisitor<?> visitor) {
+			visitor.caseVoidConstant(this);
 		}
 	}
 
