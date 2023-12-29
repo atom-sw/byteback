@@ -10,6 +10,7 @@ import byteback.analysis.transformer.InvariantExpander;
 import byteback.analysis.transformer.LogicUnitTransformer;
 import byteback.analysis.transformer.LogicValueTransformer;
 import byteback.analysis.transformer.NullCheckTransformer;
+import byteback.analysis.transformer.PositionTagTransformer;
 import byteback.analysis.transformer.PureTransformer;
 import byteback.analysis.transformer.QuantifierValueTransformer;
 import byteback.analysis.util.AnnotationElems;
@@ -42,6 +43,7 @@ import soot.jimple.InstanceOfExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewExpr;
 import soot.tagkit.AbstractHost;
+import soot.tagkit.SourceFileTag;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class RootResolver {
@@ -49,6 +51,7 @@ public class RootResolver {
 	private static final Lazy<RootResolver> instance = Lazy.from(RootResolver::new);
 
 	public void transformMethod(final SootMethod method) {
+		final SootClass clazz = method.getDeclaringClass();
 		if (SootMethods.hasBody(method)) {
 			if (SootHosts.hasAnnotation(method, Namespace.PRELUDE_ANNOTATION)) {
 				return;
@@ -56,6 +59,18 @@ public class RootResolver {
 
 			SootBodies.validateCalls(method.retrieveActiveBody());
 			final Body body = Grimp.v().newBody(method.getActiveBody(), "");
+
+			if (clazz.hasTag("SourceFileTag")) {
+				final SourceFileTag tag = (SourceFileTag) clazz.getTag("SourceFileTag");
+				String path = tag.getAbsolutePath();
+				if (path == null) {
+					path = tag.getSourceFile();
+				}
+				if (path != null) {
+					new PositionTagTransformer(path).transform(body);
+				}
+			}
+
 			LogicUnitTransformer.v().transform(body);
 			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
 

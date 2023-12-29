@@ -1,6 +1,7 @@
 package byteback.analysis.transformer;
 
 import byteback.analysis.Vimp;
+import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.util.Lazy;
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.Supplier;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
@@ -75,13 +78,21 @@ public class InvariantExpander extends BodyTransformer {
 
 				final Loop loop = activeLoops.peek();
 				final Value condition = invariantUnit.getCondition();
-				units.insertBefore(Vimp.v().newAssertionStmt(condition), loop.getHead());
+
+				final Supplier<AssertionStmt> assertionUnitSupplier = () -> {
+					final AssertionStmt assertionUnit = Vimp.v().newAssertionStmt(condition);
+					assertionUnit.addAllTagsOf(invariantUnit);
+
+					return assertionUnit;
+				};
+
+				units.insertBefore(assertionUnitSupplier.get(), loop.getHead());
 
 				if (loop.getHead() instanceof IfStmt) {
-					units.insertAfter(Vimp.v().newAssumptionStmt(condition), loop.getHead());
+					units.insertAfter(assertionUnitSupplier.get(), loop.getHead());
 				}
 
-				units.insertBefore(Vimp.v().newAssertionStmt(condition), loop.getBackJumpStmt());
+				units.insertBefore(assertionUnitSupplier.get(), loop.getBackJumpStmt());
 
 				final HashSet<Unit> exitTargets = new HashSet<>();
 
@@ -90,7 +101,7 @@ public class InvariantExpander extends BodyTransformer {
 				}
 
 				for (final Unit exitTarget : exitTargets) {
-					units.insertBefore(Vimp.v().newAssertionStmt(condition), exitTarget);
+					units.insertBefore(assertionUnitSupplier.get(), exitTarget);
 				}
 
 				units.remove(invariantUnit);

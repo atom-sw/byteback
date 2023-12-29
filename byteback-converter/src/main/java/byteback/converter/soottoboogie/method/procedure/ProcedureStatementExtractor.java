@@ -3,6 +3,7 @@ package byteback.converter.soottoboogie.method.procedure;
 import byteback.analysis.JimpleStmtSwitch;
 import byteback.analysis.JimpleValueSwitch;
 import byteback.analysis.Vimp;
+import byteback.analysis.tags.PositionTag;
 import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.AssumptionStmt;
 import byteback.converter.soottoboogie.Convention;
@@ -268,6 +269,12 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	public void caseAssertionStmt(final AssertionStmt assertionStmt) {
 		final Expression condition = makeExpressionExtractor().visit(assertionStmt.getCondition());
 		final List<Attribute> attributes = new List<>();
+
+		if (assertionStmt.hasTag("position")) {
+			final PositionTag tag = (PositionTag) assertionStmt.getTag("position");
+			final String message = tag.file + " (line " + tag.lineNumber + "): Error: This assertion might not hold.";
+			attributes.add(Convention.makeMessageAttribute(message));
+		}
 
 		addStatement(new AssertStatement(attributes, condition));
 	}
