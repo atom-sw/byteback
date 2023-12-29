@@ -29,16 +29,16 @@ public class Configuration {
 	@Parameter(names = {"-p", "--prelude"}, description = "Path to the prelude file")
 	private Path preludePath;
 
-	@Parameter(names = {"-o", "--output"}, description = "Path to the output verification conditions")
-	private Path outputPath;
-
-	private JCommander jCommander;
-
 	@Parameter(names = {"--nct"}, description = "Injects explicit null checks")
 	private boolean transformNullCheck = false;
 
 	@Parameter(names = {"--act"}, description = "Injects explicit array checks")
 	private boolean transformArrayCheck = false;
+
+	@Parameter(names = {"-o", "--output"}, description = "Path to the output verification conditions")
+	private Path outputPath;
+
+	private JCommander jCommander;
 
 	public boolean getHelp() {
 		return help;

@@ -35,7 +35,7 @@ public abstract class QuantifierExpr implements LogicExpr {
 
 	public final void setFreeLocals(final Chain<Local> freeLocals) {
 		if (freeLocals.isEmpty()) {
-			throw new IllegalArgumentException("a Quantifier must have at least one free local");
+			throw new IllegalArgumentException("A Quantifier must have at least one free local");
 		}
 
 		this.locals = freeLocals;

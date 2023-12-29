@@ -60,9 +60,10 @@ public class Main {
 		final Path preludePath = configuration.getPreludePath();
 
 		options.set_allow_phantom_refs(true);
+		options.set_keep_line_number(true);
+		options.set_keep_offset(true);
 		scene.allowsPhantomRefs();
 
-		options.set_whole_program(true);
 		options.allow_phantom_refs();
 		options.setPhaseOption("jb", "use-original-names:true");
 		options.setPhaseOption("gb.a1", "enabled:false");
