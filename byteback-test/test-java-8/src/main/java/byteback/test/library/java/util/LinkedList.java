@@ -46,9 +46,11 @@ import byteback.annotations.Contract.Ensure;
 import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Raise;
 import byteback.annotations.Contract.Return;
+import byteback.annotations.Contract.Isolated;
 
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
+import static byteback.annotations.Special.*;
 
 /**
  * Doubly-linked list implementation of the {@code List} and {@code Deque}
@@ -593,8 +595,13 @@ public class LinkedList<E>
 	}
 
 	@Predicate
+	public boolean size_invariant(int index, boolean returns) {
+		return eq(old(this.size), this.size);
+	}
+
+	@Predicate
 	public boolean is_element_index(int index, boolean returns) {
-		return implies(returns, gte(index, 0) & lt(index, size));
+		return iff(returns, gte(index, 0) & lt(index, size));
 	}
 
 	/**
@@ -602,6 +609,7 @@ public class LinkedList<E>
 	 */
 	@Return
 	@Ensure("is_element_index")
+	@Ensure("size_invariant")
 	private boolean isElementIndex(int index) {
 		return index >= 0 && index < size;
 	}
@@ -612,11 +620,12 @@ public class LinkedList<E>
 	 */
 	@Predicate
 	public boolean is_position_index(int index, boolean returns) {
-		return implies(returns, gte(index, 0) & lte(index, size));
+		return iff(returns, gte(index, 0) & lte(index, size));
 	}
 
 	@Return
 	@Ensure("is_position_index")
+	@Ensure("size_invariant")
 	private boolean isPositionIndex(int index) {
 		return index >= 0 && index <= size;
 	}
@@ -633,22 +642,22 @@ public class LinkedList<E>
 	}
 
 	@Predicate
-	public boolean index_is_out_of_bounds(int index) {
-		return lt(index, 0) | gte(index, size);
+	public boolean index_is_not_element(int index) {
+		return not(lte(0, index) & lt(index, size));
 	}
 
-	@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_out_of_bounds")
+	@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_not_element")
 	private void checkElementIndex(int index) {
 		if (!isElementIndex(index))
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 	}
 
 	@Predicate
-	public boolean index_is_in_bounds(int index) {
-		return lt(index, 0) | gt(index, size);
+	public boolean index_is_not_position(int index) {
+		return not(lte(0, index) & lte(index, size));
 	}
 
-	@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_in_bounds")
+	@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_not_position")
 	private void checkPositionIndex(int index) {
 		if (!isPositionIndex(index))
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));

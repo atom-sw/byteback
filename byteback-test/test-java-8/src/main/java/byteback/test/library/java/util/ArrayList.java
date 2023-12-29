@@ -1593,5 +1593,5 @@ public class ArrayList<E> extends AbstractList<E>
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 171 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 135 verified, 0 errors
  */
