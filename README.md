@@ -207,7 +207,7 @@ Another publication describing the research behind ByteBack:
 > *Lecture Notes in Computer Science*, 14300:113–133, Springer, November 2023.
 
 ```bibtex
-@InProceedings{PF-FM23-ByteBack,
+@InProceedings{PF-iFM23-ByteBack,
   author = {Marco Paganoni and Carlo A. Furia},
   title = {Reasoning About Exceptional Behavior At the Level of {J}ava Bytecode},
   booktitle = {Proceedings of the 18th International Conference on integrated Formal Methods (iFM)},
