@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.Supplier;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;

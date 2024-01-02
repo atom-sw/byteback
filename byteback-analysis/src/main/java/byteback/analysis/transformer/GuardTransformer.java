@@ -64,8 +64,8 @@ public class GuardTransformer extends BodyTransformer {
 			assert handler instanceof AssignStmt assign && assign.getLeftOp() instanceof Local
 					&& assign.getRightOp() instanceof CaughtExceptionRef;
 
-			final AssignStmt assignment = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
-			units.insertAfter(assignment, handler);
+			final AssignStmt newUnit = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
+			units.insertAfter(newUnit, handler);
 		}
 
 		while (unitIterator.hasNext()) {
@@ -84,7 +84,8 @@ public class GuardTransformer extends BodyTransformer {
 			if (unit instanceof ThrowStmt throwUnit) {
 				final Unit retUnit = Grimp.v().newReturnVoidStmt();
 
-				units.insertBefore(retUnit, throwUnit);;
+				units.insertBefore(retUnit, throwUnit);
+				throwUnit.redirectJumpsToThisTo(retUnit);
 				units.remove(throwUnit);
 
 				final Unit assignUnit;
@@ -94,6 +95,7 @@ public class GuardTransformer extends BodyTransformer {
 				} else {
 					assignUnit = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), throwUnit.getOp());
 					units.insertBefore(assignUnit, retUnit);
+					retUnit.redirectJumpsToThisTo(assignUnit);
 				}
 
 				Unit indexUnit = assignUnit;
@@ -102,7 +104,6 @@ public class GuardTransformer extends BodyTransformer {
 
 					for (int i = activeTraps.size() - 1; i >= 0; --i) {
 						final Trap activeTrap = activeTraps.get(i);
-
 						final RefType trapType = activeTrap.getException().getType();
 						final Value condition = Vimp.v().newInstanceOfExpr(Vimp.v().newCaughtExceptionRef(), trapType);
 						final Unit ifUnit = Vimp.v().newIfStmt(condition, activeTrap.getHandlerUnit());

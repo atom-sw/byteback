@@ -1,8 +1,7 @@
 package byteback.analysis.transformer;
 
-import java.util.Map;
-
 import byteback.analysis.tags.PositionTag;
+import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
