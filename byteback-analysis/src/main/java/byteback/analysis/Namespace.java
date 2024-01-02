@@ -5,8 +5,7 @@ import soot.SootClass;
 import soot.SootMethod;
 
 /**
- * Utility class containing the definitions of the special annotations necessary
- * for the conversion between Jimple and Boogie.
+ * Contains the definitions of the names for the BBLib annotations.
  */
 public class Namespace {
 

@@ -1,14 +1,16 @@
 package byteback.analysis;
 
-import java.util.AbstractMap;
-
 import byteback.analysis.vimp.LogicAndExpr;
 import byteback.analysis.vimp.LogicOrExpr;
 import byteback.analysis.vimp.LogicXorExpr;
+import java.util.AbstractMap;
 import soot.Value;
 import soot.jimple.*;
 
-public abstract class JimpleValueSwitch<R> extends AbstractJimpleValueSwitch<R> implements LogicExprSwitch<R>, SpecialExprSwitch<R> {
+public abstract class JimpleValueSwitch<R> extends AbstractJimpleValueSwitch<R>
+		implements
+			LogicExprSwitch<R>,
+			SpecialExprSwitch<R> {
 
 	@Override
 	public void caseLogicAndExpr(final LogicAndExpr v) {

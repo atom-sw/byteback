@@ -1,0 +1,23 @@
+# Gradle
+.gradle
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+
+# JDT-specific (Eclipse Java Development Tools)
+.project
+.classpath
+.settings
+bin/
+
+# Boogie outputs
+**/Output/
+
+# LIT testing suite
+.lit_test_times.txt
+
+# Emacs backup files
+\#*\#

@@ -2,7 +2,7 @@ package byteback.analysis;
 
 import byteback.analysis.transformer.CallCheckTransformer;
 import byteback.analysis.transformer.DynamicToStaticTransformer;
-import byteback.analysis.transformer.ExceptionAssumptionTransformer;
+import byteback.analysis.transformer.ExceptionInvariantTransformer;
 import byteback.analysis.transformer.ExpressionFolder;
 import byteback.analysis.transformer.GuardTransformer;
 import byteback.analysis.transformer.IndexCheckTransformer;
@@ -73,14 +73,16 @@ public class RootResolver {
 
 			LogicUnitTransformer.v().transform(body);
 			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
+			new ExpressionFolder().transform(body);
+			UnusedLocalEliminator.v().transform(body);
+			QuantifierValueTransformer.v().transform(body);
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+				ExceptionInvariantTransformer.v().transform(body);
 				CallCheckTransformer.v().transform(body);
 			} else {
 				PureTransformer.v().transform(body);
 			}
-
-			new ExpressionFolder().transform(body);
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
 				if (checkArrayDereference || SootHosts.hasAnnotation(method, Namespace.MODEL_IOBE_ANNOTATION)) {
@@ -92,9 +94,6 @@ public class RootResolver {
 				}
 			}
 
-			UnusedLocalEliminator.v().transform(body);
-			QuantifierValueTransformer.v().transform(body);
-			ExceptionAssumptionTransformer.v().transform(body);
 			DynamicToStaticTransformer.v().transform(body);
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {

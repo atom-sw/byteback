@@ -277,7 +277,7 @@ public class ProcedureConverter extends MethodConverter {
 				if (!SootHosts.hasAnnotation(method, Namespace.LEMMA_ANNOTATION)) {
 					buildBody(builder, method);
 				}
-			} 
+			}
 
 			if (!SootHosts.hasAnnotation(method, Namespace.INVARIANT_ANNOTATION)) {
 				buildFrameInvariant(builder);

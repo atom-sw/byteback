@@ -4,7 +4,6 @@ import beaver.Parser;
 import byteback.frontend.boogie.ast.*;
 import byteback.frontend.boogie.util.ParserUtil;
 import byteback.util.Lazy;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

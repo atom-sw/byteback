@@ -270,9 +270,9 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 		final Expression condition = makeExpressionExtractor().visit(assertionStmt.getCondition());
 		final List<Attribute> attributes = new List<>();
 
-		if (assertionStmt.hasTag("position")) {
-			final PositionTag tag = (PositionTag) assertionStmt.getTag("position");
-			final String message = tag.file + " (line " + tag.lineNumber + "): Error: This assertion might not hold.";
+		if (assertionStmt.hasTag("PositionTag")) {
+			final PositionTag tag = (PositionTag) assertionStmt.getTag("PositionTag");
+			final String message = tag.file + ": (line " + tag.lineNumber + "): Error: This assertion might not hold.";
 			attributes.add(Convention.makeMessageAttribute(message));
 		}
 
