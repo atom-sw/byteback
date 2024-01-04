@@ -1,18 +1,7 @@
 package byteback.analysis;
 
-import byteback.analysis.transformer.CallCheckTransformer;
-import byteback.analysis.transformer.DynamicToStaticTransformer;
-import byteback.analysis.transformer.ExceptionInvariantTransformer;
-import byteback.analysis.transformer.ExpressionFolder;
-import byteback.analysis.transformer.GuardTransformer;
-import byteback.analysis.transformer.IndexCheckTransformer;
-import byteback.analysis.transformer.InvariantExpander;
-import byteback.analysis.transformer.LogicUnitTransformer;
-import byteback.analysis.transformer.LogicValueTransformer;
-import byteback.analysis.transformer.NullCheckTransformer;
-import byteback.analysis.transformer.PositionTagTransformer;
-import byteback.analysis.transformer.PureTransformer;
-import byteback.analysis.transformer.QuantifierValueTransformer;
+import byteback.analysis.tags.PositionTag;
+import byteback.analysis.transformer.*;
 import byteback.analysis.util.AnnotationElems;
 import byteback.analysis.util.SootAnnotations;
 import byteback.analysis.util.SootBodies;
@@ -68,23 +57,18 @@ public class RootResolver {
 				}
 				if (path != null) {
 					new PositionTagTransformer(path).transform(body);
+					method.addTag(new PositionTag(path, method.getJavaSourceStartLineNumber()));
 				}
 			}
 
 			LogicUnitTransformer.v().transform(body);
 			new LogicValueTransformer(body.getMethod().getReturnType()).transform(body);
-			new ExpressionFolder().transform(body);
-			UnusedLocalEliminator.v().transform(body);
-			QuantifierValueTransformer.v().transform(body);
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
+				new LogicExpressionFolder().transform(body);
+				QuantifierValueTransformer.v().transform(body);
 				ExceptionInvariantTransformer.v().transform(body);
-				CallCheckTransformer.v().transform(body);
-			} else {
-				PureTransformer.v().transform(body);
-			}
 
-			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
 				if (checkArrayDereference || SootHosts.hasAnnotation(method, Namespace.MODEL_IOBE_ANNOTATION)) {
 					IndexCheckTransformer.v().transform(body);
 				}
@@ -92,15 +76,22 @@ public class RootResolver {
 				if (checkNullDereference || SootHosts.hasAnnotation(method, Namespace.MODEL_NPE_ANNOTATION)) {
 					NullCheckTransformer.v().transform(body);
 				}
+
+				CallCheckTransformer.v().transform(body);
+				GuardTransformer.v().transform(body);
+
+			} else {
+				PureTransformer.v().transform(body);
+				new ExpressionFolder().transform(body);
+				QuantifierValueTransformer.v().transform(body);
 			}
 
+			UnusedLocalEliminator.v().transform(body);
 			DynamicToStaticTransformer.v().transform(body);
 
 			if (!Namespace.isPureMethod(method) && !Namespace.isPredicateMethod(method)) {
-				GuardTransformer.v().transform(body);
+				InvariantExpander.v().transform(body);
 			}
-
-			InvariantExpander.v().transform(body);
 
 			method.setActiveBody(body);
 		}
