@@ -1,11 +1,10 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} --nct --act -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} --npe --iobe -o %t.bpl
  */
 package byteback.test.examples;
 
 import java.util.NoSuchElementException;
 
-import byteback.annotations.Binding;
 import byteback.annotations.Contract.Ensure;
 import byteback.annotations.Contract.Predicate;
 import byteback.annotations.Contract.Pure;
@@ -14,7 +13,6 @@ import byteback.annotations.Contract.Return;
 import static byteback.annotations.Contract.*;
 import static byteback.annotations.Operator.*;
 import static byteback.annotations.Special.*;
-import static byteback.annotations.Quantifier.*;
 
 public class ReadResource {
 
