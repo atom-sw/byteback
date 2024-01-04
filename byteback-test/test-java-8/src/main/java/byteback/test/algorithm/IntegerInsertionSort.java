@@ -55,6 +55,7 @@ public class IntegerInsertionSort {
 		}
 
 	}
+
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s

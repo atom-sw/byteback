@@ -1,8 +1,13 @@
+import java.nio.file.Paths
+
 def scriptsDir = "$projectDir/scripts"
+
+def bytebackTestRoot = project(':byteback-test').projectDir
+
+def cli = project(':byteback-cli')
 
 subprojects { test ->
 
-		def cli = project(':byteback-cli')
 
 		def bytebackRoot = cli.installDist.destinationDir
 
@@ -16,24 +21,12 @@ subprojects { test ->
 				def sourceSet = project.sourceSets.main
 				def sourceDirs = sourceSet.allSource.srcDirs
 				def compiledDirs = sourceSet.output.classesDirs
-				def compiledDir = null
-				def sourceDir = null
 				def testDirs = ["java", "scala", "kotlin"]
 				def targetProperty = project.findProperty("TEST_TARGET")
 				def jobsProperty = project.findProperty("TEST_JOBS")
 				def boogieTimeLimitProperty = project.findProperty("BOOGIE_TIME_LIMIT")
-
-				if (jobsProperty == null) {
-						jobsProperty = 1
-				}
-
-				if (boogieTimeLimitProperty == null) {
-						boogieTimeLimitProperty = 20
-				}
-
-				project.mkdir(summaryDir)
-
-				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
+				def compiledDir = null;
+				def sourceDir = null;
 
 				def execute = { target ->
 						test.exec {
@@ -48,17 +41,30 @@ subprojects { test ->
 						}
 				}
 
+				if (jobsProperty == null) {
+						jobsProperty = 1
+				}
+
+				if (boogieTimeLimitProperty == null) {
+						boogieTimeLimitProperty = 20
+				}
+
+				project.mkdir(summaryDir)
+
+				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
+
 				doLast {
 						sourceDirs.each { dir ->
 								if (testDirs.contains(dir.getName()) && dir.exists()) {
 										sourceDir = dir
-								}
 
-								if (sourceDir != null) {
 										if (targetProperty == null) {
-												execute(sourceDir)
+												execute(dir)
 										} else {
-												execute(targetProperty)
+												def targetPath = Paths.get(bytebackTestRoot.getCanonicalPath(), targetProperty).normalize()
+												if (targetPath.startsWith(test.projectDir.getCanonicalPath())) {
+														execute(targetPath)
+												}
 										}
 								}
 						}
@@ -66,10 +72,6 @@ subprojects { test ->
 
 				dependsOn cli.installDist
 				dependsOn test.shadowJar
-
-				outputs.files fileTree(summaryDir).matching {
-						include '*.csv'
-				}
 		}
 
 		def experimentsDir = "$buildDir/experiments"
