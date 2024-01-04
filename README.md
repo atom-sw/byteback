@@ -140,8 +140,8 @@ byteback-cli \
 	  -c TARGET_CLASS \
 	[ -o BOOGIE_OUTPUT ] \
 	[ -p PRELUDE ]\
-	[ --nct ] \
-	[ --act ]
+	[ --npe ] \
+	[ --iobe ]
 ```
 
 - `-cp CLASS_PATH` declares the classpath where ByteBack will look for
@@ -162,10 +162,10 @@ byteback-cli \
   option is omitted, ByteBack uses its [standard
   prelude](./byteback-cli/src/main/resources/boogie/BytebackPrelude.bpl).
 
-- `--nct` enables support for verifying behavior of *implicit*
+- `--npe` enables support for verifying behavior of *implicit*
   `NullPointer` exceptions.
 
-- `--act` enables support for verifying behavior of *implicit*
+- `--iobe` enables support for verifying behavior of *implicit*
   `IndexOutOfBounds` exceptions.
 
 ## ByteBack annotations
