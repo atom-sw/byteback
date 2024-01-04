@@ -129,13 +129,9 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			public void caseLocal(final Local local) {
 				final ValueReference reference = ValueReference.of(PureExpressionExtractor.localName(local));
 				final AtomicBoolean referenceWasAssigned = new AtomicBoolean();
-				final Expression assigned = makeExpressionExtractor(new ReferenceProvider() {
-
-					public ValueReference get(final Type expectedType) {
-						referenceWasAssigned.set(true);
-						return reference;
-					}
-
+				final Expression assigned = makeExpressionExtractor(expectedType -> {
+					referenceWasAssigned.set(true);
+					return reference;
 				}).visit(right);
 
 				if (!referenceWasAssigned.get()) {
