@@ -8,13 +8,15 @@ import byteback.annotations.Special._;
 import byteback.annotations.Operator._;
 import byteback.annotations.Operator.{eq => equal};
 
-trait Die {
+abstract class Die {
 
+  @Pure
   @Predicate
   def outcome_is_positive(max: Int, outcome: Int): Boolean = {
     return lte(1, outcome);
   }
 
+  @Pure
   @Predicate
   def outcome_is_leq_than_max(max: Int, outcome: Int): Boolean = {
     return lte(outcome, max);
@@ -28,6 +30,7 @@ trait Die {
 
 class FixedDie extends Die {
 
+  @Pure
   @Predicate
   def result_is_max(max: Int, returns: Int): Boolean = {
     return equal(max, returns);
@@ -51,5 +54,5 @@ class Dice {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 7 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 5 verified, 0 errors
  */

@@ -33,11 +33,11 @@ class Basic(@(Pure @getter) val f: Int) {
   }
 
   @Predicate
-  def always_throws(e: Throwable): Boolean = {
-    return e.isInstanceOf[Exception];
+  def always_throws(): Boolean = {
+    return true;
   }
 
-  @Ensure("always_throws")
+  @Raise(exception = classOf[Exception], when = "always_throws")
   def alwaysThrows(): Unit = {
     throw new Exception();
   }

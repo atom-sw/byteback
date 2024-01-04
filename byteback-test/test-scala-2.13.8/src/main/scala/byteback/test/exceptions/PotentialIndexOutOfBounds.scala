@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} --act -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} --iobe -o %t.bpl
  */
 
 package byteback.test.exceptions

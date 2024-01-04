@@ -29,10 +29,10 @@ public class Configuration {
 	@Parameter(names = {"-p", "--prelude"}, description = "Path to the prelude file")
 	private Path preludePath;
 
-	@Parameter(names = {"--nct"}, description = "Injects explicit null checks")
+	@Parameter(names = {"--npe"}, description = "Models implicit NullPointerExceptions")
 	private boolean transformNullCheck = false;
 
-	@Parameter(names = {"--act"}, description = "Injects explicit array checks")
+	@Parameter(names = {"--iobe"}, description = "Models implicit IndexOutOfBoundsExceptions")
 	private boolean transformArrayCheck = false;
 
 	@Parameter(names = {"-o", "--output"}, description = "Path to the output verification conditions")
