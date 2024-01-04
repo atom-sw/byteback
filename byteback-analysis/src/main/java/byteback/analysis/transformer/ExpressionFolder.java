@@ -2,6 +2,7 @@ package byteback.analysis.transformer;
 
 import byteback.analysis.SubstitutionTracker;
 import byteback.analysis.util.SootBodies;
+import byteback.analysis.vimp.LogicExpr;
 import byteback.util.Cons;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,10 @@ public class ExpressionFolder extends BodyTransformer {
 		}
 	}
 
+	public boolean sideCondition(final Value substitution) {
+		return true;
+	}
+
 	public void transformBody(final Body body) {
 		final BlockGraph graph = SootBodies.getBlockGraph(body);
 		final SimpleLocalDefs localDefs = new SimpleLocalDefs(SootBodies.getUnitGraph(body));
@@ -59,7 +64,7 @@ public class ExpressionFolder extends BodyTransformer {
 							final Unit definition = substitutionPair.car;
 							final Value substitution = substitutionPair.cdr;
 
-							if (localDefs.getDefsOfAt(local, unit).size() > 1) {
+							if (localDefs.getDefsOfAt(local, unit).size() > 1 && sideCondition(substitution)) {
 								continue FOLD_NEXT;
 							} else {
 								final List<UnitValueBoxPair> usePairs = localUses.getUsesOf(definition);

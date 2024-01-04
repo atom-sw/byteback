@@ -51,25 +51,32 @@ public class ExceptionInvariantTransformer extends BodyTransformer {
 		for (final Loop loop : loops) {
 			if (loop.getHead() != loop.getBackJumpStmt()) {
 				final Value assertionValue = Vimp.v().newEqExpr(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
-				final Unit newUnit1 = Vimp.v().newAssumptionStmt(assertionValue);
-				final Unit newUnit2 = Vimp.v().newAssumptionStmt(assertionValue);
+				final Unit headUnit = loop.getHead();
+				final Unit newHeadUnit = Vimp.v().newAssertionStmt(assertionValue);
+				final Unit backJumpUnit = loop.getBackJumpStmt();
+				final Unit newBackJumpUnit = Vimp.v().newAssertionStmt(assertionValue);
+				final Set<Unit> annotatedUnits= new HashSet<>();
 
-				units.insertBefore(newUnit1, loop.getHead());
-				loop.getHead().redirectJumpsToThisTo(newUnit1);
+				units.insertBefore(newHeadUnit, headUnit);
+				headUnit.redirectJumpsToThisTo(newHeadUnit);
 
-				units.insertBefore(newUnit2, loop.getBackJumpStmt());
-				loop.getBackJumpStmt().redirectJumpsToThisTo(newUnit2);
+				units.insertBefore(newBackJumpUnit, backJumpUnit);
+				backJumpUnit.redirectJumpsToThisTo(newBackJumpUnit);
 
 				for (final Unit exit : loop.getLoopExits()) {
-					final Unit newExitUnit = Vimp.v().newAssumptionStmt(assertionValue);
-					units.insertBefore(newExitUnit, exit);
-					exit.redirectJumpsToThisTo(newExitUnit);
+					if (!annotatedUnits.contains(exit)) {
+						final Unit newExitUnit = Vimp.v().newAssertionStmt(assertionValue);
+						units.insertBefore(newExitUnit, exit);
+						exit.redirectJumpsToThisTo(newExitUnit);
+						annotatedUnits.add(exit);
 
-					for (final Unit exitTarget : loop.targetsOfLoopExit((Stmt) exit)) {
-						if (!trapHandlers.contains(exitTarget)) {
-							final Unit newTargetUnit = Vimp.v().newAssumptionStmt(assertionValue);
-							units.insertBefore(newTargetUnit, exitTarget);
-							exitTarget.redirectJumpsToThisTo(newTargetUnit);
+						for (final Unit exitTarget : loop.targetsOfLoopExit((Stmt) exit)) {
+							if (!trapHandlers.contains(exitTarget) && !annotatedUnits.contains(exitTarget)) {
+								final Unit newTargetUnit = Vimp.v().newAssertionStmt(assertionValue);
+								units.insertBefore(newTargetUnit, exitTarget);
+								exitTarget.redirectJumpsToThisTo(newTargetUnit);
+								annotatedUnits.add(exitTarget);
+							}
 						}
 					}
 				}

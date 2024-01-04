@@ -4,12 +4,7 @@ import byteback.analysis.Vimp;
 import byteback.analysis.vimp.AssertionStmt;
 import byteback.analysis.vimp.InvariantStmt;
 import byteback.util.Lazy;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Supplier;
 import soot.Body;
 import soot.BodyTransformer;
@@ -52,8 +47,11 @@ public class InvariantExpander extends BodyTransformer {
 		final Stack<Loop> activeLoops = new Stack<>();
 
 		for (final Loop loop : loops) {
-			startToLoop.put(loop.getHead(), loop);
-			endToLoop.put(loop.getBackJumpStmt(), loop);
+			final List<Stmt> loopStatements = loop.getLoopStatements();
+			if (loopStatements.size() > 1) {
+				startToLoop.put(loopStatements.get(0), loop);
+				endToLoop.put(loopStatements.get(loopStatements.size() - 1), loop);
+			}
 		}
 
 		while (unitIterator.hasNext()) {
