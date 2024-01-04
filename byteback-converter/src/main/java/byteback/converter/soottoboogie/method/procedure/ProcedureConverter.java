@@ -18,22 +18,7 @@ import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.type.TypeAccessExtractor;
 import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
-import byteback.frontend.boogie.ast.Body;
-import byteback.frontend.boogie.ast.BooleanLiteral;
-import byteback.frontend.boogie.ast.BoundedBinding;
-import byteback.frontend.boogie.ast.Condition;
-import byteback.frontend.boogie.ast.EqualsOperation;
-import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.FunctionReference;
-import byteback.frontend.boogie.ast.ImplicationOperation;
-import byteback.frontend.boogie.ast.List;
-import byteback.frontend.boogie.ast.OldReference;
-import byteback.frontend.boogie.ast.PostCondition;
-import byteback.frontend.boogie.ast.PreCondition;
-import byteback.frontend.boogie.ast.ProcedureDeclaration;
-import byteback.frontend.boogie.ast.SymbolicReference;
-import byteback.frontend.boogie.ast.TypeAccess;
-import byteback.frontend.boogie.ast.ValueReference;
+import byteback.frontend.boogie.ast.*;
 import byteback.frontend.boogie.builder.BoundedBindingBuilder;
 import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
 import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
@@ -131,113 +116,29 @@ public class ProcedureConverter extends MethodConverter {
 		builder.signature(signatureBuilder.build());
 	}
 
-	public static List<Expression> makeArguments(final SootMethod method) {
-		final List<Expression> references = new List<>();
-		references.add(Prelude.v().getHeapVariable().makeValueReference());
-
-		for (final Local local : getParameterLocals(method)) {
-			references.add(ValueReference.of(parameterName(local)));
-		}
-
-		if (method.getReturnType() != VoidType.v()) {
-			references.add(Convention.makeReturnReference());
-		}
-
-		references.add(Convention.makeExceptionReference());
-
-		return references;
-	}
-
-	public static Expression makeCondition(final SootMethod target, final SootMethod source) {
-		final List<Expression> arguments = makeArguments(target);
-
-		if (source.isStatic() != target.isStatic()) {
-			throw new ConversionException("Incompatible target type for condition method " + source.getName());
-		}
-
-		return FunctionManager.v().convert(source).getFunction().inline(arguments);
-	}
-
 	public static void buildSpecification(final ProcedureDeclarationBuilder builder, final SootMethod method) {
 		SootHosts.getAnnotations(method).forEach((tag) -> {
-			SootAnnotations.getAnnotations(tag).forEach((sub) -> {
-				final var parameters = new ArrayList<Type>(method.getParameterTypes());
-				final Function<Expression, Condition> conditionCtor;
-				final String tagName;
+			SootAnnotations.getAnnotations(tag).forEach((subTag) -> {
+				final Specification specification;
 
-				switch (sub.getType()) {
+				switch (subTag.getType()) {
 					case Namespace.REQUIRE_ANNOTATION :
-						// requires {condition};
-						tagName = "value";
-						conditionCtor = (expression) -> new PreCondition(new List<>(), false, expression);
+						specification = new RequireConverter(method).convert(subTag);
 						break;
 					case Namespace.ENSURE_ANNOTATION :
-						// ensures {condition};
-						tagName = "value";
-						conditionCtor = (expression) -> new PostCondition(new List<>(), false, expression);
-
-						if (method.getReturnType() != VoidType.v()) {
-							parameters.add(method.getReturnType());
-						}
+						specification = new EnsureConverter(method).convert(subTag);
 						break;
 					case Namespace.RAISE_ANNOTATION :
-						// ensures old({condition}) ==> ~exc == {exception};
-						tagName = "when";
-						final AnnotationElem exceptionElem = SootAnnotations.getElem(sub, "exception").orElseThrow();
-						final String value = new ClassElemExtractor().visit(exceptionElem);
-						final RefType exceptionType = Scene.v().loadClassAndSupport(Namespace.stripDescriptor(value))
-								.getType();
-						final SymbolicReference typeReference = new TypeReferenceExtractor().visit(exceptionType);
-						final FunctionReference instanceOfReference = Prelude.v().getInstanceOfFunction()
-								.makeFunctionReference();
-						final ValueReference heapReference = Prelude.v().getHeapVariable().makeValueReference();
-						instanceOfReference.addArgument(heapReference);
-						instanceOfReference.addArgument(Convention.makeExceptionReference());
-						instanceOfReference.addArgument(typeReference);
-						conditionCtor = (expression) -> {
-							final Expression condition = new ImplicationOperation(new OldReference(expression),
-									instanceOfReference);
-							return new PostCondition(new List<>(), false, condition);
-						};
+						specification = new RaiseConverter(method).convert(subTag);
 						break;
 					case Namespace.RETURN_ANNOTATION :
-						// ensures old({condition}) ~exc == ~void;
-						tagName = "when";
-						conditionCtor = (expression) -> {
-							final var rightExpression = new EqualsOperation(Convention.makeExceptionReference(),
-									Prelude.v().getVoidConstant().makeValueReference());
-							final Expression condition = new ImplicationOperation(new OldReference(expression),
-									rightExpression);
-							return new PostCondition(new List<>(), false, condition);
-						};
+						specification = new ReturnConverter(method).convert(subTag);
 						break;
 					default :
 						return;
 				}
 
-				SootAnnotations.getElem(sub, tagName).ifPresentOrElse((elem) -> {
-					final String name = new StringElemExtractor().visit(elem);
-					final SootClass clazz = method.getDeclaringClass();
-					SootMethod source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
-
-					if (source == null) {
-						parameters.add(Scene.v().getType("java.lang.Throwable"));
-						source = clazz.getMethodUnsafe(name, parameters, BooleanType.v());
-
-						if (source == null) {
-							throw new ConversionException(
-									"Unable to find matching predicate " + name + " in class " + clazz.getName());
-						}
-					}
-
-					RootResolver.v().ensureResolved(source);
-
-					final Expression expression = makeCondition(method, source);
-					final Condition condition = conditionCtor.apply(expression);
-					builder.addSpecification(condition);
-				}, () -> {
-					builder.addSpecification(conditionCtor.apply(BooleanLiteral.makeTrue()));
-				});
+				builder.addSpecification(specification);
 			});
 		});
 
