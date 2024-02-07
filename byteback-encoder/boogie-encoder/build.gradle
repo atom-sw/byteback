@@ -1,10 +1,12 @@
 plugins {
-    id 'java'
+		id 'java'
 		id 'byteback.java-common-conventions'
 }
 
 dependencies {
 		implementation project(':byteback-commons')
+		implementation project(':byteback-analysis')
+		implementation project(':byteback-encoder')
 		implementation "org.soot-oss:sootup.core:1.1.2"
 		implementation "org.soot-oss:sootup.java.core:1.1.2"
 		implementation ("org.soot-oss:sootup.java.bytecode:1.1.2") {

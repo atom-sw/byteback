@@ -1,14 +1,33 @@
 package byteback.cli;
 
-import byteback.util.Lazy;
+import byteback.commons.Lazy;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import java.nio.file.Path;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 
-public class Configuration {
+public class Configuration implements byteback.verifier.boogie.BoogieConfiguration {
 
 	private static final Lazy<Configuration> instance = Lazy.from(Configuration::new);
+
+	public static String concatenateClassPaths(final List<String> classPaths) {
+		String finalClassPath = "";
+		final Iterator<String> classPathIterator = classPaths.iterator();
+		while (classPathIterator.hasNext()) {
+			final String classPath = classPathIterator.next();
+			finalClassPath += classPath.toString();
+			if (!classPathIterator.hasNext()) {
+				finalClassPath += File.pathSeparator;
+			}
+		}
+		return finalClassPath;
+	}
 
 	private Configuration() {
 	}
@@ -21,13 +40,13 @@ public class Configuration {
 	private boolean help;
 
 	@Parameter(names = {"-cp", "--classpath"}, description = "Classpath to be converted", required = true)
-	private List<Path> classPaths;
+	private List<String> classPaths;
 
 	@Parameter(names = {"-c", "--class"}, description = "Starting class for the conversion", required = true)
-	private List<String> startingClasses;
+	private List<String> startingClassNames;
 
 	@Parameter(names = {"-p", "--prelude"}, description = "Path to the prelude file")
-	private Path preludePath;
+	private String preludePath;
 
 	@Parameter(names = {"--npe"}, description = "Models implicit NullPointerExceptions")
 	private boolean transformNullCheck = false;
@@ -35,8 +54,8 @@ public class Configuration {
 	@Parameter(names = {"--iobe"}, description = "Models implicit IndexOutOfBoundsExceptions")
 	private boolean transformArrayCheck = false;
 
-	@Parameter(names = {"-o", "--output"}, description = "Path to the output verification conditions")
-	private Path outputPath;
+	@Parameter(names = {"-o", "--output"}, description = "Path to the output verification conditions", required = true)
+	private String outputPath;
 
 	private JCommander jCommander;
 
@@ -44,20 +63,42 @@ public class Configuration {
 		return help;
 	}
 
-	public List<Path> getClassPaths() {
+	public List<String> getClassPaths() {
 		return classPaths;
 	}
 
-	public List<String> getStartingClasses() {
-		return startingClasses;
+	public String getClassPath() {
+		return concatenateClassPaths(classPaths);
 	}
 
-	public Path getPreludePath() {
-		return preludePath;
+	public List<String> getStartingClassNames() {
+		return startingClassNames;
 	}
 
-	public Path getOutputPath() {
+	public InputStream getPreludeInputStream() {
+		if (preludePath != null) {
+			try {
+				final File preludeFile = new File(preludePath);
+				return new FileInputStream(preludeFile);
+			} catch (final IOException exception) {
+				throw new RuntimeException("Failed to open prelude file", exception);
+			}
+		} else {
+			return getClass().getResourceAsStream("/boogie/BytebackPrelude.bpl");
+		}
+	}
+
+	public String getOutputPath() {
 		return outputPath;
+	}
+
+	public OutputStream getOutputStream() {
+		try {
+			final File outputFile = new File(outputPath);
+			return new FileOutputStream(outputFile);
+		} catch (final IOException exception) {
+			throw new RuntimeException("Failed to open output file", exception);
+		}
 	}
 
 	public JCommander getJCommander() {

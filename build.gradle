@@ -12,16 +12,9 @@ allprojects { project ->
 
 				spotless {
 						java {
-								targetExclude("build/generated-src/**")
 								importOrder()
 								eclipse()
 						}
-				}
-
-				javadoc {
-						exclude "byteback/frontend/boogie/ast/**"
-						exclude "byteback/frontend/boogie/parser/**"
-						exclude "byteback/frontend/boogie/scanner/**"
 				}
 		}
 }
