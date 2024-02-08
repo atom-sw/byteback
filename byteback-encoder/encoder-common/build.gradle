@@ -6,6 +6,6 @@ plugins {
 dependencies {
 		implementation project(':byteback-common')
 		implementation project(':byteback-analysis')
-		implementation "org.soot-oss:sootup.java.core:1.1.2"
+		implementation project(':byteback-sootup')
 		implementation 'org.slf4j:slf4j-simple:1.6.1'
 }

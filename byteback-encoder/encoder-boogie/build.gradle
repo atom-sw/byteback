@@ -5,12 +5,8 @@ plugins {
 
 dependencies {
 		implementation project(':byteback-common')
+		implementation project(':byteback-sootup')
 		implementation project(':byteback-analysis')
 		implementation project(':byteback-encoder:encoder-common')
-		implementation "org.soot-oss:sootup.core:1.1.2"
-		implementation "org.soot-oss:sootup.java.core:1.1.2"
-		implementation ("org.soot-oss:sootup.java.bytecode:1.1.2") {
-				exclude group: 'com.github.ThexXTURBOXx.dex2jar', module: 'dex-tools'
-		}
 		implementation 'org.slf4j:slf4j-simple:1.6.1'
 }
