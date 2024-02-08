@@ -12,5 +12,5 @@ java {
 }
 
 dependencies {
-    implementation project(':byteback-annotations')
+    implementation project(':byteback-specification')
 }

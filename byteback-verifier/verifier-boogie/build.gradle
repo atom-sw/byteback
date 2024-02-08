@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+		id 'byteback.java-common-conventions'
+}
+
+dependencies {
+		implementation project(':byteback-common')
+		implementation project(':byteback-sootup')
+		implementation project(':byteback-analysis')
+		implementation project(':byteback-verifier:verifier-common')
+		implementation project(':byteback-encoder:encoder-common')
+		implementation project(':byteback-encoder:encoder-boogie')
+		implementation 'org.slf4j:slf4j-simple:1.6.1'
+}

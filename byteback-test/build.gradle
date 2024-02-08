@@ -2,11 +2,11 @@ import java.nio.file.Paths
 
 def bytebackTestRoot = project(':byteback-test').projectDir
 
-def cli = project(':byteback-cli')
+def client = project(':byteback-client')
 
 subprojects { test ->
 
-		def bytebackRoot = cli.installDist.destinationDir
+		def bytebackRoot = client.installDist.destinationDir
 
 		def system = tasks.register('system') {
 				def sourceDirs = project.sourceSets.main.allSource.srcDirs
@@ -34,7 +34,6 @@ subprojects { test ->
 				doLast {
 						sourceDirs.each { sourceDir ->
 								if (sourceDir.exists()) {
-
 										if (targetProperty == null) {
 												execute(sourceDir, sourceDir)
 										} else {
@@ -47,7 +46,7 @@ subprojects { test ->
 						}
 				}
 
-				dependsOn cli.installDist
+				dependsOn client.installDist
 				dependsOn test.shadowJar
 		}
 

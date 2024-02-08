@@ -13,7 +13,7 @@ pkgs.mkShell {
 
   shellHook = ''
 export PATH=$PATH:$PWD/byteback-cli/build/install/byteback-cli/bin
-export CLASSPATH=$CLASSPATH:$PWD/byteback-annotations/build/libs/byteback-annotations.jar
+export CLASSPATH=$CLASSPATH:$PWD/byteback-specification/build/libs/byteback-specification.jar
   '';
 
 }

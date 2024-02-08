@@ -1,0 +1,16 @@
+plugins {
+		id 'byteback.java-common-conventions'
+		id 'application'
+}
+
+dependencies {
+		implementation project(':byteback-common')
+		implementation project(':byteback-verifier:verifier-common')
+		implementation project(':byteback-verifier:verifier-boogie')
+		implementation 'org.slf4j:slf4j-simple:1.6.1'
+		implementation 'com.beust:jcommander:1.+'
+}
+
+application {
+		mainClass = 'byteback.client.Main'
+}

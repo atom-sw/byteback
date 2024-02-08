@@ -32,6 +32,18 @@ public class Scheduler {
 		this(new HashSet<>(), new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
 	}
 
+	public Queue<ClassType> getNextClassTypes() {
+		return nextClassTypes;
+	}
+
+	public Queue<FieldSignature> getNextFieldSignatures() {
+		return nextFieldSignatures;
+	}
+
+	public Queue<MethodSignature> getNextMethodSignatures() {
+		return nextMethodSignatures;
+	}
+
 	private <T extends Signature> void scheduleSignature(final T signature, final Queue<T> nextSignatures) {
 		if (!isScheduled(signature)) {
 			nextSignatures.add(signature);
@@ -39,62 +51,20 @@ public class Scheduler {
 		}
 	}
 
-	private <T extends Signature> void scheduleSignatures(final Iterable<T> signatures, final Queue<T> nextSignatures) {
-		for (final T signature : signatures) {
-			scheduleSignature(signature, nextSignatures);
-		}
-	}
-
 	public boolean isScheduled(final Signature signature) {
 		return scheduledSignatures.contains(signature);
 	}
 
-	public void scheduleClassType(final ClassType classType) {
+	public void schedule(final ClassType classType) {
 		scheduleSignature(classType, nextClassTypes);
 	}
 
-	public void scheduleClassTypes(final Iterable<ClassType> classTypes) {
-		scheduleSignatures(classTypes, nextClassTypes);
-	}
-
-	public ClassType pollClassType() {
-		return nextClassTypes.poll();
-	}
-
-	public boolean hasNextClassType() {
-		return !nextClassTypes.isEmpty();
-	}
-
-	public void scheduleFieldSignature(final FieldSignature fieldSignature) {
+	public void schedule(final FieldSignature fieldSignature) {
 		scheduleSignature(fieldSignature, nextFieldSignatures);
 	}
 
-	public void scheduleFieldSignatures(final Iterable<FieldSignature> fieldSignatures) {
-		scheduleSignatures(fieldSignatures, nextFieldSignatures);
-	}
-
-	public FieldSignature pollFieldSignature() {
-		return nextFieldSignatures.poll();
-	}
-
-	public boolean hasNextFieldSignature() {
-		return !nextFieldSignatures.isEmpty();
-	}
-
-	public void scheduleMethodSignature(final MethodSignature methodSignature) {
+	public void schedule(final MethodSignature methodSignature) {
 		scheduleSignature(methodSignature, nextMethodSignatures);
-	}
-
-	public void scheduleMethodSignatures(final Iterable<MethodSignature> fieldSignatures) {
-		scheduleSignatures(fieldSignatures, nextMethodSignatures);
-	}
-
-	public MethodSignature pollMethodSignature() {
-		return nextMethodSignatures.poll();
-	}
-
-	public boolean hasNextMethodSignature() {
-		return !nextMethodSignatures.isEmpty();
 	}
 
 }

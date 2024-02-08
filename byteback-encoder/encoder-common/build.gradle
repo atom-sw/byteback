@@ -1,0 +1,11 @@
+plugins {
+		id 'java'
+		id 'byteback.java-common-conventions'
+}
+
+dependencies {
+		implementation project(':byteback-common')
+		implementation project(':byteback-analysis')
+		implementation "org.soot-oss:sootup.java.core:1.1.2"
+		implementation 'org.slf4j:slf4j-simple:1.6.1'
+}

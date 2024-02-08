@@ -1,0 +1,13 @@
+plugins {
+		id 'java'
+		id 'java-library'
+		id 'byteback.java-common-conventions'
+}
+
+dependencies {
+		implementation "org.soot-oss:sootup.core:1.1.2"
+		api "org.soot-oss:sootup.java.core:1.1.2"
+		api ("org.soot-oss:sootup.java.bytecode:1.1.2") {
+				exclude group: 'com.github.ThexXTURBOXx.dex2jar', module: 'dex-tools'
+		}
+}

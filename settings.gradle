@@ -2,4 +2,19 @@ rootProject.name = 'byteback'
 
 includeBuild('./conventions')
 
-include(':byteback-cli', ':byteback-commons', ':byteback-annotations', ':byteback-verifier', ':byteback-verifier:boogie-verifier', ':byteback-analysis', ':byteback-encoder', ':byteback-encoder:boogie-encoder', ':byteback-test', ':byteback-test:test-scala-2.13.8', ':byteback-test:test-java-8', ':byteback-test:test-java-17', ':byteback-test:test-kotlin-1.8.0')
+include(
+		':byteback-client',
+		':byteback-common',
+		':byteback-specification',
+		':byteback-verifier:verifier-common',
+		':byteback-verifier:verifier-boogie',
+		':byteback-sootup',
+		':byteback-analysis',
+		':byteback-encoder:encoder-common',
+		':byteback-encoder:encoder-boogie',
+		':byteback-test',
+		':byteback-test:test-scala-2.13.8',
+		':byteback-test:test-java-8',
+		':byteback-test:test-java-17',
+		':byteback-test:test-kotlin-1.8.0'
+)
