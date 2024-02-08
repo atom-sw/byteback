@@ -5,7 +5,6 @@ import sootup.core.jimple.basic.SpecComparator;
 import sootup.core.jimple.basic.StmtPositionInfo;
 import sootup.core.jimple.expr.SpecExpr;
 import sootup.core.jimple.visitor.SpecStmtVisitor;
-import sootup.core.jimple.visitor.StmtVisitor;
 import sootup.core.util.printer.StmtPrinter;
 
 public class JInvariantStmt extends SpecStmt {
@@ -15,10 +14,8 @@ public class JInvariantStmt extends SpecStmt {
 	}
 
 	@Override
-	public void accept(final StmtVisitor visitor) {
-		if (visitor instanceof SpecStmtVisitor specStmtVisitor) {
-			specStmtVisitor.caseInvariantStmt(this);
-		}
+	public void accept(final SpecStmtVisitor visitor) {
+		visitor.caseInvariantStmt(this);
 	}
 
 	@Override
@@ -33,12 +30,8 @@ public class JInvariantStmt extends SpecStmt {
 	}
 
 	@Override
-	public boolean equivTo(final Object o, JimpleComparator comparator) {
-		if (comparator instanceof SpecComparator specComparator) {
-			return specComparator.caseInvariantStmt(o, this);
-		}
-
-		return false;
+	public boolean equivTo(final Object o, final SpecComparator comparator) {
+		return comparator.caseInvariantStmt(o, this);
 	}
 
 }

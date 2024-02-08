@@ -1,11 +1,9 @@
 package sootup.core.jimple.stmt;
 
-import sootup.core.jimple.basic.JimpleComparator;
 import sootup.core.jimple.basic.SpecComparator;
 import sootup.core.jimple.basic.StmtPositionInfo;
 import sootup.core.jimple.expr.SpecExpr;
 import sootup.core.jimple.visitor.SpecStmtVisitor;
-import sootup.core.jimple.visitor.StmtVisitor;
 import sootup.core.util.printer.StmtPrinter;
 
 public class JAssertStmt extends SpecStmt {
@@ -15,10 +13,8 @@ public class JAssertStmt extends SpecStmt {
 	}
 
 	@Override
-	public void accept(final StmtVisitor visitor) {
-		if (visitor instanceof SpecStmtVisitor specStmtVisitor) {
-			specStmtVisitor.caseAssertStmt(this);
-		}
+	public void accept(final SpecStmtVisitor visitor) {
+		visitor.caseAssertStmt(this);
 	}
 
 	@Override
@@ -33,12 +29,8 @@ public class JAssertStmt extends SpecStmt {
 	}
 
 	@Override
-	public boolean equivTo(final Object o, JimpleComparator comparator) {
-		if (comparator instanceof SpecComparator specComparator) {
-			return specComparator.caseAssertStmt(o, this);
-		}
-
-		return false;
+	public boolean equivTo(final Object o, final SpecComparator comparator) {
+		return comparator.caseAssertStmt(o, this);
 	}
 
 }

@@ -1,16 +1,14 @@
 package sootup.core.jimple.expr;
 
 import java.util.List;
-import sootup.core.jimple.basic.Immediate;
 import sootup.core.jimple.basic.JimpleComparator;
 import sootup.core.jimple.basic.Value;
 import sootup.core.jimple.common.expr.Expr;
-import sootup.core.jimple.visitor.ExprVisitor;
 import sootup.core.jimple.visitor.SpecExprVisitor;
 import sootup.core.types.Type;
 import sootup.core.util.printer.StmtPrinter;
 
-public class CompoundExpr implements Expr, Immediate {
+public class CompoundExpr extends SpecExpr {
 
 	private final Expr wrapped;
 
@@ -44,14 +42,14 @@ public class CompoundExpr implements Expr, Immediate {
 
 	@Override
 	public void toString(final StmtPrinter printer) {
+		printer.literal("(");
 		wrapped.toString(printer);
+		printer.literal(")");
 	}
 
 	@Override
-	public void accept(final ExprVisitor visitor) {
-		if (visitor instanceof SpecExprVisitor specExprVisitor) {
-			specExprVisitor.caseCompoundExpr(this);
-		}
+	public void accept(final SpecExprVisitor visitor) {
+		visitor.caseCompoundExpr(this);
 	}
 
 }
