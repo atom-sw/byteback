@@ -1,6 +1,5 @@
 package sootup.core.jimple.stmt;
 
-import sootup.core.jimple.basic.JimpleComparator;
 import sootup.core.jimple.basic.SpecComparator;
 import sootup.core.jimple.basic.StmtPositionInfo;
 import sootup.core.jimple.expr.SpecExpr;
