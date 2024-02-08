@@ -10,21 +10,18 @@ public class Main {
 	public static final Logger log = LoggerFactory.getLogger(Main.class);
 
 	public static void main(final String[] args) {
-		final Configuration configuration = Configuration.v();
-		final BoogieVerifier verifier = BoogieVerifier.v();
+		final Configuration configuration = Configuration.getInstance();
+		final BoogieVerifier verifier = BoogieVerifier.getInstance();
 		final long totalStart = System.currentTimeMillis();
 		try {
 			configuration.parse(args);
 			if (configuration.getHelp()) {
 				configuration.getJCommander().usage();
 			} else {
-				final long conversionStart = System.currentTimeMillis();
 				log.info("Converting classes");
-				final long endTime = System.currentTimeMillis();
 				verifier.verify(configuration);
-				final long totalTime = endTime - totalStart;
-				final long conversionTime = endTime - conversionStart;
-				log.info("Verification completed in {}ms, total time {}ms", conversionTime, totalTime);
+				final long totalTime = System.currentTimeMillis() - totalStart;
+				log.info("Verification completed in {}ms", totalTime);
 			}
 		} catch (final ParameterException exception) {
 			log.error("Error while parsing program arguments: {}", exception.getMessage());

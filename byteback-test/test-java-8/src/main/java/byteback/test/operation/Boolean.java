@@ -3,10 +3,10 @@
  */
 package byteback.test.operation;
 
-import static byteback.annotations.Operator.implies;
-import static byteback.annotations.Operator.not;
+import static byteback.specification.Operator.implies;
+import static byteback.specification.Operator.not;
 
-import byteback.annotations.Contract.*;
+import byteback.specification.Contract.*;
 
 public class Boolean {
 

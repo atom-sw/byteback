@@ -1,6 +1,6 @@
 package byteback.encoder.boogie;
 
-import byteback.analysis.Scheduler;
+import byteback.encoder.common.Scheduler;
 import java.util.Optional;
 import sootup.core.frontend.ResolveException;
 import sootup.core.model.SootClass;

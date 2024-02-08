@@ -1,4 +1,4 @@
-package byteback.analysis;
+package byteback.encoder.common;
 
 import java.util.HashSet;
 import java.util.LinkedList;

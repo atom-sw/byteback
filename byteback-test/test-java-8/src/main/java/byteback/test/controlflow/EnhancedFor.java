@@ -3,11 +3,11 @@
  */
 package byteback.test.controlflow;
 
-import byteback.annotations.Binding;
-import byteback.annotations.Contract.Pure;
-import static byteback.annotations.Quantifier.*;
-import static byteback.annotations.Operator.*;
-import static byteback.annotations.Contract.*;
+import byteback.specification.Binding;
+import byteback.specification.Contract.Pure;
+import static byteback.specification.Quantifier.*;
+import static byteback.specification.Operator.*;
+import static byteback.specification.Contract.*;
 
 public class EnhancedFor {
 

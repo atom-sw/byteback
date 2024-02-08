@@ -1,8 +1,8 @@
-package byteback.annotations;
+package byteback.specification;
 
-import byteback.annotations.Contract.Prelude;
-import byteback.annotations.Contract.Primitive;
-import byteback.annotations.Contract.Pure;
+import byteback.specification.Contract.Prelude;
+import byteback.specification.Contract.Primitive;
+import byteback.specification.Contract.Pure;
 
 /**
  * Utilities to aid the formulation of complex boolean expressions.

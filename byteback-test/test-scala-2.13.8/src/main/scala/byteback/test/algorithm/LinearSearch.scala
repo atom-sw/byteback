@@ -3,9 +3,9 @@
  */
 package byteback.test.algorithm;
 
-import byteback.annotations.Contract._;
-import byteback.annotations.Operator._;
-import byteback.annotations.Operator.{eq => equal};
+import byteback.specification.Contract._;
+import byteback.specification.Operator._;
+import byteback.specification.Operator.{eq => equal};
 
 class LinearSearch {
 

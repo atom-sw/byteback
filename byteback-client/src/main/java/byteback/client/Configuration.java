@@ -32,7 +32,7 @@ public class Configuration implements byteback.verifier.boogie.BoogieConfigurati
 	private Configuration() {
 	}
 
-	public static Configuration v() {
+	public static Configuration getInstance() {
 		return instance.get();
 	}
 

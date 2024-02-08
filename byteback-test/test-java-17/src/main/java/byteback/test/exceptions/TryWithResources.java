@@ -4,7 +4,7 @@
 package byteback.test.exceptions;
 
 
-import static byteback.annotations.Contract.*;
+import static byteback.specification.Contract.*;
 
 // Java 9 Feature:
 //

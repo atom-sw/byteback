@@ -1,6 +1,5 @@
 package byteback.encoder.common;
 
-import byteback.analysis.Scheduler;
 import java.io.PrintWriter;
 import java.util.Stack;
 import sootup.core.views.View;

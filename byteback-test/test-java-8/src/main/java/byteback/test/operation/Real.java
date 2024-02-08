@@ -3,7 +3,7 @@
  */
 package byteback.test.operation;
 
-import byteback.annotations.Contract.*;
+import byteback.specification.Contract.*;
 
 public class Real {
 

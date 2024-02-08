@@ -1,8 +1,8 @@
-package byteback.annotations;
+package byteback.specification;
 
-import byteback.annotations.Contract.AttachLabel;
-import byteback.annotations.Contract.Lemma;
-import byteback.annotations.Contract.Return;
+import byteback.specification.Contract.AttachLabel;
+import byteback.specification.Contract.Lemma;
+import byteback.specification.Contract.Return;
 
 @AttachLabel("Lsoot/dummy/InvokeDynamic;")
 public abstract class InvokeDynamicSpec {

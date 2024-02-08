@@ -1,4 +1,4 @@
-package byteback.annotations;
+package byteback.specification;
 
 public interface Quantifier {
 

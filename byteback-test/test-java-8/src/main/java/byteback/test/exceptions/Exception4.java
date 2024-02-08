@@ -1,6 +1,6 @@
 package byteback.test.exceptions;
 
-import static byteback.annotations.Contract.*;
+import static byteback.specification.Contract.*;
 
 public class Exception4 extends Exception {
 	@Return

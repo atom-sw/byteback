@@ -1,15 +1,15 @@
-package byteback.annotations;
+package byteback.specification;
 
-import static byteback.annotations.Operator.*;
+import static byteback.specification.Operator.*;
 
-import byteback.annotations.Contract.AttachLabel;
-import byteback.annotations.Contract.Ignore;
-import byteback.annotations.Contract.Invariant;
-import byteback.annotations.Contract.Lemma;
-import byteback.annotations.Contract.Predicate;
-import byteback.annotations.Contract.Pure;
-import byteback.annotations.Contract.Raise;
-import byteback.annotations.Contract.Return;
+import byteback.specification.Contract.AttachLabel;
+import byteback.specification.Contract.Ignore;
+import byteback.specification.Contract.Invariant;
+import byteback.specification.Contract.Lemma;
+import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Pure;
+import byteback.specification.Contract.Raise;
+import byteback.specification.Contract.Return;
 
 @AttachLabel("Lkotlin/jvm/internal/Intrinsics;")
 public abstract class KotlinIntrinsicsSpec {

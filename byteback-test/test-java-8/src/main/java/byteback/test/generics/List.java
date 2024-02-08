@@ -3,9 +3,9 @@
  */
 package byteback.test.generics;
 
-import static byteback.annotations.Contract.*;
-import static byteback.annotations.Operator.*;
-import byteback.annotations.Contract.Pure;
+import static byteback.specification.Contract.*;
+import static byteback.specification.Operator.*;
+import byteback.specification.Contract.Pure;
 
 public class List<T> {
 

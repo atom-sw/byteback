@@ -42,15 +42,15 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 
-import byteback.annotations.Contract.Ensure;
-import byteback.annotations.Contract.Predicate;
-import byteback.annotations.Contract.Raise;
-import byteback.annotations.Contract.Return;
-import byteback.annotations.Contract.Isolated;
+import byteback.specification.Contract.Ensure;
+import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Raise;
+import byteback.specification.Contract.Return;
+import byteback.specification.Contract.Isolated;
 
-import static byteback.annotations.Contract.*;
-import static byteback.annotations.Operator.*;
-import static byteback.annotations.Special.*;
+import static byteback.specification.Contract.*;
+import static byteback.specification.Operator.*;
+import static byteback.specification.Special.*;
 
 /**
  * Doubly-linked list implementation of the {@code List} and {@code Deque}

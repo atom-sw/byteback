@@ -1,10 +1,10 @@
-package byteback.annotations;
+package byteback.specification;
 
-import byteback.annotations.Contract.Attach;
-import byteback.annotations.Contract.Ensure;
-import byteback.annotations.Contract.Predicate;
-import byteback.annotations.Contract.Pure;
-import byteback.annotations.Contract.Return;
+import byteback.specification.Contract.Attach;
+import byteback.specification.Contract.Ensure;
+import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Pure;
+import byteback.specification.Contract.Return;
 import java.io.FileReader;
 
 @Attach(FileReader.class)

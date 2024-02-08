@@ -1,7 +1,7 @@
-package byteback.annotations;
+package byteback.specification;
 
-import byteback.annotations.Contract.Attach;
-import byteback.annotations.Contract.Return;
+import byteback.specification.Contract.Attach;
+import byteback.specification.Contract.Return;
 
 @Attach(IllegalArgumentException.class)
 public abstract class IllegalArgumentExceptionSpec {

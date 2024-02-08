@@ -3,8 +3,8 @@
  */
 package byteback.test.algorithm;
 
-import byteback.annotations.Contract.*
-import byteback.annotations.Operator.*
+import byteback.specification.Contract.*
+import byteback.specification.Operator.*
 
 class LinearSearch {
 

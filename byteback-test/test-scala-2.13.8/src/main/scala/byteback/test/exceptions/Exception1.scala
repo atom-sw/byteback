@@ -1,5 +1,5 @@
 package byteback.test.exceptions;
 
-import byteback.annotations.Contract._;
+import byteback.specification.Contract._;
 
 class Exception1 @Return () extends Exception

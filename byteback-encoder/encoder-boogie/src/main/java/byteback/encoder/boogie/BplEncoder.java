@@ -1,6 +1,6 @@
 package byteback.encoder.boogie;
 
-import byteback.analysis.Scheduler;
+import byteback.encoder.common.Scheduler;
 import byteback.encoder.common.Separator;
 import java.util.Queue;
 import java.util.Stack;

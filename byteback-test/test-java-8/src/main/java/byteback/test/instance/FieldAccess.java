@@ -3,7 +3,7 @@
  */
 package byteback.test.instance;
 
-import byteback.annotations.Contract.Pure;
+import byteback.specification.Contract.Pure;
 
 public class FieldAccess {
 

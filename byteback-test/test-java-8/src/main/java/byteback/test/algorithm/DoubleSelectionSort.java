@@ -3,13 +3,13 @@
  */
 package byteback.test.algorithm;
 
-import static byteback.annotations.Contract.*;
-import static byteback.annotations.Operator.*;
-import static byteback.annotations.Quantifier.*;
-import static byteback.annotations.Special.*;
+import static byteback.specification.Contract.*;
+import static byteback.specification.Operator.*;
+import static byteback.specification.Quantifier.*;
+import static byteback.specification.Special.*;
 
-import byteback.annotations.Binding;
-import byteback.annotations.Contract.Ensure;
+import byteback.specification.Binding;
+import byteback.specification.Contract.Ensure;
 
 public class DoubleSelectionSort {
 

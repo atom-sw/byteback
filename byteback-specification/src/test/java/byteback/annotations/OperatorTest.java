@@ -1,6 +1,6 @@
-package byteback.annotations;
+package byteback.specification;
 
-import static byteback.annotations.Operator.*;
+import static byteback.specification.Operator.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

@@ -1,6 +1,6 @@
 package byteback.verifier.boogie;
 
-import byteback.analysis.Scheduler;
+import byteback.encoder.common.Scheduler;
 import byteback.common.Lazy;
 import byteback.encoder.boogie.BplContext;
 import byteback.encoder.boogie.BplEncoder;
@@ -17,6 +17,7 @@ import sootup.core.Project;
 import sootup.core.inputlocation.AnalysisInputLocation;
 import sootup.core.types.ClassType;
 import sootup.core.views.View;
+import sootup.java.bytecode.inputlocation.BytebackClassLoadingOptions;
 import sootup.java.bytecode.inputlocation.JavaClassPathAnalysisInputLocation;
 import sootup.java.core.JavaProject;
 import sootup.java.core.JavaSootClass;
@@ -55,8 +56,10 @@ public class BoogieVerifier implements Verifier<BoogieConfiguration, BoogieMessa
 		final AnalysisInputLocation<JavaSootClass> inputLocation = new JavaClassPathAnalysisInputLocation(path);
 		final JavaLanguage javaLanguage = new JavaLanguage(8);
 		final Project<JavaSootClass, JavaView> project = JavaProject.builder(javaLanguage)
-				.addInputLocation(inputLocation).build();
-		return new JavaView(project);
+			.addInputLocation(inputLocation)
+			.build();
+		final View<?> view =  new JavaView(project, $ -> BytebackClassLoadingOptions.Default);
+		return view;
 	}
 
 	public Scheduler initializeScheduler(final View<?> view, final List<String> startingClassNames) {
@@ -105,7 +108,7 @@ public class BoogieVerifier implements Verifier<BoogieConfiguration, BoogieMessa
 	private BoogieVerifier() {
 	}
 
-	public static BoogieVerifier v() {
+	public static BoogieVerifier getInstance() {
 		return instance.get();
 	}
 

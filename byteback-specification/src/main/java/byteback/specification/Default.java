@@ -1,6 +1,6 @@
-package byteback.annotations;
+package byteback.specification;
 
-import byteback.annotations.Contract.Attach;
+import byteback.specification.Contract.Attach;
 
 @Attach(Object.class)
 public class Default {

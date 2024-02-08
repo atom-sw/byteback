@@ -1,8 +1,8 @@
-package byteback.annotations;
+package byteback.specification;
 
-import byteback.annotations.Contract.Attach;
-import byteback.annotations.Contract.Invariant;
-import byteback.annotations.Contract.Return;
+import byteback.specification.Contract.Attach;
+import byteback.specification.Contract.Invariant;
+import byteback.specification.Contract.Return;
 
 @Attach(NullPointerException.class)
 public abstract class NullPointerExceptionSpec {
