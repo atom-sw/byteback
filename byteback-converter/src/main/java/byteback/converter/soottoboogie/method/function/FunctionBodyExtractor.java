@@ -1,18 +1,12 @@
 package byteback.converter.soottoboogie.method.function;
 
-import byteback.analysis.JimpleStmtSwitch;
-import byteback.converter.soottoboogie.LocalExtractor;
-import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
+import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
 import byteback.converter.soottoboogie.method.StatementConversionException;
 import byteback.frontend.boogie.ast.Expression;
-import byteback.frontend.boogie.ast.ValueReference;
-import soot.Local;
-import soot.SootMethod;
-import soot.Unit;
 import soot.Value;
 import soot.jimple.*;
 
-public class FunctionBodyExtractor extends JimpleStmtSwitch<Expression> {
+public class FunctionBodyExtractor extends AbstractVimpStmtSwitch<Expression> {
 
 	private Expression result;
 
@@ -27,12 +21,12 @@ public class FunctionBodyExtractor extends JimpleStmtSwitch<Expression> {
 	}
 
 	@Override
-	public void caseDefault(final Unit unit) {
-		throw new StatementConversionException(unit, "Unable to convert statement " + unit);
+	public void defaultCase(final Stmt s) {
+		throw new StatementConversionException(s, "Unable to convert statement " + s);
 	}
 
 	@Override
-	public Expression result() {
+	public Expression getResult() {
 		return result;
 	}
 

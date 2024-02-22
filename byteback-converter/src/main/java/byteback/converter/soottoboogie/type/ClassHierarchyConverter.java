@@ -1,6 +1,6 @@
 package byteback.converter.soottoboogie.type;
 
-import byteback.analysis.RootResolver;
+import byteback.analysis.model.transformer.RootResolver;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.frontend.boogie.ast.AndOperation;
 import byteback.frontend.boogie.ast.AxiomDeclaration;
@@ -120,8 +120,8 @@ public class ClassHierarchyConverter {
 
 	public static AxiomDeclaration makeExtendsAxiom(final SootClass clazz, final SootClass superClazz) {
 		final var axiomDeclaration = new AxiomDeclaration();
-		final Expression bT1 = new TypeReferenceExtractor().visit(clazz.getType());
-		final Expression bT2 = new TypeReferenceExtractor().visit(superClazz.getType());
+		final Expression bT1 = new AbstractTypeReferenceExtractor().visit(clazz.getType());
+		final Expression bT2 = new AbstractTypeReferenceExtractor().visit(superClazz.getType());
 		axiomDeclaration.setExpression(new PartialOrderOperation(bT1, bT2));
 
 		return axiomDeclaration;

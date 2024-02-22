@@ -1,8 +1,8 @@
 package byteback.converter.soottoboogie.method.procedure;
 
-import byteback.analysis.JimpleStmtSwitch;
+import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
 import byteback.converter.soottoboogie.Convention;
-import byteback.converter.soottoboogie.type.TypeAccessExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeAccessExtractor;
 import byteback.frontend.boogie.ast.Body;
 import byteback.frontend.boogie.ast.Label;
 import byteback.frontend.boogie.ast.LabelStatement;
@@ -13,7 +13,7 @@ import byteback.frontend.boogie.ast.VariableDeclaration;
 import soot.Type;
 import soot.Unit;
 
-public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
+public class ProcedureBodyExtractor extends AbstractVimpStmtSwitch<Body> {
 
 	public class BodyReferenceProvider implements ReferenceProvider {
 
@@ -24,7 +24,7 @@ public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
 		}
 
 		public ValueReference get(final Type type) {
-			final TypeAccess bTypeAccess = new TypeAccessExtractor().visit(type);
+			final TypeAccess bTypeAccess = new AbstractTypeAccessExtractor().visit(type);
 			final ValueReference bReference = Convention.makeValueReference(++variableCounter);
 			final VariableDeclaration bDeclaration = bReference.makeVariableDeclaration(bTypeAccess);
 			body.addLocalDeclaration(bDeclaration);
@@ -73,7 +73,7 @@ public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
 	}
 
 	@Override
-	public void caseDefault(final Unit unit) {
+	public void defaultCase(final Unit unit) {
 		if (labelCollector.hasLabel(unit)) {
 			final Label label = labelCollector.fetchLabel(unit);
 			addStatement(new LabelStatement(label));
@@ -84,7 +84,7 @@ public class ProcedureBodyExtractor extends JimpleStmtSwitch<Body> {
 	}
 
 	@Override
-	public Body result() {
+	public Body getResult() {
 		return body;
 	}
 

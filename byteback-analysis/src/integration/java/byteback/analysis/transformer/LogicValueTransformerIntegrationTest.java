@@ -3,8 +3,9 @@ package byteback.analysis.transformer;
 import static byteback.analysis.transformer.ValueTransformerFixture.assertEquiv;
 import static org.junit.Assert.assertEquals;
 
-import byteback.analysis.Vimp;
-import byteback.analysis.vimp.LogicConstant;
+import byteback.analysis.body.grimp.transformer.LogicValueTransformer;
+import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.LogicConstant;
 import org.junit.Test;
 import soot.BooleanType;
 import soot.Local;

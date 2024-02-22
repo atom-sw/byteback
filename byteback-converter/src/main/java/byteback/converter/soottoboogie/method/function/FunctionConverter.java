@@ -1,12 +1,12 @@
 package byteback.converter.soottoboogie.method.function;
 
-import byteback.analysis.TypeSwitch;
-import byteback.analysis.util.SootBodies;
+import byteback.analysis.model.visitor.AbstractTypeSwitch;
+import byteback.analysis.body.common.SootBodies;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
-import byteback.converter.soottoboogie.type.TypeAccessExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeAccessExtractor;
 import byteback.frontend.boogie.ast.FunctionDeclaration;
 import byteback.frontend.boogie.ast.OptionalBinding;
 import byteback.frontend.boogie.ast.TypeAccess;
@@ -29,7 +29,7 @@ public class FunctionConverter extends MethodConverter {
 
 	public static OptionalBinding makeBinding(final Local local) {
 		final Type type = local.getType();
-		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
+		final TypeAccess typeAccess = new AbstractTypeAccessExtractor().visit(type);
 		final OptionalBindingBuilder bindingBuilder = new OptionalBindingBuilder();
 		bindingBuilder.name(PureExpressionExtractor.localName(local)).typeAccess(typeAccess);
 
@@ -44,7 +44,7 @@ public class FunctionConverter extends MethodConverter {
 			signatureBuilder.addInputBinding(makeBinding(local));
 		}
 
-		method.getReturnType().apply(new TypeSwitch<>() {
+		method.getReturnType().apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseVoidType(final VoidType type) {
@@ -52,8 +52,8 @@ public class FunctionConverter extends MethodConverter {
 			}
 
 			@Override
-			public void caseDefault(final Type type) {
-				final TypeAccess boogieTypeAccess = new TypeAccessExtractor().visit(method.getReturnType());
+			public void defaultCase(final Type type) {
+				final TypeAccess boogieTypeAccess = new AbstractTypeAccessExtractor().visit(method.getReturnType());
 				final OptionalBinding boogieBinding = new OptionalBindingBuilder().typeAccess(boogieTypeAccess).build();
 				signatureBuilder.outputBinding(boogieBinding);
 			}

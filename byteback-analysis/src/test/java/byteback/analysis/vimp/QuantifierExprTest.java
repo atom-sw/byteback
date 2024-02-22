@@ -4,6 +4,8 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import byteback.analysis.body.vimp.LogicExistsExpr;
+import byteback.analysis.body.vimp.LogicForallExpr;
 import soot.Local;
 import soot.util.Chain;
 

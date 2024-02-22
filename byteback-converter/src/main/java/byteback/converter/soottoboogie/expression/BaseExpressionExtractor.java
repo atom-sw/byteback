@@ -1,10 +1,10 @@
 package byteback.converter.soottoboogie.expression;
 
-import byteback.analysis.JimpleValueSwitch;
-import byteback.analysis.Namespace;
-import byteback.analysis.util.AnnotationElems.StringElemExtractor;
-import byteback.analysis.util.SootAnnotations;
-import byteback.analysis.util.SootHosts;
+import byteback.analysis.body.vimp.visitor.AbstractVimpValueSwitch;
+import byteback.analysis.common.namespace.BBLibNamespace;
+import byteback.analysis.model.SootAnnotationElems.StringElemExtractor;
+import byteback.analysis.model.SootAnnotations;
+import byteback.analysis.model.SootHosts;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.method.MethodConverter;
 import byteback.frontend.boogie.ast.BinaryExpression;
@@ -21,7 +21,7 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.VirtualInvokeExpr;
 
-public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expression> {
+public abstract class BaseExpressionExtractor extends AbstractVimpValueSwitch<Expression> {
 
 	protected Expression expression;
 
@@ -60,12 +60,13 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 
 	public void setFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
 		final var referenceBuilder = new FunctionReferenceBuilder();
-		final String name = SootHosts.getAnnotation(method, Namespace.PRELUDE_ANNOTATION)
-				.flatMap(SootAnnotations::getValue).map((element) -> new StringElemExtractor().visit(element))
+		final String name = SootHosts.getAnnotation(method, BBLibNamespace.PRELUDE_ANNOTATION)
+				.flatMap(SootAnnotations::getValue)
+				.flatMap((element) -> new StringElemExtractor().visit(element))
 				.orElseGet(() -> MethodConverter.methodName(method));
 		referenceBuilder.name(name);
 
-		if (!SootHosts.hasAnnotation(method, Namespace.PRIMITIVE_ANNOTATION)) {
+		if (!SootHosts.hasAnnotation(method, BBLibNamespace.PRIMITIVE_ANNOTATION)) {
 			final ValueReference heapReference = Prelude.v().getHeapVariable().makeValueReference();
 			referenceBuilder.prependArgument(heapReference);
 		}
@@ -87,7 +88,7 @@ public abstract class BaseExpressionExtractor extends JimpleValueSwitch<Expressi
 	}
 
 	@Override
-	public Expression result() {
+	public Expression getResult() {
 		return expression;
 	}
 

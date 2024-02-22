@@ -2,6 +2,8 @@ package byteback.analysis.vimp;
 
 import static org.junit.Assert.assertEquals;
 
+import byteback.analysis.body.vimp.LogicExistsExpr;
+import byteback.analysis.body.vimp.LogicForallExpr;
 import org.junit.Test;
 import soot.BooleanType;
 import soot.Local;

@@ -1,9 +1,7 @@
 package byteback.converter.soottoboogie.method.procedure;
 
-import byteback.analysis.tags.PositionTag;
-import byteback.analysis.util.AnnotationElems;
-import byteback.analysis.util.SootAnnotations;
-import byteback.converter.soottoboogie.Convention;
+import byteback.analysis.model.SootAnnotationElems;
+import byteback.analysis.model.SootAnnotations;
 import byteback.frontend.boogie.ast.Attribute;
 import byteback.frontend.boogie.ast.Condition;
 import byteback.frontend.boogie.ast.Expression;
@@ -24,20 +22,13 @@ public class EnsureConverter extends ConditionConverter {
 	}
 
 	public String parseSourceName(final AnnotationTag tag) {
-		final AnnotationElem element = SootAnnotations.getValue(tag).get();
+		final AnnotationElem element = SootAnnotations.getValue(tag).orElseThrow();
 
-		return new AnnotationElems.StringElemExtractor().visit(element);
+		return new SootAnnotationElems.StringElemExtractor().visit(element).orElseThrow();
 	}
 
 	public Condition makeCondition(final String sourceName, final Expression expression) {
 		final byteback.frontend.boogie.ast.List<Attribute> attributes = new byteback.frontend.boogie.ast.List<>();
-
-		if (target.hasTag("PositionTag")) {
-			final PositionTag tag = (PositionTag) target.getTag("PositionTag");
-			final String message = tag.file + ": (line " + tag.lineNumber + "): Error: The postcondition " + sourceName
-					+ " might not hold.";
-			attributes.add(Convention.makeMessageAttribute(message));
-		}
 
 		return new PostCondition(attributes, false, expression);
 	}

@@ -1,8 +1,8 @@
 package byteback.converter.soottoboogie.program;
 
-import byteback.analysis.Namespace;
-import byteback.analysis.RootResolver;
-import byteback.analysis.util.SootHosts;
+import byteback.analysis.common.namespace.BBLibNamespace;
+import byteback.analysis.model.transformer.RootResolver;
+import byteback.analysis.model.SootHosts;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.function.FunctionManager;
 import byteback.converter.soottoboogie.method.procedure.ProcedureConverter;
@@ -39,13 +39,13 @@ public class ProgramConverter {
 		for (final SootMethod method : resolver.getUsedMethods()) {
 			log.info("Converting method {}", method.getSignature());
 
-			if (SootHosts.hasAnnotation(method, Namespace.PRELUDE_ANNOTATION)) {
+			if (SootHosts.hasAnnotation(method, BBLibNamespace.PRELUDE_ANNOTATION)) {
 				continue;
 			}
 
-			if (SootHosts.hasAnnotation(method, Namespace.PURE_ANNOTATION)) {
+			if (SootHosts.hasAnnotation(method, BBLibNamespace.PURE_ANNOTATION)) {
 				program.addDeclaration(FunctionManager.v().convert(method));
-			} else if (!SootHosts.hasAnnotation(method, Namespace.PREDICATE_ANNOTATION)) {
+			} else if (!SootHosts.hasAnnotation(method, BBLibNamespace.PREDICATE_ANNOTATION)) {
 				program.addDeclaration(ProcedureConverter.v().convert(method));
 			}
 		}

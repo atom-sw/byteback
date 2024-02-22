@@ -1,13 +1,13 @@
 package byteback.converter.soottoboogie;
 
-import byteback.analysis.JimpleValueSwitch;
+import byteback.analysis.body.vimp.visitor.AbstractVimpValueSwitch;
 import soot.Local;
 import soot.Value;
 
 /**
  * Extractor class for a {@link Local} expression.
  */
-public class LocalExtractor extends JimpleValueSwitch<Local> {
+public class LocalExtractor extends AbstractVimpValueSwitch<Local> {
 
 	private Local local;
 
@@ -17,12 +17,12 @@ public class LocalExtractor extends JimpleValueSwitch<Local> {
 	}
 
 	@Override
-	public void caseDefault(final Value expression) {
+	public void defaultCase(final Value expression) {
 		throw new ConversionException("Expected local definition, got " + expression);
 	}
 
 	@Override
-	public Local result() {
+	public Local getResult() {
 		if (local == null) {
 			throw new IllegalStateException("Could not retrieve local reference");
 		} else {

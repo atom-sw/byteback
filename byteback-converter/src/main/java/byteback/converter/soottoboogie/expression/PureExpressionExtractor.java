@@ -1,20 +1,20 @@
 package byteback.converter.soottoboogie.expression;
 
-import byteback.analysis.Namespace;
-import byteback.analysis.QuantifierExpr;
-import byteback.analysis.TypeSwitch;
-import byteback.analysis.vimp.LogicConstant;
-import byteback.analysis.vimp.LogicExistsExpr;
-import byteback.analysis.vimp.LogicForallExpr;
-import byteback.analysis.vimp.OldExpr;
-import byteback.analysis.vimp.VoidConstant;
+import byteback.analysis.common.namespace.BBLibNamespace;
+import byteback.analysis.body.vimp.QuantifierExpr;
+import byteback.analysis.model.visitor.AbstractTypeSwitch;
+import byteback.analysis.body.vimp.LogicConstant;
+import byteback.analysis.body.vimp.LogicExistsExpr;
+import byteback.analysis.body.vimp.LogicForallExpr;
+import byteback.analysis.body.vimp.OldExpr;
+import byteback.analysis.body.vimp.VoidConstant;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.function.FunctionExpressionExtractor;
 import byteback.converter.soottoboogie.type.CasterProvider;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
-import byteback.converter.soottoboogie.type.TypeAccessExtractor;
-import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeAccessExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeReferenceExtractor;
 import byteback.frontend.boogie.ast.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -76,7 +76,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseDivExpr(final DivExpr v) {
-		Type.toMachineType(v.getType()).apply(new TypeSwitch<>() {
+		Type.toMachineType(v.getType()).apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseIntType(final IntType $) {
@@ -84,7 +84,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 			}
 
 			@Override
-			public void caseDefault(final Type $) {
+			public void defaultCase(final Type $) {
 				setBinaryExpression(v, new RealDivisionOperation());
 			}
 
@@ -105,7 +105,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	public void caseNegExpr(final NegExpr v) {
 		final Value operand = v.getOp();
 		final Expression expression = visit(operand);
-		v.getType().apply(new TypeSwitch<>() {
+		v.getType().apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType $) {
@@ -113,7 +113,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 			}
 
 			@Override
-			public void caseDefault(final Type $) {
+			public void defaultCase(final Type $) {
 				setExpression(new MinusOperation(expression));
 			}
 
@@ -122,7 +122,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseOrExpr(final OrExpr v) {
-		v.getType().apply(new TypeSwitch<>() {
+		v.getType().apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType $) {
@@ -130,7 +130,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 			}
 
 			@Override
-			public void caseDefault(final Type type) {
+			public void defaultCase(final Type type) {
 				throw new ExpressionConversionException(v, "Bitwise OR is currently not supported for type " + type);
 			}
 
@@ -139,7 +139,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseAndExpr(final AndExpr v) {
-		v.getType().apply(new TypeSwitch<>() {
+		v.getType().apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType $) {
@@ -156,7 +156,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseXorExpr(final XorExpr v) {
-		v.getType().apply(new TypeSwitch<>() {
+		v.getType().apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseBooleanType(final BooleanType $) {
@@ -288,7 +288,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 
 	@Override
 	public void caseClassConstant(final ClassConstant classConstant) {
-		final String className = Namespace.stripConstantDescriptor(classConstant.getValue());
+		final String className = BBLibNamespace.stripConstantDescriptor(classConstant.getValue());
 		final ValueReference valueReference = ValueReference.of(ReferenceTypeConverter.typeName(className));
 		final FunctionReference typeReference = Prelude.v().getTypeReferenceFunction().makeFunctionReference();
 		typeReference.addArgument(valueReference);
@@ -324,7 +324,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 		final Value base = v.getBase();
 		final Type type = v.getType();
 		final var index = v.getIndex();
-		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
+		final TypeAccess typeAccess = new AbstractTypeAccessExtractor().visit(type);
 		setExpression(Prelude.v().makeArrayAccessExpression(typeAccess, visit(base), visit(index)));
 	}
 
@@ -337,7 +337,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	@Override
 	public void caseInstanceOfExpr(final InstanceOfExpr v) {
 		final Value left = v.getOp();
-		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(v.getCheckType());
+		final SymbolicReference typeReference = new AbstractTypeReferenceExtractor().visit(v.getCheckType());
 		setExpression(Prelude.v().makeTypeCheckExpression(PureExpressionExtractor.this.visit(left), typeReference));
 	}
 
@@ -375,7 +375,7 @@ public class PureExpressionExtractor extends BaseExpressionExtractor {
 	}
 
 	@Override
-	public void caseDefault(final Value v) {
+	public void defaultCase(final Value v) {
 		throw new ExpressionConversionException(v, "Unable to convert expression of type " + v.getClass().getName());
 	}
 

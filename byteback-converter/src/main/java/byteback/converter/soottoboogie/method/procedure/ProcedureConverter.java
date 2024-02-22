@@ -2,39 +2,29 @@ package byteback.converter.soottoboogie.method.procedure;
 
 import static byteback.converter.soottoboogie.expression.PureExpressionExtractor.sanitizeName;
 
-import byteback.analysis.Namespace;
-import byteback.analysis.RootResolver;
-import byteback.analysis.util.AnnotationElems.ClassElemExtractor;
-import byteback.analysis.util.AnnotationElems.StringElemExtractor;
-import byteback.analysis.util.SootAnnotations;
-import byteback.analysis.util.SootBodies;
-import byteback.analysis.util.SootHosts;
-import byteback.analysis.util.SootMethods;
+import byteback.analysis.common.namespace.BBLibNamespace;
+import byteback.analysis.model.SootAnnotations;
+import byteback.analysis.body.common.SootBodies;
+import byteback.analysis.model.SootHosts;
+import byteback.analysis.model.SootMethods;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.method.MethodConverter;
-import byteback.converter.soottoboogie.method.function.FunctionManager;
-import byteback.converter.soottoboogie.type.TypeAccessExtractor;
-import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeAccessExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeReferenceExtractor;
 import byteback.frontend.boogie.ast.*;
 import byteback.frontend.boogie.builder.BoundedBindingBuilder;
 import byteback.frontend.boogie.builder.ProcedureDeclarationBuilder;
 import byteback.frontend.boogie.builder.ProcedureSignatureBuilder;
 import byteback.frontend.boogie.builder.VariableDeclarationBuilder;
 import byteback.util.Lazy;
-import java.util.ArrayList;
-import java.util.function.Function;
-import soot.BooleanType;
 import soot.Local;
 import soot.RefType;
-import soot.Scene;
-import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.VoidType;
-import soot.tagkit.AnnotationElem;
 
 public class ProcedureConverter extends MethodConverter {
 
@@ -52,8 +42,8 @@ public class ProcedureConverter extends MethodConverter {
 
 	public static BoundedBinding makeBinding(final String name, final Type type) {
 		final var bindingBuilder = new BoundedBindingBuilder();
-		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(type);
-		final TypeAccess typeAccess = new TypeAccessExtractor().visit(type);
+		final SymbolicReference typeReference = new AbstractTypeReferenceExtractor().visit(type);
+		final TypeAccess typeAccess = new AbstractTypeAccessExtractor().visit(type);
 		bindingBuilder.addName(name).typeAccess(typeAccess);
 
 		if (typeReference != null) {
@@ -89,13 +79,13 @@ public class ProcedureConverter extends MethodConverter {
 	}
 
 	public static void buildReturnParameter(final ProcedureSignatureBuilder builder, final SootMethod method) {
-		final TypeAccess typeAccess = new TypeAccessExtractor().visit(method.getReturnType());
+		final TypeAccess typeAccess = new AbstractTypeAccessExtractor().visit(method.getReturnType());
 		final BoundedBinding binding = Convention.makeReturnBinding(typeAccess);
 		builder.addOutputBinding(binding);
 	}
 
 	public static void buildExceptionParameter(final ProcedureSignatureBuilder builder, final SootMethod method) {
-		final TypeAccess typeAccess = new TypeAccessExtractor().visit(RefType.v());
+		final TypeAccess typeAccess = new AbstractTypeAccessExtractor().visit(RefType.v());
 		final BoundedBinding binding = Convention.makeExceptionBinding(typeAccess);
 		builder.addOutputBinding(binding);
 	}
@@ -122,16 +112,16 @@ public class ProcedureConverter extends MethodConverter {
 				final Specification specification;
 
 				switch (subTag.getType()) {
-					case Namespace.REQUIRE_ANNOTATION :
+					case BBLibNamespace.REQUIRE_ANNOTATION :
 						specification = new RequireConverter(method).convert(subTag);
 						break;
-					case Namespace.ENSURE_ANNOTATION :
+					case BBLibNamespace.ENSURE_ANNOTATION :
 						specification = new EnsureConverter(method).convert(subTag);
 						break;
-					case Namespace.RAISE_ANNOTATION :
+					case BBLibNamespace.RAISE_ANNOTATION :
 						specification = new RaiseConverter(method).convert(subTag);
 						break;
-					case Namespace.RETURN_ANNOTATION :
+					case BBLibNamespace.RETURN_ANNOTATION :
 						specification = new ReturnConverter(method).convert(subTag);
 						break;
 					default :
@@ -175,12 +165,12 @@ public class ProcedureConverter extends MethodConverter {
 			buildSpecification(builder, method);
 
 			if (SootMethods.hasBody(method)) {
-				if (!SootHosts.hasAnnotation(method, Namespace.LEMMA_ANNOTATION)) {
+				if (!SootHosts.hasAnnotation(method, BBLibNamespace.LEMMA_ANNOTATION)) {
 					buildBody(builder, method);
 				}
 			}
 
-			if (!SootHosts.hasAnnotation(method, Namespace.INVARIANT_ANNOTATION)) {
+			if (!SootHosts.hasAnnotation(method, BBLibNamespace.INVARIANT_ANNOTATION)) {
 				buildFrameInvariant(builder);
 			}
 		} catch (final ConversionException exception) {

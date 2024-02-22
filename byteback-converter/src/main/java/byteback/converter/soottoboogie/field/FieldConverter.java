@@ -2,7 +2,7 @@ package byteback.converter.soottoboogie.field;
 
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
-import byteback.converter.soottoboogie.type.TypeAccessExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeAccessExtractor;
 import byteback.frontend.boogie.ast.ConstantDeclaration;
 import byteback.frontend.boogie.ast.Declaration;
 import byteback.frontend.boogie.ast.TypeAccess;
@@ -30,7 +30,7 @@ public class FieldConverter {
 		final var constantDeclaration = new ConstantDeclaration();
 		final var bindingBuilder = new SetBindingBuilder();
 		final List<Declaration> declarations = new ArrayList<>();
-		final TypeAccess baseTypeAccess = new TypeAccessExtractor().visit(field.getType());
+		final TypeAccess baseTypeAccess = new AbstractTypeAccessExtractor().visit(field.getType());
 		final TypeAccess fieldTypeAccess = Prelude.v().makeFieldTypeAccess(baseTypeAccess);
 
 		try {

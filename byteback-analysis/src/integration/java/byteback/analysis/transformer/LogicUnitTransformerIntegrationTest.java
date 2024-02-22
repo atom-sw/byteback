@@ -2,9 +2,10 @@ package byteback.analysis.transformer;
 
 import static byteback.analysis.transformer.UnitTransformerFixture.assertLogicUnitEquiv;
 
-import byteback.analysis.Namespace;
-import byteback.analysis.Vimp;
-import byteback.analysis.vimp.LogicConstant;
+import byteback.analysis.common.namespace.BBLibNamespace;
+import byteback.analysis.body.grimp.transformer.LogicUnitTransformer;
+import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.LogicConstant;
 import org.junit.Test;
 import soot.Unit;
 import soot.UnitBox;
@@ -20,12 +21,12 @@ public class LogicUnitTransformerIntegrationTest {
 	private static final LogicConstant trueConstant = LogicConstant.v(true);
 
 	public static StaticInvokeExpr mockLogicStmtRef(final String methodName, final Value value) {
-		return TransformerFixture.mockStaticInvokeExpr(Namespace.CONTRACT_CLASS_NAME, methodName, new Value[]{value});
+		return TransformerFixture.mockStaticInvokeExpr(BBLibNamespace.CONTRACT_CLASS_NAME, methodName, new Value[]{value});
 	}
 
 	@Test
 	public void TransformUnit_GivenAssertionMethodRef_YieldsAssertionStmt() {
-		final StaticInvokeExpr assertionRef = mockLogicStmtRef(Namespace.ASSERTION_NAME, trueConstant);
+		final StaticInvokeExpr assertionRef = mockLogicStmtRef(BBLibNamespace.ASSERTION_NAME, trueConstant);
 		final InvokeStmt invokeUnit = Jimple.v().newInvokeStmt(assertionRef);
 		final UnitBox unitBox = Jimple.v().newStmtBox(invokeUnit);
 		transformer.transformUnit(unitBox);
@@ -36,7 +37,7 @@ public class LogicUnitTransformerIntegrationTest {
 
 	@Test
 	public void TransformUnit_GivenAssumptionMethodRef_YieldsAssumptionStmt() {
-		final StaticInvokeExpr assumptionRef = mockLogicStmtRef(Namespace.ASSUMPTION_NAME, trueConstant);
+		final StaticInvokeExpr assumptionRef = mockLogicStmtRef(BBLibNamespace.ASSUMPTION_NAME, trueConstant);
 		final InvokeStmt invokeUnit = Jimple.v().newInvokeStmt(assumptionRef);
 		final UnitBox unitBox = Jimple.v().newStmtBox(invokeUnit);
 		transformer.transformUnit(unitBox);
@@ -47,7 +48,7 @@ public class LogicUnitTransformerIntegrationTest {
 
 	@Test
 	public void TransformUnit_GivenInvariantMethodRef_YieldsInvariantStmt() {
-		final StaticInvokeExpr invariantRef = mockLogicStmtRef(Namespace.INVARIANT_NAME, trueConstant);
+		final StaticInvokeExpr invariantRef = mockLogicStmtRef(BBLibNamespace.INVARIANT_NAME, trueConstant);
 		final InvokeStmt invokeUnit = Jimple.v().newInvokeStmt(invariantRef);
 		final UnitBox unitBox = Jimple.v().newStmtBox(invokeUnit);
 		transformer.transformUnit(unitBox);

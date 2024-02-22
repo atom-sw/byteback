@@ -1,7 +1,7 @@
 package byteback.converter.soottoboogie.method.procedure;
 
-import byteback.analysis.Namespace;
-import byteback.analysis.TypeSwitch;
+import byteback.analysis.common.namespace.BBLibNamespace;
+import byteback.analysis.model.visitor.AbstractTypeSwitch;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.expression.BaseExpressionExtractor;
@@ -71,9 +71,9 @@ public class ProcedureExpressionExtractor extends PureExpressionExtractor {
 
 	@Override
 	public void setFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
-		if (Namespace.isPureMethod(method)) {
+		if (BBLibNamespace.isPureMethod(method)) {
 			super.setFunctionReference(method, arguments);
-		} else if (Namespace.isPredicateMethod(method)) {
+		} else if (BBLibNamespace.isPredicateMethod(method)) {
 			final List<Expression> expressions = new List<>();
 			expressions.add(Prelude.v().getHeapVariable().makeValueReference());
 			expressions.addAll(convertArguments(method, arguments));
@@ -104,7 +104,7 @@ public class ProcedureExpressionExtractor extends PureExpressionExtractor {
 		final Procedure arrayProcedure = Prelude.v().getArrayProcedure();
 		final TargetedCallStatement callStatement = arrayProcedure.makeTargetedCall();
 
-		arrayExpression.getBaseType().apply(new TypeSwitch<>() {
+		arrayExpression.getBaseType().apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseRefType(final RefType referenceType) {
@@ -114,7 +114,7 @@ public class ProcedureExpressionExtractor extends PureExpressionExtractor {
 			}
 
 			@Override
-			public void caseDefault(final soot.Type type) {
+			public void defaultCase(final soot.Type type) {
 				callStatement.addArgument(Prelude.v().getPrimitiveTypeConstant().makeValueReference());
 			}
 

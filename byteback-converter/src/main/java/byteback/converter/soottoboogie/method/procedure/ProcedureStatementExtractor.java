@@ -1,11 +1,10 @@
 package byteback.converter.soottoboogie.method.procedure;
 
-import byteback.analysis.JimpleStmtSwitch;
-import byteback.analysis.JimpleValueSwitch;
-import byteback.analysis.Vimp;
-import byteback.analysis.tags.PositionTag;
-import byteback.analysis.vimp.AssertionStmt;
-import byteback.analysis.vimp.AssumptionStmt;
+import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
+import byteback.analysis.body.vimp.visitor.AbstractVimpValueSwitch;
+import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.AssertionStmt;
+import byteback.analysis.body.vimp.AssumptionStmt;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;
@@ -13,7 +12,7 @@ import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
 import byteback.converter.soottoboogie.field.FieldConverter;
 import byteback.converter.soottoboogie.method.StatementConversionException;
 import byteback.converter.soottoboogie.type.ReferenceTypeConverter;
-import byteback.converter.soottoboogie.type.TypeAccessExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeAccessExtractor;
 import byteback.frontend.boogie.ast.AssertStatement;
 import byteback.frontend.boogie.ast.Assignee;
 import byteback.frontend.boogie.ast.AssignmentStatement;
@@ -58,7 +57,7 @@ import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThisRef;
 import soot.jimple.ThrowStmt;
 
-public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
+public class ProcedureStatementExtractor extends AbstractVimpStmtSwitch<Body> {
 
 	private final ProcedureBodyExtractor bodyExtractor;
 
@@ -89,7 +88,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 		try {
 			unit.apply(this);
 
-			return result();
+			return this.getResult();
 		} catch (final ConversionException exception) {
 			throw new StatementConversionException(unit, exception);
 		}
@@ -109,7 +108,6 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 				final var variableBuilder = new VariableDeclarationBuilder();
 				final BoundedBinding variableBinding = ProcedureConverter.makeBinding(local);
 				bodyExtractor.addLocalDeclaration(variableBuilder.addBinding(variableBinding).build());
-
 				final var assignment = new AssignmentStatement(
 						Assignee.of(ValueReference.of(PureExpressionExtractor.localName(local))),
 						ValueReference.of(ProcedureConverter.parameterName(local)));
@@ -123,7 +121,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 		final Value left = assignment.getLeftOp();
 		final Value right = assignment.getRightOp();
 
-		left.apply(new JimpleValueSwitch<>() {
+		left.apply(new AbstractVimpValueSwitch<>() {
 
 			@Override
 			public void caseLocal(final Local local) {
@@ -167,7 +165,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 				final Expression assigned = makeExpressionExtractor().visit(right);
 				final Expression indexReference = makeExpressionExtractor().visit(index);
 				final Expression boogieBase = new PureExpressionExtractor().visit(base);
-				addStatement(Prelude.v().makeArrayUpdateStatement(new TypeAccessExtractor().visit(type), boogieBase,
+				addStatement(Prelude.v().makeArrayUpdateStatement(new AbstractTypeAccessExtractor().visit(type), boogieBase,
 						indexReference, assigned));
 			}
 
@@ -179,7 +177,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			}
 
 			@Override
-			public void caseDefault(final Value value) {
+			public void defaultCase(final Value value) {
 				throw new StatementConversionException(assignment,
 						"Unknown left hand side argument in assignment: " + assignment);
 			}
@@ -214,7 +212,6 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 			final var ifBuilder = new IfStatementBuilder();
 			final Expression index = new ProcedureExpressionExtractor(bodyExtractor).visit(value);
 			final Label label = bodyExtractor.getLabelCollector().fetchLabel(target);
-
 			ifBuilder.condition(new EqualsOperation(index, key)).thenStatement(new GotoStatement(label));
 			addStatement(ifBuilder.build());
 		}
@@ -266,12 +263,6 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 		final Expression condition = makeExpressionExtractor().visit(assertionStmt.getCondition());
 		final List<Attribute> attributes = new List<>();
 
-		if (assertionStmt.hasTag("PositionTag")) {
-			final PositionTag tag = (PositionTag) assertionStmt.getTag("PositionTag");
-			final String message = tag.file + ": (line " + tag.lineNumber + "): Error: This assertion might not hold.";
-			attributes.add(Convention.makeMessageAttribute(message));
-		}
-
 		addStatement(new AssertStatement(attributes, condition));
 	}
 
@@ -282,7 +273,7 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	}
 
 	@Override
-	public void caseDefault(final Unit unit) {
+	public void defaultCase(final Unit unit) {
 		throw new StatementConversionException(unit, "Cannot extract statements of type " + unit.getClass().getName());
 	}
 
@@ -301,8 +292,8 @@ public class ProcedureStatementExtractor extends JimpleStmtSwitch<Body> {
 	}
 
 	@Override
-	public Body result() {
-		return bodyExtractor.result();
+	public Body getResult() {
+		return bodyExtractor.getResult();
 	}
 
 }

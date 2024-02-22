@@ -2,7 +2,7 @@ package byteback.analysis.transformer;
 
 import static org.junit.Assert.fail;
 
-import byteback.analysis.vimp.LogicStmt;
+import byteback.analysis.body.vimp.LogicStmt;
 import soot.Unit;
 
 public class UnitTransformerFixture {

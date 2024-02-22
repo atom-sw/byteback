@@ -1,7 +1,7 @@
 package byteback.cli;
 
-import byteback.analysis.ClassInjector;
-import byteback.analysis.RootResolver;
+import byteback.analysis.model.transformer.ClassInjector;
+import byteback.analysis.model.transformer.RootResolver;
 import byteback.converter.soottoboogie.Prelude;
 import com.beust.jcommander.ParameterException;
 import java.io.File;
@@ -62,9 +62,8 @@ public class Main {
 		options.set_allow_phantom_refs(true);
 		options.set_keep_line_number(true);
 		options.set_keep_offset(true);
-		scene.allowsPhantomRefs();
-
 		options.allow_phantom_refs();
+		
 		options.setPhaseOption("jb", "use-original-names:true");
 		options.setPhaseOption("gb.a1", "enabled:false");
 		options.setPhaseOption("gb.cf", "enabled:false");
@@ -78,17 +77,17 @@ public class Main {
 		scene.loadBasicClasses();
 
 		final Chain<SootClass> startingClasses = new HashChain<>();
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.KotlinIntrinsicsSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ObjectSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ExceptionSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.CollectionSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.InvokeDynamicSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IndexOutOfBoundsExceptionSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.ConcurrentModificationExceptionSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.NoSuchElementExceptionSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IllegalStateExceptionSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.IllegalArgumentExceptionSpec"));
-		startingClasses.add(scene.loadClassAndSupport("byteback.annotations.NullPointerExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.KotlinIntrinsicsSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.ObjectSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.ExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.CollectionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.InvokeDynamicSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.IndexOutOfBoundsExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.ConcurrentModificationExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.NoSuchElementExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.IllegalStateExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.IllegalArgumentExceptionSpec"));
+		startingClasses.add(scene.loadClassAndSupport("byteback.specification.NullPointerExceptionSpec"));
 
 		for (final String startingClassName : startingClassNames) {
 			final SootClass startingClass = scene.loadClassAndSupport(startingClassName);

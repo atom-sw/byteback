@@ -1,6 +1,6 @@
 package byteback.converter.soottoboogie.method.procedure;
 
-import byteback.analysis.JimpleStmtSwitch;
+import byteback.analysis.body.grimp.visitor.AbstractStmtSwitch;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.frontend.boogie.ast.Label;
@@ -14,7 +14,7 @@ import soot.jimple.IfStmt;
 import soot.jimple.LookupSwitchStmt;
 import soot.jimple.TableSwitchStmt;
 
-public class LabelCollector extends JimpleStmtSwitch<Map<Unit, Label>> {
+public class LabelCollector extends AbstractStmtSwitch<Map<Unit, Label>> {
 
 	private int counter;
 
@@ -74,7 +74,7 @@ public class LabelCollector extends JimpleStmtSwitch<Map<Unit, Label>> {
 	}
 
 	@Override
-	public Map<Unit, Label> result() {
+	public Map<Unit, Label> getResult() {
 		return labels;
 	}
 

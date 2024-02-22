@@ -1,6 +1,6 @@
 package byteback.cli;
 
-import byteback.analysis.RootResolver;
+import byteback.analysis.model.transformer.RootResolver;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.converter.soottoboogie.program.ProgramConverter;
 import byteback.frontend.boogie.ast.Program;

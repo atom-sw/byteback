@@ -1,6 +1,6 @@
 package byteback.converter.soottoboogie.type;
 
-import byteback.analysis.TypeSwitch;
+import byteback.analysis.model.visitor.AbstractTypeSwitch;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.FunctionReference;
@@ -10,7 +10,7 @@ import soot.IntType;
 import soot.PrimType;
 import soot.Type;
 
-public class CasterProvider extends TypeSwitch<Function<Expression, Expression>> {
+public class CasterProvider extends AbstractTypeSwitch<Function<Expression, Expression>> {
 
 	private Function<Expression, Expression> caster;
 
@@ -43,7 +43,7 @@ public class CasterProvider extends TypeSwitch<Function<Expression, Expression>>
 
 	@Override
 	public void caseBooleanType(final BooleanType fromType) {
-		toType.apply(new TypeSwitch<>() {
+		toType.apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseIntType(final IntType toType) {
@@ -56,7 +56,7 @@ public class CasterProvider extends TypeSwitch<Function<Expression, Expression>>
 			}
 
 			@Override
-			public void caseDefault(final Type toType) {
+			public void defaultCase(final Type toType) {
 				throw new CastingModelException(fromType, toType);
 			}
 
@@ -65,7 +65,7 @@ public class CasterProvider extends TypeSwitch<Function<Expression, Expression>>
 
 	@Override
 	public void caseIntType(final IntType fromType) {
-		toType.apply(new TypeSwitch<>() {
+		toType.apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseRealType(final PrimType type) {
@@ -78,8 +78,8 @@ public class CasterProvider extends TypeSwitch<Function<Expression, Expression>>
 			}
 
 			@Override
-			public void caseDefault(final Type toType) {
-				CasterProvider.this.caseDefault(fromType);
+			public void defaultCase(final Type toType) {
+				CasterProvider.this.defaultCase(fromType);
 			}
 
 		});
@@ -87,7 +87,7 @@ public class CasterProvider extends TypeSwitch<Function<Expression, Expression>>
 
 	@Override
 	public void caseRealType(final PrimType fromType) {
-		toType.apply(new TypeSwitch<>() {
+		toType.apply(new AbstractTypeSwitch<>() {
 
 			@Override
 			public void caseIntType(final IntType type) {
@@ -100,20 +100,20 @@ public class CasterProvider extends TypeSwitch<Function<Expression, Expression>>
 			}
 
 			@Override
-			public void caseDefault(final Type toType) {
-				CasterProvider.this.caseDefault(fromType);
+			public void defaultCase(final Type toType) {
+				CasterProvider.this.defaultCase(fromType);
 			}
 
 		});
 	}
 
 	@Override
-	public void caseDefault(final Type fromType) {
+	public void defaultCase(final Type fromType) {
 		setCaster(Function.identity());
 	}
 
 	@Override
-	public Function<Expression, Expression> result() {
+	public Function<Expression, Expression> getResult() {
 		return caster;
 	}
 

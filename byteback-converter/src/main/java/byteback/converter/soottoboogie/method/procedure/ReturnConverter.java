@@ -1,8 +1,7 @@
 package byteback.converter.soottoboogie.method.procedure;
 
-import byteback.analysis.tags.PositionTag;
-import byteback.analysis.util.AnnotationElems;
-import byteback.analysis.util.SootAnnotations;
+import byteback.analysis.model.SootAnnotationElems;
+import byteback.analysis.model.SootAnnotations;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.Prelude;
 import byteback.frontend.boogie.ast.*;
@@ -20,9 +19,8 @@ public class ReturnConverter extends ConditionConverter {
 	}
 
 	public Optional<String> parseSourceName(final AnnotationTag tag) {
-		return SootAnnotations.getElem(tag, "when").map((element) -> {
-			return new AnnotationElems.StringElemExtractor().visit(element);
-		});
+		return SootAnnotations.getElem(tag, "when").flatMap((element) ->
+				new SootAnnotationElems.StringElemExtractor().visit(element));
 	}
 
 	public List<List<Type>> getSourceSignatures() {
@@ -37,27 +35,18 @@ public class ReturnConverter extends ConditionConverter {
 	public Condition convert(final AnnotationTag tag) {
 		final Optional<String> sourceNameOptional = parseSourceName(tag);
 		final Expression leftExpression;
-		final String sourceName;
 
 		if (sourceNameOptional.isPresent()) {
-			sourceName = sourceNameOptional.get();
+			final String sourceName = sourceNameOptional.get();
 			leftExpression = new OldReference(convertSource(sourceName, getSourceSignatures()));
 		} else {
 			leftExpression = BooleanLiteral.makeTrue();
-			sourceName = "true";
 		}
 
 		final var rightExpression = new EqualsOperation(Convention.makeExceptionReference(),
 				Prelude.v().getVoidConstant().makeValueReference());
 		final Expression condition = new ImplicationOperation(leftExpression, rightExpression);
 		final var attributes = new byteback.frontend.boogie.ast.List<Attribute>();
-
-		if (target.hasTag("PositionTag")) {
-			final PositionTag positionTag = (PositionTag) target.getTag("PositionTag");
-			final String message = positionTag.file + ": (line " + positionTag.lineNumber
-					+ "): Error: The return-condition " + sourceName + " might not hold.";
-			attributes.add(Convention.makeMessageAttribute(message));
-		}
 
 		return new PostCondition(attributes, false, condition);
 	}

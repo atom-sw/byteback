@@ -1,6 +1,6 @@
 package byteback.converter.soottoboogie.method.procedure;
 
-import byteback.analysis.RootResolver;
+import byteback.analysis.model.transformer.RootResolver;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.Prelude;

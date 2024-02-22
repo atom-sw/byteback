@@ -1,9 +1,9 @@
 package byteback.converter.soottoboogie.method.function;
 
-import byteback.analysis.Namespace;
+import byteback.analysis.common.namespace.BBLibNamespace;
 import byteback.converter.soottoboogie.ConversionException;
 import byteback.converter.soottoboogie.expression.PureExpressionExtractor;
-import byteback.converter.soottoboogie.type.TypeAccessExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeAccessExtractor;
 import byteback.frontend.boogie.ast.ConditionalOperation;
 import byteback.frontend.boogie.ast.Expression;
 import byteback.frontend.boogie.ast.OldReference;
@@ -24,7 +24,7 @@ public class FunctionExpressionExtractor extends PureExpressionExtractor {
 
 	public static SetBinding makeQuantifierBinding(final Local local) {
 		final var bindingBuilder = new SetBindingBuilder();
-		bindingBuilder.typeAccess(new TypeAccessExtractor().visit(local.getType()));
+		bindingBuilder.typeAccess(new AbstractTypeAccessExtractor().visit(local.getType()));
 		bindingBuilder.name(PureExpressionExtractor.localName(local));
 
 		return bindingBuilder.build();
@@ -48,9 +48,9 @@ public class FunctionExpressionExtractor extends PureExpressionExtractor {
 	public void pushSpecial(final SootMethod method, final Iterable<Value> arguments) {
 		final String specialName = method.getName();
 
-		if (specialName.equals(Namespace.OLD_NAME)) {
+		if (specialName.equals(BBLibNamespace.OLD_NAME)) {
 			pushOld(method, arguments);
-		} else if (specialName.equals(Namespace.CONDITIONAL_NAME)) {
+		} else if (specialName.equals(BBLibNamespace.CONDITIONAL_NAME)) {
 			pushConditional(method, arguments);
 		} else {
 			throw new ConversionException("Unknown special method: " + method.getName());
@@ -64,9 +64,9 @@ public class FunctionExpressionExtractor extends PureExpressionExtractor {
 	@Override
 	public void setFunctionReference(final SootMethod method, final Iterable<Value> arguments) {
 		final SootClass clazz = method.getDeclaringClass();
-		if (Namespace.isBindingClass(clazz)) {
+		if (BBLibNamespace.isBindingClass(clazz)) {
 			pushBinding(method, arguments);
-		} else if (Namespace.isSpecialClass(clazz)) {
+		} else if (BBLibNamespace.isSpecialClass(clazz)) {
 			pushSpecial(method, arguments);
 		} else {
 			super.setFunctionReference(method, arguments);

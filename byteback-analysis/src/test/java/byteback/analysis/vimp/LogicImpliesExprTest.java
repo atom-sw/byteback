@@ -3,7 +3,9 @@ package byteback.analysis.vimp;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import byteback.analysis.LogicExprSwitch;
+import byteback.analysis.body.vimp.LogicExpr;
+import byteback.analysis.body.vimp.LogicImpliesExpr;
+import byteback.analysis.body.vimp.visitor.LogicExprSwitch;
 import org.junit.Test;
 
 public class LogicImpliesExprTest {

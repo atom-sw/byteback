@@ -1,12 +1,11 @@
 package byteback.converter.soottoboogie.method.procedure;
 
-import byteback.analysis.Namespace;
-import byteback.analysis.tags.PositionTag;
-import byteback.analysis.util.AnnotationElems;
-import byteback.analysis.util.SootAnnotations;
+import byteback.analysis.common.namespace.BBLibNamespace;
+import byteback.analysis.model.SootAnnotationElems;
+import byteback.analysis.model.SootAnnotations;
 import byteback.converter.soottoboogie.Convention;
 import byteback.converter.soottoboogie.Prelude;
-import byteback.converter.soottoboogie.type.TypeReferenceExtractor;
+import byteback.converter.soottoboogie.type.AbstractTypeReferenceExtractor;
 import byteback.frontend.boogie.ast.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +22,9 @@ public class RaiseConverter extends ConditionConverter {
 	}
 
 	public Optional<String> parseSourceName(final AnnotationTag tag) {
-		return SootAnnotations.getElem(tag, "when").map((element) -> {
-			return new AnnotationElems.StringElemExtractor().visit(element);
-		});
+		return SootAnnotations.getElem(tag, "when").map((element) ->
+				new SootAnnotationElems.StringElemExtractor().visit(element))
+				.orElseThrow();
 	}
 
 	public List<List<Type>> getSourceSignatures() {
@@ -40,35 +39,25 @@ public class RaiseConverter extends ConditionConverter {
 	public Condition convert(final AnnotationTag tag) {
 		final Optional<String> sourceNameOptional = parseSourceName(tag);
 		final Expression leftExpression;
-		final String sourceName;
 
 		if (sourceNameOptional.isPresent()) {
-			sourceName = sourceNameOptional.get();
+			final String sourceName = sourceNameOptional.get();
 			leftExpression = new OldReference(convertSource(sourceName, getSourceSignatures()));
 		} else {
-			sourceName = "true";
 			leftExpression = BooleanLiteral.makeTrue();
 		}
 
 		final AnnotationElem exceptionElem = SootAnnotations.getElem(tag, "exception").orElseThrow();
-		final String value = new AnnotationElems.ClassElemExtractor().visit(exceptionElem);
-		final RefType exceptionType = Scene.v().loadClassAndSupport(Namespace.stripDescriptor(value)).getType();
-		final SymbolicReference typeReference = new TypeReferenceExtractor().visit(exceptionType);
+		final String value = new SootAnnotationElems.ClassElemExtractor().visit(exceptionElem).orElseThrow();
+		final RefType exceptionType = Scene.v().loadClassAndSupport(BBLibNamespace.stripDescriptor(value)).getType();
+		final SymbolicReference typeReference = new AbstractTypeReferenceExtractor().visit(exceptionType);
 		final FunctionReference rightExpression = Prelude.v().getInstanceOfFunction().makeFunctionReference();
 		final ValueReference heapReference = Prelude.v().getHeapVariable().makeValueReference();
 		rightExpression.addArgument(heapReference);
 		rightExpression.addArgument(Convention.makeExceptionReference());
 		rightExpression.addArgument(typeReference);
 		final Expression condition = new ImplicationOperation(leftExpression, rightExpression);
-
 		final var attributes = new byteback.frontend.boogie.ast.List<Attribute>();
-
-		if (target.hasTag("PositionTag")) {
-			final PositionTag positionTag = (PositionTag) target.getTag("PositionTag");
-			final String message = positionTag.file + ": (line " + positionTag.lineNumber
-					+ "): Error: The exceptional-precondition " + sourceName + " might not hold.";
-			attributes.add(Convention.makeMessageAttribute(message));
-		}
 
 		return new PostCondition(attributes, false, condition);
 	}
