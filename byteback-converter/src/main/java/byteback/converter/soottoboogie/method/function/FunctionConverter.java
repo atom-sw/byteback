@@ -13,7 +13,7 @@ import byteback.frontend.boogie.ast.TypeAccess;
 import byteback.frontend.boogie.builder.FunctionDeclarationBuilder;
 import byteback.frontend.boogie.builder.FunctionSignatureBuilder;
 import byteback.frontend.boogie.builder.OptionalBindingBuilder;
-import byteback.util.Lazy;
+import byteback.common.Lazy;
 import soot.Local;
 import soot.SootMethod;
 import soot.Type;
@@ -21,64 +21,64 @@ import soot.VoidType;
 
 public class FunctionConverter extends MethodConverter {
 
-	private static final Lazy<FunctionConverter> instance = Lazy.from(FunctionConverter::new);
+    private static final Lazy<FunctionConverter> instance = Lazy.from(FunctionConverter::new);
 
-	public static FunctionConverter v() {
-		return instance.get();
-	}
+    public static FunctionConverter v() {
+        return instance.get();
+    }
 
-	public static OptionalBinding makeBinding(final Local local) {
-		final Type type = local.getType();
-		final TypeAccess typeAccess = new AbstractTypeAccessExtractor().visit(type);
-		final OptionalBindingBuilder bindingBuilder = new OptionalBindingBuilder();
-		bindingBuilder.name(PureExpressionExtractor.localName(local)).typeAccess(typeAccess);
+    public static OptionalBinding makeBinding(final Local local) {
+        final Type type = local.getType();
+        final TypeAccess typeAccess = new AbstractTypeAccessExtractor().visit(type);
+        final OptionalBindingBuilder bindingBuilder = new OptionalBindingBuilder();
+        bindingBuilder.name(PureExpressionExtractor.localName(local)).typeAccess(typeAccess);
 
-		return bindingBuilder.build();
-	}
+        return bindingBuilder.build();
+    }
 
-	public static void buildSignature(final FunctionDeclarationBuilder functionBuilder, final SootMethod method) {
-		final var signatureBuilder = new FunctionSignatureBuilder();
-		signatureBuilder.addInputBinding(Prelude.v().getHeapVariable().makeOptionalBinding());
+    public static void buildSignature(final FunctionDeclarationBuilder functionBuilder, final SootMethod method) {
+        final var signatureBuilder = new FunctionSignatureBuilder();
+        signatureBuilder.addInputBinding(Prelude.v().getHeapVariable().makeOptionalBinding());
 
-		for (Local local : SootBodies.getParameterLocals(method.retrieveActiveBody())) {
-			signatureBuilder.addInputBinding(makeBinding(local));
-		}
+        for (Local local : SootBodies.getParameterLocals(method.retrieveActiveBody())) {
+            signatureBuilder.addInputBinding(makeBinding(local));
+        }
 
-		method.getReturnType().apply(new AbstractTypeSwitch<>() {
+        method.getReturnType().apply(new AbstractTypeSwitch<>() {
 
-			@Override
-			public void caseVoidType(final VoidType type) {
-				throw new ConversionException("A pure function cannot be void");
-			}
+            @Override
+            public void caseVoidType(final VoidType type) {
+                throw new ConversionException("A pure function cannot be void");
+            }
 
-			@Override
-			public void defaultCase(final Type type) {
-				final TypeAccess boogieTypeAccess = new AbstractTypeAccessExtractor().visit(method.getReturnType());
-				final OptionalBinding boogieBinding = new OptionalBindingBuilder().typeAccess(boogieTypeAccess).build();
-				signatureBuilder.outputBinding(boogieBinding);
-			}
+            @Override
+            public void defaultCase(final Type type) {
+                final TypeAccess boogieTypeAccess = new AbstractTypeAccessExtractor().visit(method.getReturnType());
+                final OptionalBinding boogieBinding = new OptionalBindingBuilder().typeAccess(boogieTypeAccess).build();
+                signatureBuilder.outputBinding(boogieBinding);
+            }
 
-		});
+        });
 
-		functionBuilder.signature(signatureBuilder.build());
-	}
+        functionBuilder.signature(signatureBuilder.build());
+    }
 
-	public static void buildExpression(final FunctionDeclarationBuilder functionBuilder, final SootMethod method) {
-		functionBuilder.expression(new FunctionBodyExtractor().visit(method.retrieveActiveBody()));
-	}
+    public static void buildExpression(final FunctionDeclarationBuilder functionBuilder, final SootMethod method) {
+        functionBuilder.expression(new FunctionBodyExtractor().visit(method.retrieveActiveBody()));
+    }
 
-	public FunctionDeclaration convert(final SootMethod method) {
-		final var builder = new FunctionDeclarationBuilder();
+    public FunctionDeclaration convert(final SootMethod method) {
+        final var builder = new FunctionDeclarationBuilder();
 
-		try {
-			builder.name(methodName(method));
-			buildSignature(builder, method);
-			buildExpression(builder, method);
-		} catch (final ConversionException exception) {
-			throw new FunctionConversionException(method, exception);
-		}
+        try {
+            builder.name(methodName(method));
+            buildSignature(builder, method);
+            buildExpression(builder, method);
+        } catch (final ConversionException exception) {
+            throw new FunctionConversionException(method, exception);
+        }
 
-		return builder.build();
-	}
+        return builder.build();
+    }
 
 }

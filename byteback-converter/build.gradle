@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
 		implementation project(':byteback-analysis')
-		implementation project(':byteback-util')
+		implementation project(':byteback-common')
 		implementation project(':byteback-frontend:boogie')
 		implementation 'org.soot-oss:soot:4.3.0'
 		implementation 'org.slf4j:slf4j-simple:1.6.1'

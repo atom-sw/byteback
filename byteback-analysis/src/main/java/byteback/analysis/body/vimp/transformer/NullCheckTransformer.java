@@ -1,8 +1,10 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.vimp.Vimp;
-import byteback.util.Lazy;
+import byteback.common.Lazy;
+
 import java.util.Map;
+
 import soot.Body;
 import soot.Scene;
 import soot.Unit;
@@ -20,71 +22,71 @@ import soot.jimple.ThisRef;
 
 public class NullCheckTransformer extends CheckTransformer {
 
-	private static final Lazy<NullCheckTransformer> instance = Lazy.from(NullCheckTransformer::new);
+    private static final Lazy<NullCheckTransformer> instance = Lazy.from(NullCheckTransformer::new);
 
-	public static NullCheckTransformer v() {
-		return instance.get();
-	}
+    private NullCheckTransformer() {
+        super(Scene.v().loadClassAndSupport("java.lang.NullPointerException"));
+    }
 
-	private NullCheckTransformer() {
-		super(Scene.v().loadClassAndSupport("java.lang.NullPointerException"));
-	}
+    public static NullCheckTransformer v() {
+        return instance.get();
+    }
 
-	@Override
-	public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-		if (body instanceof GrimpBody) {
-			transformBody(body);
-		} else {
-			throw new IllegalArgumentException("Can only transform Grimp");
-		}
-	}
+    @Override
+    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+        if (body instanceof GrimpBody) {
+            transformBody(body);
+        } else {
+            throw new IllegalArgumentException("Can only transform Grimp");
+        }
+    }
 
-	@Override
-	public void transformBody(final Body body) {
-		if (!body.getMethod().isStatic()) {
-			final Unit unit = body.getThisUnit();
-			final Unit assumption = Vimp.v()
-					.newAssumptionStmt(Vimp.v().newNeExpr(body.getThisLocal(), NullConstant.v()));
-			body.getUnits().insertAfter(assumption, unit);
-		}
+    @Override
+    public void transformBody(final Body body) {
+        if (!body.getMethod().isStatic()) {
+            final Unit unit = body.getThisUnit();
+            final Unit assumption = Vimp.v()
+                    .newAssumptionStmt(Vimp.v().newNeExpr(body.getThisLocal(), NullConstant.v()));
+            body.getUnits().insertAfter(assumption, unit);
+        }
 
-		super.transformBody(body);
-	}
+        super.transformBody(body);
+    }
 
-	@Override
-	public Value extractTarget(final Value value) {
-		Value target = null;
+    @Override
+    public Value extractTarget(final Value value) {
+        Value target = null;
 
-		if (value instanceof NewExpr || value instanceof SpecialInvokeExpr) {
-			return null;
-		}
+        if (value instanceof NewExpr || value instanceof SpecialInvokeExpr) {
+            return null;
+        }
 
-		if (value instanceof InstanceInvokeExpr invokeExpr) {
-			target = invokeExpr.getBase();
-		}
+        if (value instanceof InstanceInvokeExpr invokeExpr) {
+            target = invokeExpr.getBase();
+        }
 
-		if (value instanceof InstanceFieldRef fieldRef) {
-			target = fieldRef.getBase();
-		}
+        if (value instanceof InstanceFieldRef fieldRef) {
+            target = fieldRef.getBase();
+        }
 
-		if (value instanceof ArrayRef arrayRef) {
-			target = arrayRef.getBase();
-		}
+        if (value instanceof ArrayRef arrayRef) {
+            target = arrayRef.getBase();
+        }
 
-		if (value instanceof LengthExpr lengthExpr) {
-			target = lengthExpr.getOp();
-		}
+        if (value instanceof LengthExpr lengthExpr) {
+            target = lengthExpr.getOp();
+        }
 
-		if (target instanceof ThisRef) {
-			return null;
-		}
+        if (target instanceof ThisRef) {
+            return null;
+        }
 
-		return target;
-	}
+        return target;
+    }
 
-	@Override
-	public Value makeCheckExpr(Value inner, Value outer) {
-		return Grimp.v().newNeExpr(inner, NullConstant.v());
-	}
+    @Override
+    public Value makeCheckExpr(Value inner, Value outer) {
+        return Grimp.v().newNeExpr(inner, NullConstant.v());
+    }
 
 }
