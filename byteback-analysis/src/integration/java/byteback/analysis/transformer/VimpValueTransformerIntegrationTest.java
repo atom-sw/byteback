@@ -1,6 +1,6 @@
 package byteback.analysis.transformer;
 
-import byteback.analysis.body.grimp.transformer.VimpValueBodyTransformer;
+import byteback.analysis.body.jimple.transformer.VimpValueBodyTransformer;
 import byteback.analysis.body.vimp.LogicConstant;
 import byteback.analysis.body.vimp.Vimp;
 import org.junit.Test;

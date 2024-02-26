@@ -1,14 +1,11 @@
 package byteback.analysis.body.vimp;
 
 import byteback.analysis.body.vimp.visitor.SpecialExprVisitor;
-import soot.Type;
-import soot.UnitPrinter;
-import soot.Value;
-import soot.ValueBox;
+import soot.*;
 import soot.jimple.internal.AbstractUnopExpr;
 import soot.util.Switch;
 
-public class OldExpr extends AbstractUnopExpr {
+public class OldExpr extends AbstractUnopExpr implements Immediate {
 
 	public OldExpr(final Value v) {
 		super(Vimp.v().newArgBox(v));

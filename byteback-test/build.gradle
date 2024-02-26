@@ -42,7 +42,7 @@ subprojects { test ->
 				}
 
 				if (jobsProperty == null) {
-						jobsProperty = 1
+						jobsProperty = 4
 				}
 
 				if (boogieTimeLimitProperty == null) {

@@ -1,13 +1,14 @@
-package byteback.analysis.body.grimp.transformer;
+package byteback.analysis.body.jimple.transformer;
 
 import byteback.analysis.body.common.transformer.UnitTransformer;
-import byteback.analysis.body.grimp.visitor.AbstractGrimpValueSwitchWithInvokeCase;
+import byteback.analysis.body.jimple.visitor.AbstractJimpleValueSwitch;
 import byteback.analysis.body.vimp.*;
 import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
 import byteback.analysis.common.namespace.BBLibNamespace;
 import byteback.analysis.scene.SootTypes;
 import byteback.common.Lazy;
 import soot.*;
+import soot.grimp.Grimp;
 import soot.jimple.*;
 
 import java.util.Map;
@@ -94,7 +95,7 @@ public class VimpValueBodyTransformer extends BodyTransformer {
             transformUnit(unitBox.getUnit());
         }
 
-        public static class LogicValueTransformer extends AbstractGrimpValueSwitchWithInvokeCase<Value> {
+        public static class LogicValueTransformer extends AbstractJimpleValueSwitch<Value> {
 
             public final Type expectedType;
             public final ValueBox resultBox;
@@ -283,8 +284,7 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 }
             }
 
-            @Override
-            public void caseInvokeExpr(final InvokeExpr invokeExpr) {
+            private void caseInvokeExpr(final InvokeExpr invokeExpr) {
                 for (int i = 0; i < invokeExpr.getArgCount(); ++i) {
                     final ValueBox argumentBox = invokeExpr.getArgBox(i);
                     new LogicValueTransformer(invokeExpr.getMethodRef().getParameterType(i), argumentBox)
@@ -296,6 +296,25 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 if (BBLibNamespace.isSpecialClass(invokedMethod.getDeclaringClass())) {
                     setSpecial(invokeExpr);
                 }
+            }
+
+            @Override
+            public void caseVirtualInvokeExpr(final VirtualInvokeExpr virtualInvokeExpr) {
+                caseInvokeExpr(virtualInvokeExpr);
+            }
+
+            @Override
+            public void caseInterfaceInvokeExpr(final InterfaceInvokeExpr interfaceInvokeExpr) {
+                caseInvokeExpr(interfaceInvokeExpr);
+            }
+
+            @Override
+            public void caseStaticInvokeExpr(final StaticInvokeExpr staticInvokeExpr) {
+                caseInvokeExpr(staticInvokeExpr);
+            }
+
+            public void caseDynamicInvokeExpr(final DynamicInvokeExpr dynamicInvokeExpr) {
+                caseInvokeExpr(dynamicInvokeExpr);
             }
 
             @Override

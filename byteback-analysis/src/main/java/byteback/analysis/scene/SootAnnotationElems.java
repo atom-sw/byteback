@@ -1,6 +1,6 @@
-package byteback.analysis.model;
+package byteback.analysis.scene;
 
-import byteback.analysis.model.visitor.AbstractAnnotationElemSwitch;
+import byteback.analysis.scene.visitor.AbstractAnnotationElemSwitch;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationStringElem;
 

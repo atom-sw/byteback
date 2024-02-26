@@ -1,7 +1,7 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.common.namespace.BBLibNamespace;
-import byteback.analysis.model.SootHosts;
+import byteback.analysis.scene.SootHosts;
 import byteback.common.Lazy;
 
 import java.util.Iterator;
@@ -11,24 +11,19 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.SootMethod;
 import soot.Unit;
-import soot.grimp.GrimpBody;
 import soot.jimple.InvokeStmt;
 
-public class PureTransformer extends BodyTransformer {
+public class InvokeIgnorer extends BodyTransformer {
 
-    private static final Lazy<PureTransformer> instance = Lazy.from(PureTransformer::new);
+    private static final Lazy<InvokeIgnorer> instance = Lazy.from(InvokeIgnorer::new);
 
-    public static PureTransformer v() {
+    public static InvokeIgnorer v() {
         return instance.get();
     }
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof GrimpBody) {
-            transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Grimp");
-        }
+        transformBody(body);
     }
 
     public void transformBody(final Body body) {

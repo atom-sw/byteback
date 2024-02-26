@@ -20,6 +20,7 @@ import soot.ValueBox;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
 import soot.jimple.SpecialInvokeExpr;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -30,15 +31,6 @@ public abstract class CheckTransformer extends BodyTransformer {
 
     public CheckTransformer(final SootClass exceptionClass) {
         this.exceptionClass = exceptionClass;
-    }
-
-    @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof GrimpBody) {
-            transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Grimp");
-        }
     }
 
     public Chain<Unit> makeThrowUnits(final Body body, Supplier<Local> localSupplier) {

@@ -8,9 +8,8 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.Value;
 import soot.ValueBox;
-import soot.grimp.Grimp;
-import soot.grimp.GrimpBody;
 import soot.jimple.DynamicInvokeExpr;
+import soot.jimple.Jimple;
 
 public class DynamicToStaticTransformer extends BodyTransformer {
 
@@ -25,19 +24,15 @@ public class DynamicToStaticTransformer extends BodyTransformer {
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof GrimpBody) {
-            transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Grimp");
-        }
+        transformBody(body);
     }
 
     public void transformBody(final Body body) {
         for (final ValueBox vbox : body.getUseBoxes()) {
             final Value value = vbox.getValue();
 
-            if (value instanceof DynamicInvokeExpr invokeDynamic) {
-                vbox.setValue(Grimp.v().newStaticInvokeExpr(invokeDynamic.getMethodRef(), invokeDynamic.getArgs()));
+            if (value instanceof DynamicInvokeExpr invokeDynamicExpr) {
+                vbox.setValue(Jimple.v().newStaticInvokeExpr(invokeDynamicExpr.getMethodRef(), invokeDynamicExpr.getArgs()));
             }
         }
     }

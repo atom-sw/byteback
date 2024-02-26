@@ -1,4 +1,4 @@
-package byteback.analysis.model;
+package byteback.analysis.scene;
 
 import byteback.analysis.common.namespace.BBLibNamespace;
 import java.util.ArrayList;

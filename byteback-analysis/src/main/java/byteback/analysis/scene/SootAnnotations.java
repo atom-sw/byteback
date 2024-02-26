@@ -1,6 +1,6 @@
-package byteback.analysis.model;
+package byteback.analysis.scene;
 
-import byteback.analysis.model.visitor.AbstractAnnotationElemSwitch;
+import byteback.analysis.scene.visitor.AbstractAnnotationElemSwitch;
 import java.util.Optional;
 import java.util.stream.Stream;
 import soot.tagkit.AnnotationAnnotationElem;

@@ -23,6 +23,7 @@ import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
+import soot.jimple.JimpleBody;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
@@ -39,11 +40,7 @@ public class GuardTransformer extends BodyTransformer {
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof GrimpBody) {
-            transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Grimp");
-        }
+        transformBody(body);
     }
 
     public void transformBody(final Body body) {

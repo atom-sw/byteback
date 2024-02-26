@@ -51,30 +51,4 @@ public class SootBodies {
 		return new BriefUnitGraph(body);
 	}
 
-	public static class ValidationException extends RuntimeException {
-
-		public ValidationException(final String message) {
-			super(message);
-		}
-
-		public ValidationException(final Exception exception) {
-			super(exception);
-		}
-
-	}
-
-	public static void resolveCalls(final Body body) {
-		for (final ValueBox valueBox : body.getUseAndDefBoxes()) {
-			final Value value = valueBox.getValue();
-
-			if (value instanceof InvokeExpr invokeExpr) {
-				try {
-					invokeExpr.getMethod();
-				} catch (Exception e) {
-					throw new ValidationException(e);
-				}
-			}
-		}
-	}
-
 }

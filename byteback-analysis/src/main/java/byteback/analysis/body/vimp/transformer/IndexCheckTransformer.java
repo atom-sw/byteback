@@ -2,11 +2,16 @@ package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.Lazy;
+import soot.Body;
+import soot.PhaseOptions;
 import soot.Scene;
 import soot.Value;
 import soot.grimp.Grimp;
 import soot.jimple.ArrayRef;
 import soot.jimple.IntConstant;
+import soot.jimple.JimpleBody;
+
+import java.util.Map;
 
 public class IndexCheckTransformer extends CheckTransformer {
 
@@ -18,6 +23,13 @@ public class IndexCheckTransformer extends CheckTransformer {
 
     public static IndexCheckTransformer v() {
         return instance.get();
+    }
+
+    @Override
+    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+        if (PhaseOptions.getBoolean(options, "enabled")) {
+            transformBody(body);
+        }
     }
 
     @Override

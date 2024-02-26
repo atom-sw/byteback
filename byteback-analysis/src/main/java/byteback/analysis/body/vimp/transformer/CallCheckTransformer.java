@@ -13,6 +13,7 @@ import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.InvokeExpr;
+import soot.jimple.Jimple;
 import soot.util.Chain;
 
 public class CallCheckTransformer extends BodyTransformer {
@@ -28,11 +29,7 @@ public class CallCheckTransformer extends BodyTransformer {
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof GrimpBody) {
-            transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Grimp");
-        }
+        transformBody(body);
     }
 
     public Value makeCheckExpr() {

@@ -5,20 +5,11 @@ import byteback.common.Lazy;
 
 import java.util.Map;
 
-import soot.Body;
-import soot.Scene;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
-import soot.jimple.ArrayRef;
-import soot.jimple.InstanceFieldRef;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.LengthExpr;
-import soot.jimple.NewExpr;
-import soot.jimple.NullConstant;
-import soot.jimple.SpecialInvokeExpr;
-import soot.jimple.ThisRef;
+import soot.jimple.*;
+import soot.options.Options;
 
 public class NullCheckTransformer extends CheckTransformer {
 
@@ -34,10 +25,8 @@ public class NullCheckTransformer extends CheckTransformer {
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof GrimpBody) {
+        if (PhaseOptions.getBoolean(options, "enabled")) {
             transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Grimp");
         }
     }
 

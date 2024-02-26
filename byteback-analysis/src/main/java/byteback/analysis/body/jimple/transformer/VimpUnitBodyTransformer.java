@@ -1,4 +1,4 @@
-package byteback.analysis.body.grimp.transformer;
+package byteback.analysis.body.jimple.transformer;
 
 import byteback.analysis.body.common.transformer.UnitTransformer;
 import byteback.analysis.body.jimple.visitor.AbstractStmtSwitch;
@@ -7,10 +7,9 @@ import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.common.namespace.BBLibNamespace;
 import byteback.common.Lazy;
 import soot.*;
-import soot.grimp.GrimpBody;
+import soot.grimp.Grimp;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
-import soot.jimple.JimpleBody;
 
 import java.util.Map;
 
@@ -37,8 +36,8 @@ public class VimpUnitBodyTransformer extends BodyTransformer implements UnitTran
         unit.apply(new AbstractStmtSwitch<>() {
 
             @Override
-            public void caseInvokeStmt(final InvokeStmt invokeUnit) {
-                final InvokeExpr value = invokeUnit.getInvokeExpr();
+            public void caseInvokeStmt(final InvokeStmt invokeStmt) {
+                final InvokeExpr value = invokeStmt.getInvokeExpr();
                 final SootMethod method = value.getMethod();
                 final SootClass declaringClass = method.getDeclaringClass();
 
@@ -53,7 +52,7 @@ public class VimpUnitBodyTransformer extends BodyTransformer implements UnitTran
                         default -> throw new IllegalStateException("Unknown logic statement " + method.getName());
                     };
 
-                    newUnit.addAllTagsOf(invokeUnit);
+                    newUnit.addAllTagsOf(invokeStmt);
                     unitBox.setUnit(newUnit);
                 }
             }

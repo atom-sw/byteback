@@ -1,4 +1,4 @@
-package byteback.analysis.model.visitor;
+package byteback.analysis.scene.visitor;
 
 import byteback.analysis.common.visitor.Visitor;
 import soot.DoubleType;

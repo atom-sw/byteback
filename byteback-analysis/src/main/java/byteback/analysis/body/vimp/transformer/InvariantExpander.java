@@ -14,6 +14,7 @@ import soot.Unit;
 import soot.Value;
 import soot.grimp.GrimpBody;
 import soot.jimple.IfStmt;
+import soot.jimple.JimpleBody;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
@@ -32,20 +33,16 @@ public class InvariantExpander extends BodyTransformer {
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof GrimpBody) {
-            transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Grimp");
-        }
+        transformBody(body);
     }
 
-    public void transformBody(final Body body) {
-        final Chain<Unit> units = body.getUnits();
+    public void transformBody(final Body b) {
+        final Chain<Unit> units = b.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
         final LoopFinder loopFinder = new LoopFinder();
         final HashMap<Unit, Loop> startToLoop = new HashMap<>();
         final HashMap<Unit, Loop> endToLoop = new HashMap<>();
-        final Set<Loop> loops = loopFinder.getLoops(body);
+        final Set<Loop> loops = loopFinder.getLoops(b);
         final Stack<Loop> activeLoops = new Stack<>();
 
         for (final Loop loop : loops) {

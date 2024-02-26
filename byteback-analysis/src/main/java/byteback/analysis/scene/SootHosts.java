@@ -1,4 +1,4 @@
-package byteback.analysis.model;
+package byteback.analysis.scene;
 
 import java.util.Optional;
 import java.util.stream.Stream;

@@ -1,5 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.grimp.transformer.ExprFolder;
 import byteback.common.Lazy;
 import soot.Immediate;
 import soot.Value;

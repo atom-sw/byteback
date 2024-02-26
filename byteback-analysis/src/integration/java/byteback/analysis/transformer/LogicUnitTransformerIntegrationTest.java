@@ -1,6 +1,6 @@
 package byteback.analysis.transformer;
 
-import byteback.analysis.body.grimp.transformer.VimpUnitBodyTransformer;
+import byteback.analysis.body.jimple.transformer.VimpUnitBodyTransformer;
 import byteback.analysis.body.vimp.LogicConstant;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.common.namespace.BBLibNamespace;

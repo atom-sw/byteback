@@ -1,10 +1,10 @@
-package byteback.analysis.model.transformer;
+package byteback.analysis.scene.transformer;
 
 import byteback.analysis.common.namespace.BBLibNamespace;
-import byteback.analysis.model.SootAnnotationElems.ClassElemExtractor;
-import byteback.analysis.model.SootAnnotationElems.StringElemExtractor;
-import byteback.analysis.model.SootAnnotations;
-import byteback.analysis.model.SootHosts;
+import byteback.analysis.scene.SootAnnotationElems.ClassElemExtractor;
+import byteback.analysis.scene.SootAnnotationElems.StringElemExtractor;
+import byteback.analysis.scene.SootAnnotations;
+import byteback.analysis.scene.SootHosts;
 import byteback.common.Lazy;
 
 import java.util.ArrayList;

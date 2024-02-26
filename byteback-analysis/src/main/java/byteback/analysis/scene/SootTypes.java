@@ -1,4 +1,4 @@
-package byteback.analysis.model;
+package byteback.analysis.scene;
 
 import soot.BooleanType;
 import soot.ByteType;

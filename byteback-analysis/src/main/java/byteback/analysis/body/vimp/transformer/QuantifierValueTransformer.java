@@ -1,6 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.grimp.visitor.AbstractGrimpValueSwitchWithInvokeCase;
+import byteback.analysis.body.grimp.visitor.AbstractGrimpValueSwitch;
 import byteback.analysis.common.namespace.BBLibNamespace;
 import byteback.analysis.body.vimp.QuantifierExpr;
 import byteback.analysis.body.vimp.Vimp;
@@ -18,10 +18,10 @@ import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.grimp.GrimpBody;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.InvokeExpr;
+import soot.jimple.StaticInvokeExpr;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -38,11 +38,7 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
 
     @Override
     protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof GrimpBody) {
-            transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Grimp");
-        }
+        transformBody(body);
     }
 
     @Override
@@ -73,19 +69,19 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
     public void transformValue(final ValueBox valueBox) {
         final Value value = valueBox.getValue();
 
-        value.apply(new AbstractGrimpValueSwitchWithInvokeCase<>() {
+        value.apply(new AbstractGrimpValueSwitch<>() {
 
             @Override
-            public void caseInvokeExpr(final InvokeExpr value) {
-                assert value.getArgCount() == 2;
+            public void caseStaticInvokeExpr(final StaticInvokeExpr invokeExpr) {
+                assert invokeExpr.getArgCount() == 2;
 
-                final SootMethod method = value.getMethod();
+                final SootMethod method = invokeExpr.getMethod();
                 final SootClass clazz = method.getDeclaringClass();
 
                 if (BBLibNamespace.isQuantifierClass(clazz)) {
                     final Chain<Local> locals = new HashChain<>();
                     final Value expression;
-                    Value variable = value.getArg(0);
+                    Value variable = invokeExpr.getArg(0);
 
                     while (variable instanceof CastExpr castExpr) {
                         variable = castExpr.getOp();
@@ -93,7 +89,7 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
 
                     if (variable instanceof Local local) {
                         locals.add(local);
-                        expression = value.getArg(1);
+                        expression = invokeExpr.getArg(1);
                     } else {
                         throw new RuntimeException("First argument of quantifier must be a local variable");
                     }

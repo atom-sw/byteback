@@ -9,8 +9,6 @@ import java.util.Iterator;
 
 public interface UnitTransformer {
 
-    void transformUnit(UnitBox unitBox);
-
     default void transformBody(final Body body) {
 
         final Iterator<Unit> iterator = body.getUnits().snapshotIterator();
@@ -20,5 +18,7 @@ public interface UnitTransformer {
             transformUnit(new SwappableUnitBox(unit, body));
         }
     }
+
+    void transformUnit(UnitBox unitBox);
 
 }

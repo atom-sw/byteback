@@ -32,57 +32,11 @@ public class ExceptionInvariantTransformer extends BodyTransformer {
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof GrimpBody) {
-            transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Grimp");
-        }
+        transformBody(body);
     }
 
-    public void transformBody(final Body body) {
-        final Chain<Unit> units = body.getUnits();
+    public void transformBody(final Body b) {
         final LoopFinder loopFinder = new LoopFinder();
-        final Set<Loop> loops = loopFinder.getLoops(body);
-        final Set<Unit> trapHandlers = new HashSet<>();
-
-        for (final Trap trap : body.getTraps()) {
-            trapHandlers.add(trap.getHandlerUnit());
-        }
-
-        for (final Loop loop : loops) {
-            if (loop.getHead() != loop.getBackJumpStmt()) {
-                final Value assertionValue = Vimp.v().newEqExpr(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
-                final Unit headUnit = loop.getHead();
-                final Unit newHeadUnit = Vimp.v().newAssertionStmt(assertionValue);
-                final Unit backJumpUnit = loop.getBackJumpStmt();
-                final Unit newBackJumpUnit = Vimp.v().newAssertionStmt(assertionValue);
-                final Set<Unit> annotatedUnits = new HashSet<>();
-
-                units.insertBefore(newHeadUnit, headUnit);
-                headUnit.redirectJumpsToThisTo(newHeadUnit);
-
-                units.insertBefore(newBackJumpUnit, backJumpUnit);
-                backJumpUnit.redirectJumpsToThisTo(newBackJumpUnit);
-
-                for (final Stmt exit : loop.getLoopExits()) {
-                    if (!annotatedUnits.contains(exit)) {
-                        final Unit newExitUnit = Vimp.v().newAssertionStmt(assertionValue);
-                        units.insertBefore(newExitUnit, exit);
-                        exit.redirectJumpsToThisTo(newExitUnit);
-                        annotatedUnits.add(exit);
-
-                        for (final Unit exitTarget : loop.targetsOfLoopExit(exit)) {
-                            if (!trapHandlers.contains(exitTarget) && !annotatedUnits.contains(exitTarget)) {
-                                final Unit newTargetUnit = Vimp.v().newAssertionStmt(assertionValue);
-                                units.insertBefore(newTargetUnit, exitTarget);
-                                exitTarget.redirectJumpsToThisTo(newTargetUnit);
-                                annotatedUnits.add(exitTarget);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        final Set<Loop> loops = loopFinder.getLoops(b);
     }
-
 }

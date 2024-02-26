@@ -1,4 +1,4 @@
-package byteback.analysis.model;
+package byteback.analysis.scene;
 
 import java.util.Iterator;
 import java.util.List;

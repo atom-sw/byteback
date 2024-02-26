@@ -145,10 +145,6 @@ public class Vimp {
         return new LogicNeExpr(a, b);
     }
 
-    public CallExpr newCallExpr(final InvokeExpr invokeExpr) {
-        return new CallExpr(invokeExpr);
-    }
-
     public IfStmt newIfStmt(final Value value, final Unit target) {
         return new LogicIfStmt(value, target);
     }

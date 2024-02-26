@@ -1,4 +1,4 @@
-package byteback.analysis.body.vimp.transformer;
+package byteback.analysis.body.grimp.transformer;
 
 import byteback.analysis.body.common.SootBodies;
 import byteback.common.Cons;
