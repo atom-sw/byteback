@@ -1,12 +1,13 @@
 package byteback.analysis.body.grimp.transformer;
 
 import byteback.analysis.body.common.transformer.UnitTransformer;
-import byteback.analysis.body.grimp.visitor.AbstractStmtSwitch;
+import byteback.analysis.body.jimple.visitor.AbstractStmtSwitch;
 import byteback.analysis.body.vimp.LogicStmt;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.common.namespace.BBLibNamespace;
 import byteback.common.Lazy;
 import soot.*;
+import soot.grimp.GrimpBody;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.JimpleBody;
@@ -26,11 +27,7 @@ public class VimpUnitBodyTransformer extends BodyTransformer implements UnitTran
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (body instanceof JimpleBody) {
-            transformBody(body);
-        } else {
-            throw new IllegalArgumentException("Can only transform Jimple");
-        }
+        transformBody(body);
     }
 
     @Override

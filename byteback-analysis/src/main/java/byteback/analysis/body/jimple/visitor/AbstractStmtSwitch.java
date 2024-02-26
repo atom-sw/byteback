@@ -1,6 +1,5 @@
-package byteback.analysis.body.grimp.visitor;
+package byteback.analysis.body.jimple.visitor;
 
-import byteback.analysis.body.vimp.VimpStmtSwitch;
 import soot.Body;
 import soot.Unit;
 import soot.jimple.Stmt;

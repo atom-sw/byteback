@@ -3,6 +3,7 @@ package byteback.analysis.body.vimp.transformer;
 import byteback.analysis.body.common.SootBodies;
 import byteback.common.Cons;
 import soot.*;
+import soot.jimple.AssignStmt;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.scalar.SimpleLocalDefs;
@@ -45,10 +46,10 @@ public class ExprFolder extends BodyTransformer {
                     final Value value = valueBox.getValue();
 
                     if (value instanceof final Local local) {
-                        final Cons<Unit, Value> substitutionPair = substitutionTracker.substitute(local);
+                        final Cons<AssignStmt, Value> substitutionPair = substitutionTracker.substitute(local);
 
                         if (substitutionPair != null && !substitutionPair.car.equals(unit)) {
-                            final Unit definition = substitutionPair.car;
+                            final AssignStmt definition = substitutionPair.car;
                             final Value substitution = substitutionPair.cdr;
 
                             if (localDefs.getDefsOfAt(local, unit).size() > 1 && canSubstitute(substitution)) {
@@ -65,7 +66,7 @@ public class ExprFolder extends BodyTransformer {
                                 }
                             }
 
-                            valueBox.setValue(substitution);
+                            valueBox.setValue(value);
                             block.remove(definition);
                         }
                     }

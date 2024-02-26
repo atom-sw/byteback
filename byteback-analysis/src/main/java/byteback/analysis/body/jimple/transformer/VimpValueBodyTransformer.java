@@ -5,10 +5,9 @@ import byteback.analysis.body.grimp.visitor.AbstractGrimpValueSwitchWithInvokeCa
 import byteback.analysis.body.vimp.*;
 import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
 import byteback.analysis.common.namespace.BBLibNamespace;
-import byteback.analysis.model.SootTypes;
+import byteback.analysis.scene.SootTypes;
 import byteback.common.Lazy;
 import soot.*;
-import soot.grimp.Grimp;
 import soot.jimple.*;
 
 import java.util.Map;
@@ -40,15 +39,11 @@ public class VimpValueBodyTransformer extends BodyTransformer {
 
         @Override
         protected void internalTransform(final Body b, final String phaseName, final Map<String, String> options) {
-            if (b instanceof JimpleBody jimpleBody) {
-                transformBody(jimpleBody);
-            } else {
-                throw new IllegalArgumentException("Can only transform Jimple");
-            }
+            transformBody(b);
         }
 
         public void transformValue(final ValueBox valueBox) {
-            new LogicValueSwitch(BooleanType.v(), valueBox).visit(valueBox.getValue());
+            new LogicValueTransformer(BooleanType.v(), valueBox).visit(valueBox.getValue());
         }
 
         public void transformUnit(final Unit unit) {
@@ -58,37 +53,37 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 public void caseAssignStmt(final AssignStmt unit) {
                     final Type type = unit.getLeftOp().getType();
                     final ValueBox rightBox = unit.getRightOpBox();
-                    new LogicValueSwitch(type, unit.getRightOpBox()).visit(rightBox.getValue());
+                    new LogicValueTransformer(type, unit.getRightOpBox()).visit(rightBox.getValue());
                 }
 
                 @Override
                 public void caseIfStmt(final IfStmt unit) {
                     final ValueBox conditionBox = unit.getConditionBox();
-                    new LogicValueSwitch(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
                 }
 
                 @Override
                 public void caseReturnStmt(final ReturnStmt unit) {
                     final ValueBox returnBox = unit.getOpBox();
-                    new LogicValueSwitch(returnType, returnBox).visit(returnBox.getValue());
+                    new LogicValueTransformer(returnType, returnBox).visit(returnBox.getValue());
                 }
 
                 @Override
                 public void caseAssertionStmt(final AssertionStmt unit) {
                     final ValueBox conditionBox = unit.getConditionBox();
-                    new LogicValueSwitch(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
                 }
 
                 @Override
                 public void caseInvariantStmt(final InvariantStmt unit) {
                     final ValueBox conditionBox = unit.getConditionBox();
-                    new LogicValueSwitch(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
                 }
 
                 @Override
                 public void caseAssumptionStmt(final AssumptionStmt unit) {
                     final ValueBox conditionBox = unit.getConditionBox();
-                    new LogicValueSwitch(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
                 }
 
             });
@@ -99,19 +94,19 @@ public class VimpValueBodyTransformer extends BodyTransformer {
             transformUnit(unitBox.getUnit());
         }
 
-        public static class LogicValueSwitch extends AbstractGrimpValueSwitchWithInvokeCase<Value> {
+        public static class LogicValueTransformer extends AbstractGrimpValueSwitchWithInvokeCase<Value> {
 
             public final Type expectedType;
             public final ValueBox resultBox;
 
-            public LogicValueSwitch(final Type expectedType, final ValueBox resultBox) {
+            public LogicValueTransformer(final Type expectedType, final ValueBox resultBox) {
                 this.expectedType = expectedType;
                 this.resultBox = resultBox;
             }
 
             public void setValue(final Value value) {
                 if (expectedType != value.getType()) {
-                    resultBox.setValue(Grimp.v().newCastExpr(value, expectedType));
+                    resultBox.setValue(Jimple.v().newCastExpr(value, expectedType));
                 } else {
                     resultBox.setValue(value);
                 }
@@ -120,7 +115,7 @@ public class VimpValueBodyTransformer extends BodyTransformer {
             public void setUnaryValue(final UnaryConstructor constructor, final Type expectedType, final UnopExpr value) {
                 final ValueBox operandBox = value.getOpBox();
                 setValue(constructor.apply(operandBox));
-                new LogicValueSwitch(expectedType, operandBox).visit(operandBox.getValue());
+                new LogicValueTransformer(expectedType, operandBox).visit(operandBox.getValue());
             }
 
             public void setBinaryValue(final BinaryConstructor constructor, final Type expectedType,
@@ -128,8 +123,8 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 final ValueBox leftBox = value.getOp1Box();
                 final ValueBox rightBox = value.getOp2Box();
                 setValue(constructor.apply(leftBox, rightBox));
-                new LogicValueSwitch(expectedType, leftBox).visit(leftBox.getValue());
-                new LogicValueSwitch(expectedType, rightBox).visit(rightBox.getValue());
+                new LogicValueTransformer(expectedType, leftBox).visit(leftBox.getValue());
+                new LogicValueTransformer(expectedType, rightBox).visit(rightBox.getValue());
             }
 
             public void setBinaryValue(final BinaryConstructor constructor, final BinopExpr value) {
@@ -288,15 +283,11 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 }
             }
 
-            public void setCall(final InvokeExpr invokeExpr) {
-                setValue(Vimp.v().newCallExpr(invokeExpr));
-            }
-
             @Override
             public void caseInvokeExpr(final InvokeExpr invokeExpr) {
                 for (int i = 0; i < invokeExpr.getArgCount(); ++i) {
                     final ValueBox argumentBox = invokeExpr.getArgBox(i);
-                    new LogicValueSwitch(invokeExpr.getMethodRef().getParameterType(i), argumentBox)
+                    new LogicValueTransformer(invokeExpr.getMethodRef().getParameterType(i), argumentBox)
                             .visit(argumentBox.getValue());
                 }
 
@@ -304,55 +295,17 @@ public class VimpValueBodyTransformer extends BodyTransformer {
 
                 if (BBLibNamespace.isSpecialClass(invokedMethod.getDeclaringClass())) {
                     setSpecial(invokeExpr);
-                } else if (BBLibNamespace.isPureMethod(invokedMethod)) {
-                    setCall(invokeExpr);
-                } else {
-                    if (invokeExpr instanceof InstanceInvokeExpr instanceInvokeExpr) {
-                        final Local base = (Local) instanceInvokeExpr.getBase();
-                        if (invokeExpr instanceof VirtualInvokeExpr) {
-                            setValue(Grimp.v().newVirtualInvokeExpr(base, invokeExpr.getMethodRef(), invokeExpr.getArgs()));
-                        } else if (invokeExpr instanceof InterfaceInvokeExpr) {
-                            setValue(Grimp.v().newInterfaceInvokeExpr(base, invokeExpr.getMethodRef(), invokeExpr.getArgs()));
-                        }
-                    } else if (invokeExpr instanceof DynamicInvokeExpr dynamicInvokeExpr) {
-                        setValue(Grimp.v().newDynamicInvokeExpr(
-                                dynamicInvokeExpr.getBootstrapMethodRef(),
-                                dynamicInvokeExpr.getBootstrapArgs(),
-                                dynamicInvokeExpr.getMethodRef(),
-                                dynamicInvokeExpr.getHandleTag(),
-                                dynamicInvokeExpr.getArgs())
-                        );
-                    } else if (invokeExpr instanceof StaticInvokeExpr) {
-                        setValue(Grimp.v().newStaticInvokeExpr(invokeExpr.getMethodRef(), invokeExpr.getArgs()));
-                    }
                 }
             }
 
             @Override
-            public void caseInstanceFieldRef(final InstanceFieldRef instanceFieldRef) {
-                setValue(Grimp.v().newInstanceFieldRef(instanceFieldRef.getBase(), instanceFieldRef.getFieldRef()));
-            }
+            public void caseCmpExpr(final CmpExpr $) {}
 
             @Override
-            public void caseStaticFieldRef(final StaticFieldRef staticFieldRef) {
-                setValue(Grimp.v().newStaticFieldRef(staticFieldRef.getFieldRef()));
-            }
+            public void caseCmplExpr(final CmplExpr $) {}
 
             @Override
-            public void caseCmpExpr(final CmpExpr $) {
-            }
-
-            @Override
-            public void caseCmplExpr(final CmplExpr $) {
-            }
-
-            @Override
-            public void caseCmpgExpr(final CmpgExpr $) {
-            }
-
-            @Override
-            public void caseLengthExpr(final LengthExpr $) {
-            }
+            public void caseCmpgExpr(final CmpgExpr $) {}
 
             @Override
             public void defaultCase(final Value defaultValue) {
@@ -361,13 +314,13 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 if (defaultValue instanceof BinopExpr value) {
                     final ValueBox leftBox = value.getOp1Box();
                     final ValueBox rightBox = value.getOp2Box();
-                    new LogicValueSwitch(expectedType, leftBox).visit(leftBox.getValue());
-                    new LogicValueSwitch(expectedType, rightBox).visit(rightBox.getValue());
+                    new LogicValueTransformer(expectedType, leftBox).visit(leftBox.getValue());
+                    new LogicValueTransformer(expectedType, rightBox).visit(rightBox.getValue());
                 }
 
                 if (defaultValue instanceof UnopExpr value) {
                     final ValueBox operandBox = value.getOpBox();
-                    new LogicValueSwitch(expectedType, operandBox).visit(operandBox.getValue());
+                    new LogicValueTransformer(expectedType, operandBox).visit(operandBox.getValue());
                 }
             }
 

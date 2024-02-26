@@ -22,7 +22,7 @@ import soot.jimple.toolkits.infoflow.CachedEquivalentValue;
 
 public class SubstitutionTracker {
 
-    public final HashMap<Local, Cons<Unit, Value>> localToSubstitution;
+    public final HashMap<Local, Cons<AssignStmt, Value>> localToSubstitution;
 
     final SetHashMap<Value, Local> dependencyToLocals;
 
@@ -81,7 +81,7 @@ public class SubstitutionTracker {
         }
     }
 
-    public Cons<Unit, Value> substitute(final Local value) {
+    public Cons<AssignStmt, Value> substitute(final Local value) {
         return localToSubstitution.get(value);
     }
 
