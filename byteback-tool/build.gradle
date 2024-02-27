@@ -1,0 +1,18 @@
+plugins {
+    id 'byteback.java-common-conventions'
+    id 'byteback.java-integration-conventions'
+    id 'application'
+}
+
+dependencies {
+    implementation project(':byteback-common')
+    implementation project(':byteback-analysis')
+    implementation project(':byteback-encoder:boogie-encoder')
+    implementation 'org.soot-oss:soot:4.3.0'
+    implementation 'com.beust:jcommander:1.+'
+    implementation 'org.slf4j:slf4j-simple:1.6.1'
+}
+
+application {
+    mainClass = 'byteback.tool.Main'
+}

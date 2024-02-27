@@ -12,7 +12,7 @@ import soot.jimple.InvokeStmt;
 
 import java.util.Map;
 
-public class VimpUnitBodyTransformer extends BodyTransformer implements UnitTransformer {
+public class VimpUnitBodyTransformer extends UnitTransformer {
 
     private static final Lazy<VimpUnitBodyTransformer> instance = Lazy.from(VimpUnitBodyTransformer::new);
 
@@ -21,11 +21,6 @@ public class VimpUnitBodyTransformer extends BodyTransformer implements UnitTran
 
     public static VimpUnitBodyTransformer v() {
         return instance.get();
-    }
-
-    @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        transformBody(body);
     }
 
     @Override

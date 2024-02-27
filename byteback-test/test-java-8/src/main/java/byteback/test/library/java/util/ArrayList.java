@@ -45,10 +45,10 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-import byteback.annotations.Contract.Raise;
+import byteback.specification.Contract.Raise;
 
-import static byteback.annotations.Contract.*;
-import static byteback.annotations.Operator.*;
+import static byteback.specification.Contract.*;
+import static byteback.specification.Operator.*;
 
 /**
  * Resizable-array implementation of the <tt>List</tt> interface. Implements
@@ -164,13 +164,13 @@ public class ArrayList<E> extends AbstractList<E>
 	private int size;
 
 	@Pure
-	@byteback.annotations.Contract.Predicate
+	@byteback.specification.Contract.Predicate
 	public boolean illegal_capacity(int capacity) {
 		return lt(capacity, 0);
 	}
 
 	@Pure
-	@byteback.annotations.Contract.Predicate
+	@byteback.specification.Contract.Predicate
 	public boolean legal_capacity(int capacity) {
 		return gte(capacity, 0);
 	}
@@ -1087,7 +1087,7 @@ public class ArrayList<E> extends AbstractList<E>
 			return this.size;
 		}
 
-		@byteback.annotations.Contract.Predicate
+		@byteback.specification.Contract.Predicate
 		public boolean addition_index_is_invalid(int index, E e) {
 			return index_is_out_of_bounds(index);
 		}
@@ -1123,7 +1123,7 @@ public class ArrayList<E> extends AbstractList<E>
 			return addAll(this.size, c);
 		}
 
-		@byteback.annotations.Contract.Predicate
+		@byteback.specification.Contract.Predicate
 		public boolean index_is_out_of_bounds(int index, Collection<? extends E> c) {
 			return index_is_out_of_bounds(index);
 		}
@@ -1222,7 +1222,7 @@ public class ArrayList<E> extends AbstractList<E>
 				}
 
 				@Pure
-				@byteback.annotations.Contract.Predicate
+				@byteback.specification.Contract.Predicate
 				public boolean lastRet_is_valid_and_modCount_is_invalid() {
 					return lastRet_is_valid() & modCount_is_invalid();
 				}
@@ -1244,24 +1244,24 @@ public class ArrayList<E> extends AbstractList<E>
 					}
 				}
 
-				@byteback.annotations.Contract.Predicate
+				@byteback.specification.Contract.Predicate
 				public boolean lastRet_is_valid_and_modCount_is_invalid(E e) {
 					return lastRet_is_valid_and_modCount_is_invalid();
 				}
 
 				@Pure
-				@byteback.annotations.Contract.Predicate
+				@byteback.specification.Contract.Predicate
 				public boolean lastRet_is_valid() {
 					return gte(lastRet, 0);
 				}
 
 				@Pure
-				@byteback.annotations.Contract.Predicate
+				@byteback.specification.Contract.Predicate
 				public boolean lastRet_is_invalid() {
 					return not(lastRet_is_valid());
 				}
 
-				@byteback.annotations.Contract.Predicate
+				@byteback.specification.Contract.Predicate
 				public boolean lastRet_is_invalid(E e) {
 					return lastRet_is_invalid();
 				}
@@ -1280,7 +1280,7 @@ public class ArrayList<E> extends AbstractList<E>
 					}
 				}
 
-				@byteback.annotations.Contract.Predicate
+				@byteback.specification.Contract.Predicate
 				public boolean modCount_is_invalid(E e) {
 					return modCount_is_invalid();
 				}
@@ -1301,7 +1301,7 @@ public class ArrayList<E> extends AbstractList<E>
 				}
 
 				@Pure
-				@byteback.annotations.Contract.Predicate
+				@byteback.specification.Contract.Predicate
 				public boolean modCount_is_invalid() {
 					return neq(expectedModCount, ArrayList.this.modCount);
 				}
@@ -1320,7 +1320,7 @@ public class ArrayList<E> extends AbstractList<E>
 		}
 
 		@Pure
-		@byteback.annotations.Contract.Predicate
+		@byteback.specification.Contract.Predicate
 		public boolean index_is_out_of_bounds_incl(int index) {
 			return lt(index, 0) | gte(index, this.size);
 		}
@@ -1332,7 +1332,7 @@ public class ArrayList<E> extends AbstractList<E>
 		}
 
 		@Pure
-		@byteback.annotations.Contract.Predicate
+		@byteback.specification.Contract.Predicate
 		public boolean index_is_out_of_bounds(int index) {
 			return lt(index, 0) | gt(index, this.size);
 		}
@@ -1464,7 +1464,7 @@ public class ArrayList<E> extends AbstractList<E>
 							expectedModCount);
 		}
 
-		@byteback.annotations.Contract.Predicate
+		@byteback.specification.Contract.Predicate
 		public boolean action_is_null(Consumer<? super E> e) {
 			return eq(e, null);
 		}

@@ -33,7 +33,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 
-import byteback.annotations.Contract.Return;
+import byteback.specification.Contract.Return;
 
 /**
  * This class provides a skeletal implementation of the {@link List}

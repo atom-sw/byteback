@@ -1,6 +1,6 @@
 package byteback.analysis.body.jimple.transformer;
 
-import byteback.analysis.body.common.transformer.UnitTransformer;
+import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.analysis.body.jimple.visitor.AbstractJimpleValueSwitch;
 import byteback.analysis.body.vimp.*;
 import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
@@ -30,7 +30,7 @@ public class VimpValueBodyTransformer extends BodyTransformer {
         new VimpValueTransformer(b.getMethod().getReturnType()).transform(b);
     }
 
-    public static class VimpValueTransformer extends BodyTransformer implements UnitTransformer {
+    public static class VimpValueTransformer extends ValueTransformer {
         public final Type returnType;
 
         public VimpValueTransformer(final Type returnType) {
@@ -38,10 +38,6 @@ public class VimpValueBodyTransformer extends BodyTransformer {
         }
 
         @Override
-        protected void internalTransform(final Body b, final String phaseName, final Map<String, String> options) {
-            transformBody(b);
-        }
-
         public void transformValue(final ValueBox valueBox) {
             new LogicValueTransformer(BooleanType.v(), valueBox).visit(valueBox.getValue());
         }

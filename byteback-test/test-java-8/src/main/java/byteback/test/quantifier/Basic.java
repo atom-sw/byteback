@@ -3,12 +3,12 @@
  */
 package byteback.test.quantifier;
 
-import static byteback.annotations.Quantifier.exists;
-import static byteback.annotations.Quantifier.forall;
-import static byteback.annotations.Operator.*;
+import static byteback.specification.Quantifier.exists;
+import static byteback.specification.Quantifier.forall;
+import static byteback.specification.Operator.*;
 
-import byteback.annotations.Binding;
-import byteback.annotations.Contract.Pure;
+import byteback.specification.Binding;
+import byteback.specification.Contract.Pure;
 
 public class Basic {
 

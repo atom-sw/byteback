@@ -3,10 +3,10 @@
  */
 package byteback.test.exceptions;
 
-import byteback.annotations.Contract.Predicate;
-import byteback.annotations.Contract.Raise;
-import byteback.annotations.Contract.Return;
-import static byteback.annotations.Operator.*;
+import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Raise;
+import byteback.specification.Contract.Return;
+import static byteback.specification.Operator.*;
 
 @SuppressWarnings("unused")
 public class PotentialNullDereference {

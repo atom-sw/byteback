@@ -3,7 +3,7 @@
  */
 package byteback.test.operation;
 
-import byteback.annotations.Contract.Pure;
+import byteback.specification.Contract.Pure;
 
 public class VirtualCall {
 

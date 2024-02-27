@@ -3,7 +3,7 @@
  */
 package byteback.test.exceptions;
 
-import static byteback.annotations.Contract.*;
+import static byteback.specification.Contract.*;
 
 import byteback.test.exceptions.Basic.Exception4;
 

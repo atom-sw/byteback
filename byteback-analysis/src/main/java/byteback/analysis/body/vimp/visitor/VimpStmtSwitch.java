@@ -5,8 +5,9 @@ import byteback.analysis.body.vimp.AssumptionStmt;
 import byteback.analysis.body.vimp.InvariantStmt;
 import byteback.analysis.common.visitor.Visitor;
 import soot.Unit;
+import soot.jimple.Stmt;
 
-public interface VimpStmtSwitch<T> extends Visitor<Unit, T> {
+public interface VimpStmtSwitch<T> extends Visitor<Stmt, T> {
 
 	default void caseAssertionStmt(final AssertionStmt s) {
 		defaultCase(s);

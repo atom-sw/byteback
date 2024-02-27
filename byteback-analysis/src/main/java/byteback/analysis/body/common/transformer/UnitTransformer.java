@@ -1,6 +1,6 @@
 package byteback.analysis.body.common.transformer;
 
-import byteback.analysis.body.vimp.SwappableUnitBox;
+import byteback.analysis.body.common.SwappableUnitBox;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
@@ -21,6 +21,6 @@ public abstract class UnitTransformer extends BodyTransformer {
         }
     }
 
-    abstract void transformUnit(UnitBox unitBox);
+    public abstract void transformUnit(UnitBox unitBox);
 
 }

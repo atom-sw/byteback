@@ -3,8 +3,8 @@
  */
 package byteback.test.exceptions;
 
-import static byteback.annotations.Operator.*;
-import static byteback.annotations.Contract.*;
+import static byteback.specification.Operator.*;
+import static byteback.specification.Contract.*;
 
 public class Basic {
 

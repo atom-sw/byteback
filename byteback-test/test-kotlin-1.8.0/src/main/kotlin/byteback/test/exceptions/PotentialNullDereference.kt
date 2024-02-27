@@ -4,8 +4,8 @@
 
 package byteback.test.exceptions
 
-import byteback.annotations.Contract.*
-import byteback.annotations.Operator.*
+import byteback.specification.Contract.*
+import byteback.specification.Operator.*
 
 class A @Return constructor() {
 

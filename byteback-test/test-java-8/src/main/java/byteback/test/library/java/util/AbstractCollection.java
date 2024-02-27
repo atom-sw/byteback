@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
 
-import byteback.annotations.Contract.Return;
+import byteback.specification.Contract.Return;
 
 /**
  * This class provides a skeletal implementation of the <tt>Collection</tt>

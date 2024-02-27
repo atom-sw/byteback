@@ -5,14 +5,14 @@ package byteback.test.examples;
 
 import java.util.NoSuchElementException;
 
-import byteback.annotations.Contract.Ensure;
-import byteback.annotations.Contract.Predicate;
-import byteback.annotations.Contract.Pure;
-import byteback.annotations.Contract.Raise;
-import byteback.annotations.Contract.Return;
-import static byteback.annotations.Contract.*;
-import static byteback.annotations.Operator.*;
-import static byteback.annotations.Special.*;
+import byteback.specification.Contract.Ensure;
+import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Pure;
+import byteback.specification.Contract.Raise;
+import byteback.specification.Contract.Return;
+import static byteback.specification.Contract.*;
+import static byteback.specification.Operator.*;
+import static byteback.specification.Special.*;
 
 public class ReadResource {
 

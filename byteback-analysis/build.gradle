@@ -5,7 +5,6 @@ plugins {
 }
 
 dependencies {
-		implementation project(':byteback-frontend:boogie')
 		implementation project(':byteback-common')
 		implementation 'org.soot-oss:soot:4.3.0'
 		implementation 'org.slf4j:slf4j-simple:1.6.1'

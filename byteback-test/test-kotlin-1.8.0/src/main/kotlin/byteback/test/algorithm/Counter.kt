@@ -3,9 +3,9 @@
   */
 package byteback.test.algorithm;
 
-import byteback.annotations.Contract.*
-import byteback.annotations.Special.*
-import byteback.annotations.Operator.*
+import byteback.specification.Contract.*
+import byteback.specification.Special.*
+import byteback.specification.Operator.*
 
 class Counter {
 

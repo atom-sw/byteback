@@ -9,5 +9,5 @@ repositories {
 
 dependencies {
 		implementation 'org.scala-lang:scala-library:2.13.8'
-		implementation project(':byteback-annotations')
+		implementation project(':byteback-specification')
 }

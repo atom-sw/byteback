@@ -3,11 +3,11 @@
  */
 package byteback.test.operation;
 
-import static byteback.annotations.Operator.eq;
-import static byteback.annotations.Operator.not;
+import static byteback.specification.Operator.eq;
+import static byteback.specification.Operator.not;
 
-import byteback.annotations.Contract.Predicate;
-import byteback.annotations.Contract.Pure;
+import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Pure;
 
 public class Integer {
 

@@ -4,8 +4,8 @@
 
 package byteback.test.exceptions
 
-import byteback.annotations.Operator.*
-import byteback.annotations.Contract.*
+import byteback.specification.Operator.*
+import byteback.specification.Contract.*
 
 
 class Basic {

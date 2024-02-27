@@ -1,6 +1,5 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.grimp.visitor.AbstractGrimpValueSwitch;
 import byteback.analysis.common.namespace.BBLibNamespace;
 import byteback.analysis.body.vimp.QuantifierExpr;
 import byteback.analysis.body.vimp.Vimp;
@@ -11,21 +10,17 @@ import java.util.Iterator;
 import java.util.Map;
 
 import soot.Body;
-import soot.BodyTransformer;
 import soot.Local;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.AssignStmt;
-import soot.jimple.CastExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.StaticInvokeExpr;
+import soot.jimple.*;
 import soot.util.Chain;
 import soot.util.HashChain;
 
-public class QuantifierValueTransformer extends BodyTransformer implements ValueTransformer {
+public class QuantifierValueTransformer extends ValueTransformer {
 
     private static final Lazy<QuantifierValueTransformer> instance = Lazy.from(QuantifierValueTransformer::new);
 
@@ -37,12 +32,7 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
     }
 
     @Override
-    protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        transformBody(body);
-    }
-
-    @Override
-    public void transformBody(final Body body) {
+    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
         final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
 
         while (unitIterator.hasNext()) {
@@ -69,7 +59,7 @@ public class QuantifierValueTransformer extends BodyTransformer implements Value
     public void transformValue(final ValueBox valueBox) {
         final Value value = valueBox.getValue();
 
-        value.apply(new AbstractGrimpValueSwitch<>() {
+        value.apply(new AbstractJimpleValueSwitch<>() {
 
             @Override
             public void caseStaticInvokeExpr(final StaticInvokeExpr invokeExpr) {

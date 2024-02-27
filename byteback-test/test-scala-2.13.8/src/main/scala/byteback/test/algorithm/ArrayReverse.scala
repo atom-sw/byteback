@@ -3,12 +3,12 @@
  */
 package byteback.test.algorithm;
 
-import byteback.annotations.Contract._;
-import byteback.annotations.Special._;
-import byteback.annotations.Operator._;
-import byteback.annotations.Operator.{eq => equal};
-import byteback.annotations.Binding;
-import byteback.annotations.Quantifier._;
+import byteback.specification.Contract._;
+import byteback.specification.Special._;
+import byteback.specification.Operator._;
+import byteback.specification.Operator.{eq => equal};
+import byteback.specification.Binding;
+import byteback.specification.Quantifier._;
 
 class ArrayReverse {
 

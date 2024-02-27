@@ -5,22 +5,25 @@ import soot.Unit;
 import soot.UnitBox;
 import soot.ValueBox;
 
-public interface ValueTransformer extends UnitTransformer {
+import java.util.Map;
 
-	void transformValue(ValueBox vbox);
+public abstract class ValueTransformer extends UnitTransformer {
 
-	default void transformBody(final Body body) {
-		for (final ValueBox vbox : body.getUseBoxes()) {
-			transformValue(vbox);
-		}
-	}
+	public abstract void transformValue(ValueBox vbox);
 
 	@Override
-	default void transformUnit(final UnitBox unitBox) {
+	public void transformUnit(final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 
 		for (final ValueBox useBox : unit.getUseBoxes()) {
 			transformValue(useBox);
+		}
+	}
+
+	@Override
+	public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+		for (final ValueBox vbox : body.getUseBoxes()) {
+			transformValue(vbox);
 		}
 	}
 

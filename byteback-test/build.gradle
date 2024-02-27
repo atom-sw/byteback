@@ -1,15 +1,17 @@
 import java.nio.file.Paths
 
+evaluationDependsOn(':byteback-tool')
+
 def scriptsDir = "$projectDir/scripts"
 
 def bytebackTestRoot = project(':byteback-test').projectDir
 
-def cli = project(':byteback-cli')
+def tool = project(':byteback-tool')
 
 subprojects { test ->
 
 
-		def bytebackRoot = cli.installDist.destinationDir
+		def toolRoot = tool.installDist.destinationDir
 
 		def summaryDir = "$buildDir/summary"
 
@@ -33,7 +35,7 @@ subprojects { test ->
 								environment 'SUMMARY', summaryDir
 								environment 'SRC_BASE', sourceDir
 								environment 'CLASS_BASE', compiledDir
-								environment 'BYTEBACK_ROOT', bytebackRoot
+								environment 'BYTEBACK_ROOT', toolRoot
 								environment 'TEST_JAR', project.shadowJar.archivePath
 								environment 'BOOGIE_TIME_LIMIT', boogieTimeLimitProperty
 								environment 'PATH', path
@@ -70,7 +72,7 @@ subprojects { test ->
 						}
 				}
 
-				dependsOn cli.installDist
+				dependsOn tool.installDist
 				dependsOn test.shadowJar
 		}
 
@@ -88,7 +90,7 @@ subprojects { test ->
 				doLast {
 						test.exec {
 								def output = "$experimentsDir/results.csv"
-								environment 'BYTEBACK_ROOT', bytebackRoot
+								environment 'BYTEBACK_ROOT', toolRoot
 								environment 'PATH', path
 								project.mkdir(experimentsDir)
 								commandLine 'python3', script,

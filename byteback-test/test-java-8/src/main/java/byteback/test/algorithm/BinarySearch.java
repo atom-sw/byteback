@@ -3,11 +3,11 @@
  */
 package byteback.test.algorithm;
 
-import byteback.annotations.Binding;
+import byteback.specification.Binding;
 
-import static byteback.annotations.Contract.*;
-import static byteback.annotations.Operator.*;
-import static byteback.annotations.Quantifier.forall;
+import static byteback.specification.Contract.*;
+import static byteback.specification.Operator.*;
+import static byteback.specification.Quantifier.forall;
 
 public class BinarySearch {
 
