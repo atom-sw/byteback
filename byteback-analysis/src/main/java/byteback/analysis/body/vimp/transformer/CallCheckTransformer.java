@@ -10,10 +10,8 @@ import java.util.Map;
 
 import soot.*;
 import soot.grimp.Grimp;
-import soot.grimp.GrimpBody;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.InvokeExpr;
-import soot.jimple.Jimple;
 import soot.util.Chain;
 
 public class CallCheckTransformer extends BodyTransformer {

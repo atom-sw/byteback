@@ -1,13 +1,12 @@
 package byteback.analysis.body.jimple.transformer;
 
 import byteback.analysis.body.common.transformer.UnitTransformer;
-import byteback.analysis.body.jimple.visitor.AbstractStmtSwitch;
+import byteback.analysis.body.common.visitor.AbstractStmtSwitch;
 import byteback.analysis.body.vimp.LogicStmt;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.common.namespace.BBLibNamespace;
 import byteback.common.Lazy;
 import soot.*;
-import soot.grimp.Grimp;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 

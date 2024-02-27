@@ -2,23 +2,25 @@ package byteback.analysis.body.common.transformer;
 
 import byteback.analysis.body.vimp.SwappableUnitBox;
 import soot.Body;
+import soot.BodyTransformer;
 import soot.Unit;
 import soot.UnitBox;
 
 import java.util.Iterator;
+import java.util.Map;
 
-public interface UnitTransformer {
+public abstract class UnitTransformer extends BodyTransformer {
 
-    default void transformBody(final Body body) {
-
-        final Iterator<Unit> iterator = body.getUnits().snapshotIterator();
+    @Override
+    public void internalTransform(final Body b, final String phaseName, final Map<String, String> options) {
+        final Iterator<Unit> iterator = b.getUnits().snapshotIterator();
 
         while (iterator.hasNext()) {
             final Unit unit = iterator.next();
-            transformUnit(new SwappableUnitBox(unit, body));
+            transformUnit(new SwappableUnitBox(unit, b));
         }
     }
 
-    void transformUnit(UnitBox unitBox);
+    abstract void transformUnit(UnitBox unitBox);
 
 }

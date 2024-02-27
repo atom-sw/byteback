@@ -1,4 +1,4 @@
-package byteback.analysis.body.grimp.transformer;
+package byteback.analysis.body.jimple.transformer;
 
 import byteback.analysis.common.namespace.BBLibNamespace;
 import byteback.common.Cons;
@@ -35,12 +35,12 @@ public class SubstitutionTracker {
         final SootMethod method = invokeValue.getMethod();
         final SootClass clazz = method.getDeclaringClass();
 
-        return BBLibNamespace.isPureMethod(method) || BBLibNamespace.isPredicateMethod(method) || BBLibNamespace.isSpecialClass(clazz)
-                || BBLibNamespace.isQuantifierClass(clazz);
+        return BBLibNamespace.isPureMethod(method) || BBLibNamespace.isPredicateMethod(method)
+                || BBLibNamespace.isSpecialClass(clazz) || BBLibNamespace.isQuantifierClass(clazz);
     }
 
     public static boolean hasSideEffects(final Value value) {
-        return (value instanceof final InvokeExpr invokeValue && !isPureInvocation(invokeValue))
+        return (value instanceof final InvokeExpr invokeExpr && !isPureInvocation(invokeExpr))
                 || value instanceof NewExpr || value instanceof NewArrayExpr;
     }
 

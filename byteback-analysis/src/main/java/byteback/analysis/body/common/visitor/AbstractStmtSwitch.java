@@ -1,4 +1,4 @@
-package byteback.analysis.body.jimple.visitor;
+package byteback.analysis.body.common.visitor;
 
 import soot.Body;
 import soot.Unit;

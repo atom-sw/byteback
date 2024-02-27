@@ -8,7 +8,6 @@ import byteback.analysis.common.namespace.BBLibNamespace;
 import byteback.analysis.scene.SootTypes;
 import byteback.common.Lazy;
 import soot.*;
-import soot.grimp.Grimp;
 import soot.jimple.*;
 
 import java.util.Map;
@@ -113,14 +112,14 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 }
             }
 
-            public void setUnaryValue(final UnaryConstructor constructor, final Type expectedType, final UnopExpr value) {
+            protected void setUnaryValue(final UnaryConstructor constructor, final Type expectedType, final UnopExpr value) {
                 final ValueBox operandBox = value.getOpBox();
                 setValue(constructor.apply(operandBox));
                 new LogicValueTransformer(expectedType, operandBox).visit(operandBox.getValue());
             }
 
-            public void setBinaryValue(final BinaryConstructor constructor, final Type expectedType,
-                                       final BinopExpr value) {
+            protected void setBinaryValue(final BinaryConstructor constructor, final Type expectedType,
+                                          final BinopExpr value) {
                 final ValueBox leftBox = value.getOp1Box();
                 final ValueBox rightBox = value.getOp2Box();
                 setValue(constructor.apply(leftBox, rightBox));
@@ -128,7 +127,7 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 new LogicValueTransformer(expectedType, rightBox).visit(rightBox.getValue());
             }
 
-            public void setBinaryValue(final BinaryConstructor constructor, final BinopExpr value) {
+            protected void setBinaryValue(final BinaryConstructor constructor, final BinopExpr value) {
                 setBinaryValue(constructor, SootTypes.join(value.getOp1().getType(), value.getOp2().getType()), value);
             }
 
@@ -348,10 +347,10 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 return resultBox.getValue();
             }
 
-            private interface BinaryConstructor extends BiFunction<ValueBox, ValueBox, Value> {
+            protected interface BinaryConstructor extends BiFunction<ValueBox, ValueBox, Value> {
             }
 
-            private interface UnaryConstructor extends Function<ValueBox, Value> {
+            protected interface UnaryConstructor extends Function<ValueBox, Value> {
             }
 
         }
