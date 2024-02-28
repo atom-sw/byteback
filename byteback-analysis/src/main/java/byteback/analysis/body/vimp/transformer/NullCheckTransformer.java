@@ -26,20 +26,15 @@ public class NullCheckTransformer extends CheckTransformer {
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
         if (PhaseOptions.getBoolean(options, "enabled")) {
-            transformBody(body);
-        }
-    }
+            if (!body.getMethod().isStatic()) {
+                final Unit unit = body.getThisUnit();
+                final Unit assumption = Vimp.v()
+                        .newAssumptionStmt(Vimp.v().newNeExpr(body.getThisLocal(), NullConstant.v()));
+                body.getUnits().insertAfter(assumption, unit);
+            }
 
-    @Override
-    public void transformBody(final Body body) {
-        if (!body.getMethod().isStatic()) {
-            final Unit unit = body.getThisUnit();
-            final Unit assumption = Vimp.v()
-                    .newAssumptionStmt(Vimp.v().newNeExpr(body.getThisLocal(), NullConstant.v()));
-            body.getUnits().insertAfter(assumption, unit);
+            super.internalTransform(body, phaseName, options);
         }
-
-        super.transformBody(body);
     }
 
     @Override
@@ -74,8 +69,9 @@ public class NullCheckTransformer extends CheckTransformer {
     }
 
     @Override
-    public Value makeCheckExpr(Value inner, Value outer) {
-        return Grimp.v().newNeExpr(inner, NullConstant.v());
+    public Value createCheckExpr(Value target, Value outer)
+    {
+        return Grimp.v().newNeExpr(target, NullConstant.v());
     }
 
 }

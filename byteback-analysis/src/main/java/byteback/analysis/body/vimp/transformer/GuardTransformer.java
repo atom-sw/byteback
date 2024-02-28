@@ -20,10 +20,8 @@ import soot.Trap;
 import soot.Unit;
 import soot.Value;
 import soot.grimp.Grimp;
-import soot.grimp.GrimpBody;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
-import soot.jimple.JimpleBody;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
@@ -39,13 +37,9 @@ public class GuardTransformer extends BodyTransformer {
     }
 
     @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        transformBody(body);
-    }
-
-    public void transformBody(final Body body) {
-        final Chain<Unit> units = body.getUnits();
-        final Chain<Trap> traps = body.getTraps();
+    public void internalTransform(final Body b, final String phaseName, final Map<String, String> options) {
+        final Chain<Unit> units = b.getUnits();
+        final Chain<Trap> traps = b.getTraps();
         final ListHashMap<Unit, Trap> startToTraps = new ListHashMap<>();
         final ListHashMap<Unit, Trap> endToTraps = new ListHashMap<>();
         final HashSet<Unit> trapHandlers = new HashSet<>();

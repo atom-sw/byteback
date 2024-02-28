@@ -44,16 +44,16 @@ public class SubstitutionTracker {
                 || value instanceof NewExpr || value instanceof NewArrayExpr;
     }
 
-    public void track(final AssignStmt assignUnit) {
-        final Value leftValue = assignUnit.getLeftOp();
-        final Value rightValue = assignUnit.getRightOp();
+    public void track(final AssignStmt assignStmt) {
+        final Value leftValue = assignStmt.getLeftOp();
+        final Value rightValue = assignStmt.getRightOp();
 
         if (leftValue instanceof final Local local) {
             if (!hasSideEffects(rightValue)) {
-                localToSubstitution.put(local, new Cons<>(assignUnit, rightValue));
+                localToSubstitution.put(local, new Cons<>(assignStmt, rightValue));
             }
 
-            for (final ValueBox useBox : assignUnit.getUseBoxes()) {
+            for (final ValueBox useBox : assignStmt.getUseBoxes()) {
                 final Value useValue = useBox.getValue();
 
                 if (useValue instanceof final Ref reference) {

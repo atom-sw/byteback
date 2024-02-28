@@ -28,7 +28,7 @@ public class IndexCheckTransformer extends CheckTransformer {
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
         if (PhaseOptions.getBoolean(options, "enabled")) {
-            transformBody(body);
+            internalTransform(body, phaseName, options);
         }
     }
 
@@ -44,7 +44,7 @@ public class IndexCheckTransformer extends CheckTransformer {
     }
 
     @Override
-    public Value makeCheckExpr(Value inner, Value outer) {
+    public Value createCheckExpr(Value target, Value outer) {
         if (outer instanceof ArrayRef arrayRef) {
             final Value indexValue = arrayRef.getIndex();
             final Value arrayBase = arrayRef.getBase();

@@ -27,15 +27,6 @@ public class CallCheckTransformer extends BodyTransformer {
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        transformBody(body);
-    }
-
-    public Value makeCheckExpr() {
-        final CaughtExceptionRef caughtExceptionRef = Vimp.v().newCaughtExceptionRef();
-        return Grimp.v().newEqExpr(caughtExceptionRef, VoidConstant.v());
-    }
-
-    public void transformBody(final Body body) {
         final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
         final Chain<Unit> units = body.getUnits();
 
@@ -59,6 +50,11 @@ public class CallCheckTransformer extends BodyTransformer {
                 }
             }
         }
+    }
+
+    public Value makeCheckExpr() {
+        final CaughtExceptionRef caughtExceptionRef = Vimp.v().newCaughtExceptionRef();
+        return Grimp.v().newEqExpr(caughtExceptionRef, VoidConstant.v());
     }
 
 }

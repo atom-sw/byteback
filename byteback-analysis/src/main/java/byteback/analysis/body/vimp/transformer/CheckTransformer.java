@@ -6,21 +6,12 @@ import byteback.common.Lazy;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
-import soot.Body;
-import soot.BodyTransformer;
-import soot.Local;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootMethodRef;
-import soot.Unit;
-import soot.Value;
-import soot.ValueBox;
+import soot.*;
 import soot.grimp.Grimp;
-import soot.grimp.GrimpBody;
 import soot.jimple.Jimple;
-import soot.jimple.JimpleBody;
 import soot.jimple.SpecialInvokeExpr;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -33,9 +24,9 @@ public abstract class CheckTransformer extends BodyTransformer {
         this.exceptionClass = exceptionClass;
     }
 
-    public Chain<Unit> makeThrowUnits(final Body body, Supplier<Local> localSupplier) {
+    public Chain<Unit> createThrowUnits(final Supplier<Local> exceptionLocalSupplier) {
         final Chain<Unit> units = new HashChain<>();
-        final Local local = localSupplier.get();
+        final Local local = exceptionLocalSupplier.get();
         final Unit initUnit = Grimp.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getType()));
         units.addLast(initUnit);
         final SootMethodRef constructorRef = exceptionClass.getMethod("<init>", Collections.emptyList()).makeRef();
@@ -48,31 +39,25 @@ public abstract class CheckTransformer extends BodyTransformer {
         return units;
     }
 
-    public abstract Value extractTarget(Value value);
+    public abstract Optional<Value> createUnitCheck(final Unit unit);
 
-    public abstract Value makeCheckExpr(Value inner, Value outer);
-
-    public void transformBody(final Body body) {
+    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
         final Chain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
+        final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
         final Lazy<Local> exceptionLocalSupplier = Lazy.from(() ->
-                Scene.v().createLocalGenerator(body)
-                        .generateLocal(exceptionClass.getType()));
+                localGenerator.generateLocal(exceptionClass.getType()));
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
+            final Optional<Value> unitCheckOption = createUnitCheck(unit);
 
-            for (final ValueBox valueBox : unit.getUseAndDefBoxes()) {
-                final Value value = valueBox.getValue();
-                Value target = extractTarget(value);
-
-                if (target != null) {
-                    final Value checkExpr = makeCheckExpr(target, value);
-                    final Chain<Unit> throwStmts = makeThrowUnits(body, exceptionLocalSupplier);
-                    units.insertBefore(throwStmts, unit);
-                    final Unit checkStmt = Vimp.v().newIfStmt(checkExpr, unit);
-                    units.insertBefore(checkStmt, throwStmts.getFirst());
-                }
+            if (unitCheckOption.isPresent()) {
+                final Value unitCheck = unitCheckOption.get();
+                final Chain<Unit> throwStmts = createThrowUnits(exceptionLocalSupplier);
+                units.insertBefore(throwStmts, unit);
+                final Unit checkStmt = Vimp.v().newIfStmt(unitCheck, unit);
+                units.insertBefore(checkStmt, throwStmts.getFirst());
             }
         }
     }

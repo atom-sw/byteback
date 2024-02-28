@@ -43,7 +43,7 @@ public class VimpUnitBodyTransformer extends UnitTransformer {
                         case BBLibNamespace.ASSERTION_NAME -> Vimp.v().newAssertionStmt(argument);
                         case BBLibNamespace.ASSUMPTION_NAME -> Vimp.v().newAssumptionStmt(argument);
                         case BBLibNamespace.INVARIANT_NAME -> Vimp.v().newInvariantStmt(argument);
-                        default -> throw new IllegalStateException("Unknown logic statement " + method.getName());
+                        default -> throw new IllegalStateException("Unknown specification statement " + method.getName());
                     };
 
                     newUnit.addAllTagsOf(invokeStmt);

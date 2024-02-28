@@ -81,7 +81,7 @@ public class QuantifierValueTransformer extends ValueTransformer {
                         locals.add(local);
                         expression = invokeExpr.getArg(1);
                     } else {
-                        throw new RuntimeException("First argument of quantifier must be a local variable");
+                        throw new RuntimeException("First argument of quantifier method must be a local variable");
                     }
 
                     final QuantifierExpr substitute = switch (method.getName()) {

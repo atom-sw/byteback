@@ -32,11 +32,7 @@ public class InvariantExpander extends BodyTransformer {
     }
 
     @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        transformBody(body);
-    }
-
-    public void transformBody(final Body b) {
+    public void internalTransform(final Body b, final String phaseName, final Map<String, String> options) {
         final Chain<Unit> units = b.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
         final LoopFinder loopFinder = new LoopFinder();

@@ -13,7 +13,6 @@ public class VimpExprFolder extends ExprFolder {
         return instance.get();
     }
 
-
     @Override
     public boolean canSubstitute(final Value substitution) {
         return substitution instanceof Immediate;

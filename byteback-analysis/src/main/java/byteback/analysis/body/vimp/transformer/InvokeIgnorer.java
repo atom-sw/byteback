@@ -23,10 +23,6 @@ public class InvokeIgnorer extends BodyTransformer {
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        transformBody(body);
-    }
-
-    public void transformBody(final Body body) {
         final Iterator<Unit> unitsIterator = body.getUnits().snapshotIterator();
 
         while (unitsIterator.hasNext()) {

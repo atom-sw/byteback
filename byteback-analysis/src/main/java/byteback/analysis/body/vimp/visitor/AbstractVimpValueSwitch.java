@@ -25,9 +25,4 @@ public abstract class AbstractVimpValueSwitch<R> extends AbstractJimpleValueSwit
 		caseXorExpr(v);
 	}
 
-	@Override
-	public void defaultCase(final Object v) {
-		defaultCase((Value) v);
-	}
-
 }

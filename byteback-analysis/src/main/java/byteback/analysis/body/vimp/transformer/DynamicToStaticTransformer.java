@@ -24,10 +24,6 @@ public class DynamicToStaticTransformer extends BodyTransformer {
 
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        transformBody(body);
-    }
-
-    public void transformBody(final Body body) {
         for (final ValueBox vbox : body.getUseBoxes()) {
             final Value value = vbox.getValue();
 
