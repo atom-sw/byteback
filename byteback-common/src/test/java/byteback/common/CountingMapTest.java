@@ -2,6 +2,7 @@ package byteback.common;
 
 import static org.junit.Assert.assertEquals;
 
+import byteback.common.collection.CountingHashMap;
 import org.junit.Test;
 
 public class CountingMapTest {

@@ -3,16 +3,16 @@
  */
 package byteback.test.operation;
 
-import byteback.specification.Contract.Pure;
+import byteback.specification.Contract.Function;
 
 public class StaticCall {
 
-	@Pure
+	@Function
 	public static int getConstant() {
 		return 1;
 	}
 
-	@Pure
+	@Function
 	public static int increment(int a) {
 		return a + 1;
 	}
@@ -21,7 +21,7 @@ public class StaticCall {
 		return a + 1;
 	}
 
-	@Pure
+	@Function
 	public static int main() {
 		return increment(getConstant());
 	}

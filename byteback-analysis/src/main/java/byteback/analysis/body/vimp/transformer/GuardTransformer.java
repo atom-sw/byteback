@@ -1,10 +1,10 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.VoidConstant;
-import byteback.common.Lazy;
-import byteback.common.ListHashMap;
-import byteback.common.Stacks;
+import byteback.analysis.body.vimp.syntax.VoidConstant;
+import byteback.common.function.Lazy;
+import byteback.common.collection.ListHashMap;
+import byteback.common.collection.Stacks;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -93,8 +93,7 @@ public class GuardTransformer extends BodyTransformer {
 
                 Unit indexUnit = assignUnit;
 
-                if (throwUnit.getOp().getType() instanceof RefType throwType) {
-
+                if (throwUnit.getOp().getType() instanceof RefType) {
                     for (int i = activeTraps.size() - 1; i >= 0; --i) {
                         final Trap activeTrap = activeTraps.get(i);
                         final RefType trapType = activeTrap.getException().getType();

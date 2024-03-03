@@ -5,7 +5,7 @@ package byteback.test.generics;
 
 import static byteback.specification.Contract.*;
 import static byteback.specification.Operator.*;
-import byteback.specification.Contract.Pure;
+import byteback.specification.Contract.Function;
 
 public class List<T> {
 
@@ -13,7 +13,7 @@ public class List<T> {
 
 	private final List<T> tail;
 
-	@Pure
+	@Function
 	@Predicate
 	public boolean field_values(final T element, final List<T> tail) {
 		return eq(this.element, element) & eq(this.tail, tail);
@@ -35,12 +35,12 @@ public class List<T> {
 		this(element, null);
 	}
 
-	@Pure
+	@Function
 	public T getElement() {
 		return element;
 	}
 
-	@Pure
+	@Function
 	public List<T> getTail() {
 		return tail;
 	}

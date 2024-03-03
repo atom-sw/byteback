@@ -3,6 +3,7 @@ package byteback.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import byteback.common.function.Lazy;
 import org.junit.Test;
 
 public class LazyTest {

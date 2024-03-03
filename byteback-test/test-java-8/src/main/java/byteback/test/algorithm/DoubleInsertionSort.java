@@ -11,7 +11,7 @@ import byteback.specification.Binding;
 
 public class DoubleInsertionSort {
 
-	@Pure
+	@Function
 	public static boolean sorted(final double[] a, final int i, final int j) {
 		final int k = Binding.integer();
 

@@ -4,13 +4,14 @@
 
 package byteback.test.exceptions
 
+import byteback.specification.Contract
 import byteback.specification.Operator.*
 import byteback.specification.Contract.*
 
 
 class Basic {
 
-		@get:Pure
+		@get:Contract.Function
 		val f: Int = 0;
 
 		fun tryCatchBlock(): Exception {
@@ -77,31 +78,31 @@ class Basic {
 				}
 		}
 
-		@Pure
+		@Contract.Function
 		@Predicate
 		fun `f is 1`(): Boolean {
 				return eq(f, 1)
 		}
 
-		@Pure
+		@Contract.Function
 		@Predicate
 		fun `f is 2`(): Boolean {
 				return eq(f, 2)
 		}
 
-		@Pure
+		@Contract.Function
 		@Predicate
 		fun `f is 3`(): Boolean {
 				return eq(f, 3)
 		}
 
-		@Pure
+		@Contract.Function
 		@Predicate
 		fun `f is 4`(): Boolean {
 				return eq(f, 4)
 		}
 
-		@Pure
+		@Contract.Function
 		@Predicate
 		fun `f is gt 4`(): Boolean {
 				return gt(f, 4)

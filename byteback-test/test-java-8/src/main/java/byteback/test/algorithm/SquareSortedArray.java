@@ -10,7 +10,7 @@ import byteback.specification.Binding;
 
 public class SquareSortedArray {
 
-	@Pure
+	@Function
 	public static boolean sorted(final int[] a, final int i, final int j) {
 		final int k = Binding.integer();
 

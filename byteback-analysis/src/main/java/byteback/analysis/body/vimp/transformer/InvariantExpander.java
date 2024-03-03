@@ -1,9 +1,9 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.AssertionStmt;
-import byteback.analysis.body.vimp.InvariantStmt;
-import byteback.common.Lazy;
+import byteback.analysis.body.vimp.syntax.AssertStmt;
+import byteback.analysis.body.vimp.syntax.InvariantStmt;
+import byteback.common.function.Lazy;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -12,9 +12,7 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
 import soot.Value;
-import soot.grimp.GrimpBody;
 import soot.jimple.IfStmt;
-import soot.jimple.JimpleBody;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
@@ -71,8 +69,8 @@ public class InvariantExpander extends BodyTransformer {
                 final Loop loop = activeLoops.peek();
                 final Value condition = invariantUnit.getCondition();
 
-                final Supplier<AssertionStmt> assertionUnitSupplier = () -> {
-                    final AssertionStmt assertionUnit = Vimp.v().newAssertionStmt(condition);
+                final Supplier<AssertStmt> assertionUnitSupplier = () -> {
+                    final AssertStmt assertionUnit = Vimp.v().newAssertStmt(condition);
                     assertionUnit.addAllTagsOf(invariantUnit);
 
                     return assertionUnit;

@@ -7,27 +7,27 @@ import byteback.specification.Contract.*;
 
 public class Real {
 
-	@Pure
+	@Function
 	public static double division(double a, double b) {
 		return a / b;
 	}
 
-	@Pure
+	@Function
 	public static float division(float a, float b) {
 		return a / b;
 	}
 
-	@Pure
+	@Function
 	public static double multiplication(double a, double b) {
 		return a * b;
 	}
 
-	@Pure
+	@Function
 	public static float multiplication(float a, float b) {
 		return a * b;
 	}
 
-	@Pure
+	@Function
 	public static double circleArea(double r) {
 		return 3.14 * r * r;
 	}

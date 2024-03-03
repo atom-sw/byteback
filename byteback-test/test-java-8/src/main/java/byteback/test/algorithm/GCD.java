@@ -9,7 +9,7 @@ import static byteback.specification.Special.*;
 
 public class GCD {
 
-	@Pure
+	@Function
 	public static int gcd_recursive(int a, int b) {
 		return conditional(eq(a, b), a, conditional(gt(a, b), gcd_recursive(a - b, b), gcd_recursive(a, b - a)));
 	}
@@ -19,13 +19,13 @@ public class GCD {
 		return implies(not(arguments_are_negative(a, b)), eq(r, gcd_recursive(a, b)));
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean arguments_are_negative(int a, int b) {
 		return lte(a, 0) | lte(b, 0);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean arguments_are_positive(int a, int b) {
 		return lte(a, 0) & lte(b, 0);

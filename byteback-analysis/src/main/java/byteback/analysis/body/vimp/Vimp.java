@@ -1,11 +1,18 @@
 package byteback.analysis.body.vimp;
 
-import byteback.common.Lazy;
+import byteback.analysis.body.vimp.syntax.*;
+import byteback.common.function.Lazy;
 import soot.*;
 import soot.grimp.internal.ExprBox;
 import soot.jimple.*;
+import soot.jimple.internal.ImmediateBox;
+import soot.jimple.internal.JimpleLocalBox;
 import soot.util.Chain;
 import soot.util.HashChain;
+
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class Vimp {
 
@@ -24,145 +31,157 @@ public class Vimp {
     }
 
     public ValueBox newArgBox(final Value value) {
-        return new ExprBox(value);
+        return new ImmediateBox(value);
     }
 
-    public AssertionStmt newAssertionStmt(final Value c) {
-        return new AssertionStmt(c);
+    public ValueBox newImmediateBox(final Value value) {
+        return new ImmediateBox(value);
     }
 
-    public AssumptionStmt newAssumptionStmt(final Value c) {
-        return new AssumptionStmt(c);
+    public AssertStmt newAssertStmt(final Value condition) {
+        return new AssertStmt(condition);
     }
 
-    public InvariantStmt newInvariantStmt(final Value c) {
-        return new InvariantStmt(c);
+    public AssumeStmt newAssumeStmt(final Value condition) {
+        return new AssumeStmt(condition);
     }
 
-    public LogicAndExpr newLogicAndExpr(final Value a, final Value b) {
-        return new LogicAndExpr(a, b);
-    }
-
-    public LogicAndExpr newLogicAndExpr(final ValueBox abox, final ValueBox bbox) {
-        return new LogicAndExpr(abox, bbox);
-    }
-
-    public LogicOrExpr newLogicOrExpr(final Value a, final Value b) {
-        return new LogicOrExpr(a, b);
-    }
-
-    public LogicOrExpr newLogicOrExpr(final ValueBox abox, final ValueBox bbox) {
-        return new LogicOrExpr(abox, bbox);
-    }
-
-    public LogicXorExpr newLogicXorExpr(final ValueBox abox, final ValueBox bbox) {
-        return new LogicXorExpr(abox, bbox);
-    }
-
-    public LogicIffExpr newLogicIffExpr(final Value a, final Value b) {
-        return new LogicIffExpr(a, b);
-    }
-
-    public LogicNotExpr newLogicNotExpr(final Value v) {
-        return new LogicNotExpr(v);
-    }
-
-    public LogicNotExpr newLogicNotExpr(final ValueBox vbox) {
-        return new LogicNotExpr(vbox);
-    }
-
-    public LogicImpliesExpr newLogicImpliesExpr(final Value a, final Value b) {
-        return new LogicImpliesExpr(a, b);
-    }
-
-    public LogicForallExpr newLogicForallExpr(final Chain<Local> ls, final Value v) {
-        return new LogicForallExpr(ls, v);
-    }
-
-    public LogicForallExpr newLogicForallExpr(final Local l, final Value v) {
-        final HashChain<Local> ls = new HashChain<>();
-        ls.add(l);
-
-        return new LogicForallExpr(ls, v);
-    }
-
-    public LogicExistsExpr newLogicExistsExpr(final Chain<Local> ls, final Value v) {
-        return new LogicExistsExpr(ls, v);
-    }
-
-    public LogicExistsExpr newLogicExistsExpr(final Local l, final Value v) {
-        final HashChain<Local> ls = new HashChain<>();
-        ls.add(l);
-
-        return new LogicExistsExpr(ls, v);
-    }
-
-    public GtExpr newGtExpr(final Value a, final Value b) {
-        return new LogicGtExpr(a, b);
-    }
-
-    public GtExpr newGtExpr(final ValueBox abox, final ValueBox bbox) {
-        return new LogicGtExpr(abox, bbox);
-    }
-
-    public GeExpr newGeExpr(final Value a, final Value b) {
-        return new LogicGeExpr(a, b);
-    }
-
-    public GeExpr newGeExpr(final ValueBox abox, final ValueBox bbox) {
-        return new LogicGeExpr(abox, bbox);
-    }
-
-    public LtExpr newLtExpr(final Value a, final Value b) {
-        return new LogicLtExpr(a, b);
-    }
-
-    public LtExpr newLtExpr(final ValueBox abox, final ValueBox bbox) {
-        return new LogicLtExpr(abox, bbox);
-    }
-
-    public LeExpr newLeExpr(final Value a, final Value b) {
-        return new LogicLeExpr(a, b);
-    }
-
-    public LeExpr newLeExpr(final ValueBox abox, final ValueBox bbox) {
-        return new LogicLeExpr(abox, bbox);
-    }
-
-    public EqExpr newEqExpr(final ValueBox abox, final ValueBox bbox) {
-        return new LogicEqExpr(abox, bbox);
-    }
-
-    public EqExpr newEqExpr(final Value a, final Value b) {
-        return new LogicEqExpr(a, b);
-    }
-
-    public NeExpr newNeExpr(final ValueBox abox, final ValueBox bbox) {
-        return new LogicNeExpr(abox, bbox);
-    }
-
-    public NeExpr newNeExpr(final Value a, final Value b) {
-        return new LogicNeExpr(a, b);
+    public InvariantStmt newInvariantStmt(final Value condition) {
+        return new InvariantStmt(condition);
     }
 
     public IfStmt newIfStmt(final Value value, final Unit target) {
         return new LogicIfStmt(value, target);
     }
 
-    public InstanceOfExpr newInstanceOfExpr(final Value value, final Type type) {
-        return new LogicInstanceOfExpr(value, type);
+    public LogicAndExpr newLogicAndExpr(final Value op1, final Value op2) {
+        return new LogicAndExpr(op1, op2);
+    }
+
+    public LogicAndExpr newLogicAndExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new LogicAndExpr(op1box, op2box);
+    }
+
+    public LogicOrExpr newLogicOrExpr(final Value op1, final Value op2) {
+        return new LogicOrExpr(op1, op2);
+    }
+
+    public LogicOrExpr newLogicOrExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new LogicOrExpr(op1box, op2box);
+    }
+
+    public LogicXorExpr newLogicXorExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new LogicXorExpr(op1box, op2box);
+    }
+
+    public LogicIffExpr newLogicIffExpr(final Value op1, final Value op2) {
+        return new LogicIffExpr(op1, op2);
+    }
+
+    public LogicNotExpr newLogicNotExpr(final Value v) {
+        return new LogicNotExpr(v);
+    }
+
+    public LogicNotExpr newLogicNotExpr(final ValueBox opBox) {
+        return new LogicNotExpr(opBox);
+    }
+
+    public LogicImpliesExpr newLogicImpliesExpr(final Value op1, final Value op2) {
+        return new LogicImpliesExpr(op1, op2);
+    }
+
+    public ForallExpr newLogicForallExpr(final Chain<Local> ls, final Value v) {
+        return new ForallExpr(ls, v);
+    }
+
+    public ForallExpr newLogicForallExpr(final Local l, final Value v) {
+        final HashChain<Local> ls = new HashChain<>();
+        ls.add(l);
+
+        return new ForallExpr(ls, v);
+    }
+
+    public ExistsExpr newLogicExistsExpr(final Chain<Local> ls, final Value v) {
+        return new ExistsExpr(ls, v);
+    }
+
+    public ExistsExpr newLogicExistsExpr(final Local l, final Value v) {
+        final HashChain<Local> ls = new HashChain<>();
+        ls.add(l);
+
+        return new ExistsExpr(ls, v);
+    }
+
+    public GtExpr newGtExpr(final Value op1, final Value op2) {
+        return new LogicGtExpr(op1, op2);
+    }
+
+    public GtExpr newGtExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new LogicGtExpr(op1box, op2box);
+    }
+
+    public GeExpr newGeExpr(final Value op1, final Value op2) {
+        return new LogicGeExpr(op1, op2);
+    }
+
+    public GeExpr newGeExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new LogicGeExpr(op1box, op2box);
+    }
+
+    public LtExpr newLtExpr(final Value op1, final Value op2) {
+        return new LogicLtExpr(op1, op2);
+    }
+
+    public LtExpr newLtExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new LogicLtExpr(op1box, op2box);
+    }
+
+    public LeExpr newLeExpr(final Value op1, final Value op2) {
+        return new LogicLeExpr(op1, op2);
+    }
+
+    public LeExpr newLeExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new LogicLeExpr(op1box, op2box);
+    }
+
+    public EqExpr newEqExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new LogicEqExpr(op1box, op2box);
+    }
+
+    public EqExpr newEqExpr(final Value op1, final Value op2) {
+        return new LogicEqExpr(op1, op2);
+    }
+
+    public NeExpr newNeExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new LogicNeExpr(op1box, op2box);
+    }
+
+    public NeExpr newNeExpr(final Value op1, final Value op2) {
+        return new LogicNeExpr(op1, op2);
+    }
+
+    public InstanceOfExpr newInstanceOfExpr(final Value operand, final Type type) {
+        return new LogicInstanceOfExpr(operand, type);
     }
 
     public CaughtExceptionRef newCaughtExceptionRef() {
         return new ConcreteCaughtExceptionRef();
     }
 
-    public OldExpr newOldExpr(final Value value) {
-        return new OldExpr(value);
+    public OldExpr newOldExpr(final Value operand) {
+        return new OldExpr(operand);
     }
 
-    public OldExpr newOldExpr(final ValueBox vbox) {
-        return new OldExpr(vbox);
+    public CallExpr newCallExpr(final SootMethodRef methodRef, final List<Value> args) {
+        return new CallExpr(methodRef, args);
+    }
+
+    public OldExpr newOldExpr(final ValueBox opBox) {
+        return new OldExpr(opBox);
+    }
+
+    public NestedExpr newNestedExpr(final AssignStmt definition) {
+        return new NestedExpr(definition);
     }
 
 }

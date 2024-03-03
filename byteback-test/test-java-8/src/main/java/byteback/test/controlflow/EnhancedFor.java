@@ -4,14 +4,14 @@
 package byteback.test.controlflow;
 
 import byteback.specification.Binding;
-import byteback.specification.Contract.Pure;
+import byteback.specification.Contract.Function;
 import static byteback.specification.Quantifier.*;
 import static byteback.specification.Operator.*;
 import static byteback.specification.Contract.*;
 
 public class EnhancedFor {
 
-	@Pure
+	@Function
 	public static boolean contains(int[] a, int x) {
 		final int i = Binding.integer();
 

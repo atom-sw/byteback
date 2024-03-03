@@ -11,7 +11,7 @@ import byteback.specification.Binding;
 
 public class Summary {
 
-	@Pure
+	@Function
 	public static boolean contains(int[] as, int e, int from, int to) {
 		int i = Binding.integer();
 

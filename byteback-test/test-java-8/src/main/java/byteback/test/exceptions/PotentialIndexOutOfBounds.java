@@ -4,7 +4,7 @@
 package byteback.test.exceptions;
 
 import byteback.specification.Contract.Predicate;
-import byteback.specification.Contract.Pure;
+import byteback.specification.Contract.Function;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Require;
 import byteback.specification.Contract.Return;
@@ -66,7 +66,7 @@ public class PotentialIndexOutOfBounds {
 		int a_l = a[a.length];
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean array_is_empty(int[] a) {
 		return eq(a.length, 0);
@@ -77,7 +77,7 @@ public class PotentialIndexOutOfBounds {
 		int a_0 = a[0];
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean index_is_negative(int i) {
 		return lt(i, 0);

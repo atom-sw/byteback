@@ -1,6 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.common.Lazy;
+import byteback.common.function.Lazy;
 
 import java.util.Map;
 import java.util.Set;

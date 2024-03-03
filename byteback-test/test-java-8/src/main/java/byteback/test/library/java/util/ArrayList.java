@@ -163,13 +163,13 @@ public class ArrayList<E> extends AbstractList<E>
 	 */
 	private int size;
 
-	@Pure
+	@Function
 	@byteback.specification.Contract.Predicate
 	public boolean illegal_capacity(int capacity) {
 		return lt(capacity, 0);
 	}
 
-	@Pure
+	@Function
 	@byteback.specification.Contract.Predicate
 	public boolean legal_capacity(int capacity) {
 		return gte(capacity, 0);
@@ -1221,7 +1221,7 @@ public class ArrayList<E> extends AbstractList<E>
 					return cursor - 1;
 				}
 
-				@Pure
+				@Function
 				@byteback.specification.Contract.Predicate
 				public boolean lastRet_is_valid_and_modCount_is_invalid() {
 					return lastRet_is_valid() & modCount_is_invalid();
@@ -1249,13 +1249,13 @@ public class ArrayList<E> extends AbstractList<E>
 					return lastRet_is_valid_and_modCount_is_invalid();
 				}
 
-				@Pure
+				@Function
 				@byteback.specification.Contract.Predicate
 				public boolean lastRet_is_valid() {
 					return gte(lastRet, 0);
 				}
 
-				@Pure
+				@Function
 				@byteback.specification.Contract.Predicate
 				public boolean lastRet_is_invalid() {
 					return not(lastRet_is_valid());
@@ -1300,7 +1300,7 @@ public class ArrayList<E> extends AbstractList<E>
 					}
 				}
 
-				@Pure
+				@Function
 				@byteback.specification.Contract.Predicate
 				public boolean modCount_is_invalid() {
 					return neq(expectedModCount, ArrayList.this.modCount);
@@ -1319,7 +1319,7 @@ public class ArrayList<E> extends AbstractList<E>
 			return new SubList(this, offset, fromIndex, toIndex);
 		}
 
-		@Pure
+		@Function
 		@byteback.specification.Contract.Predicate
 		public boolean index_is_out_of_bounds_incl(int index) {
 			return lt(index, 0) | gte(index, this.size);
@@ -1331,7 +1331,7 @@ public class ArrayList<E> extends AbstractList<E>
 				throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 		}
 
-		@Pure
+		@Function
 		@byteback.specification.Contract.Predicate
 		public boolean index_is_out_of_bounds(int index) {
 			return lt(index, 0) | gt(index, this.size);

@@ -10,27 +10,27 @@ import byteback.specification.Contract.*;
 
 public class Boolean {
 
-	@Pure
+	@Function
 	public static boolean or(boolean a, boolean b) {
 		return a | b;
 	}
 
-	@Pure
+	@Function
 	public static boolean and(boolean a, boolean b) {
 		return a & b;
 	}
 
-	@Pure
+	@Function
 	public static boolean xor(boolean a, boolean b) {
 		return a ^ b;
 	}
 
-	@Pure
+	@Function
 	public static boolean returnsTrue() {
 		return true;
 	}
 
-	@Pure
+	@Function
 	public static boolean returnsFalse() {
 		return false;
 	}

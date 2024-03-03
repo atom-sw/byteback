@@ -11,12 +11,12 @@ import byteback.specification.Binding;
 
 public class DoubleMax {
 
-	@Pure
+	@Function
 	public static boolean array_is_not_null(double a[]) {
 		return neq(a, null);
 	}
 
-	@Pure
+	@Function
 	public static boolean max_in_range(double a[], double n, int start, int end) {
 		int i = Binding.integer();
 

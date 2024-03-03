@@ -2,18 +2,25 @@ package byteback.analysis.body.jimple.transformer;
 
 import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.analysis.body.jimple.visitor.AbstractJimpleValueSwitch;
-import byteback.analysis.body.vimp.*;
+import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.syntax.*;
 import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
-import byteback.analysis.common.namespace.BBLibNamespace;
-import byteback.analysis.scene.SootTypes;
-import byteback.common.Lazy;
+import byteback.analysis.common.namespace.BBLibNames;
+import byteback.analysis.scene.Types;
+import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * Converts bytecode boolean expressions into logic boolean expressions. Unlike bytecode boolean expressions, logic
+ * boolean expressions do not operate on integer values.
+ * @author paganma
+ */
 public class VimpValueBodyTransformer extends BodyTransformer {
 
     private static final Lazy<VimpValueBodyTransformer> instance = Lazy.from(VimpValueBodyTransformer::new);
@@ -26,7 +33,7 @@ public class VimpValueBodyTransformer extends BodyTransformer {
     }
 
     @Override
-    protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    protected void internalTransform(final Body b, final String phaseName, final Map<String, String> options) {
         new VimpValueTransformer(b.getMethod().getReturnType()).transform(b);
     }
 
@@ -42,47 +49,11 @@ public class VimpValueBodyTransformer extends BodyTransformer {
             new LogicValueTransformer(BooleanType.v(), valueBox).visit(valueBox.getValue());
         }
 
-        public void transformUnit(final Unit unit) {
-            unit.apply(new AbstractVimpStmtSwitch<>() {
-
-                @Override
-                public void caseAssignStmt(final AssignStmt unit) {
-                    final Type type = unit.getLeftOp().getType();
-                    final ValueBox rightBox = unit.getRightOpBox();
-                    new LogicValueTransformer(type, unit.getRightOpBox()).visit(rightBox.getValue());
-                }
-
-                @Override
-                public void caseIfStmt(final IfStmt unit) {
-                    final ValueBox conditionBox = unit.getConditionBox();
-                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
-                }
-
-                @Override
-                public void caseReturnStmt(final ReturnStmt unit) {
-                    final ValueBox returnBox = unit.getOpBox();
-                    new LogicValueTransformer(returnType, returnBox).visit(returnBox.getValue());
-                }
-
-                @Override
-                public void caseAssertionStmt(final AssertionStmt unit) {
-                    final ValueBox conditionBox = unit.getConditionBox();
-                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
-                }
-
-                @Override
-                public void caseInvariantStmt(final InvariantStmt unit) {
-                    final ValueBox conditionBox = unit.getConditionBox();
-                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
-                }
-
-                @Override
-                public void caseAssumptionStmt(final AssumptionStmt unit) {
-                    final ValueBox conditionBox = unit.getConditionBox();
-                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
-                }
-
-            });
+        @Override
+        public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+            for (final Unit unit : body.getUnits()) {
+                transformUnit(unit);
+            }
         }
 
         @Override
@@ -90,10 +61,59 @@ public class VimpValueBodyTransformer extends BodyTransformer {
             transformUnit(unitBox.getUnit());
         }
 
+        public void transformUnit(final Unit unit) {
+            unit.apply(new AbstractVimpStmtSwitch<>() {
+
+                @Override
+                public void caseAssignStmt(final AssignStmt assignStmt) {
+                    final Type type = assignStmt.getLeftOp().getType();
+                    final ValueBox rightBox = assignStmt.getRightOpBox();
+                    new LogicValueTransformer(type, assignStmt.getRightOpBox()).visit(rightBox.getValue());
+                }
+
+                @Override
+                public void caseIfStmt(final IfStmt ifStmt) {
+                    final ValueBox conditionBox = ifStmt.getConditionBox();
+                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+                }
+
+                @Override
+                public void caseReturnStmt(final ReturnStmt returnStmt) {
+                    final ValueBox returnBox = returnStmt.getOpBox();
+                    new LogicValueTransformer(returnType, returnBox).visit(returnBox.getValue());
+                }
+
+                @Override
+                public void caseAssertionStmt(final AssertStmt assertStmt) {
+                    final ValueBox conditionBox = assertStmt.getConditionBox();
+                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+                }
+
+                @Override
+                public void caseInvariantStmt(final InvariantStmt invariantStmt) {
+                    final ValueBox conditionBox = invariantStmt.getConditionBox();
+                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+                }
+
+                @Override
+                public void caseAssumptionStmt(final AssumeStmt assumeStmt) {
+                    final ValueBox conditionBox = assumeStmt.getConditionBox();
+                    new LogicValueTransformer(BooleanType.v(), conditionBox).visit(conditionBox.getValue());
+                }
+
+            });
+        }
+
         public static class LogicValueTransformer extends AbstractJimpleValueSwitch<Value> {
 
             public final Type expectedType;
             public final ValueBox resultBox;
+
+            protected interface BinaryConstructor extends BiFunction<ValueBox, ValueBox, Value> {
+            }
+
+            protected interface UnaryConstructor extends Function<ValueBox, Value> {
+            }
 
             public LogicValueTransformer(final Type expectedType, final ValueBox resultBox) {
                 this.expectedType = expectedType;
@@ -108,175 +128,168 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                 }
             }
 
-            protected void setUnaryValue(final UnaryConstructor constructor, final Type expectedType, final UnopExpr value) {
-                final ValueBox operandBox = value.getOpBox();
+            protected void setUnaryValue(final UnaryConstructor constructor, final Type expectedType,
+                                         final UnopExpr unaryExpr) {
+                final ValueBox operandBox = unaryExpr.getOpBox();
                 setValue(constructor.apply(operandBox));
                 new LogicValueTransformer(expectedType, operandBox).visit(operandBox.getValue());
             }
 
             protected void setBinaryValue(final BinaryConstructor constructor, final Type expectedType,
-                                          final BinopExpr value) {
-                final ValueBox leftBox = value.getOp1Box();
-                final ValueBox rightBox = value.getOp2Box();
+                                          final BinopExpr binaryExpr) {
+                final ValueBox leftBox = binaryExpr.getOp1Box();
+                final ValueBox rightBox = binaryExpr.getOp2Box();
                 setValue(constructor.apply(leftBox, rightBox));
                 new LogicValueTransformer(expectedType, leftBox).visit(leftBox.getValue());
                 new LogicValueTransformer(expectedType, rightBox).visit(rightBox.getValue());
             }
 
             protected void setBinaryValue(final BinaryConstructor constructor, final BinopExpr value) {
-                setBinaryValue(constructor, SootTypes.join(value.getOp1().getType(), value.getOp2().getType()), value);
+                setBinaryValue(constructor, Types.join(value.getOp1().getType(), value.getOp2().getType()), value);
             }
 
             @Override
-            public void caseIntConstant(final IntConstant constant) {
+            public void caseIntConstant(final IntConstant intConstant) {
+                expectedType.apply(new TypeSwitch<>() {
+
+                    @Override
+                    public void caseBooleanType(final BooleanType $) {
+                        setValue(LogicConstant.v(intConstant.value > 0));
+                    }
+
+                });
+            }
+
+            @Override
+            public void caseAndExpr(final AndExpr andExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType type) {
-                        setValue(LogicConstant.v(constant.value > 0));
+                        setBinaryValue(Vimp.v()::newLogicAndExpr, type, andExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseAndExpr(final AndExpr value) {
+            public void caseOrExpr(final OrExpr orExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType type) {
-                        setBinaryValue(Vimp.v()::newLogicAndExpr, type, value);
+                        setBinaryValue(Vimp.v()::newLogicOrExpr, type, orExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseOrExpr(final OrExpr value) {
+            public void caseXorExpr(final XorExpr xorExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType type) {
-                        setBinaryValue(Vimp.v()::newLogicOrExpr, type, value);
+                        setBinaryValue(Vimp.v()::newLogicXorExpr, type, xorExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseXorExpr(final XorExpr value) {
+            public void caseNegExpr(final NegExpr negExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType type) {
-                        setBinaryValue(Vimp.v()::newLogicXorExpr, type, value);
+                        setUnaryValue(Vimp.v()::newLogicNotExpr, type, negExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseNegExpr(final NegExpr value) {
-                expectedType.apply(new TypeSwitch<>() {
-
-                    @Override
-                    public void caseBooleanType(final BooleanType type) {
-                        setUnaryValue(Vimp.v()::newLogicNotExpr, type, value);
-                    }
-
-                });
-            }
-
-            @Override
-            public void caseGtExpr(final GtExpr value) {
+            public void caseGtExpr(final GtExpr gtExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType $) {
-                        setBinaryValue(Vimp.v()::newGtExpr, value);
+                        setBinaryValue(Vimp.v()::newGtExpr, gtExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseGeExpr(final GeExpr value) {
+            public void caseGeExpr(final GeExpr geExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType $) {
-                        setBinaryValue(Vimp.v()::newGeExpr, value);
+                        setBinaryValue(Vimp.v()::newGeExpr, geExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseLtExpr(final LtExpr value) {
+            public void caseLtExpr(final LtExpr ltExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType $) {
-                        setBinaryValue(Vimp.v()::newLtExpr, value);
+                        setBinaryValue(Vimp.v()::newLtExpr, ltExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseLeExpr(final LeExpr value) {
+            public void caseLeExpr(final LeExpr leExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType $) {
-                        setBinaryValue(Vimp.v()::newLeExpr, value);
+                        setBinaryValue(Vimp.v()::newLeExpr, leExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseEqExpr(final EqExpr value) {
+            public void caseEqExpr(final EqExpr eqExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType $) {
-                        setBinaryValue(Vimp.v()::newEqExpr, value);
+                        setBinaryValue(Vimp.v()::newEqExpr, eqExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseNeExpr(final NeExpr value) {
+            public void caseNeExpr(final NeExpr neExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType $) {
-                        setBinaryValue(Vimp.v()::newNeExpr, value);
+                        setBinaryValue(Vimp.v()::newNeExpr, neExpr);
                     }
 
                 });
             }
 
             @Override
-            public void caseInstanceOfExpr(final InstanceOfExpr value) {
+            public void caseInstanceOfExpr(final InstanceOfExpr instanceOfExpr) {
                 expectedType.apply(new TypeSwitch<>() {
 
                     @Override
                     public void caseBooleanType(final BooleanType $) {
-                        setValue(Vimp.v().newInstanceOfExpr(value.getOp(), value.getCheckType()));
+                        setValue(Vimp.v().newInstanceOfExpr(instanceOfExpr.getOp(), instanceOfExpr.getCheckType()));
                     }
 
                 });
-            }
-
-            public void setSpecial(final InvokeExpr specialInvokeExpr) {
-                final SootMethod method = specialInvokeExpr.getMethod();
-
-                if (method.getName().equals("old")) {
-                    setValue(Vimp.v().newOldExpr(specialInvokeExpr.getArg(0)));
-                }
             }
 
             private void caseInvokeExpr(final InvokeExpr invokeExpr) {
@@ -284,12 +297,6 @@ public class VimpValueBodyTransformer extends BodyTransformer {
                     final ValueBox argumentBox = invokeExpr.getArgBox(i);
                     new LogicValueTransformer(invokeExpr.getMethodRef().getParameterType(i), argumentBox)
                             .visit(argumentBox.getValue());
-                }
-
-                final SootMethod invokedMethod = invokeExpr.getMethod();
-
-                if (BBLibNamespace.isSpecialClass(invokedMethod.getDeclaringClass())) {
-                    setSpecial(invokeExpr);
                 }
             }
 
@@ -322,18 +329,16 @@ public class VimpValueBodyTransformer extends BodyTransformer {
             public void caseCmpgExpr(final CmpgExpr $) {}
 
             @Override
-            public void defaultCase(final Value defaultValue) {
-                setValue(defaultValue);
-
-                if (defaultValue instanceof BinopExpr value) {
-                    final ValueBox leftBox = value.getOp1Box();
-                    final ValueBox rightBox = value.getOp2Box();
+            public void defaultCase(final Value value) {
+                if (value instanceof BinopExpr binaryExpr) {
+                    final ValueBox leftBox = binaryExpr.getOp1Box();
+                    final ValueBox rightBox = binaryExpr.getOp2Box();
                     new LogicValueTransformer(expectedType, leftBox).visit(leftBox.getValue());
                     new LogicValueTransformer(expectedType, rightBox).visit(rightBox.getValue());
                 }
 
-                if (defaultValue instanceof UnopExpr value) {
-                    final ValueBox operandBox = value.getOpBox();
+                if (value instanceof UnopExpr binaryExpr) {
+                    final ValueBox operandBox = binaryExpr.getOpBox();
                     new LogicValueTransformer(expectedType, operandBox).visit(operandBox.getValue());
                 }
             }
@@ -341,12 +346,6 @@ public class VimpValueBodyTransformer extends BodyTransformer {
             @Override
             public Value getResult() {
                 return resultBox.getValue();
-            }
-
-            protected interface BinaryConstructor extends BiFunction<ValueBox, ValueBox, Value> {
-            }
-
-            protected interface UnaryConstructor extends Function<ValueBox, Value> {
             }
 
         }

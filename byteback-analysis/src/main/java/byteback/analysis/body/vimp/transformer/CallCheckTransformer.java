@@ -1,9 +1,9 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.common.namespace.BBLibNamespace;
+import byteback.analysis.body.vimp.VimpValues;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.VoidConstant;
-import byteback.common.Lazy;
+import byteback.analysis.body.vimp.syntax.VoidConstant;
+import byteback.common.function.Lazy;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -11,7 +11,6 @@ import java.util.Map;
 import soot.*;
 import soot.grimp.Grimp;
 import soot.jimple.CaughtExceptionRef;
-import soot.jimple.InvokeExpr;
 import soot.util.Chain;
 
 public class CallCheckTransformer extends BodyTransformer {
@@ -33,20 +32,15 @@ public class CallCheckTransformer extends BodyTransformer {
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
 
-            for (final ValueBox vbox : unit.getUseAndDefBoxes()) {
-                final Value value = vbox.getValue();
+            for (final ValueBox valueBox : unit.getUseBoxes()) {
+                final Value value = valueBox.getValue();
 
-                if (value instanceof InvokeExpr invokeExpr) {
-                    final SootMethod invokedMethod = invokeExpr.getMethod();
-
-                    if (!BBLibNamespace.isPureMethod(invokedMethod)
-                            && !BBLibNamespace.isAnnotationClass(invokedMethod.getDeclaringClass())) {
-                        final Unit throwUnit = Grimp.v().newThrowStmt(Vimp.v().newCaughtExceptionRef());
-                        units.insertAfter(throwUnit, unit);
-                        final Unit elseBranch = units.getSuccOf(throwUnit);
-                        final Unit ifUnit = Vimp.v().newIfStmt(makeCheckExpr(), elseBranch);
-                        units.insertAfter(ifUnit, unit);
-                    }
+                if (VimpValues.v().isStatefulInvoke(value)) {
+                    final Unit throwUnit = Grimp.v().newThrowStmt(Vimp.v().newCaughtExceptionRef());
+                    units.insertAfter(throwUnit, unit);
+                    final Unit elseBranch = units.getSuccOf(throwUnit);
+                    final Unit ifUnit = Vimp.v().newIfStmt(makeCheckExpr(), elseBranch);
+                    units.insertAfter(ifUnit, unit);
                 }
             }
         }

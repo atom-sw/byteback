@@ -1,8 +1,8 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.common.namespace.BBLibNamespace;
-import byteback.analysis.scene.SootHosts;
-import byteback.common.Lazy;
+import byteback.analysis.common.namespace.BBLibNames;
+import byteback.analysis.scene.Hosts;
+import byteback.common.function.Lazy;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class InvokeIgnorer extends BodyTransformer {
             if (unit instanceof InvokeStmt invokeStmt) {
                 final SootMethod method = invokeStmt.getInvokeExpr().getMethod();
 
-                if (SootHosts.hasAnnotation(method, BBLibNamespace.IGNORE_ANNOTATION)) {
+                if (Hosts.hasAnnotation(method, BBLibNames.IGNORE_ANNOTATION)) {
                     body.getUnits().remove(unit);
                 }
             }

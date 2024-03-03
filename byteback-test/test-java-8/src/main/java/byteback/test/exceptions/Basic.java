@@ -78,31 +78,31 @@ public class Basic {
 
 	int f;
 
-	@Pure
+	@Function
 	@Predicate
 	public boolean f_is_1() {
 		return eq(f, 1);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public boolean f_is_2() {
 		return eq(f, 2);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public boolean f_is_3() {
 		return eq(f, 3);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public boolean f_is_4() {
 		return eq(f, 4);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public boolean f_is_gt_4() {
 		return gt(f, 4);
@@ -125,19 +125,19 @@ public class Basic {
 		}
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public boolean f_divides_2() {
 		return eq(f % 2, 0);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public boolean f_divides_3() {
 		return eq(f % 3, 0);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public boolean f_doesnt_divide_2_but_divides_3() {
 		return not(f_divides_2()) & f_divides_3();

@@ -9,18 +9,16 @@ import java.lang.annotation.Target;
 /**
  * Annotations for the specification of contracts.
  */
-public interface Contract {
+public class Contract {
 
-	/**
-	 * Declares a predicate method.
-	 *
-	 * A predicate method is a completely pure static method containing boolean
-	 * statements verifying conditions on its inputs. A predicate method may only
-	 * indirectly call other static predicate methods.
-	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public static @interface Pure {
+	public @interface Predicate {
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public @interface Function {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -38,14 +36,14 @@ public interface Contract {
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public static @interface Prelude {
+	public @interface Prelude {
 		public String value();
 	}
 
 	@Repeatable(Requires.class)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-	public static @interface Require {
+	public @interface Require {
 		public String value();
 	}
 
@@ -94,29 +92,16 @@ public interface Contract {
 		public Return[] value();
 	}
 
-	/**
-	 * Declares a predicate method.
-	 * <p>
-	 * Condition methods can be used to represent preconditions, postconditions or
-	 * invariants. Every condition method must be both, static and pure. The return
-	 * type of the annotated method must be void, as conditions are enforced by
-	 * means of assertions. A condition method may only call predicate methods.
-	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public static @interface Predicate {
+	public @interface Isolated {
 	}
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
-	public static @interface Isolated {
-	}
-
-	public static @interface Attach {
+	public @interface Attach {
 		public Class<?> value();
 	}
 
-	public static @interface AttachLabel {
+	public @interface AttachLabel {
 		public String value();
 	}
 
@@ -131,22 +116,22 @@ public interface Contract {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public static @interface Ignore {
+	public @interface Ignore {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-	public static @interface Invariant {
+	public @interface Invariant {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public static @interface ModelNPE {
+	public @interface ModelNPE {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public static @interface ModelIOBE {
+	public @interface ModelIOBE {
 	}
 
 }

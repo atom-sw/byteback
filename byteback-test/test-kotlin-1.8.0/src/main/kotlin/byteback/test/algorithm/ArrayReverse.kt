@@ -8,10 +8,11 @@ import byteback.specification.Operator.*
 import byteback.specification.Special.*
 import byteback.specification.Quantifier.*
 import byteback.specification.Binding
+import byteback.specification.Contract
 
 class ArrayReverse {
 
-		@Pure
+		@Contract.Function
 		fun `reverse of`(a: IntArray?, b: IntArray?): Boolean {
 				val i: Int = Binding.integer();
 
@@ -19,7 +20,7 @@ class ArrayReverse {
 									 forall(i, implies(lte(0, i) and lt(i, a.size), eq(a[i], b[b.size - 1 - i]))))
 		}
 
-		@Pure
+		@Contract.Function
 		@Predicate
 		fun `array is not null`(a: IntArray?, i: Int, j: Int): Boolean {
 				return neq(a, null);
@@ -43,7 +44,7 @@ class ArrayReverse {
 				return implies(not(`array is null`(a)), `reverse of`(a, old(a)));
 		}
 
-		@Pure
+		@Contract.Function
 		@Predicate
 		fun `array is null`(a: IntArray?): Boolean {
 				return eq(a, null);

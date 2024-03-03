@@ -1,15 +1,14 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.vimp.NestedExprFactory;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.common.Lazy;
+import byteback.common.function.Lazy;
 
 import java.util.Map;
+import java.util.Optional;
 
 import soot.*;
-import soot.grimp.Grimp;
-import soot.grimp.GrimpBody;
 import soot.jimple.*;
-import soot.options.Options;
 
 public class NullCheckTransformer extends CheckTransformer {
 
@@ -26,52 +25,40 @@ public class NullCheckTransformer extends CheckTransformer {
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
         if (PhaseOptions.getBoolean(options, "enabled")) {
-            if (!body.getMethod().isStatic()) {
-                final Unit unit = body.getThisUnit();
-                final Unit assumption = Vimp.v()
-                        .newAssumptionStmt(Vimp.v().newNeExpr(body.getThisLocal(), NullConstant.v()));
-                body.getUnits().insertAfter(assumption, unit);
-            }
-
             super.internalTransform(body, phaseName, options);
         }
     }
 
     @Override
-    public Value extractTarget(final Value value) {
-        Value target = null;
+    public Optional<Value> makeUnitCheck(final NestedExprFactory factory, final Unit unit) {
+        Value base = null;
 
-        if (value instanceof NewExpr || value instanceof SpecialInvokeExpr) {
-            return null;
+        if (unit instanceof AssignStmt assignStmt) {
+            if (assignStmt.getLeftOp() instanceof Ref ref) {
+                if (ref instanceof InstanceFieldRef instanceFieldRef) {
+                    base = instanceFieldRef.getBase();
+                } else if (ref instanceof ArrayRef arrayRef) {
+                    base = arrayRef.getBase();
+                }
+            } else if (assignStmt.getRightOp() instanceof InstanceInvokeExpr invokeExpr) {
+                base = invokeExpr.getBase();
+            }
+        } else if (unit instanceof InvokeStmt invokeStmt) {
+            if (invokeStmt instanceof InstanceInvokeExpr invokeExpr) {
+                base = invokeExpr.getBase();
+            }
         }
 
-        if (value instanceof InstanceInvokeExpr invokeExpr) {
-            target = invokeExpr.getBase();
+        if (base != null) {
+            final Value conditionExpr = factory.binary(
+                    Vimp.v()::newNeExpr,
+                    base,
+                    NullConstant.v());
+
+            return Optional.of(conditionExpr);
+        } else {
+            return Optional.empty();
         }
-
-        if (value instanceof InstanceFieldRef fieldRef) {
-            target = fieldRef.getBase();
-        }
-
-        if (value instanceof ArrayRef arrayRef) {
-            target = arrayRef.getBase();
-        }
-
-        if (value instanceof LengthExpr lengthExpr) {
-            target = lengthExpr.getOp();
-        }
-
-        if (target instanceof ThisRef) {
-            return null;
-        }
-
-        return target;
-    }
-
-    @Override
-    public Value createCheckExpr(Value target, Value outer)
-    {
-        return Grimp.v().newNeExpr(target, NullConstant.v());
     }
 
 }

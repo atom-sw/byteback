@@ -7,11 +7,11 @@ import static byteback.specification.Operator.eq;
 import static byteback.specification.Operator.not;
 
 import byteback.specification.Contract.Predicate;
-import byteback.specification.Contract.Pure;
+import byteback.specification.Contract.Function;
 
 public class Integer {
 
-	@Pure
+	@Function
 	@Predicate
 	public static int addition(int a, int b) {
 		return a + b;
@@ -21,7 +21,7 @@ public class Integer {
 		return a + b;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int subtraction(int a, int b) {
 		return a - b;
@@ -31,7 +31,7 @@ public class Integer {
 		return a - b;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int minus(int a) {
 		return -a;
@@ -41,7 +41,7 @@ public class Integer {
 		return -a;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int multiplication(int a, int b) {
 		return a * b;
@@ -51,7 +51,7 @@ public class Integer {
 		return a * b;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int division(int a, int b) {
 		return a / b;
@@ -61,7 +61,7 @@ public class Integer {
 		return a / b;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int modulo(int a, int b) {
 		return a % b;
@@ -71,7 +71,7 @@ public class Integer {
 		return a % b;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int square(int a) {
 		return a * a;
@@ -81,7 +81,7 @@ public class Integer {
 		return a * a;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int squareArea(int a) {
 		return square(a);
@@ -91,7 +91,7 @@ public class Integer {
 		return square(a);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int rectangleArea(int a, int b) {
 		return multiplication(a, b);
@@ -101,7 +101,7 @@ public class Integer {
 		return multiplication(a, b);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean even(int a) {
 		return eq(a % 2, 0);
@@ -111,7 +111,7 @@ public class Integer {
 		return eq(a % 2, 0);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean odd(int a) {
 		return not(even(a));
@@ -121,7 +121,7 @@ public class Integer {
 		return not(even(a));
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int assignIndirect(int a) {
 		int b = a;
@@ -143,7 +143,7 @@ public class Integer {
 		return f;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int assignPlus(int a) {
 		a = a + 1;
@@ -157,7 +157,7 @@ public class Integer {
 		return a;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int nestedPlus(int a) {
 		return a + 1 + 2 + 3 + 4 + 5;
@@ -167,7 +167,7 @@ public class Integer {
 		return a + 1 + 2 + 3 + 4 + 5;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int assignPlusIndirectVariables(int a) {
 		int b = a + 1;
@@ -189,7 +189,7 @@ public class Integer {
 		return f;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int commonSubExpressionPlus(int a) {
 		a = a + 1;
@@ -205,7 +205,7 @@ public class Integer {
 		return b;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int swappingExpressionPlus(int x) {
 		int a = x;
@@ -227,7 +227,7 @@ public class Integer {
 		return b;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int returnsOne() {
 		return 1;
@@ -237,7 +237,7 @@ public class Integer {
 		return 1;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static int returnsZero() {
 		return 0;

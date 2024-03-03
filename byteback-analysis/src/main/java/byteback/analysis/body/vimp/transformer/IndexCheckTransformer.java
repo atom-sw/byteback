@@ -1,17 +1,16 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.vimp.NestedExprFactory;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.common.Lazy;
-import soot.Body;
-import soot.PhaseOptions;
-import soot.Scene;
-import soot.Value;
-import soot.grimp.Grimp;
+import byteback.common.function.Lazy;
+import soot.*;
 import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
-import soot.jimple.JimpleBody;
+import soot.jimple.Jimple;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class IndexCheckTransformer extends CheckTransformer {
 
@@ -28,33 +27,30 @@ public class IndexCheckTransformer extends CheckTransformer {
     @Override
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
         if (PhaseOptions.getBoolean(options, "enabled")) {
-            internalTransform(body, phaseName, options);
+            super.internalTransform(body, phaseName, options);
         }
     }
 
     @Override
-    public Value extractTarget(final Value value) {
-        Value target = null;
-
-        if (value instanceof ArrayRef arrayRef) {
-            target = arrayRef.getBase();
-        }
-
-        return target;
-    }
-
-    @Override
-    public Value createCheckExpr(Value target, Value outer) {
-        if (outer instanceof ArrayRef arrayRef) {
+    public Optional<Value> makeUnitCheck(final NestedExprFactory builder, final Unit unit) {
+        if (unit instanceof AssignStmt assignStmt && assignStmt.getLeftOp() instanceof ArrayRef arrayRef) {
             final Value indexValue = arrayRef.getIndex();
             final Value arrayBase = arrayRef.getBase();
-            final Value lengthOfExpr = Grimp.v().newLengthExpr(arrayBase);
-            final Value left = Vimp.v().newLtExpr(indexValue, lengthOfExpr);
-            final Value right = Vimp.v().newLeExpr(IntConstant.v(0), indexValue);
-            return Vimp.v().newLogicAndExpr(left, right);
-        } else {
-            throw new IllegalStateException();
+            final Value conditionExpr =
+                    builder.binary(Vimp.v()::newLogicAndExpr,
+                            builder.binary(
+                                    Vimp.v()::newLeExpr,
+                                    IntConstant.v(0),
+                                    indexValue),
+                            builder.binary(
+                                    Vimp.v()::newLtExpr,
+                                    indexValue,
+                                    Jimple.v().newLengthExpr(arrayBase)));
+
+            return Optional.of(conditionExpr);
         }
+
+        return Optional.empty();
     }
 
 }

@@ -7,8 +7,8 @@ public abstract class AbstractJimpleValueSwitch<T> extends soot.jimple.AbstractJ
         implements Visitor<Value, T> {
 
     @Override
-    public void defaultCase(final Object o) {
-        defaultCase((Value) o);
+    public void defaultCase(final Object object) {
+        defaultCase((Value) object);
     }
 
 }

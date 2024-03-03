@@ -3,13 +3,14 @@
   */
 package byteback.test.algorithm;
 
+import byteback.specification.Contract
 import byteback.specification.Contract.*
 import byteback.specification.Special.*
 import byteback.specification.Operator.*
 
 class GCD {
 
-  @Pure
+  @Contract.Function
   fun `gcd recursive`(a: Int, b: Int): Int {
     return conditional(eq(a, b),
       a,
@@ -18,13 +19,13 @@ class GCD {
         `gcd recursive`(a, b - a)));
   }
 
-  @Pure
+  @Contract.Function
   @Predicate
   fun `result is gcd`(a: Int, b: Int, r: Int): Boolean {
     return implies(not(`arguments are negative`(a, b)), eq(r, `gcd recursive`(a, b)));
   }
 
-  @Pure
+  @Contract.Function
   @Predicate
   fun `arguments are negative`(a: Int, b: Int): Boolean {
     return lte(a, 0) or lte(b, 0)

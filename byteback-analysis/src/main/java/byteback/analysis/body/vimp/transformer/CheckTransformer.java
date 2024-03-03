@@ -1,7 +1,7 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.vimp.NestedExprFactory;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.common.Lazy;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -24,7 +24,9 @@ public abstract class CheckTransformer extends BodyTransformer {
         this.exceptionClass = exceptionClass;
     }
 
-    public Chain<Unit> createThrowUnits(final Supplier<Local> exceptionLocalSupplier) {
+    public abstract Optional<Value> makeUnitCheck(final NestedExprFactory builder, final Unit unit);
+
+    public Chain<Unit> makeThrowUnits(final Supplier<Local> exceptionLocalSupplier) {
         final Chain<Unit> units = new HashChain<>();
         final Local local = exceptionLocalSupplier.get();
         final Unit initUnit = Grimp.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getType()));
@@ -36,25 +38,25 @@ public abstract class CheckTransformer extends BodyTransformer {
         units.addLast(constructorUnit);
         final Unit throwUnit = Grimp.v().newThrowStmt(local);
         units.addLast(throwUnit);
+
         return units;
     }
-
-    public abstract Optional<Value> createUnitCheck(final Unit unit);
 
     public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
         final Chain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
         final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
-        final Lazy<Local> exceptionLocalSupplier = Lazy.from(() ->
-                localGenerator.generateLocal(exceptionClass.getType()));
+        final Supplier<Local> exceptionLocalSupplier = () ->
+                localGenerator.generateLocal(exceptionClass.getType());
+        final NestedExprFactory builder = new NestedExprFactory(localGenerator);
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
-            final Optional<Value> unitCheckOption = createUnitCheck(unit);
+            final Optional<Value> unitCheckOption = makeUnitCheck(builder, unit);
 
             if (unitCheckOption.isPresent()) {
                 final Value unitCheck = unitCheckOption.get();
-                final Chain<Unit> throwStmts = createThrowUnits(exceptionLocalSupplier);
+                final Chain<Unit> throwStmts = makeThrowUnits(exceptionLocalSupplier);
                 units.insertBefore(throwStmts, unit);
                 final Unit checkStmt = Vimp.v().newIfStmt(unitCheck, unit);
                 units.insertBefore(checkStmt, throwStmts.getFirst());

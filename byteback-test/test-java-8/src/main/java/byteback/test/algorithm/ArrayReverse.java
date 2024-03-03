@@ -14,7 +14,7 @@ import byteback.specification.Binding;
 // https://gist.github.com/Karneades/cd5f1d283e07be858e833b9463c16ab2
 public class ArrayReverse {
 
-	@Pure
+	@Function
 	public static boolean reverse_of(final int[] a, final int[] b) {
 		int i = Binding.integer();
 
@@ -23,13 +23,13 @@ public class ArrayReverse {
 																 eq(a[i], b[b.length - 1 - i]))));
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean bounded_index(final int[] a, final int i) {
 		return lte(0, i) & lt(i, a.length);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean bounded_indices(final int[] a, final int i, final int j) {
 		return bounded_index(a, i) & bounded_index(a, j);
@@ -49,7 +49,7 @@ public class ArrayReverse {
 		a[j] = y;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean array_is_null(int[] a) {
 		return eq(a, null);

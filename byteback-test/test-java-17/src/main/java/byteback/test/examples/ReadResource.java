@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 
 import byteback.specification.Contract.Ensure;
 import byteback.specification.Contract.Predicate;
-import byteback.specification.Contract.Pure;
+import byteback.specification.Contract.Function;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 import static byteback.specification.Contract.*;
@@ -28,25 +28,25 @@ public class ReadResource {
 			isClosed = true;
 		}
 
-		@Pure
+		@Function
 		@Predicate
 		public boolean is_closed() {
 			return isClosed;
 		}
 
-		@Pure
+		@Function
 		@Predicate
 		public boolean is_open() {
 			return not(isClosed);
 		}
 
-		@Pure
+		@Function
 		@Predicate
 		public boolean has_next() {
 			return hasNext;
 		}
 
-		@Pure
+		@Function
 		@Predicate
 		public boolean has_no_next() {
 			return not(hasNext);
@@ -70,43 +70,43 @@ public class ReadResource {
 
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean a_is_null(Resource r, int[] a) {
 		return eq(a, null) ;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean r_is_null(Resource r, int[] a) {
 		return eq(r, null) ;
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean r_and_a_are_not_null(Resource r, int[] a) {
 		return neq(r, null) & neq(a, null);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean r_or_a_is_null(Resource r, int[] a) {
 		return neq(r, null) | neq(a, null);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean r_is_open(Resource r, final int[] a) {
 		return implies(neq(r, null), not(r.isClosed));
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean r_is_closed(final Resource r, final int[] a) {
 		return implies(neq(r, null), r.isClosed);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean a_is_empty(final Resource r, final int[] a, final int n) {
 		return neq(a, null) & eq(a.length, 0);

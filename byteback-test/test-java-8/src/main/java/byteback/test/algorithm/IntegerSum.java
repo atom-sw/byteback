@@ -12,20 +12,20 @@ import byteback.specification.Contract.Ensure;
 
 public class IntegerSum {
 
-	@Pure
+	@Function
 	public static boolean positive_arguments(int[] as) {
 		int i = Binding.integer();
 
 		return forall(i, implies(lt(i, as.length), gt(as[i], 0)));
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean array_is_invalid(int[] as) {
 		return eq(as, null);
 	}
 
-	@Pure
+	@Function
 	@Predicate
 	public static boolean positive_arguments_imply_positive_sum(int[] as, int ret) {
 		return implies(not(array_is_invalid(as)), implies(positive_arguments(as), gte(ret, 0)));

@@ -1,6 +1,6 @@
 package byteback.specification;
 
-public interface Quantifier {
+public class Quantifier {
 
 	public static boolean forall(int $, boolean p) {
 		return p;
