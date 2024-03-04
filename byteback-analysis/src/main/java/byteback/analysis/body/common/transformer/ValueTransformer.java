@@ -5,8 +5,6 @@ import soot.Unit;
 import soot.UnitBox;
 import soot.ValueBox;
 
-import java.util.Map;
-
 /**
  * Body transformer that applies a transformation to each value.
  * @author paganma
@@ -25,7 +23,7 @@ public abstract class ValueTransformer extends UnitTransformer {
 	}
 
 	@Override
-	public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+	public void transformBody(final Body body) {
 		for (final ValueBox useBox : body.getUseBoxes()) {
 			transformValue(useBox);
 		}

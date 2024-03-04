@@ -23,7 +23,7 @@ public class CallExprTransformer extends ValueTransformer {
     }
 
     @Override
-    public void transformValue(ValueBox valueBox) {
+    public void transformValue(final ValueBox valueBox) {
         if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
             final SootMethod invokedMethod = invokeExpr.getMethod();
 
