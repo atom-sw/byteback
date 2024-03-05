@@ -1,15 +1,13 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.vimp.NestedExprFactory;
+import byteback.analysis.body.common.transformer.BodyTransformer;
+import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.function.Lazy;
 import soot.Body;
-import soot.BodyTransformer;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.NullConstant;
-
-import java.util.Map;
 
 public class ThisAssumptionTransformer extends BodyTransformer {
 
@@ -23,13 +21,14 @@ public class ThisAssumptionTransformer extends BodyTransformer {
     }
 
     @Override
-    protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+    public void transformBody(final Body body) {
         if (!body.getMethod().isStatic()) {
             final Unit unit = body.getThisUnit();
-            final Value condition = new NestedExprFactory(body).binary(
+            final Value condition = new VimpExprFactory(body).binary(
                     Vimp.v()::newNeExpr,
                     body.getThisLocal(),
-                    NullConstant.v());
+                    NullConstant.v()
+            );
             final Unit assumption = Vimp.v().newAssumeStmt(condition);
             body.getUnits().insertAfter(assumption, unit);
         }

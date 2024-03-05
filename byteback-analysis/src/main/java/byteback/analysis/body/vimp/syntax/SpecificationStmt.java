@@ -3,6 +3,7 @@ package byteback.analysis.body.vimp.syntax;
 import java.util.ArrayList;
 import java.util.List;
 
+import byteback.analysis.body.common.printer.InlineUnitPrinter;
 import byteback.analysis.body.vimp.Vimp;
 import soot.Value;
 import soot.ValueBox;
@@ -42,6 +43,14 @@ public abstract class SpecificationStmt extends AbstractStmt {
 		useBoxes.addAll(conditionBox.getValue().getUseBoxes());
 
 		return useBoxes;
+	}
+
+	@Override
+	public String toString() {
+		final InlineUnitPrinter printer = new InlineUnitPrinter();
+		toString(printer);
+
+		return printer.toString();
 	}
 
 }

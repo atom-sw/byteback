@@ -12,43 +12,33 @@ import soot.jimple.ThisRef;
  */
 public class InlineUnitPrinter extends AbstractUnitPrinter {
 
-    public InlineUnitPrinter() {
-        this.indent = "";
-    }
-
     @Override
     public void literal(final String string) {
-        handleIndent();
         output.append(string);
     }
 
     @Override
     public void type(final Type type) {
-        handleIndent();
         output.append(type == null ? "<null>" : type.toQuotedString());
     }
 
     @Override
     public void methodRef(final SootMethodRef methodRef) {
-        handleIndent();
         output.append(methodRef.getSignature());
     }
 
     @Override
     public void fieldRef(final SootFieldRef fieldRef) {
-        handleIndent();
         output.append(fieldRef.getSignature());
     }
 
     @Override
     public void unitRef(final Unit unit, final boolean branchTarget) {
-        handleIndent();
         unit.toString(this);
     }
 
     @Override
     public void identityRef(final IdentityRef identityRef) {
-        handleIndent();
         if (identityRef instanceof ThisRef) {
             literal("@this: ");
             type(identityRef.getType());

@@ -1,18 +1,16 @@
 package byteback.analysis.body.jimple.transformer;
 
+import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.analysis.body.jimple.visitor.AbstractJimpleValueSwitch;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.*;
 import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
-import byteback.analysis.common.namespace.BBLibNames;
 import byteback.analysis.scene.Types;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.*;
 
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -33,8 +31,9 @@ public class VimpValueBodyTransformer extends BodyTransformer {
     }
 
     @Override
-    protected void internalTransform(final Body b, final String phaseName, final Map<String, String> options) {
-        new VimpValueTransformer(b.getMethod().getReturnType()).transform(b);
+    public void transformBody(final Body body) {
+        final Type returnType = body.getMethod().getReturnType();
+        new VimpValueTransformer(returnType).transform(body);
     }
 
     public static class VimpValueTransformer extends ValueTransformer {
@@ -50,7 +49,7 @@ public class VimpValueBodyTransformer extends BodyTransformer {
         }
 
         @Override
-        public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+        public void transformBody(final Body body) {
             for (final Unit unit : body.getUnits()) {
                 transformUnit(unit);
             }

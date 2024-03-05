@@ -1,5 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.common.function.Lazy;
@@ -13,7 +14,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import soot.Body;
-import soot.BodyTransformer;
 import soot.Local;
 import soot.RefType;
 import soot.Trap;
@@ -37,9 +37,9 @@ public class GuardTransformer extends BodyTransformer {
     }
 
     @Override
-    public void internalTransform(final Body b, final String phaseName, final Map<String, String> options) {
-        final Chain<Unit> units = b.getUnits();
-        final Chain<Trap> traps = b.getTraps();
+    public void transformBody(final Body body) {
+        final Chain<Unit> units = body.getUnits();
+        final Chain<Trap> traps = body.getTraps();
         final ListHashMap<Unit, Trap> startToTraps = new ListHashMap<>();
         final ListHashMap<Unit, Trap> endToTraps = new ListHashMap<>();
         final HashSet<Unit> trapHandlers = new HashSet<>();

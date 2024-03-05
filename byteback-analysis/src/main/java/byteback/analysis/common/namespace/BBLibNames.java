@@ -1,6 +1,6 @@
 package byteback.analysis.common.namespace;
 
-import byteback.analysis.scene.Hosts;
+import byteback.analysis.common.Hosts;
 import soot.SootClass;
 import soot.SootMethod;
 

@@ -1,5 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.VimpValues;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.collection.SetHashMap;
@@ -18,7 +19,8 @@ import java.util.*;
 
 public abstract class ExprFolder extends BodyTransformer {
 
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+    @Override
+    public void transformBody(final Body body) {
         final Chain<Unit> units = body.getUnits();
         final BlockGraph blockGraph = new BriefBlockGraph(body);
         final UnitGraph unitGraph = new BriefUnitGraph(body);

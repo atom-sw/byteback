@@ -49,7 +49,7 @@ public class MutableUnitBox implements UnitBox {
 	 */
 	@Override
 	public boolean isBranchTarget() {
-		return unit.getBoxesPointingToThis().size() > 0;
+		return unit.getBoxesPointingToThis().isEmpty();
 	}
 
 	@Override

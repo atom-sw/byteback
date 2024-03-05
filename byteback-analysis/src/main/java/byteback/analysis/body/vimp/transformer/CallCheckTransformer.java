@@ -1,5 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.VimpValues;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
@@ -25,7 +26,7 @@ public class CallCheckTransformer extends BodyTransformer {
     }
 
     @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+    public void transformBody(final Body body) {
         final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
         final Chain<Unit> units = body.getUnits();
 

@@ -1,11 +1,11 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.vimp.NestedExprFactory;
+import byteback.analysis.body.common.transformer.BodyTransformer;
+import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.analysis.body.vimp.Vimp;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -24,7 +24,7 @@ public abstract class CheckTransformer extends BodyTransformer {
         this.exceptionClass = exceptionClass;
     }
 
-    public abstract Optional<Value> makeUnitCheck(final NestedExprFactory builder, final Unit unit);
+    public abstract Optional<Value> makeUnitCheck(final VimpExprFactory builder, final Unit unit);
 
     public Chain<Unit> makeThrowUnits(final Supplier<Local> exceptionLocalSupplier) {
         final Chain<Unit> units = new HashChain<>();
@@ -42,13 +42,14 @@ public abstract class CheckTransformer extends BodyTransformer {
         return units;
     }
 
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+    @Override
+    public void transformBody(final Body body) {
         final Chain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
         final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
         final Supplier<Local> exceptionLocalSupplier = () ->
                 localGenerator.generateLocal(exceptionClass.getType());
-        final NestedExprFactory builder = new NestedExprFactory(localGenerator);
+        final VimpExprFactory builder = new VimpExprFactory(localGenerator);
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();

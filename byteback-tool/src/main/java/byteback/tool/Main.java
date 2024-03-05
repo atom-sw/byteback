@@ -38,14 +38,11 @@ public class Main {
         Options.v().set_prepend_classpath(true);
         Options.v().set_soot_classpath(Arguments.v().formatClassPaths());
         Options.v().set_no_bodies_for_excluded(true);
+        Options.v().classes().addAll(Arguments.v().getStartingClasses());
 
         Options.v().setPhaseOption("jb", "use-original-names:true");
-        
         Options.v().setPhaseOption("gc.cha", "apponly:true");
-
         Options.v().setPhaseOption("jtp", "enabled:true");
-        Options.v().setPhaseOption("jtp.ict", "enabled:true");
-        Options.v().setPhaseOption("jtp.nct", "enabled:true");
 
         final Pack jtpPack = PackManager.v().getPack("jtp");
 
@@ -65,11 +62,10 @@ public class Main {
         jtpPack.add(new Transform("jtp.gt", GuardTransformer.v()));
         jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
         jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
-        jtpPack.add(new Transform("jtp.bpl", new BplEncoder()));
+        //jtpPack.add(new Transform("jtp.bpl", new BplEncoder()));
 
-        final String[] startingClasses = Arguments.v().getStartingClasses().toArray(new String[]{});
 
-        soot.Main.main(startingClasses);
+        soot.Main.main(new String[]{});
     }
 
 }

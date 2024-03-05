@@ -5,7 +5,7 @@ import byteback.analysis.common.namespace.ClassNames;
 import byteback.analysis.scene.AnnotationElems.ClassElemExtractor;
 import byteback.analysis.scene.AnnotationElems.StringElemExtractor;
 import byteback.analysis.scene.Annotations;
-import byteback.analysis.scene.Hosts;
+import byteback.analysis.common.Hosts;
 import byteback.common.function.Lazy;
 
 import java.util.ArrayList;

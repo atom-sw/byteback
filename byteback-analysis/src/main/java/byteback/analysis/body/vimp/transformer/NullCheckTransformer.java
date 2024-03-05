@@ -1,10 +1,9 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.vimp.NestedExprFactory;
+import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.function.Lazy;
 
-import java.util.Map;
 import java.util.Optional;
 
 import soot.*;
@@ -23,14 +22,7 @@ public class NullCheckTransformer extends CheckTransformer {
     }
 
     @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        if (PhaseOptions.getBoolean(options, "enabled")) {
-            super.internalTransform(body, phaseName, options);
-        }
-    }
-
-    @Override
-    public Optional<Value> makeUnitCheck(final NestedExprFactory factory, final Unit unit) {
+    public Optional<Value> makeUnitCheck(final VimpExprFactory factory, final Unit unit) {
         Value base = null;
 
         if (unit instanceof AssignStmt assignStmt) {
@@ -53,7 +45,8 @@ public class NullCheckTransformer extends CheckTransformer {
             final Value conditionExpr = factory.binary(
                     Vimp.v()::newNeExpr,
                     base,
-                    NullConstant.v());
+                    NullConstant.v()
+            );
 
             return Optional.of(conditionExpr);
         } else {

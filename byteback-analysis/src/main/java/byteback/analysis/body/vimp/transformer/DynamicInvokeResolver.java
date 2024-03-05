@@ -1,11 +1,11 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.common.function.Lazy;
 
 import java.util.Map;
 
 import soot.Body;
-import soot.BodyTransformer;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.DynamicInvokeExpr;
@@ -23,7 +23,7 @@ public class DynamicInvokeResolver extends BodyTransformer {
     }
 
     @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+    public void transformBody(final Body body) {
         for (final ValueBox valueBox : body.getUseBoxes()) {
             final Value value = valueBox.getValue();
 

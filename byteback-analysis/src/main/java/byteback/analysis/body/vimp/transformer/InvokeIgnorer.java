@@ -1,14 +1,14 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.common.namespace.BBLibNames;
-import byteback.analysis.scene.Hosts;
+import byteback.analysis.common.Hosts;
 import byteback.common.function.Lazy;
 
 import java.util.Iterator;
 import java.util.Map;
 
 import soot.Body;
-import soot.BodyTransformer;
 import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.InvokeStmt;
@@ -22,7 +22,7 @@ public class InvokeIgnorer extends BodyTransformer {
     }
 
     @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+    public void transformBody(final Body body) {
         final Iterator<Unit> unitsIterator = body.getUnits().snapshotIterator();
 
         while (unitsIterator.hasNext()) {

@@ -1,5 +1,6 @@
 package byteback.analysis.body.vimp;
 
+import byteback.analysis.body.vimp.Vimp;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
@@ -7,15 +8,15 @@ import soot.jimple.Jimple;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class NestedExprFactory {
+public class VimpExprFactory {
 
     private final LocalGenerator localGenerator;
 
-    public NestedExprFactory(final LocalGenerator localGenerator) {
+    public VimpExprFactory(final LocalGenerator localGenerator) {
         this.localGenerator = localGenerator;
     }
 
-    public NestedExprFactory(final Body body) {
+    public VimpExprFactory(final Body body) {
         this.localGenerator = Scene.v().createLocalGenerator(body);
     }
 

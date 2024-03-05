@@ -8,15 +8,15 @@ import soot.SootMethod;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 
-public class OldExprTransformer extends ValueTransformer {
+public class ConditionalExprTransformer extends ValueTransformer {
 
-    private static final Lazy<OldExprTransformer> instance = Lazy.from(OldExprTransformer::new);
+    private static final Lazy<ConditionalExprTransformer> instance = Lazy.from(ConditionalExprTransformer::new);
 
-    public static OldExprTransformer v() {
+    public static ConditionalExprTransformer v() {
         return instance.get();
     }
 
-    private OldExprTransformer() {
+    private ConditionalExprTransformer() {
     }
 
     @Override
@@ -27,11 +27,10 @@ public class OldExprTransformer extends ValueTransformer {
             if (BBLibNames.isSpecialClass(invokedMethod.getDeclaringClass())) {
                 final SootMethod method = invokeExpr.getMethod();
 
-                if (method.getName().equals("old")) {
+                if (method.getName().equals("condition")) {
                     valueBox.setValue(Vimp.v().newOldExpr(invokeExpr.getArg(0)));
                 }
             }
         }
     }
-
 }

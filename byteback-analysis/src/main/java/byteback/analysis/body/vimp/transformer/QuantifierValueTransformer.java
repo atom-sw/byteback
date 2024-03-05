@@ -32,7 +32,7 @@ public class QuantifierValueTransformer extends ValueTransformer {
     }
 
     @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+    public void transformBody(final Body body) {
         final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
 
         while (unitIterator.hasNext()) {

@@ -1,5 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.AssertStmt;
 import byteback.analysis.body.vimp.syntax.InvariantStmt;
@@ -9,7 +10,6 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import soot.Body;
-import soot.BodyTransformer;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.IfStmt;
@@ -30,14 +30,16 @@ public class InvariantExpander extends BodyTransformer {
     }
 
     @Override
-    public void internalTransform(final Body b, final String phaseName, final Map<String, String> options) {
-        final Chain<Unit> units = b.getUnits();
+    public void transformBody(final Body body) {
+        final Chain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
         final LoopFinder loopFinder = new LoopFinder();
-        final HashMap<Unit, Loop> startToLoop = new HashMap<>();
-        final HashMap<Unit, Loop> endToLoop = new HashMap<>();
-        final Set<Loop> loops = loopFinder.getLoops(b);
-        final Stack<Loop> activeLoops = new Stack<>();
+        final Set<Loop> loops = loopFinder.getLoops(body);
+
+        final var startToLoop = new HashMap<Unit, Loop>();
+        final var endToLoop = new HashMap<Unit, Loop>();
+        final var invariantStmts = new HashSet<InvariantStmt>();
+        final var activeLoops = new ArrayDeque<Loop>();
 
         for (final Loop loop : loops) {
             final List<Stmt> loopStatements = loop.getLoopStatements();
@@ -94,8 +96,12 @@ public class InvariantExpander extends BodyTransformer {
                     units.insertBefore(assertionUnitSupplier.get(), exitTarget);
                 }
 
-                units.remove(invariantUnit);
+                invariantStmts.add(invariantUnit);
             }
+        }
+
+        for (final InvariantStmt invariantStmt : invariantStmts) {
+            units.remove(invariantStmt);
         }
     }
 
