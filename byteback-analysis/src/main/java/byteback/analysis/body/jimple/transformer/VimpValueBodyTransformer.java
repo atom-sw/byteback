@@ -144,7 +144,7 @@ public class VimpValueBodyTransformer extends BodyTransformer {
             }
 
             protected void setBinaryValue(final BinaryConstructor constructor, final BinopExpr value) {
-                setBinaryValue(constructor, Types.join(value.getOp1().getType(), value.getOp2().getType()), value);
+                setBinaryValue(constructor, Types.v().join(value.getOp1().getType(), value.getOp2().getType()), value);
             }
 
             @Override

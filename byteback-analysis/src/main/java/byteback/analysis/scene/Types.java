@@ -1,5 +1,6 @@
 package byteback.analysis.scene;
 
+import byteback.common.function.Lazy;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.IntType;
@@ -12,8 +13,17 @@ import soot.UnknownType;
 import soot.VoidType;
 
 public class Types {
+	
+	private static final Lazy<Types> instance = Lazy.from(Types::new);
 
-	public static int typeOrder(final Type type) {
+	public static Types v() {
+		return instance.get();
+	}
+
+	private Types() {
+	}
+
+	public int typeOrder(final Type type) {
 
 		if (type == LongType.v()) {
 			return 0;
@@ -38,7 +48,7 @@ public class Types {
 		return -1;
 	}
 
-	public static Type join(final Type a, final Type b) {
+	public Type join(final Type a, final Type b) {
 
 		if (a != b) {
 

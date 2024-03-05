@@ -46,7 +46,7 @@ public abstract class AbstractTernaryExpr implements Expr {
 
     @Override
     public Type getType() {
-        return Types.join(op2Box.getValue().getType(), op3Box.getValue().getType());
+        return Types.v().join(op2Box.getValue().getType(), op3Box.getValue().getType());
     }
 
     @Override

@@ -4,9 +4,19 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import byteback.analysis.scene.Annotations;
+import byteback.common.function.Lazy;
 import soot.tagkit.*;
 
 public class Hosts {
+
+	private static final Lazy<Hosts> instance = Lazy.from(Hosts::new);
+
+	public static Hosts v() {
+		return instance.get();
+	}
+
+	private Hosts() {
+	}
 
 	public static Optional<Tag> getTag(final Host host, final String name) {
 		return Optional.ofNullable(host.getTag(name));
@@ -34,7 +44,7 @@ public class Hosts {
 
 	public Optional<AnnotationElem> getAnnotationValue(final Host host, final String name) {
 		return getAnnotation(host, name)
-				.flatMap(Annotations::getValue);
+				.flatMap(Annotations.v()::getValue);
 	}
 
 	public static boolean hasAnnotation(final Host host, final String name) {

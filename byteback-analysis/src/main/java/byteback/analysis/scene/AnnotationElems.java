@@ -1,6 +1,7 @@
 package byteback.analysis.scene;
 
 import byteback.analysis.scene.visitor.AbstractAnnotationElemSwitch;
+import byteback.common.function.Lazy;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationStringElem;
 
@@ -8,7 +9,16 @@ import java.util.Optional;
 
 public class AnnotationElems {
 
-	public static class StringElemExtractor extends AbstractAnnotationElemSwitch<Optional<String>> {
+	private static final Lazy<AnnotationElems> instance = Lazy.from(AnnotationElems::new);
+
+	public static AnnotationElems v() {
+		return instance.get();
+	}
+
+	private AnnotationElems() {
+	}
+
+	public class StringElemExtractor extends AbstractAnnotationElemSwitch<Optional<String>> {
 
 		public String value;
 
@@ -24,7 +34,7 @@ public class AnnotationElems {
 
 	}
 
-	public static class ClassElemExtractor extends AbstractAnnotationElemSwitch<Optional<String>> {
+	public class ClassElemExtractor extends AbstractAnnotationElemSwitch<Optional<String>> {
 
 		public String value;
 

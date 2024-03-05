@@ -3,6 +3,8 @@ package byteback.analysis.scene;
 import byteback.analysis.scene.visitor.AbstractAnnotationElemSwitch;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import byteback.common.function.Lazy;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationElem;
@@ -10,17 +12,26 @@ import soot.tagkit.AnnotationTag;
 
 public class Annotations {
 
+	private static final Lazy<Annotations> instance = Lazy.from(Annotations::new);
+
+	public static Annotations v() {
+		return instance.get();
+	}
+
+	private Annotations() {
+	}
+
 	private static final String VALUE_IDENTIFIER = "value";
 
-	public static Optional<AnnotationElem> getValue(final AnnotationTag tag) {
+	public Optional<AnnotationElem> getValue(final AnnotationTag tag) {
 		return getElem(tag, VALUE_IDENTIFIER);
 	}
 
-	public static Optional<AnnotationElem> getElem(final AnnotationTag tag, final String identifier) {
+	public Optional<AnnotationElem> getElem(final AnnotationTag tag, final String identifier) {
 		return tag.getElems().stream().filter((elem) -> elem.getName().equals(identifier)).findFirst();
 	}
 
-	private static void getAnnotations(final Stream.Builder<AnnotationTag> builder, final AnnotationElem element) {
+	private void getAnnotations(final Stream.Builder<AnnotationTag> builder, final AnnotationElem element) {
 		element.apply(new AbstractAnnotationElemSwitch<>() {
 
 			@Override
@@ -40,7 +51,7 @@ public class Annotations {
 		});
 	}
 
-	public static Stream<AnnotationTag> getAnnotations(final AnnotationTag tag) {
+	public Stream<AnnotationTag> getAnnotations(final AnnotationTag tag) {
 		Stream.Builder<AnnotationTag> builder = Stream.builder();
 		builder.add(tag);
 		getValue(tag).ifPresent((elem) -> {

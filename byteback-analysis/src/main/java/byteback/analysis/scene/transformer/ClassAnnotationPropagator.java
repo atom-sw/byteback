@@ -2,6 +2,7 @@ package byteback.analysis.scene.transformer;
 
 import byteback.analysis.common.namespace.BBLibNames;
 import byteback.analysis.common.namespace.ClassNames;
+import byteback.analysis.scene.AnnotationElems;
 import byteback.analysis.scene.AnnotationElems.ClassElemExtractor;
 import byteback.analysis.scene.AnnotationElems.StringElemExtractor;
 import byteback.analysis.scene.Annotations;
@@ -40,12 +41,12 @@ public class ClassAnnotationPropagator extends SceneTransformer {
 
             if (Hosts.hasAnnotation(attachedClass, BBLibNames.ATTACH_ANNOTATION)) {
                 annotation = Hosts.getAnnotation(attachedClass, BBLibNames.ATTACH_ANNOTATION).orElseThrow();
-                element = Annotations.getElem(annotation, "value").orElseThrow();
-                value = new ClassElemExtractor().visit(element).orElseThrow();
+                element = Annotations.v().getElem(annotation, "value").orElseThrow();
+                value = AnnotationElems.v().new ClassElemExtractor().visit(element).orElseThrow();
             } else if (Hosts.hasAnnotation(attachedClass, BBLibNames.ATTACH_LABEL_ANNOTATION)) {
                 annotation = Hosts.getAnnotation(attachedClass, BBLibNames.ATTACH_LABEL_ANNOTATION).orElseThrow();
-                element = Annotations.getElem(annotation, "value").orElseThrow();
-                value = new StringElemExtractor().visit(element).orElseThrow();
+                element = Annotations.v().getElem(annotation, "value").orElseThrow();
+                value = AnnotationElems.v().new StringElemExtractor().visit(element).orElseThrow();
             } else {
                 continue;
             }
