@@ -27,7 +27,7 @@ public class CallExprTransformer extends ValueTransformer {
         if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
             final SootMethod invokedMethod = invokeExpr.getMethod();
 
-            if (BBLibNames.isFunctionMethod(invokedMethod)) {
+            if (BBLibNames.v().isFunctionMethod(invokedMethod)) {
                 final var args = new ArrayList<>(invokeExpr.getArgs());
 
                 if (invokeExpr instanceof InstanceInvokeExpr instanceInvokeExpr) {

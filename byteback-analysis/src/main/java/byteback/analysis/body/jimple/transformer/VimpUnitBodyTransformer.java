@@ -37,7 +37,7 @@ public class VimpUnitBodyTransformer extends UnitTransformer {
                 final SootMethod method = value.getMethod();
                 final SootClass declaringClass = method.getDeclaringClass();
 
-                if (BBLibNames.isContractClass(declaringClass)) {
+                if (BBLibNames.v().isContractClass(declaringClass)) {
                     assert value.getArgCount() == 1;
                     final Value argument = value.getArg(0);
 

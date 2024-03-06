@@ -31,7 +31,7 @@ public class InvokeIgnorer extends BodyTransformer {
             if (unit instanceof InvokeStmt invokeStmt) {
                 final SootMethod method = invokeStmt.getInvokeExpr().getMethod();
 
-                if (Hosts.hasAnnotation(method, BBLibNames.IGNORE_ANNOTATION)) {
+                if (Hosts.v().hasAnnotation(method, BBLibNames.IGNORE_ANNOTATION)) {
                     body.getUnits().remove(unit);
                 }
             }

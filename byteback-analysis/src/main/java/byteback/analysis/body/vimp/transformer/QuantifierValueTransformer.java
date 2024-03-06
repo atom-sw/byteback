@@ -43,7 +43,7 @@ public class QuantifierValueTransformer extends ValueTransformer {
                     final SootMethod invokedMethod = invokeExpr.getMethod();
                     final SootClass declaringClass = invokedMethod.getDeclaringClass();
 
-                    if (BBLibNames.isBindingClass(declaringClass)) {
+                    if (BBLibNames.v().isBindingClass(declaringClass)) {
                         body.getUnits().remove(assignStmt);
                         continue;
                     }
@@ -69,7 +69,7 @@ public class QuantifierValueTransformer extends ValueTransformer {
                 final SootMethod method = invokeExpr.getMethod();
                 final SootClass clazz = method.getDeclaringClass();
 
-                if (BBLibNames.isQuantifierClass(clazz)) {
+                if (BBLibNames.v().isQuantifierClass(clazz)) {
                     final Chain<Local> locals = new HashChain<>();
                     final Value expression;
                     Value variable = invokeExpr.getArg(0);

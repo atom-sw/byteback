@@ -18,16 +18,16 @@ public class Hosts {
 	private Hosts() {
 	}
 
-	public static Optional<Tag> getTag(final Host host, final String name) {
+	public Optional<Tag> getTag(final Host host, final String name) {
 		return Optional.ofNullable(host.getTag(name));
 	}
 
-	public static boolean hasTag(final Host host, final String name) {
+	public boolean hasTag(final Host host, final String name) {
 		return getTag(host, name)
 				.isPresent();
 	}
 
-	public static Stream<AnnotationTag> getAnnotations(final Host host) {
+	public Stream<AnnotationTag> getAnnotations(final Host host) {
 		if (getTag(host, "VisibilityAnnotationTag").orElse(null)
 				instanceof final VisibilityAnnotationTag tag) {
 			return tag.getAnnotations().stream();
@@ -36,7 +36,7 @@ public class Hosts {
 		}
 	}
 
-	public static Optional<AnnotationTag> getAnnotation(final Host host, final String name) {
+	public Optional<AnnotationTag> getAnnotation(final Host host, final String name) {
 		return getAnnotations(host)
 				.filter((tag) -> tag.getType().equals(name))
 				.findFirst();
@@ -47,7 +47,7 @@ public class Hosts {
 				.flatMap(Annotations.v()::getValue);
 	}
 
-	public static boolean hasAnnotation(final Host host, final String name) {
+	public boolean hasAnnotation(final Host host, final String name) {
 		return getAnnotation(host, name)
 				.isPresent();
 	}

@@ -4,15 +4,16 @@ import byteback.analysis.body.jimple.transformer.CallExprTransformer;
 import byteback.analysis.body.jimple.transformer.OldExprTransformer;
 import byteback.analysis.body.jimple.transformer.VimpUnitBodyTransformer;
 import byteback.analysis.body.jimple.transformer.VimpValueBodyTransformer;
-import byteback.analysis.body.vimp.syntax.CallExpr;
 import byteback.analysis.body.vimp.transformer.*;
-import byteback.encoder.boogie.BplEncoder;
+import byteback.analysis.scene.properties.MethodPostconditions;
 import com.beust.jcommander.ParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
+
+import java.util.Map;
 
 public class Main {
 
@@ -41,7 +42,7 @@ public class Main {
         Options.v().classes().addAll(Arguments.v().getStartingClasses());
 
         Options.v().setPhaseOption("jb", "use-original-names:true");
-        Options.v().setPhaseOption("gc.cha", "apponly:true");
+        Options.v().setPhaseOption("cg.cha", "apponly:true");
         Options.v().setPhaseOption("jtp", "enabled:true");
 
         final Pack jtpPack = PackManager.v().getPack("jtp");
@@ -62,7 +63,14 @@ public class Main {
         jtpPack.add(new Transform("jtp.gt", GuardTransformer.v()));
         jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
         jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
-        //jtpPack.add(new Transform("jtp.bpl", new BplEncoder()));
+        jtpPack.add(new Transform("jtp.bpl", new BodyTransformer() {
+
+            @Override
+            protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+                MethodPostconditions.v().of(b.getMethod());
+            }
+
+        }));
 
 
         soot.Main.main(new String[]{});

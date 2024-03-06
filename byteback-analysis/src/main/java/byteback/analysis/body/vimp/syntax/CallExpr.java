@@ -1,6 +1,6 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.common.printer.InlineUnitPrinter;
+import byteback.analysis.body.common.syntax.InlineUnitPrinter;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.*;

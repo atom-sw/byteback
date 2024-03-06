@@ -1,6 +1,7 @@
 package byteback.analysis.common.namespace;
 
 import byteback.analysis.common.Hosts;
+import byteback.common.function.Lazy;
 import soot.SootClass;
 import soot.SootMethod;
 
@@ -69,32 +70,41 @@ public class BBLibNames {
 
     public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";
 
-    public static boolean isContractClass(final SootClass sootClass) {
+    public static final Lazy<BBLibNames> instance = Lazy.from(BBLibNames::new);
+
+    public static BBLibNames v() {
+        return instance.get();
+    }
+
+    private BBLibNames() {
+    }
+
+    public boolean isContractClass(final SootClass sootClass) {
         return sootClass.getName().equals(CONTRACT_CLASS_NAME);
     }
 
-    public static boolean isQuantifierClass(final SootClass sootClass) {
+    public boolean isQuantifierClass(final SootClass sootClass) {
         return sootClass.getName().equals(QUANTIFIER_CLASS_NAME);
     }
 
-    public static boolean isSpecialClass(final SootClass sootClass) {
+    public boolean isSpecialClass(final SootClass sootClass) {
         return sootClass.getName().equals(SPECIAL_CLASS_NAME);
     }
 
-    public static boolean isBindingClass(final SootClass sootClass) {
+    public boolean isBindingClass(final SootClass sootClass) {
         return sootClass.getName().equals(BINDING_CLASS_NAME);
     }
 
-    public static boolean isAnnotationClass(final SootClass sootClass) {
+    public boolean isAnnotationClass(final SootClass sootClass) {
         return sootClass.getPackageName().equals(ANNOTATION_PACKAGE);
     }
 
-    public static boolean isFunctionMethod(final SootMethod method) {
-        return Hosts.hasAnnotation(method, PURE_ANNOTATION);
+    public boolean isFunctionMethod(final SootMethod method) {
+        return Hosts.v().hasAnnotation(method, PURE_ANNOTATION);
     }
 
-    public static boolean isPredicateMethod(final SootMethod method) {
-        return Hosts.hasAnnotation(method, PREDICATE_ANNOTATION);
+    public boolean isPredicateMethod(final SootMethod method) {
+        return Hosts.v().hasAnnotation(method, PREDICATE_ANNOTATION);
     }
 
 }

@@ -1,4 +1,4 @@
-package byteback.analysis.body.common.printer;
+package byteback.analysis.body.common.syntax;
 
 import soot.*;
 import soot.jimple.CaughtExceptionRef;
@@ -7,7 +7,7 @@ import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 
 /**
- * A Unit printer that does not require a Body as the outer context.
+ * A Unit printer that does not require a Body as the outer context. Does not indent.
  * @author paganma
  */
 public class InlineUnitPrinter extends AbstractUnitPrinter {

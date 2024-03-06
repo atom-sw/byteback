@@ -24,7 +24,7 @@ public class OldExprTransformer extends ValueTransformer {
         if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
             final SootMethod invokedMethod = invokeExpr.getMethod();
 
-            if (BBLibNames.isSpecialClass(invokedMethod.getDeclaringClass())) {
+            if (BBLibNames.v().isSpecialClass(invokedMethod.getDeclaringClass())) {
                 final SootMethod method = invokeExpr.getMethod();
 
                 if (method.getName().equals("old")) {

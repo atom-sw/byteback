@@ -3,11 +3,10 @@ package byteback.analysis.body.vimp.syntax;
 import java.util.ArrayList;
 import java.util.List;
 
-import byteback.analysis.body.common.printer.InlineUnitPrinter;
+import byteback.analysis.body.common.syntax.InlineUnitPrinter;
 import byteback.analysis.body.vimp.Vimp;
 import soot.Value;
 import soot.ValueBox;
-import soot.grimp.internal.GRValueBox;
 import soot.jimple.internal.AbstractStmt;
 
 public abstract class SpecificationStmt extends AbstractStmt {
