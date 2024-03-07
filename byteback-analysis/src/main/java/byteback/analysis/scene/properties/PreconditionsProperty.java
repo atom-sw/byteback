@@ -9,11 +9,11 @@ import soot.Value;
 
 import java.util.Set;
 
-public class MethodPreconditions extends Properties<SootMethod, Set<Value>> {
+public class PreconditionsProperty extends Properties<SootMethod, Set<Value>> {
 
-    private static final Lazy<MethodPreconditions> instance = Lazy.from(MethodPreconditions::new);
+    private static final Lazy<PreconditionsProperty> instance = Lazy.from(PreconditionsProperty::new);
 
-    public static MethodPreconditions v() {
+    public static PreconditionsProperty v() {
         return instance.get();
     }
 

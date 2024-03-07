@@ -5,7 +5,7 @@ import byteback.analysis.body.jimple.transformer.OldExprTransformer;
 import byteback.analysis.body.jimple.transformer.VimpUnitBodyTransformer;
 import byteback.analysis.body.jimple.transformer.VimpValueBodyTransformer;
 import byteback.analysis.body.vimp.transformer.*;
-import byteback.analysis.scene.properties.MethodPostconditions;
+import byteback.analysis.scene.properties.PostconditionsProperty;
 import com.beust.jcommander.ParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class Main {
 
             @Override
             protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-                MethodPostconditions.v().of(b.getMethod());
+                PostconditionsProperty.v().of(b.getMethod());
             }
 
         }));
