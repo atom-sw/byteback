@@ -28,7 +28,7 @@ public class PostconditionsProperty extends ConditionsProperty {
     }
 
     @Override
-    public void collect(final SootMethod traceMethod, Set<Value> upperConditions) {
+    public void collect(final SootMethod traceMethod, final Set<Value> upperConditions) {
         return;
     }
 

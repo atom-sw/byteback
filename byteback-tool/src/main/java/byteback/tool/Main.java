@@ -33,17 +33,14 @@ public class Main {
         }
 
         Options.v().set_unfriendly_mode(true);
-        Options.v().set_whole_program(true);
-        Options.v().set_allow_phantom_refs(true);
         Options.v().set_output_format(Options.output_format_none);
         Options.v().set_prepend_classpath(true);
         Options.v().set_soot_classpath(Arguments.v().formatClassPaths());
-        Options.v().set_no_bodies_for_excluded(true);
         Options.v().classes().addAll(Arguments.v().getStartingClasses());
 
         Options.v().setPhaseOption("jb", "use-original-names:true");
-        Options.v().setPhaseOption("cg.cha", "apponly:true");
         Options.v().setPhaseOption("jtp", "enabled:true");
+        Options.v().setPhaseOption("wjtp", "enabled:true");
 
         final Pack jtpPack = PackManager.v().getPack("jtp");
 
@@ -63,15 +60,13 @@ public class Main {
         jtpPack.add(new Transform("jtp.gt", GuardTransformer.v()));
         jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
         jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
-        jtpPack.add(new Transform("jtp.bpl", new BodyTransformer() {
-
+        jtpPack.add(new Transform("jtp.test", new BodyTransformer() {
             @Override
             protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
                 PostconditionsProperty.v().of(b.getMethod());
             }
 
         }));
-
 
         soot.Main.main(new String[]{});
     }
