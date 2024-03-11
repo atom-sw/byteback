@@ -34,7 +34,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.dava.toolkits.base.misc.PackageNamer;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.Chain;
@@ -916,31 +915,6 @@ public class SootClass extends AbstractHost {
     return name;
   }
 
-  public String getJavaStyleName() {
-    if (PackageNamer.v().has_FixedNames()) {
-      if (fixedShortName == null) {
-        fixedShortName = PackageNamer.v().get_FixedClassName(name);
-      }
-      if (!PackageNamer.v().use_ShortName(getJavaPackageName(), fixedShortName)) {
-        return getJavaPackageName() + '.' + fixedShortName;
-      }
-      return fixedShortName;
-    } else {
-      return shortName;
-    }
-  }
-
-  public String getShortJavaStyleName() {
-    if (PackageNamer.v().has_FixedNames()) {
-      if (fixedShortName == null) {
-        fixedShortName = PackageNamer.v().get_FixedClassName(name);
-      }
-      return fixedShortName;
-    } else {
-      return shortName;
-    }
-  }
-
   public String getShortName() {
     return shortName;
   }
@@ -950,17 +924,6 @@ public class SootClass extends AbstractHost {
    */
   public String getPackageName() {
     return packageName;
-  }
-
-  public String getJavaPackageName() {
-    if (PackageNamer.v().has_FixedNames()) {
-      if (fixedPackageName == null) {
-        fixedPackageName = PackageNamer.v().get_FixedPackageName(packageName);
-      }
-      return fixedPackageName;
-    } else {
-      return packageName;
-    }
   }
 
   /**
@@ -1257,43 +1220,6 @@ public class SootClass extends AbstractHost {
   }
 
   /**
-   * Checks if this class is exported by it's module
-   *
-   * @return true if the class is public exported
-   */
-  public boolean isExportedByModule() {
-    if (this.getModuleInformation() == null && ModuleUtil.module_mode()) {
-      // we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
-      Scene.v().forceResolve(this.getName(), SootClass.BODIES);
-    }
-    SootModuleInfo moduleInfo = this.getModuleInformation();
-    // for dummy classes moduleInfo could be null
-    return (moduleInfo == null) ? true : moduleInfo.exportsPackagePublic(this.getJavaPackageName());
-  }
-
-  /**
-   * Checks if this class is exported by it's module
-   *
-   * @return true if the class is public exported
-   */
-  public boolean isExportedByModule(String toModule) {
-    if (this.getModuleInformation() == null && ModuleUtil.module_mode()) {
-      // we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
-      ModuleScene.v().forceResolve(this.getName(), SootClass.BODIES, Optional.of(this.moduleName));
-    }
-    return this.getModuleInformation().exportsPackage(this.getJavaPackageName(), toModule);
-  }
-
-  public boolean isOpenedByModule() {
-    if (this.getModuleInformation() == null && ModuleUtil.module_mode()) {
-      // we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
-      Scene.v().forceResolve(this.getName(), SootClass.BODIES);
-    }
-    SootModuleInfo moduleInfo = this.getModuleInformation();
-    return (moduleInfo == null) ? true : moduleInfo.openPackagePublic(this.getJavaPackageName());
-  }
-
-  /**
    * Returns all methods with exactly the number of parameters specified.
    * 
    * @param name
@@ -1318,4 +1244,9 @@ public class SootClass extends AbstractHost {
     }
     return result;
   }
+
+  public String getJavaPackageName() {
+    return getPackageName();
+  }
+
 }

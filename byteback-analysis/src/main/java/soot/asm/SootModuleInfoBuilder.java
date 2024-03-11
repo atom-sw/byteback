@@ -57,17 +57,4 @@ public class SootModuleInfoBuilder extends ModuleVisitor {
     scb.addDep(RefType.v(moduleInfo));
   }
 
-  @Override
-  public void visitExport(String packaze, int access, String... modules) {
-    if (packaze != null) {
-      klass.addExportedPackage(packaze, modules);
-    }
-  }
-
-  @Override
-  public void visitOpen(String packaze, int access, String... modules) {
-    if (packaze != null) {
-      klass.addOpenedPackage(packaze, modules);
-    }
-  }
 }

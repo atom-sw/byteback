@@ -64,6 +64,7 @@ public class Main {
             @Override
             protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
                 PostconditionsProperty.v().of(b.getMethod());
+                System.out.println(b);
             }
 
         }));

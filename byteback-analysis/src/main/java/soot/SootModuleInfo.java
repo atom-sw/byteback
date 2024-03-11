@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import soot.dava.toolkits.base.misc.PackageNamer;
-
 /**
  * Represents a Module-Info file.
  * 
@@ -131,26 +129,6 @@ public class SootModuleInfo extends SootClass {
     return moduleInfos;
   }
 
-  public void addExportedPackage(String packaze, String... exportedToModules) {
-    List<String> qualifiedExports;
-    if (exportedToModules != null && exportedToModules.length > 0) {
-      qualifiedExports = Arrays.asList(exportedToModules);
-    } else {
-      qualifiedExports = Collections.singletonList(SootModuleInfo.ALL_MODULES);
-    }
-    exportedPackages.put(PackageNamer.v().get_FixedPackageName(packaze).replace('/', '.'), qualifiedExports);
-  }
-
-  public void addOpenedPackage(String packaze, String... openedToModules) {
-    List<String> qualifiedOpens;
-    if (openedToModules != null && openedToModules.length > 0) {
-      qualifiedOpens = Arrays.asList(openedToModules);
-    } else {
-      qualifiedOpens = Collections.singletonList(SootModuleInfo.ALL_MODULES);
-    }
-    openedPackages.put(PackageNamer.v().get_FixedPackageName(packaze).replace('/', '.'), qualifiedOpens);
-  }
-
   public String getModuleName() {
     return this.moduleName;
   }
@@ -158,21 +136,6 @@ public class SootModuleInfo extends SootClass {
   @Override
   public boolean isConcrete() {
     return false;
-  }
-
-  @Override
-  public boolean isExportedByModule() {
-    return true;
-  }
-
-  @Override
-  public boolean isExportedByModule(String toModule) {
-    return true;
-  }
-
-  @Override
-  public boolean isOpenedByModule() {
-    return true;
   }
 
   public boolean exportsPackagePublic(String packaze) {

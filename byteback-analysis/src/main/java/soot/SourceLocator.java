@@ -512,8 +512,6 @@ public class SourceLocator {
     }
 
     switch (rep) {
-      case Options.output_format_dava:
-        return getDavaFilenameFor(c, b);
       case Options.output_format_class:
         b.append(c.getName().replace('.', File.separatorChar));
         break;
@@ -532,23 +530,6 @@ public class SourceLocator {
         break;
     }
     b.append(getExtensionFor(rep));
-    return b.toString();
-  }
-
-  private String getDavaFilenameFor(SootClass c, StringBuilder b) {
-    b.append("dava").append(File.separatorChar);
-    ensureDirectoryExists(new File(b.toString() + "classes"));
-
-    b.append("src").append(File.separatorChar);
-    String fixedPackageName = c.getJavaPackageName();
-    if (!fixedPackageName.isEmpty()) {
-      b.append(fixedPackageName.replace('.', File.separatorChar)).append(File.separatorChar);
-    }
-
-    ensureDirectoryExists(new File(b.toString()));
-
-    b.append(c.getShortJavaStyleName()).append(".java");
-
     return b.toString();
   }
 

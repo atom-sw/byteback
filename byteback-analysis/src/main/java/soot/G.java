@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import soot.dava.internal.SET.SETBasicBlock;
-import soot.dava.internal.SET.SETNode;
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.pag.MethodPAG;
 import soot.jimple.spark.pag.Parm;
@@ -91,7 +89,6 @@ public class G extends Singletons {
   }
 
   public int SETNodeLabel_uniqueId = 0;
-  public HashMap<SETNode, SETBasicBlock> SETBasicBlock_binding = new HashMap<SETNode, SETBasicBlock>();
   public boolean ASTAnalysis_modified;
   public NativeHelper NativeHelper_helper = null;
   public P2SetFactory newSetFactory;
