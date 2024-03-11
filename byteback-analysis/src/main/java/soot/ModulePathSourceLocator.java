@@ -51,7 +51,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.JavaClassProvider.JarException;
 import soot.asm.AsmModuleClassProvider;
 
 /**
@@ -105,7 +104,7 @@ public class ModulePathSourceLocator extends SourceLocator {
       setupClassProviders();
     }
 
-    JarException ex = null;
+    JavaClassProvider.JarException ex = null;
     String searchFor = moduleName.isPresent() ? moduleName.get() + ':' + className : className;
     for (ClassProvider cp : classProviders) {
       try {
@@ -113,7 +112,7 @@ public class ModulePathSourceLocator extends SourceLocator {
         if (ret != null) {
           return ret;
         }
-      } catch (JarException e) {
+      } catch (JavaClassProvider.JarException e) {
         ex = e;
       }
     }

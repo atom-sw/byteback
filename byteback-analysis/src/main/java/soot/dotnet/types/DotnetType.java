@@ -43,7 +43,7 @@ import soot.dotnet.members.DotnetProperty;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.specifications.DotnetAttributeArgument;
 import soot.dotnet.specifications.DotnetModifier;
-import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.IInitialResolver.Dependencies;
 import soot.options.Options;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;

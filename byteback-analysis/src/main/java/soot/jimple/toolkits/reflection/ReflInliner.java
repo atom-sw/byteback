@@ -31,15 +31,8 @@ import org.slf4j.LoggerFactory;
 import soot.CompilationDeathException;
 import soot.PackManager;
 import soot.Scene;
-import soot.SootClass;
 import soot.Transform;
 import soot.options.Options;
-import soot.rtlib.tamiflex.DefaultHandler;
-import soot.rtlib.tamiflex.IUnexpectedReflectiveCallHandler;
-import soot.rtlib.tamiflex.OpaquePredicate;
-import soot.rtlib.tamiflex.ReflectiveCalls;
-import soot.rtlib.tamiflex.SootSig;
-import soot.rtlib.tamiflex.UnexpectedReflectiveCall;
 
 public class ReflInliner {
   private static final Logger logger = LoggerFactory.getLogger(ReflInliner.class);
@@ -48,12 +41,6 @@ public class ReflInliner {
     PackManager.v().getPack("wjpp").add(new Transform("wjpp.inlineReflCalls", new ReflectiveCallsInliner()));
     final Scene scene = Scene.v();
     scene.addBasicClass(Object.class.getName());
-    scene.addBasicClass(SootSig.class.getName(), SootClass.BODIES);
-    scene.addBasicClass(UnexpectedReflectiveCall.class.getName(), SootClass.BODIES);
-    scene.addBasicClass(IUnexpectedReflectiveCallHandler.class.getName(), SootClass.BODIES);
-    scene.addBasicClass(DefaultHandler.class.getName(), SootClass.BODIES);
-    scene.addBasicClass(OpaquePredicate.class.getName(), SootClass.BODIES);
-    scene.addBasicClass(ReflectiveCalls.class.getName(), SootClass.BODIES);
 
     ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
     argList.add("-w");

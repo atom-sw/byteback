@@ -40,7 +40,6 @@ package soot.toolkits.exceptions;
  * #L%
  */
 
-import soot.dexpler.DalvikThrowAnalysis;
 import soot.options.Options;
 
 /**
@@ -55,18 +54,10 @@ public class ThrowAnalysisFactory {
     final Options opts = Options.v();
     switch (opts.check_init_throw_analysis()) {
       case Options.check_init_throw_analysis_auto:
-        if (!opts.android_jars().isEmpty() || !opts.force_android_jar().isEmpty()) {
-          // If Android related options are set, use 'dalvik' throw analysis.
-          return DalvikThrowAnalysis.v();
-        } else {
-          return PedanticThrowAnalysis.v();
-        }
       case Options.check_init_throw_analysis_pedantic:
         return PedanticThrowAnalysis.v();
       case Options.check_init_throw_analysis_unit:
         return UnitThrowAnalysis.v();
-      case Options.check_init_throw_analysis_dalvik:
-        return DalvikThrowAnalysis.v();
       default:
         assert false; // The above cases should cover all posible options
         return PedanticThrowAnalysis.v();

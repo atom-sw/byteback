@@ -41,8 +41,6 @@ import soot.Singletons;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.dexpler.DexNullArrayRefTransformer;
-import soot.dexpler.DexNullThrowTransformer;
 import soot.jimple.AssignStmt;
 import soot.jimple.CmpgExpr;
 import soot.jimple.CmplExpr;
@@ -124,19 +122,17 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     BetterConstantPropagator bcp = createBetterConstantPropagator(graph);
     bcp.doAnalysis();
-    boolean propagatedThrow = false;
     for (Unit u : body.getUnits()) {
       ConstantState v = bcp.getFlowBefore(u);
       boolean expectsRealValue = false;
       if (u instanceof AssignStmt) {
         AssignStmt assign = ((AssignStmt) u);
         Value rop = assign.getRightOp();
-        if (rop instanceof Local) {
-          Local l = (Local) rop;
-          Constant c = v.getConstant(l);
-          if (c != null) {
+        if (rop instanceof Local local) {
+          Constant constant = v.getConstant(local);
+          if (constant != null) {
             List<Tag> oldTags = assign.getRightOpBox().getTags();
-            assign.setRightOp((Constant) c);
+            assign.setRightOp(constant);
             assign.getRightOpBox().getTags().addAll(oldTags);
             CopyPropagator.copyLineTags(assign.getUseBoxes().get(0), assign);
             continue;
@@ -154,9 +150,6 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
           if (src instanceof Local) {
             Constant val = v.getConstant((Local) src);
             if (val != null) {
-              if (u instanceof ThrowStmt) {
-                propagatedThrow = true;
-              }
               if (expectsRealValue && !(val instanceof RealConstant)) {
                 if (val instanceof IntConstant) {
                   val = FloatConstant.v(((IntConstant) val).value);
@@ -164,7 +157,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
                   val = DoubleConstant.v(((LongConstant) val).value);
                 }
               }
-              r.setValue((Constant) val);
+              r.setValue(val);
             }
           }
         }
@@ -172,10 +165,6 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
       }
     }
     localPacker.unpack();
-    if (propagatedThrow) {
-      DexNullThrowTransformer.v().transform(body);
-    }
-    DexNullArrayRefTransformer.v().transform(body);
   }
 
   protected BetterConstantPropagator createBetterConstantPropagator(ExceptionalUnitGraph graph) {

@@ -40,7 +40,7 @@ import soot.dotnet.types.DotnetBasicTypes;
 import soot.dotnet.types.DotnetFakeLdFtnType;
 import soot.dotnet.types.DotnetType;
 import soot.dotnet.types.DotnetTypeFactory;
-import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.IInitialResolver.Dependencies;
 import soot.options.Options;
 
 /**

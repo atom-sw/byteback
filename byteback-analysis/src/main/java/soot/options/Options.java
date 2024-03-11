@@ -75,8 +75,6 @@ public class Options extends OptionsBase {
     public static final int output_format_jasmin = 13;
     public static final int output_format_c = 14;
     public static final int output_format_class = 14;
-    public static final int output_format_d = 15;
-    public static final int output_format_dava = 15;
     public static final int output_format_t = 16;
     public static final int output_format_template = 16;
     public static final int output_format_a = 17;
@@ -711,16 +709,6 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     output_format = output_format_class;
-                }
-                else if (false
-                        || value.equals("d")
-                        || value.equals("dava")
-                ) {
-                    if (output_format != 0 && output_format != output_format_dava) {
-                        G.v().out.println("Multiple values given for option " + option);
-                        return false;
-                    }
-                    output_format = output_format_dava;
                 }
                 else if (false
                         || value.equals("t")

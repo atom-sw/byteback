@@ -26,41 +26,16 @@ package soot.jimple.toolkits.typing;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.Body;
-import soot.BodyTransformer;
-import soot.ByteType;
-import soot.CharType;
-import soot.ErroneousType;
-import soot.G;
-import soot.Local;
-import soot.NullType;
-import soot.PhaseOptions;
-import soot.Scene;
-import soot.ShortType;
-import soot.Singletons;
-import soot.Type;
-import soot.Unit;
-import soot.UnknownType;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.ArrayRef;
-import soot.jimple.FieldRef;
-import soot.jimple.InstanceFieldRef;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.JimpleBody;
-import soot.jimple.Stmt;
+import soot.*;
+import soot.jimple.*;
 import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.options.JBTROptions;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
@@ -148,6 +123,30 @@ public class TypeAssigner extends BodyTransformer {
   }
 
   /**
+   * Insert a runtime exception before unit u of body b. Useful to analyze broken code (which make reference to inexisting
+   * class for instance) exceptionType: e.g., "java.lang.RuntimeException"
+   */
+  public static void addExceptionAfterUnit(Body b, String exceptionType, Unit u, String m) {
+    LocalCreation lc = Scene.v().createLocalCreation(b.getLocals());
+    Local l = lc.newLocal(RefType.v(exceptionType));
+
+    List<Unit> newUnits = new ArrayList<Unit>();
+    Unit u1 = Jimple.v().newAssignStmt(l, Jimple.v().newNewExpr(RefType.v(exceptionType)));
+    Unit u2
+            = Jimple.v()
+            .newInvokeStmt(Jimple.v().newSpecialInvokeExpr(l,
+                    Scene.v().makeMethodRef(Scene.v().getSootClass(exceptionType), "<init>",
+                            Collections.singletonList((Type) RefType.v("java.lang.String")), VoidType.v(), false),
+                    StringConstant.v(m)));
+    Unit u3 = Jimple.v().newThrowStmt(l);
+    newUnits.add(u1);
+    newUnits.add(u2);
+    newUnits.add(u3);
+
+    b.getUnits().insertBefore(newUnits, u);
+  }
+
+  /**
    * Replace statements using locals with null_type type and that would throw a NullPointerException at runtime by a set of
    * instructions throwing a NullPointerException.
    *
@@ -217,7 +216,7 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     for (Unit u : unitToReplaceByException) {
-      soot.dexpler.Util.addExceptionAfterUnit(b, "java.lang.NullPointerException", u,
+      addExceptionAfterUnit(b, "java.lang.NullPointerException", u,
           "This statement would have triggered an Exception: " + u);
       b.getUnits().remove(u);
     }

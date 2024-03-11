@@ -38,8 +38,6 @@ import soot.Singletons;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.dexpler.DexNullArrayRefTransformer;
-import soot.dexpler.DexNullThrowTransformer;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.jimple.Jimple;
@@ -54,7 +52,6 @@ import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
-//@formatter:off
 /**
  * There is a problem with the following code <code>
  * $u2#6 = 0;
@@ -73,7 +70,6 @@ import soot.util.MultiMap;
  * 
  * @author Marc Miltenberger
  */
-// @formatter:on
 public class SharedInitializationLocalSplitter extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(SharedInitializationLocalSplitter.class);
 
@@ -98,8 +94,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
   private static final class Cluster {
 
-    protected final List<Unit> constantInitializers;
-    protected final Unit use;
+    private final List<Unit> constantInitializers;
+    private final Unit use;
 
     public Cluster(Unit use, List<Unit> constantInitializers) {
       this.use = use;
@@ -138,13 +134,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     CopyPropagator.v().transform(body);
     ConstantPropagatorAndFolder.v().transform(body);
 
-    DexNullThrowTransformer.v().transform(body);
-    DexNullArrayRefTransformer.v().transform(body);
     FlowSensitiveConstantPropagator.v().transform(body);
     CopyPropagator.v().transform(body);
-
-    DexNullThrowTransformer.v().transform(body);
-    DexNullArrayRefTransformer.v().transform(body);
 
     DeadAssignmentEliminator.v().transform(body);
     CopyPropagator.v().transform(body);
@@ -155,18 +146,16 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     final MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
 
     final Chain<Unit> units = body.getUnits();
-    for (Unit s : units) {
-      for (ValueBox useBox : s.getUseBoxes()) {
+    for (Unit unit : units) {
+      for (ValueBox useBox : unit.getUseBoxes()) {
         Value v = useBox.getValue();
-        if (v instanceof Local) {
-          Local luse = (Local) v;
-          List<Unit> allAffectingDefs = defs.getDefsOfAt(luse, s);
-          // Make sure we are only affected by Constant definitions via AssignStmt
+        if (v instanceof Local localUse) {
+          List<Unit> allAffectingDefs = defs.getDefsOfAt(localUse, unit);
           if (allAffectingDefs.isEmpty() || !allAffectingDefs.stream()
               .allMatch(u -> (u instanceof AssignStmt) && (((AssignStmt) u).getRightOp() instanceof Constant))) {
             continue;
           }
-          clustersPerLocal.put(luse, new Cluster(s, allAffectingDefs));
+          clustersPerLocal.put(localUse, new Cluster(unit, allAffectingDefs));
         }
       }
     }

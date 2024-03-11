@@ -31,7 +31,7 @@ import soot.ClassSource;
 import soot.IFoundFile;
 import soot.SootClass;
 import soot.SootResolver;
-import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.IInitialResolver.Dependencies;
 
 /**
  * ASM class source implementation.

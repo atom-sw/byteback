@@ -117,7 +117,6 @@ import soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder;
 import soot.sootify.TemplatePrinter;
 import soot.tagkit.InnerClassTagAggregator;
 import soot.tagkit.LineNumberTagAggregator;
-import soot.toDex.DexPrinter;
 import soot.toolkits.exceptions.DuplicateCatchAllTrapRemover;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.graph.interaction.InteractionHandler;
@@ -144,7 +143,6 @@ public class PackManager {
   private final List<Pack> packList = new LinkedList<Pack>();
   private boolean onlyStandardPacks = false;
   private JarOutputStream jarFile = null;
-  protected DexPrinter dexPrinter = null;
 
   public PackManager(Singletons.Global g) {
     PhaseOptions.v().setPackManager(this);
@@ -526,16 +524,9 @@ public class PackManager {
     if (Options.v().verbose()) {
       PhaseDumper.v().dumpBefore("output");
     }
-    switch (Options.v().output_format()) {
-      case Options.output_format_dex:
-      case Options.output_format_force_dex:
-        writeDexOutput();
-        break;
-      default:
-        writeOutput(reachableClasses());
-        tearDownJAR();
-        break;
-    }
+
+    writeOutput(reachableClasses());
+    tearDownJAR();
     postProcessXML(reachableClasses());
 
     if (!Options.v().no_writeout_body_releasing()) {
@@ -544,13 +535,6 @@ public class PackManager {
     if (Options.v().verbose()) {
       PhaseDumper.v().dumpAfter("output");
     }
-  }
-
-  protected void writeDexOutput() {
-    dexPrinter = new DexPrinter();
-    writeOutput(reachableClasses());
-    dexPrinter.print();
-    dexPrinter = null;
   }
 
   private void setupJAR() {
@@ -678,17 +662,10 @@ public class PackManager {
   @SuppressWarnings("fallthrough")
   private void runBodyPacks(SootClass c) {
     final int format = Options.v().output_format();
-    if (format == Options.output_format_dava) {
-      logger.debug("Decompiling {}...", c.getName());
-
-      // January 13th, 2006 SootMethodAddedByDava is set to false for
-      // SuperFirstStmtHandler
-      G.v().SootMethodAddedByDava = false;
-    } else {
-      logger.debug("Transforming {}...", c.getName());
-    }
-
-    boolean produceBaf = false, produceGrimp = false, produceDava = false, produceJimple = true, produceShimple = false;
+    boolean produceBaf = false;
+    boolean produceGrimp = false;
+    boolean produceJimple = true;
+    boolean produceShimple = false;
 
     switch (format) {
       case Options.output_format_none:
@@ -696,8 +673,6 @@ public class PackManager {
       case Options.output_format_jimple:
       case Options.output_format_jimp:
       case Options.output_format_template:
-      case Options.output_format_dex:
-      case Options.output_format_force_dex:
         break;
       case Options.output_format_shimp:
       case Options.output_format_shimple:
@@ -705,8 +680,6 @@ public class PackManager {
         // FLIP produceJimple
         produceJimple = false;
         break;
-      case Options.output_format_dava:
-        produceDava = true;
         // FALL THROUGH
       case Options.output_format_grimp:
       case Options.output_format_grimple:
@@ -835,13 +808,6 @@ public class PackManager {
     final int format = Options.v().output_format();
     switch (format) {
       case Options.output_format_none:
-      case Options.output_format_dava:
-        return;
-      case Options.output_format_dex:
-      case Options.output_format_force_dex:
-        // just add the class to the dex printer, writing is done after
-        // adding all classes
-        dexPrinter.add(c);
         return;
       case Options.output_format_jimple:
         // Create code assignments for those values we only have in code assignments
@@ -1017,7 +983,7 @@ public class PackManager {
       // are added during resolution
       for (SootMethod m : new ArrayList<SootMethod>(cl.getMethods())) {
         if (m.isConcrete()) {
-          executor.execute(() -> m.retrieveActiveBody());
+          executor.execute(m::retrieveActiveBody);
         }
       }
     }

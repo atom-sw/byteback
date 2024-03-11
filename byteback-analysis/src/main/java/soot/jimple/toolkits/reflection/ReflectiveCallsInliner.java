@@ -53,7 +53,6 @@ import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.VoidType;
-import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.ClassConstant;
 import soot.jimple.FieldRef;
@@ -75,12 +74,6 @@ import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.options.CGOptions;
 import soot.options.Options;
-import soot.rtlib.tamiflex.DefaultHandler;
-import soot.rtlib.tamiflex.IUnexpectedReflectiveCallHandler;
-import soot.rtlib.tamiflex.OpaquePredicate;
-import soot.rtlib.tamiflex.ReflectiveCalls;
-import soot.rtlib.tamiflex.SootSig;
-import soot.rtlib.tamiflex.UnexpectedReflectiveCall;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -112,12 +105,6 @@ public class ReflectiveCallsInliner extends SceneTransformer {
       final CGOptions cgOptions = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
       this.RTI = new ReflectionTraceInfo(cgOptions.reflection_log());
       final Scene scene = Scene.v();
-      scene.getSootClass(SootSig.class.getName()).setApplicationClass();
-      scene.getSootClass(UnexpectedReflectiveCall.class.getName()).setApplicationClass();
-      scene.getSootClass(IUnexpectedReflectiveCallHandler.class.getName()).setApplicationClass();
-      scene.getSootClass(DefaultHandler.class.getName()).setApplicationClass();
-      scene.getSootClass(OpaquePredicate.class.getName()).setApplicationClass();
-      scene.getSootClass(ReflectiveCalls.class.getName()).setApplicationClass();
 
       SootClass reflectiveCallsClass = new SootClass("soot.rtlib.tamiflex.ReflectiveCallsWrapper", Modifier.PUBLIC);
       scene.addClass(reflectiveCallsClass);
@@ -769,7 +756,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
    * @param newUnits
    *          the Unit chain to which the unboxing code will be appended
    * @param localGen
-   *          a {@link DefaultLocalGenerator} for the body holding the units
+   *          a {@link soot.DefaultLocalGenerator} for the body holding the units
    */
   private void unboxParameter(Local argsArrayLocal, int paramIndex, Local[] paramLocals, Type paramType,
       Chain<Unit> newUnits, LocalGenerator localGen) {

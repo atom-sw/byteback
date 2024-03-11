@@ -25,23 +25,12 @@ import java.util.List;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.ArrayType;
-import soot.Body;
-import soot.Local;
-import soot.LocalGenerator;
-import soot.NullType;
-import soot.PrimType;
-import soot.RefType;
-import soot.Type;
-import soot.Unit;
-import soot.UnknownType;
-import soot.Value;
+import soot.*;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
-import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;

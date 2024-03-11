@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import soot.dotnet.members.DotnetMethod;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
-import soot.util.IterableSet;
 import soot.util.NumberedString;
 
 /**
@@ -367,10 +366,6 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
         throw new RuntimeException("cannot get active body for phantom method: " + getSignature());
       }
 
-      // ignore empty body exceptions if we are just computing coffi metrics
-      if (!soot.jbco.Main.metrics) {
-        throw new RuntimeException("no active body present for method " + getSignature());
-      }
       return null;
     }
   }

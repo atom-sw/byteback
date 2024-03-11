@@ -1643,34 +1643,6 @@ public class Singletons {
     	instance_soot_toolkits_exceptions_UnitThrowAnalysis = null;
     }
 
-    private soot.dexpler.DalvikThrowAnalysis instance_soot_dexpler_DalvikThrowAnalysis;
-    public soot.dexpler.DalvikThrowAnalysis soot_dexpler_DalvikThrowAnalysis() {
-        if (instance_soot_dexpler_DalvikThrowAnalysis == null) {
-	       	synchronized (this) {
-		        if (instance_soot_dexpler_DalvikThrowAnalysis == null)
-	        		instance_soot_dexpler_DalvikThrowAnalysis = new soot.dexpler.DalvikThrowAnalysis(g);
-	       	}
-       	}
-        return instance_soot_dexpler_DalvikThrowAnalysis;
-    }
-    protected void release_soot_dexpler_DalvikThrowAnalysis() {
-    	instance_soot_dexpler_DalvikThrowAnalysis = null;
-    }
-
-    private soot.dexpler.DexFileProvider instance_soot_dexpler_DexFileProvider;
-    public soot.dexpler.DexFileProvider soot_dexpler_DexFileProvider() {
-        if (instance_soot_dexpler_DexFileProvider == null) {
-	       	synchronized (this) {
-		        if (instance_soot_dexpler_DexFileProvider == null)
-	        		instance_soot_dexpler_DexFileProvider = new soot.dexpler.DexFileProvider(g);
-	       	}
-       	}
-        return instance_soot_dexpler_DexFileProvider;
-    }
-    protected void release_soot_dexpler_DexFileProvider() {
-    	instance_soot_dexpler_DexFileProvider = null;
-    }
-
     private soot.toolkits.exceptions.PedanticThrowAnalysis instance_soot_toolkits_exceptions_PedanticThrowAnalysis;
     public soot.toolkits.exceptions.PedanticThrowAnalysis soot_toolkits_exceptions_PedanticThrowAnalysis() {
         if (instance_soot_toolkits_exceptions_PedanticThrowAnalysis == null) {
@@ -1769,20 +1741,6 @@ public class Singletons {
     	instance_soot_SootModuleResolver = null;
     }
 
-    private soot.javaToJimple.InitialResolver instance_soot_javaToJimple_InitialResolver;
-    public soot.javaToJimple.InitialResolver soot_javaToJimple_InitialResolver() {
-        if (instance_soot_javaToJimple_InitialResolver == null) {
-	       	synchronized (this) {
-		        if (instance_soot_javaToJimple_InitialResolver == null)
-	        		instance_soot_javaToJimple_InitialResolver = new soot.javaToJimple.InitialResolver(g);
-	       	}
-       	}
-        return instance_soot_javaToJimple_InitialResolver;
-    }
-    protected void release_soot_javaToJimple_InitialResolver() {
-    	instance_soot_javaToJimple_InitialResolver = null;
-    }
-
     private soot.jimple.paddle.PaddleHook instance_soot_jimple_paddle_PaddleHook;
     public soot.jimple.paddle.PaddleHook soot_jimple_paddle_PaddleHook() {
         if (instance_soot_jimple_paddle_PaddleHook == null) {
@@ -1823,20 +1781,6 @@ public class Singletons {
     }
     protected void release_soot_jimple_toolkits_annotation_purity_PurityAnalysis() {
     	instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis = null;
-    }
-
-    private soot.javaToJimple.toolkits.CondTransformer instance_soot_javaToJimple_toolkits_CondTransformer;
-    public soot.javaToJimple.toolkits.CondTransformer soot_javaToJimple_toolkits_CondTransformer() {
-        if (instance_soot_javaToJimple_toolkits_CondTransformer == null) {
-	       	synchronized (this) {
-		        if (instance_soot_javaToJimple_toolkits_CondTransformer == null)
-	        		instance_soot_javaToJimple_toolkits_CondTransformer = new soot.javaToJimple.toolkits.CondTransformer(g);
-	       	}
-       	}
-        return instance_soot_javaToJimple_toolkits_CondTransformer;
-    }
-    protected void release_soot_javaToJimple_toolkits_CondTransformer() {
-    	instance_soot_javaToJimple_toolkits_CondTransformer = null;
     }
 
     private soot.jimple.spark.sets.AllSharedListNodes instance_soot_jimple_spark_sets_AllSharedListNodes;
@@ -1923,20 +1867,6 @@ public class Singletons {
     	instance_soot_sootify_TemplatePrinter = null;
     }
 
-    private soot.dexpler.DexResolver instance_soot_dexpler_DexResolver;
-    public soot.dexpler.DexResolver soot_dexpler_DexResolver() {
-        if (instance_soot_dexpler_DexResolver == null) {
-	       	synchronized (this) {
-		        if (instance_soot_dexpler_DexResolver == null)
-	        		instance_soot_dexpler_DexResolver = new soot.dexpler.DexResolver(g);
-	       	}
-       	}
-        return instance_soot_dexpler_DexResolver;
-    }
-    protected void release_soot_dexpler_DexResolver() {
-    	instance_soot_dexpler_DexResolver = null;
-    }
-
     private soot.jimple.toolkits.scalar.EmptySwitchEliminator instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator;
     public soot.jimple.toolkits.scalar.EmptySwitchEliminator soot_jimple_toolkits_scalar_EmptySwitchEliminator() {
         if (instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator == null) {
@@ -1946,51 +1876,6 @@ public class Singletons {
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator;
-    }
-    protected void release_soot_jimple_toolkits_scalar_EmptySwitchEliminator() {
-    	instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator = null;
-    }
-
-    private soot.toDex.SynchronizedMethodTransformer instance_soot_toDex_SynchronizedMethodTransformer;
-    public soot.toDex.SynchronizedMethodTransformer soot_toDex_SynchronizedMethodTransformer() {
-        if (instance_soot_toDex_SynchronizedMethodTransformer == null) {
-	       	synchronized (this) {
-		        if (instance_soot_toDex_SynchronizedMethodTransformer == null)
-	        		instance_soot_toDex_SynchronizedMethodTransformer = new soot.toDex.SynchronizedMethodTransformer(g);
-	       	}
-       	}
-        return instance_soot_toDex_SynchronizedMethodTransformer;
-    }
-    protected void release_soot_toDex_SynchronizedMethodTransformer() {
-    	instance_soot_toDex_SynchronizedMethodTransformer = null;
-    }
-
-    private soot.toDex.TrapSplitter instance_soot_toDex_TrapSplitter;
-    public soot.toDex.TrapSplitter soot_toDex_TrapSplitter() {
-        if (instance_soot_toDex_TrapSplitter == null) {
-	       	synchronized (this) {
-		        if (instance_soot_toDex_TrapSplitter == null)
-	        		instance_soot_toDex_TrapSplitter = new soot.toDex.TrapSplitter(g);
-	       	}
-       	}
-        return instance_soot_toDex_TrapSplitter;
-    }
-    protected void release_soot_toDex_TrapSplitter() {
-    	instance_soot_toDex_TrapSplitter = null;
-    }
-
-    private soot.toDex.FastDexTrapTightener instance_soot_toDex_FastDexTrapTightener;
-    public soot.toDex.FastDexTrapTightener soot_toDex_FastDexTrapTightener() {
-        if (instance_soot_toDex_FastDexTrapTightener == null) {
-	       	synchronized (this) {
-		        if (instance_soot_toDex_FastDexTrapTightener == null)
-	        		instance_soot_toDex_FastDexTrapTightener = new soot.toDex.FastDexTrapTightener(g);
-	       	}
-       	}
-        return instance_soot_toDex_FastDexTrapTightener;
-    }
-    protected void release_soot_toDex_FastDexTrapTightener() {
-    	instance_soot_toDex_FastDexTrapTightener = null;
     }
 
     private soot.jimple.toolkits.base.RenameDuplicatedClasses instance_soot_jimple_toolkits_base_RenameDuplicatedClasses;
@@ -2063,20 +1948,6 @@ public class Singletons {
     	instance_soot_jimple_toolkits_typing_fast_BottomType = null;
     }
 
-    private soot.dexpler.TrapMinimizer instance_soot_dexpler_TrapMinimizer;
-    public soot.dexpler.TrapMinimizer soot_dexpler_TrapMinimizer() {
-        if (instance_soot_dexpler_TrapMinimizer == null) {
-	       	synchronized (this) {
-		        if (instance_soot_dexpler_TrapMinimizer == null)
-	        		instance_soot_dexpler_TrapMinimizer = new soot.dexpler.TrapMinimizer(g);
-	       	}
-       	}
-        return instance_soot_dexpler_TrapMinimizer;
-    }
-    protected void release_soot_dexpler_TrapMinimizer() {
-    	instance_soot_dexpler_TrapMinimizer = null;
-    }
-
     private soot.toolkits.scalar.SmartLocalDefsPool instance_soot_toolkits_scalar_SmartLocalDefsPool;
     public soot.toolkits.scalar.SmartLocalDefsPool soot_toolkits_scalar_SmartLocalDefsPool() {
         if (instance_soot_toolkits_scalar_SmartLocalDefsPool == null) {
@@ -2133,34 +2004,6 @@ public class Singletons {
     	instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer = null;
     }
 
-    private soot.jbco.jimpleTransformations.ClassRenamer instance_soot_jbco_jimpleTransformations_ClassRenamer;
-    public soot.jbco.jimpleTransformations.ClassRenamer soot_jbco_jimpleTransformations_ClassRenamer() {
-        if (instance_soot_jbco_jimpleTransformations_ClassRenamer == null) {
-	       	synchronized (this) {
-		        if (instance_soot_jbco_jimpleTransformations_ClassRenamer == null)
-	        		instance_soot_jbco_jimpleTransformations_ClassRenamer = new soot.jbco.jimpleTransformations.ClassRenamer(g);
-	       	}
-       	}
-        return instance_soot_jbco_jimpleTransformations_ClassRenamer;
-    }
-    protected void release_soot_jbco_jimpleTransformations_ClassRenamer() {
-    	instance_soot_jbco_jimpleTransformations_ClassRenamer = null;
-    }
-
-    private soot.jbco.jimpleTransformations.MethodRenamer instance_soot_jbco_jimpleTransformations_MethodRenamer;
-    public soot.jbco.jimpleTransformations.MethodRenamer soot_jbco_jimpleTransformations_MethodRenamer() {
-        if (instance_soot_jbco_jimpleTransformations_MethodRenamer == null) {
-	       	synchronized (this) {
-		        if (instance_soot_jbco_jimpleTransformations_MethodRenamer == null)
-	        		instance_soot_jbco_jimpleTransformations_MethodRenamer = new soot.jbco.jimpleTransformations.MethodRenamer(g);
-	       	}
-       	}
-        return instance_soot_jbco_jimpleTransformations_MethodRenamer;
-    }
-    protected void release_soot_jbco_jimpleTransformations_MethodRenamer() {
-    	instance_soot_jbco_jimpleTransformations_MethodRenamer = null;
-    }
-
     private soot.LambdaMetaFactory instance_soot_LambdaMetaFactory;
     public soot.LambdaMetaFactory soot_LambdaMetaFactory() {
         if (instance_soot_LambdaMetaFactory == null) {
@@ -2173,20 +2016,6 @@ public class Singletons {
     }
     protected void release_soot_LambdaMetaFactory() {
     	instance_soot_LambdaMetaFactory = null;
-    }
-
-    private soot.jbco.jimpleTransformations.FieldRenamer instance_soot_jbco_jimpleTransformations_FieldRenamer;
-    public soot.jbco.jimpleTransformations.FieldRenamer soot_jbco_jimpleTransformations_FieldRenamer() {
-        if (instance_soot_jbco_jimpleTransformations_FieldRenamer == null) {
-	       	synchronized (this) {
-		        if (instance_soot_jbco_jimpleTransformations_FieldRenamer == null)
-	        		instance_soot_jbco_jimpleTransformations_FieldRenamer = new soot.jbco.jimpleTransformations.FieldRenamer(g);
-	       	}
-       	}
-        return instance_soot_jbco_jimpleTransformations_FieldRenamer;
-    }
-    protected void release_soot_jbco_jimpleTransformations_FieldRenamer() {
-    	instance_soot_jbco_jimpleTransformations_FieldRenamer = null;
     }
 
     private soot.toolkits.scalar.LocalDefsFactory instance_soot_toolkits_scalar_LocalDefsFactory;

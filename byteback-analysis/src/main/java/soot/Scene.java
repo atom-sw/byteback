@@ -55,11 +55,9 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
-import soot.dexpler.DalvikThrowAnalysis;
 import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.types.DotnetBasicTypes;
-import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -780,8 +778,7 @@ public class Scene {
       }
     }
 
-    if (!javaGEQ9 && (Options.v().whole_program() || Options.v().whole_shimple()
-        || Options.v().output_format() == Options.output_format_dava)) {
+    if (!javaGEQ9 && (Options.v().whole_program() || Options.v().whole_shimple())) {
       // add jce.jar, which is necessary for whole program mode
       // (java.security.Signature from rt.jar imports javax.crypto.Cipher from jce.jar)
       sb.append(File.pathSeparatorChar).append(javaHome).append(File.separatorChar).append("lib").append(File.separatorChar)
@@ -1504,17 +1501,12 @@ public class Scene {
         case Options.throw_analysis_unit:
           defaultThrowAnalysis = UnitThrowAnalysis.v();
           break;
-        case Options.throw_analysis_dalvik:
-          defaultThrowAnalysis = DalvikThrowAnalysis.v();
-          break;
         case Options.throw_analysis_dotnet:
           defaultThrowAnalysis = DotnetThrowAnalysis.v();
           break;
 
         case Options.throw_analysis_auto_select:
-          if (Options.v().src_prec() == Options.src_prec_apk) {
-            defaultThrowAnalysis = DalvikThrowAnalysis.v();
-          } else if (Options.v().src_prec() == Options.src_prec_dotnet) {
+          if (Options.v().src_prec() == Options.src_prec_dotnet) {
             defaultThrowAnalysis = DotnetThrowAnalysis.v();
           } else {
             defaultThrowAnalysis = UnitThrowAnalysis.v();

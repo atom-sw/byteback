@@ -33,7 +33,7 @@ import soot.SootMethodRef;
 import soot.SootResolver;
 import soot.Type;
 import soot.Value;
-import soot.javaToJimple.IInitialResolver;
+import soot.IInitialResolver;
 import soot.jimple.Jimple;
 
 /**

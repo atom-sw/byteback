@@ -40,7 +40,6 @@ public class Main {
 
         Options.v().setPhaseOption("jb", "use-original-names:true");
         Options.v().setPhaseOption("jtp", "enabled:true");
-        Options.v().setPhaseOption("wjtp", "enabled:true");
 
         final Pack jtpPack = PackManager.v().getPack("jtp");
 
@@ -60,6 +59,7 @@ public class Main {
         jtpPack.add(new Transform("jtp.gt", GuardTransformer.v()));
         jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
         jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
+
         jtpPack.add(new Transform("jtp.test", new BodyTransformer() {
             @Override
             protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
