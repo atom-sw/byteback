@@ -28,6 +28,8 @@ import java.util.NoSuchElementException;
  * #L%
  */
 
+import soot.dotnet.members.DotnetMethod;
+import soot.options.Options;
 import soot.util.NumberedString;
 import soot.util.StringNumberer;
 
@@ -51,8 +53,14 @@ public class EntryPoints {
   public EntryPoints(Singletons.Global g) {
     final StringNumberer subSigNumberer = Scene.v().getSubSigNumberer();
 
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      sigMain = subSigNumberer.findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE);
+      sigFinalize = subSigNumberer.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
+    } else {
       sigMain = subSigNumberer.findOrAdd(JavaMethods.SIG_MAIN);
       sigFinalize = subSigNumberer.findOrAdd(JavaMethods.SIG_FINALIZE);
+    }
+
     sigExit = subSigNumberer.findOrAdd(JavaMethods.SIG_EXIT);
     sigClinit = subSigNumberer.findOrAdd(JavaMethods.SIG_CLINIT);
     sigInit = subSigNumberer.findOrAdd(JavaMethods.SIG_INIT);
@@ -99,6 +107,10 @@ public class EntryPoints {
   /** Returns only the entry points invoked implicitly by the VM. */
   public List<SootMethod> implicit() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
+
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return ret;
+    }
 
     addMethod(ret, JavaMethods.INITIALIZE_SYSTEM_CLASS);
     addMethod(ret, JavaMethods.THREAD_GROUP_INIT);
@@ -181,7 +193,8 @@ public class EntryPoints {
     List<SootMethod> ret = new ArrayList<SootMethod>();
     for (SootClass cl : Scene.v().getApplicationClasses()) {
       SootMethod m
-          = cl.getMethodUnsafe("void main(java.lang.String[])");
+          = Options.v().src_prec() == Options.src_prec_dotnet ? cl.getMethodUnsafe(DotnetMethod.MAIN_METHOD_SIGNATURE)
+              : cl.getMethodUnsafe("void main(java.lang.String[])");
       if (m != null && m.isConcrete()) {
         ret.add(m);
       }

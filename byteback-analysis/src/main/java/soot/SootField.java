@@ -23,13 +23,15 @@ package soot;
  * #L%
  */
 
+import soot.jimple.paddle.PaddleField;
+import soot.jimple.spark.pag.SparkField;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 
 /**
  * Soot representation of a Java field. Can be declared to belong to a SootClass.
  */
-public class SootField extends AbstractHost implements ClassMember {
+public class SootField extends AbstractHost implements ClassMember, SparkField, PaddleField {
   protected String name;
   protected Type type;
   protected int modifiers;
@@ -154,6 +156,7 @@ public class SootField extends AbstractHost implements ClassMember {
     }
   }
 
+  @Override
   public Type getType() {
     return type;
   }

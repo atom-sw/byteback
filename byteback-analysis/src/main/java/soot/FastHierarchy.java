@@ -32,11 +32,13 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.spark.internal.TypeManager;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
@@ -56,6 +58,7 @@ import soot.util.NumberedString;
 public class FastHierarchy {
 
   protected static final int USE_INTERVALS_BOUNDARY = 100;
+  private final boolean isDotNet = Options.v().src_prec() == Options.src_prec_dotnet;
 
   protected Table<SootClass, NumberedString, SootMethod> typeToVtbl = HashBasedTable.create();
 
@@ -100,6 +103,12 @@ public class FastHierarchy {
   protected final RefType rtObject;
   protected final RefType rtSerializable;
   protected final RefType rtCloneable;
+  protected final RefType cilArray;
+  protected final RefType cilIcomparable1;
+  protected final RefType cilIcomparable;
+  protected final RefType cilIconvertible;
+  protected final RefType cilIequatable1;
+  protected final RefType cilIformattable;
 
   protected class Interval {
     int lower;
@@ -150,6 +159,13 @@ public class FastHierarchy {
     this.rtObject = sc.getObjectType();
     this.rtSerializable = RefType.v("java.io.Serializable");
     this.rtCloneable = RefType.v("java.lang.Cloneable");
+    this.cilArray = RefType.v(DotnetBasicTypes.SYSTEM_ARRAY);
+    // for CIL prim type structs, which implement these interfaces
+    this.cilIcomparable = RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE);
+    this.cilIcomparable1 = RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE_1);
+    this.cilIconvertible = RefType.v(DotnetBasicTypes.SYSTEM_ICONVERTIBLE);
+    this.cilIequatable1 = RefType.v(DotnetBasicTypes.SYSTEM_IEQUATABLE_1);
+    this.cilIformattable = RefType.v(DotnetBasicTypes.SYSTEM_IFORMATTABLE);
 
     /* First build the inverse maps. */
     buildInverseMaps();
@@ -284,6 +300,11 @@ public class FastHierarchy {
         throw new RuntimeException("Unhandled type " + parent + "! Type " + child + " cannot be stored in type " + parent);
       } else if (parent instanceof ArrayType) {
         Type base = ((AnySubType) child).getBase();
+        // System.Array base class of arrays in CIL
+        if (Options.v().src_prec() == Options.src_prec_dotnet) {
+          return base == cilArray;
+        }
+        // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return base == rtObject || base == rtSerializable || base == rtCloneable;
       } else {
         Deque<SootClass> worklist = new ArrayDeque<SootClass>();
@@ -310,6 +331,10 @@ public class FastHierarchy {
       }
     } else if (child instanceof ArrayType) {
       if (parent instanceof RefType) {
+        // base class System.Array for all arrays
+        if (Options.v().src_prec() == Options.src_prec_dotnet) {
+          return parent == cilArray;
+        }
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return parent == rtObject || parent == rtSerializable || parent == rtCloneable;
       } else if (parent instanceof ArrayType) {
@@ -329,6 +354,9 @@ public class FastHierarchy {
           }
         } else if (achild.numDimensions > aparent.numDimensions) {
           final Type pBaseType = aparent.baseType;
+          if (Options.v().src_prec() == Options.src_prec_dotnet) {
+            return pBaseType == cilArray;
+          }
           return pBaseType == rtObject || pBaseType == rtSerializable || pBaseType == rtCloneable;
         } else {
           return false;
@@ -336,6 +364,12 @@ public class FastHierarchy {
       } else {
         return false;
       }
+    } else if (Options.v().src_prec() == Options.src_prec_dotnet && child instanceof PrimType && parent instanceof RefType) {
+      // only dotnet
+      // if right type prim type struct which implements these interfaces
+      // if generic, base class System.Object is possible
+      return parent == cilIcomparable || parent == cilIcomparable1 || parent == cilIconvertible || parent == cilIformattable
+          || parent == cilIequatable1 || parent == rtObject;
     } else {
       return false;
     }
@@ -952,19 +986,21 @@ public class FastHierarchy {
         returnType = method.getReturnType();
       }
       // if dotnet structs or generics
-      if (method.getParameterCount() == parameterTypes.size() && canStoreType(returnType, method.getReturnType())) {
-        boolean canStore = true;
-        for (int i = 0; i < method.getParameterCount(); i++) {
-          Type methodParameter = method.getParameterType(i);
-          Type calleeParameter = parameterTypes.get(i);
-          // base class can System.Object
-          if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter))) {
-            canStore = false;
+      if (isDotNet) {
+        if (method.getParameterCount() == parameterTypes.size() && canStoreType(returnType, method.getReturnType())) {
+          boolean canStore = true;
+          for (int i = 0; i < method.getParameterCount(); i++) {
+            Type methodParameter = method.getParameterType(i);
+            Type calleeParameter = parameterTypes.get(i);
+            // base class can System.Object
+            if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter))) {
+              canStore = false;
+            }
           }
-        }
-        if (canStore) {
-          candidate = method;
-          returnType = method.getReturnType();
+          if (canStore) {
+            candidate = method;
+            returnType = method.getReturnType();
+          }
         }
       }
     }

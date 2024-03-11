@@ -45,6 +45,14 @@ public interface InvokeExpr extends Expr {
 
   SootMethodRef getMethodRef();
 
+  /**
+   * Resolves {@link SootMethodRef} to {@link SootMethod}.
+   *
+   * @return {@link SootMethod} instance, or {@code null} when reference cannot be resolved and
+   *         {@link soot.options.Options#ignore_resolution_errors} is {@code true}
+   * @throws soot.SootMethodRefImpl.ClassResolutionFailedException
+   *           when reference cannot be resolved and {@link soot.options.Options#ignore_resolution_errors} is {@code false}
+   */
   SootMethod getMethod();
 
   List<Value> getArgs();

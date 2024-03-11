@@ -223,7 +223,7 @@ public class Timers {
   }
 
   private String toFormattedString(double value) {
-    return paddedLeftOf(Double.valueOf(truncatedOf(value, 2)).toString(), 5);
+    return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
   }
 
   public double truncatedOf(double d, int numDigits) {

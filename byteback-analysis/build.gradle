@@ -6,7 +6,20 @@ plugins {
 
 dependencies {
 		implementation project(':byteback-common')
-		implementation 'org.soot-oss:soot:4.3.0'
+	    implementation 'org.ow2.asm:asm:9.2'
+	    implementation 'org.ow2.asm:asm-tree:9.2'
+	    implementation 'org.ow2.asm:asm-util:9.2'
+	    implementation 'org.ow2.asm:asm-util:9.2'
+	    implementation 'org.ow2.asm:asm-commons:9.2'
+	    implementation 'com.google.guava:guava:33.0.0-jre'
+	    implementation 'ca.mcgill.sable:polyglot:2006'
+		implementation 'ca.mcgill.sable:jasmin:3.0.3'
+		implementation 'de.upb.cs.swt:heros:1.2.3'
+		implementation 'de.upb.cs.swt:axml:2.1.2'
+	    implementation 'org.smali:dexlib2:2.5.2'
+	    implementation 'com.google.protobuf:protobuf-java:3.21.7'
+		implementation 'commons-io:commons-io:2.7'
+		implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.0'
 		implementation 'org.slf4j:slf4j-simple:1.6.1'
 		implementation 'com.beust:jcommander:1.+'
 		testImplementation 'org.mockito:mockito-core:3.+'

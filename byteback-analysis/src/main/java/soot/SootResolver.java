@@ -65,6 +65,41 @@ public class SootResolver {
     worklist[SootClass.BODIES] = new ArrayDeque<SootClass>();
   }
 
+  protected void initializeProgram() {
+    if (Options.v().src_prec() != Options.src_prec_apk_c_j) {
+      program = new Program();
+      program.state().reset();
+
+      program.initBytecodeReader(new BytecodeParser());
+      program.initJavaParser(new JavaParser() {
+        @Override
+        public CompilationUnit parse(InputStream is, String fileName) throws IOException, beaver.Parser.Exception {
+          return new JastAddJavaParser().parse(is, fileName);
+        }
+      });
+
+      final soot.JastAddJ.Options options = program.options();
+      options.initOptions();
+      options.addKeyValueOption("-classpath");
+      options.setValueForOption(Scene.v().getSootClassPath(), "-classpath");
+
+      switch (Options.v().src_prec()) {
+        case Options.src_prec_java:
+          program.setSrcPrec(Program.SRC_PREC_JAVA);
+          break;
+        case Options.src_prec_class:
+          program.setSrcPrec(Program.SRC_PREC_CLASS);
+          break;
+        case Options.src_prec_only_class:
+          program.setSrcPrec(Program.SRC_PREC_CLASS);
+          break;
+        default:
+          break;
+      }
+      program.initPaths();
+    }
+  }
+
   public static SootResolver v() {
     G g = G.v();
     if (g.soot_ModuleUtil().isInModuleMode()) {
@@ -361,6 +396,13 @@ public class SootResolver {
 
   public void reResolve(SootClass cl) {
     reResolve(cl, SootClass.HIERARCHY);
+  }
+
+  public Program getProgram() {
+    if (program == null) {
+      initializeProgram();
+    }
+    return program;
   }
 
   public class SootClassNotFoundException extends RuntimeException {

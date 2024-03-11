@@ -56,6 +56,9 @@ import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
 import soot.dexpler.DalvikThrowAnalysis;
+import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
+import soot.dotnet.members.DotnetMethod;
+import soot.dotnet.types.DotnetBasicTypes;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
@@ -137,8 +140,12 @@ public class Scene {
       setSootClassPath(scp);
     }
 
-    addSootBasicClasses();
-    determineExcludedPackages();
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      addSootBasicDotnetClasses();
+    } else {
+      addSootBasicClasses();
+      determineExcludedPackages();
+    }
   }
 
   public static Scene v() {
@@ -183,7 +190,8 @@ public class Scene {
 
   public void setMainClass(SootClass m) {
     mainClass = m;
-    if (!m.declaresMethod(getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))) {
+    if (!m.declaresMethod(getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))
+        && !m.declaresMethod(getSubSigNumberer().findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE))) {
       throw new RuntimeException("Main-class has no main method!");
     }
   }
@@ -277,8 +285,11 @@ public class Scene {
       throw new RuntimeException("There is no main class set!");
     }
 
-    SootMethod mainMethod = mainClass.getMethodUnsafe("main", Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
-            VoidType.v());
+    SootMethod mainMethod = Options.v().src_prec() != Options.src_prec_dotnet
+        ? mainClass.getMethodUnsafe("main", Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+            VoidType.v())
+        : mainClass.getMethodUnsafe("Main",
+            Collections.singletonList(ArrayType.v(RefType.v(DotnetBasicTypes.SYSTEM_STRING), 1)), VoidType.v());
     if (mainMethod == null) {
       throw new RuntimeException("Main class declares no main method!");
     }
@@ -1122,6 +1133,9 @@ public class Scene {
 
   /** Returns the {@link RefType} for {@link Object}. */
   public RefType getObjectType() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return getRefType(DotnetBasicTypes.SYSTEM_OBJECT);
+    }
     return getRefType("java.lang.Object");
   }
 
@@ -1131,6 +1145,9 @@ public class Scene {
    * @return RefType with the given className
    */
   public RefType getBaseExceptionType() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return getRefType(DotnetBasicTypes.SYSTEM_EXCEPTION);
+    }
     return getRefType("java.lang.Throwable");
   }
 
@@ -1490,9 +1507,15 @@ public class Scene {
         case Options.throw_analysis_dalvik:
           defaultThrowAnalysis = DalvikThrowAnalysis.v();
           break;
+        case Options.throw_analysis_dotnet:
+          defaultThrowAnalysis = DotnetThrowAnalysis.v();
+          break;
+
         case Options.throw_analysis_auto_select:
           if (Options.v().src_prec() == Options.src_prec_apk) {
             defaultThrowAnalysis = DalvikThrowAnalysis.v();
+          } else if (Options.v().src_prec() == Options.src_prec_dotnet) {
+            defaultThrowAnalysis = DotnetThrowAnalysis.v();
           } else {
             defaultThrowAnalysis = UnitThrowAnalysis.v();
           }
@@ -1647,6 +1670,93 @@ public class Scene {
     addBasicClass("java.lang.ref.Finalizer");
 
     addBasicClass("java.lang.invoke.LambdaMetafactory");
+  }
+
+  private void addSootBasicDotnetClasses() {
+    basicclasses[SootClass.HIERARCHY] = new HashSet<>();
+    basicclasses[SootClass.SIGNATURES] = new HashSet<>();
+    basicclasses[SootClass.BODIES] = new HashSet<>();
+
+    addBasicClass(DotnetBasicTypes.SYSTEM_OBJECT, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_VOID, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_BOOLEAN, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_BYTE, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_CHAR, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INT16, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INT32, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INT64, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_SINGLE, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_DOUBLE, SootClass.SIGNATURES);
+
+    addBasicClass(DotnetBasicTypes.SYSTEM_STRING, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_ENUM, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_TYPE, SootClass.SIGNATURES);
+
+    addBasicClass(DotnetBasicTypes.SYSTEM_SBYTE, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_DECIMAL, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INTPTR, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_UINTPTR, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_UINTPTR, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_UINT16, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_UINT32, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_UINT64, SootClass.SIGNATURES);
+
+    addBasicClass(DotnetBasicTypes.SYSTEM_EXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_ACCESSVIOLATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_AGGREGATEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_APPDOMAINUNLOADEDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_APPLICATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_ARGUMENTEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_ARGUMENTNULLEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_ARGUMENTOUTOFRANGEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_ARITHMETICEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_ARRAYTYPEMISMATCHEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_BADIMAGEFORMATEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_CANNOTUNLOADAPPDOMAINEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_CONTEXTMARSHALEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_DATAMISALIGNEDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_DIVIDEBYZEROEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_DLLNOTFOUNDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_DUPLICATEWAITOBJECTEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_ENTRYPOINTNOTFOUNDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_EXECUTIONENGINEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_FORMATEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INSUFFICIENTEXECUTIONSTACKEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INSUFFICIENTMEMORYEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INVALIDOPERATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INVALIDPROGRAMEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_INVALIDTIMEZONEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_SYSTEMEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_TYPEACCESSEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_TYPEINITIALIZATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_TYPELOADEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_TYPEUNLOADEDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_UNAUTHORIZEDACCESSEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_URIFORMATEXCEPTION, SootClass.SIGNATURES);
+
+    addBasicClass(DotnetBasicTypes.SYSTEM_SECURITYEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_METHODACCESSEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_VERIFICATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_STACKOVERFLOWEXCEPTION, SootClass.SIGNATURES);
+
+    addBasicClass(DotnetBasicTypes.SYSTEM_THREADING, SootClass.SIGNATURES);
+
+    addBasicClass(DotnetBasicTypes.SYSTEM_SERIALIZEABLEATTRIBUTE, SootClass.SIGNATURES);
+
+    addBasicClass(DotnetBasicTypes.SYSTEM_CONSOLE, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_RUNTIMEFIELDHANDLE, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_RUNTIMEMETHODHANDLE, SootClass.SIGNATURES);
+    addBasicClass(DotnetBasicTypes.SYSTEM_RUNTIMETYPEHANDLE, SootClass.SIGNATURES);
+
+    addBasicClass(DotnetBasicTypes.FAKE_LDFTN, SootClass.SIGNATURES);
   }
 
   public void addBasicClass(String name) {
@@ -1974,12 +2084,14 @@ public class Scene {
         setMainClass(getSootClass(optsMain));
       } else {
         final List<Type> mainArgs = Collections.singletonList(
-            ArrayType.v(RefType.v("java.lang.String"), 1));
+            ArrayType.v(Options.v().src_prec() == Options.src_prec_dotnet ? RefType.v(DotnetBasicTypes.SYSTEM_STRING)
+                : RefType.v("java.lang.String"), 1));
         // try to infer a main class from the command line if none is given
         for (String next : Options.v().classes()) {
           SootClass c = getSootClass(next);
           boolean declaresMethod
-              = c.declaresMethod("Main", mainArgs, VoidType.v());
+              = Options.v().src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
+                  : c.declaresMethod("Main", mainArgs, VoidType.v());
           if (declaresMethod) {
             logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
             setMainClass(c);
@@ -1989,7 +2101,9 @@ public class Scene {
 
         // try to infer a main class from the usual classpath if none is given
         for (SootClass c : getApplicationClasses()) {
-          boolean declaresMethod = c.declaresMethod("Main", mainArgs, VoidType.v());
+          boolean declaresMethod
+              = Options.v().src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
+                  : c.declaresMethod("Main", mainArgs, VoidType.v());
           if (declaresMethod) {
             logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
             setMainClass(c);

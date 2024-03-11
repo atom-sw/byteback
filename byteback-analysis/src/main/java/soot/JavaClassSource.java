@@ -57,7 +57,7 @@ public class JavaClassSource extends ClassSource {
       logger.debug("resolving [from .java]: " + className);
     }
 
-    IInitialResolver resolver = InitialResolver.v();
+    IInitialResolver resolver = Options.v().polyglot() ? InitialResolver.v() : JastAddInitialResolver.v();
 
     if (fullPath != null) {
       resolver.formAst(fullPath.getPath(), SourceLocator.v().sourcePath(), className);

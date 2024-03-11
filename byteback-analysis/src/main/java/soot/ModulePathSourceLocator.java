@@ -355,6 +355,14 @@ public class ModulePathSourceLocator extends SourceLocator {
     return moduleClassMap;
   }
 
+  /**
+   * Creates a name for an automatic module based on the name of a jar file this is based on the jdk parsing of module name
+   * in the JDK 9{@link ModulePathFinder} at least the patterns are the same
+   *
+   * @param filename
+   *          the name of the jar file
+   * @return the name of the automatic module
+   */
   private String createModuleNameForAutomaticModule(String filename) {
     int i = filename.lastIndexOf(File.separatorChar);
     if (i != -1) {
