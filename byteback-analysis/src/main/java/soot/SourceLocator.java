@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 import soot.asm.AsmClassProvider;
 import soot.asm.AsmClassSource;
 import soot.asm.AsmJava9ClassProvider;
-import soot.dotnet.AssemblyFile;
-import soot.dotnet.DotnetClassProvider;
 import soot.options.Options;
 import soot.util.SharedCloseable;
 
@@ -252,7 +250,7 @@ public class SourceLocator {
     final List<ClassProvider> classProviders = new LinkedList<ClassProvider>();
     final ClassProvider classFileClassProvider = new AsmClassProvider();
     switch (Options.v().src_prec()) {
-      case Options.src_prec_class, Options.src_prec_java, Options.src_prec_apk, Options.src_prec_apk_c_j:
+      case Options.src_prec_class, Options.src_prec_java:
         classProviders.add(classFileClassProvider);
         classProviders.add(new JimpleClassProvider());
         break;
@@ -262,10 +260,6 @@ public class SourceLocator {
         case Options.src_prec_jimple:
         classProviders.add(new JimpleClassProvider());
         classProviders.add(classFileClassProvider);
-        break;
-        case Options.src_prec_dotnet:
-        classProviders.add(new DotnetClassProvider());
-        classProviders.add(new JimpleClassProvider());
         break;
       default:
         throw new RuntimeException("Other source precedences are not currently supported.");
@@ -341,58 +335,6 @@ public class SourceLocator {
             } catch (Throwable e) {
                 throw new CompilationDeathException("Error reading archive '" + aPath + "'", e);
             }
-        }
-        // load dotnet assemblies
-        else if ((Options.v().src_prec() == Options.src_prec_dotnet && cst == ClassSourceType.directory)
-                || cst == ClassSourceType.dll || cst == ClassSourceType.exe) {
-            if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path())) {
-                throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
-            }
-
-            File file = new File(aPath);
-            File[] files = new File[1];
-            if (cst == ClassSourceType.directory) {
-                File[] fileList = file.listFiles();
-
-                if (fileList == null) {
-                    return classes;
-                }
-                files = fileList;
-            } else {
-                files[0] = new File(aPath);
-            }
-
-            for (File element : files) {
-                if (element.isDirectory()) {
-                    classes.addAll(getClassesUnder(aPath + File.separatorChar + element.getName()));
-                } else {
-                    String fileName = element.getName();
-
-                    if (fileName.endsWith(".dll") || fileName.endsWith(".exe")) {
-                        try {
-                            Map<String, File> classContainerIndex = SourceLocator.v().dexClassIndex();
-                            AssemblyFile assemblyFile;
-                            String canonicalPath = element.getCanonicalPath();
-                            if (classContainerIndex.containsKey(canonicalPath)) {
-                                assemblyFile = (AssemblyFile) classContainerIndex.get(canonicalPath);
-                            } else {
-                                assemblyFile = new AssemblyFile(canonicalPath);
-                                if (!assemblyFile.isAssembly()) {
-                                    continue;
-                                }
-                            }
-                            List<String> allClassNames = assemblyFile.getAllTypeNames();
-                            if (allClassNames != null) {
-                                classes.addAll(allClassNames);
-                            }
-                        } catch (IOException e) {
-                            /* Ignore unreadable files */
-                            logger.debug("" + e.getMessage());
-                        }
-                    }
-                }
-            }
-
         } else if (cst == ClassSourceType.directory) {
             File file = new File(aPath);
             File[] files = file.listFiles();

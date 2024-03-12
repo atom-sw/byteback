@@ -78,16 +78,8 @@ public class ClassHierarchy {
 
     this.NULL = typeNode(NullType.v());
     this.OBJECT = typeNode(Scene.v().getObjectType());
-
-    // hack for J2ME library which does not have Cloneable and Serializable
-    // reported by Stephen Chen
-    if (!Options.v().j2me() && Options.v().src_prec() != Options.src_prec_dotnet) {
-      this.CLONEABLE = typeNode(RefType.v("java.lang.Cloneable"));
-      this.SERIALIZABLE = typeNode(RefType.v("java.io.Serializable"));
-    } else {
-      this.CLONEABLE = null;
-      this.SERIALIZABLE = null;
-    }
+    this.CLONEABLE = null;
+    this.SERIALIZABLE = null;
 
     this.INT = typeNode(IntType.v());
   }

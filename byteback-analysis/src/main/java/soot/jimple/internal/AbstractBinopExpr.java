@@ -40,7 +40,6 @@ import soot.UnitPrinter;
 import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
-import soot.dotnet.types.DotnetBasicTypes;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.Expr;
 import soot.options.Options;
@@ -175,38 +174,7 @@ public abstract class AbstractBinopExpr implements Expr {
       }
     }
 
-    // in dotnet enums are value types, such as myBool = 1 is allowed in CIL
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      if (isSuperclassSystemEnum(t1) || isSuperclassSystemEnum(t2)) {
-        return tyInt;
-      }
-    }
     return UnknownType.v();
-
-  }
-
-  /**
-   * Returns true if the superclass of the given Type is a System.Enum (.Net)
-   * 
-   * @param t
-   * @return
-   */
-  public boolean isSuperclassSystemEnum(Type t) {
-    if ((Options.v().src_prec() != Options.src_prec_dotnet) || !(t instanceof RefType)) {
-      return false;
-    }
-    SootClass sootClass = ((RefType) t).getSootClass();
-    if (sootClass == null) {
-      return false;
-    }
-    SootClass superclass = sootClass.getSuperclass();
-    if (superclass == null) {
-      return false;
-    }
-    if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM)) {
-      return true;
-    }
-    return false;
   }
 
   public enum BinopExprEnum {

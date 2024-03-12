@@ -49,8 +49,6 @@ public class Options extends OptionsBase {
     public static final int src_prec_java = 4;
     public static final int src_prec_apk = 5;
     public static final int src_prec_apk_class_jimple = 6;
-    public static final int src_prec_apk_c_j = 6;
-    public static final int src_prec_dotnet = 7;
     public static final int output_format_J = 1;
     public static final int output_format_jimple = 1;
     public static final int output_format_j = 2;
@@ -455,29 +453,6 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     src_prec = src_prec_apk;
-                }
-                else if (false
-                        || value.equals("apk-class-jimple")
-                        || value.equals("apk-c-j")
-                ) {
-                    if (src_prec != 0 && src_prec != src_prec_apk_c_j) {
-                        G.v().out.println("Multiple values given for option " + option);
-                        return false;
-                    }
-                    src_prec = src_prec_apk_c_j;
-                }
-                else if (false
-                        || value.equals("dotnet")
-                ) {
-                    if (src_prec != 0 && src_prec != src_prec_dotnet) {
-                        G.v().out.println("Multiple values given for option " + option);
-                        return false;
-                    }
-                    src_prec = src_prec_dotnet;
-                }
-                else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
-                    return false;
                 }
             }
             else if (false

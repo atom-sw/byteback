@@ -45,7 +45,6 @@ import soot.ShortType;
 import soot.TrapManager;
 import soot.Type;
 import soot.Value;
-import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.ArrayRef;
@@ -193,7 +192,6 @@ public class AugEvalFunction implements IEvalFunction {
           case "java.lang.Cloneable":
           case "java.lang.Object":
           case "java.io.Serializable":
-          case DotnetBasicTypes.SYSTEM_ARRAY:
             return new WeakObjectType(name);
           default:
             return BottomType.v();

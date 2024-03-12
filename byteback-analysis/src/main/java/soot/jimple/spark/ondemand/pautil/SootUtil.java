@@ -46,7 +46,6 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
-import soot.dotnet.members.DotnetMethod;
 import soot.jimple.spark.ondemand.genericutil.ArraySet;
 import soot.jimple.spark.ondemand.genericutil.ArraySetMultiMap;
 import soot.jimple.spark.ondemand.genericutil.ImmutableStack;
@@ -181,10 +180,6 @@ public class SootUtil {
       "com.sun.org.omg.CORBA.portable", "com.sun.org.omg.SendingContext", "com.sun.org.omg.SendingContext.CodeBasePackage",
       "com.sun.rmi.rmid", "com.sun.rsajca", "com.sun.rsasign" };
 
-  /**
-   * @param outerType
-   * @return
-   */
   public static boolean inLibrary(String className) {
     for (int i = 0; i < lib13Packages.length; i++) {
       String libPackage = lib13Packages[i];
@@ -393,12 +388,6 @@ public class SootUtil {
     };
     return notRefTypePred.test(method.getReturnType())
         && soot.jimple.spark.ondemand.genericutil.Util.forAll(method.getParameterTypes(), notRefTypePred);
-  }
-
-  public static SootMethod getMainMethod() {
-    return Options.v().src_prec() != Options.src_prec_dotnet
-        ? Scene.v().getMainClass().getMethod(Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))
-        : Scene.v().getMainClass().getMethod(Scene.v().getSubSigNumberer().findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE));
   }
 
   public static boolean isResolvableCall(SootMethod invokedMethod) {

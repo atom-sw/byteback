@@ -41,7 +41,6 @@ import soot.Scene;
 import soot.Singletons;
 import soot.SootClass;
 import soot.Unit;
-import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
 
 /**
@@ -1070,46 +1069,6 @@ public class ThrowableSet {
       // First ensure the Exception classes are represented in Soot. Note that Soot supports multiple target platforms such
       // as .net, which may use different exception classes. In that case, we just use null for the Java exception types.
       final Scene scene = Scene.v();
-
-      if (Options.v().src_prec() == Options.src_prec_dotnet) {
-        // TODO check if all types set right and refactor
-        RUNTIME_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_SYSTEMEXCEPTION);
-        ARITHMETIC_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_ARITHMETICEXCEPTION);
-        ARRAY_STORE_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_ARRAYTYPEMISMATCHEXCEPTION);
-        CLASS_CAST_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION);
-        ILLEGAL_MONITOR_STATE_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_EXCEPTION);
-        INDEX_OUT_OF_BOUNDS_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION);
-        ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION);
-        NEGATIVE_ARRAY_SIZE_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION);
-        NULL_POINTER_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION);
-        INSTANTIATION_ERROR = scene.getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION);
-
-        EMPTY = registerSetIfNew(null, null);
-
-        Set<RefLikeType> allThrowablesSet = new HashSet<>();
-        allThrowablesSet.add(AnySubType.v(scene.getRefType(DotnetBasicTypes.SYSTEM_EXCEPTION)));
-        ALL_THROWABLES = registerSetIfNew(allThrowablesSet, null);
-
-        Set<RefLikeType> vmErrorSet = new HashSet<>();
-        vmErrorSet.add(scene.getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
-        vmErrorSet.add(scene.getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
-        VM_ERRORS = registerSetIfNew(vmErrorSet, null);
-
-        Set<RefLikeType> resolveClassErrorSet = new HashSet<>();
-        RESOLVE_CLASS_ERRORS = registerSetIfNew(resolveClassErrorSet, null);
-
-        Set<RefLikeType> resolveFieldErrorSet = new HashSet<>(resolveClassErrorSet);
-        resolveFieldErrorSet.add(scene.getRefType(DotnetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
-        RESOLVE_FIELD_ERRORS = registerSetIfNew(resolveFieldErrorSet, null);
-
-        Set<RefLikeType> resolveMethodErrorSet = new HashSet<>(resolveClassErrorSet);
-        resolveMethodErrorSet.add(scene.getRefType(DotnetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
-        RESOLVE_METHOD_ERRORS = registerSetIfNew(resolveMethodErrorSet, null);
-
-        Set<RefLikeType> initializationErrorSet = new HashSet<>();
-        INITIALIZATION_ERRORS = registerSetIfNew(initializationErrorSet, null);
-        return;
-      }
 
       // Runtime errors:
       RUNTIME_EXCEPTION = scene.getRefTypeUnsafe("java.lang.RuntimeException");

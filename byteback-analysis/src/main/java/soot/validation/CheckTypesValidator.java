@@ -39,7 +39,6 @@ import soot.SootClass;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
-import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.InstanceInvokeExpr;
@@ -110,49 +109,9 @@ public enum CheckTypesValidator implements BodyValidator {
       if (leftType instanceof DoubleType && rightType instanceof DoubleType) {
         return;
       }
-
-      if (Options.v().src_prec() == Options.src_prec_dotnet) {
-
-        // if left/right type type of System.ValueType == primtype, is ok
-
-        if ((leftType instanceof RefType && ((RefType) leftType).getClassName().equals(DotnetBasicTypes.SYSTEM_INTPTR))
-            || (rightType instanceof RefType
-                && ((RefType) rightType).getClassName().equals(DotnetBasicTypes.SYSTEM_INTPTR))) {
-          return;
-        }
-        if (leftType instanceof RefType) {
-          FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
-          if (fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(),
-              Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
-            return;
-          }
-
-          // if lefttype is base class, all right types are legal
-          if (((RefType) leftType).getSootClass().getName().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
-            return;
-          }
-
-          // if righttype is primtype - primitive structs inherits from ValueType and
-          // implements IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
-          if (leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE))
-              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE_1))
-              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICONVERTIBLE))
-              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_IEQUATABLE_1))
-              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_IFORMATTABLE))) {
-            return;
-          }
-
-        }
-        if (rightType instanceof RefType) {
-          FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
-          if (fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(),
-              Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
-            return;
-          }
-        }
-      }
       exception.add(new ValidationException(stmt, "Warning: Bad use of primitive type" + errorSuffix + " - LeftType is "
           + leftType.getClass().getName() + " and RightType is " + rightType.getClass().getName()));
+
       return;
     }
 
@@ -169,7 +128,7 @@ public enum CheckTypesValidator implements BodyValidator {
       if (rightType instanceof ArrayType) {
         // Dotnet: it is legal to assign arrays to System.Array, because it is base class in CLR
         if (leftType.equals(RefType.v("java.io.Serializable")) || leftType.equals(RefType.v("java.lang.Cloneable"))
-            || leftType.equals(Scene.v().getObjectType()) || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ARRAY))) {
+            || leftType.equals(Scene.v().getObjectType())) {
           return;
         }
       }
@@ -197,16 +156,6 @@ public enum CheckTypesValidator implements BodyValidator {
       } else if (rightClass.isInterface()) {
         exception.add(new ValidationException(stmt,
             "Warning: trying to use interface type where non-Object class expected" + errorSuffix));
-      } else if (Options.v().src_prec() == Options.src_prec_dotnet) {
-        // if dotnet check for ValueTypes, assignment can only be correct from compiler
-        FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
-        boolean lTypeIsChild = fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(),
-            Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
-        boolean rTypeIsChild = fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(),
-            Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
-        if (lTypeIsChild && rTypeIsChild) {
-          return;
-        }
       } else if (!Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(rightClass, leftClass)) {
         exception.add(new ValidationException(stmt, "Warning: Bad use of class type" + errorSuffix));
       }

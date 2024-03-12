@@ -75,7 +75,6 @@ import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
-import soot.dotnet.members.DotnetMethod;
 import soot.jimple.AssignStmt;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.FieldRef;
@@ -198,11 +197,7 @@ public class OnFlyCallGraphBuilder {
     final Scene sc = Scene.v();
     {
       final StringNumberer nmbr = sc.getSubSigNumberer();
-      if (Options.v().src_prec() == Options.src_prec_dotnet) {
-        this.sigFinalize = nmbr.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
-      } else {
-        this.sigFinalize = nmbr.findOrAdd(JavaMethods.SIG_FINALIZE);
-      }
+      this.sigFinalize = nmbr.findOrAdd(JavaMethods.SIG_FINALIZE);
       this.sigInit = nmbr.findOrAdd(JavaMethods.SIG_INIT);
       this.sigForName = nmbr.findOrAdd(JavaMethods.SIG_INIT);
     }
@@ -1252,14 +1247,6 @@ public class OnFlyCallGraphBuilder {
       }
     }
 
-    /**
-     * Adds a special edge of kind {@link Kind#REFL_CONSTR_NEWINSTANCE} to all possible target constructors of this call to
-     * {@link Constructor#newInstance(Object...)}. Those kinds of edges are treated specially in terms of how parameters are
-     * assigned, as parameters to the reflective call are passed into the argument array of
-     * {@link Constructor#newInstance(Object...)}.
-     *
-     * @see PAG#addCallTarget(Edge)
-     */
     @Override
     public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
       Set<String> constructorSignatures = reflectionInfo.constructorNewInstanceSignatures(container);
@@ -1275,14 +1262,6 @@ public class OnFlyCallGraphBuilder {
       }
     }
 
-    /**
-     * Adds a special edge of kind {@link Kind#REFL_INVOKE} to all possible target methods of this call to
-     * {@link Method#invoke(Object, Object...)}. Those kinds of edges are treated specially in terms of how parameters are
-     * assigned, as parameters to the reflective call are passed into the argument array of
-     * {@link Method#invoke(Object, Object...)}.
-     *
-     * @see PAG#addCallTarget(Edge)
-     */
     @Override
     public void methodInvoke(SootMethod container, Stmt invokeStmt) {
       Set<String> methodSignatures = reflectionInfo.methodInvokeSignatures(container);

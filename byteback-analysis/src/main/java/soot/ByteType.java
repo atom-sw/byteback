@@ -22,7 +22,6 @@ package soot;
  * #L%
  */
 
-import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
 import soot.util.Switch;
 
@@ -63,9 +62,6 @@ public class ByteType extends PrimType implements IntegerType {
 
   @Override
   public String getTypeAsString() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      return DotnetBasicTypes.SYSTEM_BYTE;
-    }
     return JavaBasicTypes.JAVA_LANG_BYTE;
   }
 

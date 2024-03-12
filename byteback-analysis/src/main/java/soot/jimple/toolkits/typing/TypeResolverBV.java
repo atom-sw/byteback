@@ -363,14 +363,6 @@ public class TypeResolverBV {
       }
     }
 
-    if (max > 1) {
-      // hack for J2ME library, reported by Stephen Cheng
-      if (!Options.v().j2me() && Options.v().src_prec() != Options.src_prec_dotnet) {
-        typeVariable(ArrayType.v(RefType.v("java.lang.Cloneable"), max - 1));
-        typeVariable(ArrayType.v(RefType.v("java.io.Serializable"), max - 1));
-      }
-    }
-
     // create lists for each array depth
     @SuppressWarnings("unchecked")
     LinkedList<TypeVariableBV>[] lists = new LinkedList[max + 1];

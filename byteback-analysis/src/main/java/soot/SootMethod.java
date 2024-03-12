@@ -35,7 +35,6 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.dotnet.members.DotnetMethod;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.NumberedString;
@@ -603,8 +602,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   public boolean isMain() {
     return isPublic() && isStatic()
         && Scene.v().getSubSigNumberer()
-            .findOrAdd(Options.v().src_prec() != Options.src_prec_dotnet ? "void main(java.lang.String[])"
-                : DotnetMethod.MAIN_METHOD_SIGNATURE)
+            .findOrAdd("void main(java.lang.String[])")
             .equals(subsignature);
   }
 
