@@ -22,6 +22,9 @@ package soot.asm.model;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.*;
 import soot.Type;
@@ -103,7 +106,7 @@ public class ClassModelBuilder extends ClassVisitor {
             addDep(makeRefType(intrf));
             ClassModel interfaceClass = makeClassRef(intrf);
             interfaceClass.setModifiers(interfaceClass.getModifiers() | Modifier.INTERFACE);
-            classModel.addInterface(interfaceClass);
+            classModel.addInterfaceType(interfaceClass);
         }
 
         if (signature != null) {
@@ -122,7 +125,7 @@ public class ClassModelBuilder extends ClassVisitor {
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         Type type = AsmUtil.toJimpleTypeName(desc);
         addDep(type);
-        SootField field = Scene.v().makeSootField(name, type, filterASMFlags(access));
+        FieldModel field = Scene.v().makeSootField(name, type, filterASMFlags(access));
         Tag tag;
         if (value instanceof Integer) {
             tag = new IntegerConstantValueTag((Integer) value);
@@ -171,7 +174,7 @@ public class ClassModelBuilder extends ClassVisitor {
             addDep(type);
         }
 
-        SootMethod method = Scene.v().makeSootMethod(name, sigTypes, sigTypes.remove(sigTypes.size() - 1),
+        MethodModel method = Scene.v().makeSootMethod(name, sigTypes, sigTypes.remove(sigTypes.size() - 1),
                 filterASMFlags(access), thrownExceptions);
 
         if (signature != null) {
@@ -181,8 +184,8 @@ public class ClassModelBuilder extends ClassVisitor {
         return createMethodBuilder(classModel.getOrAddMethod(method), desc, exceptions);
     }
 
-    protected MethodVisitor createMethodBuilder(SootMethod sootMethod, String desc, String[] exceptions) {
-        return new MethodModelBuilder(sootMethod, this, desc, exceptions);
+    protected MethodVisitor createMethodBuilder(MethodModel methodModel, String desc, String[] exceptions) {
+        return new MethodModelBuilder(methodModel, this, desc, exceptions);
     }
 
     @Override

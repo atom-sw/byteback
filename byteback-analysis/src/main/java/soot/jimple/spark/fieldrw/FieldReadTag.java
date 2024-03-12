@@ -22,7 +22,7 @@ package soot.jimple.spark.fieldrw;
  * #L%
  */
 
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public class FieldReadTag extends FieldRWTag {
 
     public static final String NAME = "FieldReadTag";
 
-    FieldReadTag(Set<SootField> fields) {
+    FieldReadTag(Set<FieldModel> fields) {
         super(fields);
     }
 

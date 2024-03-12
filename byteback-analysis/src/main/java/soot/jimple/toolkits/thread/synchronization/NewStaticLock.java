@@ -22,6 +22,7 @@ package soot.jimple.toolkits.thread.synchronization;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import soot.*;
 import soot.util.Switch;
 

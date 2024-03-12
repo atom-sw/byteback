@@ -22,7 +22,7 @@ package soot.jimple.spark.geom.geomPA;
  * #L%
  */
 
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.spark.geom.dataRep.PlainConstraint;

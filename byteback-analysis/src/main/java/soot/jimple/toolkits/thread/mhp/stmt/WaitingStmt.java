@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread.mhp.stmt;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -37,11 +37,11 @@ import soot.SootMethod;
 
 public class WaitingStmt extends JPegStmt {
 
-    public WaitingStmt(String obj, String ca, SootMethod sm) {
+    public WaitingStmt(String obj, String ca, MethodModel sm) {
         this.object = obj;
         this.name = "waiting";
         this.caller = ca;
-        this.sootMethod = sm;
+        this.methodModel = sm;
     }
 
 }

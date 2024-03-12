@@ -24,7 +24,7 @@ package soot.jimple.toolkits.pointer;
 
 import soot.PointsToSet;
 import soot.Scene;
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.sets.HashPointsToSet;
@@ -59,7 +59,7 @@ public class CodeBlockRWSet extends MethodRWSet {
             }
         }
         if (globals != null) {
-            for (SootField global : globals) {
+            for (FieldModel global : globals) {
                 ret.append("[Global: ").append(global).append("]\n");
                 empty = false;
             }
@@ -96,7 +96,7 @@ public class CodeBlockRWSet extends MethodRWSet {
             }
             if (o.globals != null) {
                 if (globals == null) {
-                    globals = new HashSet<SootField>();
+                    globals = new HashSet<FieldModel>();
                 }
                 ret = globals.addAll(o.globals) | ret;
                 if (globals.size() > MAX_SIZE) {
@@ -115,7 +115,7 @@ public class CodeBlockRWSet extends MethodRWSet {
             if (oth.base != null) {
                 ret = addFieldRef(oth.base, oth.field) | ret;
             } else if (oth.field != null) {
-                ret = addGlobal((SootField) oth.field) | ret;
+                ret = addGlobal((FieldModel) oth.field) | ret;
             }
         } else if (other instanceof SiteRWSet) {
             SiteRWSet oth = (SiteRWSet) other;
@@ -143,7 +143,7 @@ public class CodeBlockRWSet extends MethodRWSet {
         }
 
         if (globals != null && other.globals != null && !globals.isEmpty() && !other.globals.isEmpty()) {
-            for (SootField sg : other.globals) {
+            for (FieldModel sg : other.globals) {
                 if (globals.contains(sg)) {
                     ret.addGlobal(sg);
                 }

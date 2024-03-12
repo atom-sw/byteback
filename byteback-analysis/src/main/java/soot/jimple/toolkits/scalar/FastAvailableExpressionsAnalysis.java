@@ -22,6 +22,7 @@ package soot.jimple.toolkits.scalar;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.DirectedGraph;
@@ -48,7 +49,7 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
     protected final Map<Value, Unit> rhsToContainingStmt;
     protected final Map<Unit, FlowSet<Value>> unitToGenerateSet;
 
-    public FastAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, SootMethod m, SideEffectTester st) {
+    public FastAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, MethodModel m, SideEffectTester st) {
         super(dg);
         this.st = st;
         this.rhsToContainingStmt = new HashMap<Value, Unit>();

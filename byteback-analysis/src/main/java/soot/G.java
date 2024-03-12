@@ -22,6 +22,7 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.jimple.spark.pag.MethodPAG;
 import soot.jimple.spark.pag.Parm;
 import soot.jimple.spark.sets.P2SetFactory;
@@ -78,10 +79,10 @@ public class G extends Singletons {
 
     public P2SetFactory newSetFactory;
     public P2SetFactory oldSetFactory;
-    public Map<Pair<SootMethod, Integer>, Parm> Parm_pairToElement = new HashMap<Pair<SootMethod, Integer>, Parm>();
+    public Map<Pair<MethodModel, Integer>, Parm> Parm_pairToElement = new HashMap<Pair<MethodModel, Integer>, Parm>();
     public int SparkNativeHelper_tempVar = 0;
     public boolean PointsToSetInternal_warnedAlready = false;
-    public HashMap<SootMethod, MethodPAG> MethodPAG_methodToPag = new HashMap<SootMethod, MethodPAG>();
+    public HashMap<MethodModel, MethodPAG> MethodPAG_methodToPag = new HashMap<MethodModel, MethodPAG>();
     public Set MethodRWSet_allGlobals = new HashSet();
     public Set MethodRWSet_allFields = new HashSet();
     public int GeneralConstObject_counter = 0;

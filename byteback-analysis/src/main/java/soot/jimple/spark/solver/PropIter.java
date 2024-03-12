@@ -24,7 +24,7 @@ package soot.jimple.spark.solver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.RefType;
 import soot.Scene;
 import soot.Type;
@@ -199,7 +199,7 @@ public class PropIter extends Propagator {
                         // If the referenced class has not been loaded, we do
                         // this now
                         ClassModel targetClass = ((RefType) ccnType).getSootClass();
-                        if (targetClass.resolvingLevel() == ClassModel.DANGLING) {
+                        if (targetClass.getResolvingLevel() == ClassModel.DANGLING) {
                             Scene.v().forceResolve(targetClass.getName(), ClassModel.SIGNATURES);
                         }
 

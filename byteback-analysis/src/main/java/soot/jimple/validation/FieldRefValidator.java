@@ -22,6 +22,8 @@ package soot.jimple.validation;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
@@ -45,7 +47,7 @@ public enum FieldRefValidator implements BodyValidator {
      */
     @Override
     public void validate(Body body, List<ValidationException> exceptions) {
-        SootMethod method = body.getMethod();
+        MethodModel method = body.getMethod();
         if (method.isAbstract()) {
             return;
         }
@@ -60,7 +62,7 @@ public enum FieldRefValidator implements BodyValidator {
             if (fr instanceof StaticFieldRef) {
                 StaticFieldRef v = (StaticFieldRef) fr;
                 try {
-                    SootField field = v.getField();
+                    FieldModel field = v.getField();
                     if (field == null) {
                         exceptions.add(new UnitValidationException(unit, body, "Resolved field is null: " + fr));
                     } else if (!field.isStatic() && !field.isPhantom()) {
@@ -74,7 +76,7 @@ public enum FieldRefValidator implements BodyValidator {
                 InstanceFieldRef v = (InstanceFieldRef) fr;
 
                 try {
-                    SootField field = v.getField();
+                    FieldModel field = v.getField();
                     if (field == null) {
                         exceptions.add(new UnitValidationException(unit, body, "Resolved field is null: " + fr));
                     } else if (field.isStatic() && !field.isPhantom()) {

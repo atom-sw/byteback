@@ -24,8 +24,8 @@ package soot.jimple.spark.internal;
 
 import soot.G;
 import soot.Singletons;
-import soot.SootField;
-import soot.SootMethod;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 
 /**
  * Using this oracle one assumes, that a client of the target library can call every public or protected method and access
@@ -43,12 +43,12 @@ public class PublicAndProtectedAccessibility implements ClientAccessibilityOracl
     }
 
     @Override
-    public boolean isAccessible(SootMethod method) {
+    public boolean isAccessible(MethodModel method) {
         return method.isPublic() || method.isProtected();
     }
 
     @Override
-    public boolean isAccessible(SootField field) {
+    public boolean isAccessible(FieldModel field) {
         return field.isPublic() || field.isProtected();
     }
 

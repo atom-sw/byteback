@@ -22,10 +22,10 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import soot.util.Switch;
 
 import java.util.ArrayDeque;
-import java.util.Optional;
 
 /**
  * A class that models Java's reference types. RefTypes are parameterized by a class name. Two RefType are equal iff they are
@@ -217,7 +217,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
                     throw new RuntimeException("Could not find a common superclass for " + this + " and " + other);
                 }
 
-                return commonClass.getType();
+                return commonClass.getClassType();
             }
         }
     }

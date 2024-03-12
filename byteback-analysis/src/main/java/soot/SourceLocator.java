@@ -22,6 +22,7 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import com.google.common.cache.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

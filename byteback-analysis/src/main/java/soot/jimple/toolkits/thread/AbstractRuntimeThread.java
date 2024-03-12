@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.Stmt;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import java.util.List;
 public class AbstractRuntimeThread {
     // Where thread is started/joined
     Stmt startStmt;
-    SootMethod startStmtMethod;
+    MethodModel startStmtMethod;
     Stmt joinStmt;
 
     // What methods are in the thread
@@ -88,11 +88,11 @@ public class AbstractRuntimeThread {
         this.joinStmt = joinStmt;
     }
 
-    public void setStartStmtMethod(SootMethod startStmtMethod) {
+    public void setStartStmtMethod(MethodModel startStmtMethod) {
         this.startStmtMethod = startStmtMethod;
     }
 
-    public SootMethod getStartStmtMethod() {
+    public MethodModel getStartStmtMethod() {
         return startStmtMethod;
     }
 

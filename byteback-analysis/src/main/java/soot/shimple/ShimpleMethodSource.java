@@ -24,7 +24,7 @@ package soot.shimple;
 
 import soot.Body;
 import soot.MethodSource;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 public class ShimpleMethodSource implements MethodSource {
     MethodSource ms;
@@ -34,7 +34,7 @@ public class ShimpleMethodSource implements MethodSource {
     }
 
     @Override
-    public Body getBody(SootMethod m, String phaseName) {
+    public Body getBody(MethodModel m, String phaseName) {
         Body b = ms.getBody(m, phaseName);
         return b == null ? null : Shimple.v().newBody(b);
     }

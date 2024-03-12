@@ -22,6 +22,7 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.baf.syntax.BafBody;
@@ -60,7 +61,7 @@ public abstract class Body extends AbstractHost implements Serializable {
     /**
      * The method associated with this Body.
      */
-    protected transient SootMethod method = null;
+    protected transient MethodModel method = null;
 
     /**
      * The chain of locals for this Body.
@@ -107,7 +108,7 @@ public abstract class Body extends AbstractHost implements Serializable {
      *
      * @param m
      */
-    protected Body(SootMethod m) {
+    protected Body(MethodModel m) {
         this.method = m;
     }
 
@@ -122,7 +123,7 @@ public abstract class Body extends AbstractHost implements Serializable {
      *
      * @return the method that owns this body.
      */
-    public SootMethod getMethod() {
+    public MethodModel getMethod() {
         if (method == null) {
             throw new RuntimeException("no method associated w/ body");
         }
@@ -134,7 +135,7 @@ public abstract class Body extends AbstractHost implements Serializable {
      *
      * @return the method that owns this body.
      */
-    public SootMethod getMethodUnsafe() {
+    public MethodModel getMethodUnsafe() {
         return method;
     }
 
@@ -143,7 +144,7 @@ public abstract class Body extends AbstractHost implements Serializable {
      *
      * @param method the method that owns this body.
      */
-    public void setMethod(SootMethod method) {
+    public void setMethod(MethodModel method) {
         this.method = method;
     }
 

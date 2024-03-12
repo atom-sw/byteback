@@ -5,6 +5,8 @@ import byteback.analysis.body.common.visitor.AbstractStmtSwitch;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.SpecificationStmt;
 import byteback.analysis.common.namespace.BBLibNames;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.InvokeExpr;
@@ -35,7 +37,7 @@ public class VimpUnitBodyTransformer extends UnitTransformer {
             @Override
             public void caseInvokeStmt(final InvokeStmt invokeStmt) {
                 final InvokeExpr value = invokeStmt.getInvokeExpr();
-                final SootMethod method = value.getMethod();
+                final MethodModel method = value.getMethod();
                 final ClassModel declaringClass = method.getDeclaringClass();
 
                 if (BBLibNames.v().isContractClass(declaringClass)) {

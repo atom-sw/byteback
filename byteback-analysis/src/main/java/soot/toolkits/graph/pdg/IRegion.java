@@ -22,8 +22,8 @@ package soot.toolkits.graph.pdg;
  * #L%
  */
 
-import soot.ClassModel;
-import soot.SootMethod;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.UnitGraph;
@@ -40,7 +40,7 @@ import java.util.List;
 
 public interface IRegion {
 
-    SootMethod getSootMethod();
+    MethodModel getSootMethod();
 
     ClassModel getSootClass();
 

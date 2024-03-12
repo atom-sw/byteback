@@ -23,6 +23,7 @@ package soot.jimple.internal;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
 import soot.*;
 import soot.baf.syntax.Baf;
 import soot.grimp.PrecedenceTest;
@@ -86,7 +87,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         this.fieldRef = fieldRef;
     }
 
-    public SootField getField() {
+    public FieldModel getField() {
         return fieldRef.resolve();
     }
 

@@ -22,6 +22,7 @@ package soot.toolkits.exceptions;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import heros.solver.IDESolver;
@@ -98,7 +99,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         return mgr.VM_ERRORS;
     }
 
-    protected UnitSwitch unitSwitch(SootMethod sm) {
+    protected UnitSwitch unitSwitch(MethodModel sm) {
         return new UnitSwitch(sm);
     }
 
@@ -111,7 +112,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         return mightThrow(u, null);
     }
 
-    public ThrowableSet mightThrow(Unit u, SootMethod sm) {
+    public ThrowableSet mightThrow(Unit u, MethodModel sm) {
         UnitSwitch sw = unitSwitch(sm);
         u.apply(sw);
         return sw.getResult();
@@ -137,7 +138,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         // The throw analysis is used in the front-ends. Conseqeuently, some
         // methods might not yet be loaded. If this is the case, we make
         // conservative assumptions.
-        SootMethod sm = m.tryResolve();
+        MethodModel sm = m.tryResolve();
         if (sm != null) {
             return mightThrow(sm);
         } else {
@@ -151,18 +152,18 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
      * @param sm method whose exceptions are to be returned.
      * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m</code> might throw.
      */
-    public ThrowableSet mightThrow(SootMethod sm) {
+    public ThrowableSet mightThrow(MethodModel sm) {
         if (!isInterproc) {
             return ThrowableSet.Manager.v().ALL_THROWABLES;
         }
         return methodToThrowSet.getUnchecked(sm);
     }
 
-    protected final LoadingCache<SootMethod, ThrowableSet> methodToThrowSet
-            = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, ThrowableSet>() {
+    protected final LoadingCache<MethodModel, ThrowableSet> methodToThrowSet
+            = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<MethodModel, ThrowableSet>() {
         @Override
-        public ThrowableSet load(SootMethod sm) throws Exception {
-            return mightThrow(sm, new HashSet<SootMethod>());
+        public ThrowableSet load(MethodModel sm) throws Exception {
+            return mightThrow(sm, new HashSet<MethodModel>());
         }
     });
 
@@ -173,7 +174,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
      * @param doneSet The set of methods that were already processed
      * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m</code> might throw.
      */
-    private ThrowableSet mightThrow(SootMethod sm, Set<SootMethod> doneSet) {
+    private ThrowableSet mightThrow(MethodModel sm, Set<MethodModel> doneSet) {
         // Do not run in loops
         if (!doneSet.add(sm)) {
             return ThrowableSet.Manager.v().EMPTY;
@@ -222,7 +223,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
                         Collection<Trap> trapsForUnit = unitToTraps.get(stmt);
                         if (trapsForUnit != null) {
                             for (Trap t : trapsForUnit) {
-                                Pair p = curStmtSet.whichCatchableAs(t.getException().getType());
+                                Pair p = curStmtSet.whichCatchableAs(t.getException().getClassType());
                                 curStmtSet = curStmtSet.remove(p.getCaught());
                             }
                         }
@@ -243,9 +244,9 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
         // Asynchronous errors are always possible:
         protected ThrowableSet result = defaultResult();
-        protected SootMethod sm;
+        protected MethodModel sm;
 
-        public UnitSwitch(SootMethod sm) {
+        public UnitSwitch(MethodModel sm) {
             this.sm = sm;
         }
 

@@ -22,6 +22,8 @@ package soot.jimple.toolkits.invoke;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
@@ -54,9 +56,9 @@ public class SiteInliner {
     public static void inlineSites(List<List<Host>> sites, Map<String, String> options) {
         for (List<Host> l : sites) {
             assert (l.size() == 3);
-            SootMethod inlinee = (SootMethod) l.get(0);
+            MethodModel inlinee = (MethodModel) l.get(0);
             Stmt toInline = (Stmt) l.get(1);
-            SootMethod container = (SootMethod) l.get(2);
+            MethodModel container = (MethodModel) l.get(2);
             inlineSite(inlinee, toInline, container, options);
         }
     }
@@ -64,7 +66,7 @@ public class SiteInliner {
     /**
      * Inlines the method <code>inlinee</code> into the <code>container</code> at the point <code>toInline</code>.
      */
-    public static List<Unit> inlineSite(SootMethod inlinee, Stmt toInline, SootMethod container) {
+    public static List<Unit> inlineSite(MethodModel inlinee, Stmt toInline, MethodModel container) {
         return inlineSite(inlinee, toInline, container, Collections.emptyMap());
     }
 
@@ -72,7 +74,7 @@ public class SiteInliner {
      * Inlines the given site. Note that this method does not actually check if it's safe (with respect to access modifiers and
      * special invokes) for it to be inlined. That functionality is handled by the InlinerSafetyManager.
      */
-    public static List<Unit> inlineSite(SootMethod inlinee, Stmt toInline, SootMethod container, Map<String, String> options) {
+    public static List<Unit> inlineSite(MethodModel inlinee, Stmt toInline, MethodModel container, Map<String, String> options) {
         final ClassModel declaringClass = inlinee.getDeclaringClass();
         if (!declaringClass.isApplicationClass() && !declaringClass.isLibraryClass()) {
             return null;
@@ -93,7 +95,7 @@ public class SiteInliner {
                 ClassModel localType = ((RefType) base.getType()).getSootClass();
                 if (localType.isInterface() || Scene.v().getActiveHierarchy().isClassSuperclassOf(localType, declaringClass)) {
                     final Jimple jimp = Jimple.v();
-                    RefType type = declaringClass.getType();
+                    RefType type = declaringClass.getClassType();
                     Local castee = jimp.newLocal("__castee", type);
                     containerB.getLocals().add(castee);
                     containerUnits.insertBefore(jimp.newAssignStmt(castee, jimp.newCastExpr(base, type)), toInline);

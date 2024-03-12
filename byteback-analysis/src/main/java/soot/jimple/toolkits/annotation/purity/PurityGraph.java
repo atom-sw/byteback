@@ -22,6 +22,7 @@ package soot.jimple.toolkits.annotation.purity;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -176,7 +177,7 @@ public class PurityGraph {
      *
      * @param withEffect add a mutated abstract field for the global node to account for side-effects in the environment (I/O, etc.).
      */
-    public static PurityGraph conservativeGraph(SootMethod m, boolean withEffect) {
+    public static PurityGraph conservativeGraph(MethodModel m, boolean withEffect) {
         PurityGraph g = new PurityGraph();
         PurityNode glob = PurityGlobalNode.node;
         g.nodes.add(glob);
@@ -213,7 +214,7 @@ public class PurityGraph {
     /**
      * Special constructor for "pure" methods returning a fresh object. (or simply pure if returns void or primitive).
      */
-    public static PurityGraph freshGraph(SootMethod m) {
+    public static PurityGraph freshGraph(MethodModel m) {
         PurityGraph g = new PurityGraph();
         if (m.getReturnType() instanceof RefLikeType) {
             PurityNode n = cacheNode(new PurityMethodNode(m));

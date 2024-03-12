@@ -22,7 +22,7 @@ package soot.tag;
  * #L%
  */
 
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 
 import java.nio.charset.StandardCharsets;
 

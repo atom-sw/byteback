@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.SootMethodRefImpl.ClassResolutionFailedException;
 import soot.options.Options;
 import soot.util.NumberedString;
@@ -38,7 +40,8 @@ public interface SootMethodRef extends SootMethodInterface {
     /**
      * Use {@link #getDeclaringClass()} instead
      */
-    @Deprecated ClassModel declaringClass();
+    @Deprecated
+    ClassModel declaringClass();
 
     /**
      * Use {@link #getName()} instead
@@ -78,7 +81,7 @@ public interface SootMethodRef extends SootMethodInterface {
      * @return The immediate target if this method reference
      * @throws ClassResolutionFailedException (can be suppressed by {@link Options#set_ignore_resolution_errors(boolean)})
      */
-    SootMethod resolve();
+    MethodModel resolve();
 
     /**
      * Tries to resolve this method call, i.e., tries to finds the method to which this reference points. This method does not
@@ -91,6 +94,6 @@ public interface SootMethodRef extends SootMethodInterface {
      *
      * @return The immediate target if this method reference if available, <code>null</code> otherwise
      */
-    SootMethod tryResolve();
+    MethodModel tryResolve();
 
 }

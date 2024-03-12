@@ -23,6 +23,8 @@ package soot.baf.syntax;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.internal.IdentityRefBox;
@@ -445,7 +447,7 @@ public class Baf {
     /**
      * Returns an empty BafBody associated with method m.
      */
-    public BafBody newBody(SootMethod m) {
+    public BafBody newBody(MethodModel m) {
         return new BafBody(m);
     }
 

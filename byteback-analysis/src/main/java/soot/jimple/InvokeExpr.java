@@ -23,7 +23,7 @@ package soot.jimple;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
@@ -46,13 +46,13 @@ public interface InvokeExpr extends Expr {
     SootMethodRef getMethodRef();
 
     /**
-     * Resolves {@link SootMethodRef} to {@link SootMethod}.
+     * Resolves {@link SootMethodRef} to {@link MethodModel}.
      *
-     * @return {@link SootMethod} instance, or {@code null} when reference cannot be resolved and
+     * @return {@link MethodModel} instance, or {@code null} when reference cannot be resolved and
      * {@link soot.options.Options#ignore_resolution_errors} is {@code true}
      * @throws soot.SootMethodRefImpl.ClassResolutionFailedException when reference cannot be resolved and {@link soot.options.Options#ignore_resolution_errors} is {@code false}
      */
-    SootMethod getMethod();
+    MethodModel getMethod();
 
     List<Value> getArgs();
 

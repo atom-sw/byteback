@@ -22,6 +22,7 @@ package soot.jimple.toolkits.ide.exampleproblems;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -34,14 +35,14 @@ import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 
 import java.util.*;
 
-public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local, InterproceduralCFG<Unit, SootMethod>> {
+public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local, InterproceduralCFG<Unit, MethodModel>> {
 
-    public IFDSLocalInfoFlow(InterproceduralCFG<Unit, SootMethod> icfg) {
+    public IFDSLocalInfoFlow(InterproceduralCFG<Unit, MethodModel> icfg) {
         super(icfg);
     }
 
-    public FlowFunctions<Unit, Local, SootMethod> createFlowFunctionsFactory() {
-        return new FlowFunctions<Unit, Local, SootMethod>() {
+    public FlowFunctions<Unit, Local, MethodModel> createFlowFunctionsFactory() {
+        return new FlowFunctions<Unit, Local, MethodModel>() {
 
             @Override
             public FlowFunction<Local> getNormalFlowFunction(Unit src, Unit dest) {
@@ -67,7 +68,7 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
             }
 
             @Override
-            public FlowFunction<Local> getCallFlowFunction(Unit src, final SootMethod dest) {
+            public FlowFunction<Local> getCallFlowFunction(Unit src, final MethodModel dest) {
                 Stmt s = (Stmt) src;
                 InvokeExpr ie = s.getInvokeExpr();
                 final List<Value> callArgs = ie.getArgs();
@@ -78,7 +79,7 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
                 return new FlowFunction<Local>() {
                     public Set<Local> computeTargets(Local source) {
                         // ignore implicit calls to static initializers
-                        if (dest.getName().equals(SootMethod.staticInitializerName) && dest.getParameterCount() == 0) {
+                        if (dest.getName().equals(MethodModel.staticInitializerName) && dest.getParameterCount() == 0) {
                             return Collections.emptySet();
                         }
 
@@ -94,7 +95,7 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
             }
 
             @Override
-            public FlowFunction<Local> getReturnFlowFunction(Unit callSite, SootMethod callee, Unit exitStmt, Unit retSite) {
+            public FlowFunction<Local> getReturnFlowFunction(Unit callSite, MethodModel callee, Unit exitStmt, Unit retSite) {
                 if (exitStmt instanceof ReturnStmt returnStmt) {
                     Value op = returnStmt.getOp();
                     if (op instanceof Local) {

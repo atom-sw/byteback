@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread.synchronization;
  * #L%
  */
 
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 
 public class DeadlockAvoidanceEdge extends NewStaticLock {
     public DeadlockAvoidanceEdge(ClassModel sc) {

@@ -24,7 +24,7 @@ package soot.jimple.spark.geom.geomPA;
 
 import soot.Local;
 import soot.PointsToSet;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.spark.geom.dataMgr.ContextsCollector;
 import soot.jimple.spark.geom.dataMgr.Obj_full_extractor;
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
@@ -359,7 +359,7 @@ public class GeomQueries {
         }
 
         // Obtain the internal representation of the method that encloses the querying pointer
-        SootMethod sm = vn.getMethod();
+        MethodModel sm = vn.getMethod();
         int target = geomPTA.getIDFromSootMethod(sm);
         if (target == -1) {
             return false;
@@ -453,7 +453,7 @@ public class GeomQueries {
     @SuppressWarnings("rawtypes")
     public boolean kCFA(Edge[] callEdgeChain, Local l, PtSensVisitor visitor) {
         // Prepare for initial contexts
-        SootMethod firstMethod = callEdgeChain[0].src();
+        MethodModel firstMethod = callEdgeChain[0].src();
         int firstMethodID = geomPTA.getIDFromSootMethod(firstMethod);
         if (firstMethodID == -1) {
             return false;
@@ -477,7 +477,7 @@ public class GeomQueries {
             return false;
         }
 
-        SootMethod sm = vn.getMethod();
+        MethodModel sm = vn.getMethod();
         if (geomPTA.getIDFromSootMethod(sm) == -1) {
             return false;
         }

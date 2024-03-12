@@ -22,6 +22,9 @@ package soot.jimple.toolkits.infoflow;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -45,7 +48,7 @@ import java.util.*;
 public class SmartMethodInfoFlowAnalysis {
     private static final Logger logger = LoggerFactory.getLogger(SmartMethodInfoFlowAnalysis.class);
     UnitGraph graph;
-    SootMethod sm;
+    MethodModel sm;
     Value thisLocal;
     InfoFlowAnalysis dfa;
     boolean refOnly; // determines if primitive type data flow is included
@@ -95,8 +98,8 @@ public class SmartMethodInfoFlowAnalysis {
         }
 
         // Add every relevant field of this class (static methods don't get non-static fields)
-        for (Iterator<SootField> it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); ) {
-            SootField sf = it.next();
+        for (Iterator<FieldModel> it = sm.getDeclaringClass().getFieldModels().iterator(); it.hasNext(); ) {
+            FieldModel sf = it.next();
             if (sf.isStatic() || !sm.isStatic()) {
                 EquivalentValue fieldRefEqVal;
                 if (!sm.isStatic()) {
@@ -114,11 +117,11 @@ public class SmartMethodInfoFlowAnalysis {
         // Add every field of this class's superclasses
         ClassModel superclass = sm.getDeclaringClass();
         if (superclass.hasSuperclass()) {
-            superclass = sm.getDeclaringClass().getSuperclass();
+            superclass = sm.getDeclaringClass().getSuperType();
         }
         while (superclass.hasSuperclass()) // we don't want to process Object
         {
-            for (SootField scField : superclass.getFields()) {
+            for (FieldModel scField : superclass.getFieldModels()) {
                 if (scField.isStatic() || !sm.isStatic()) {
                     EquivalentValue fieldRefEqVal;
                     if (!sm.isStatic()) {
@@ -131,7 +134,7 @@ public class SmartMethodInfoFlowAnalysis {
                     }
                 }
             }
-            superclass = superclass.getSuperclass();
+            superclass = superclass.getSuperType();
         }
 
         // Add thisref of this class
@@ -410,7 +413,7 @@ public class SmartMethodInfoFlowAnalysis {
         // Refs!!!
         if (false) // DEBUG!!!
         {
-            SootMethod method = ie.getMethodRef().resolve();
+            MethodModel method = ie.getMethodRef().resolve();
             if (method.getDeclaringClass().isApplicationClass()) {
                 logger.debug("Attempting to print graph (will succeed only if ./dfg/ is a valid path)");
                 MutableDirectedGraph<EquivalentValue> abbreviatedDataFlowGraph = dfa.getInvokeAbbreviatedInfoFlowGraph(ie, sm);

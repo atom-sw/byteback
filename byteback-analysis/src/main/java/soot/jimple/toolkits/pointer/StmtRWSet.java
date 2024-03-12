@@ -23,7 +23,7 @@ package soot.jimple.toolkits.pointer;
  */
 
 import soot.PointsToSet;
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 
 import java.util.Collections;
 import java.util.Set;
@@ -124,7 +124,7 @@ public class StmtRWSet extends RWSet {
     }
 
     @Override
-    public boolean addGlobal(SootField global) {
+    public boolean addGlobal(FieldModel global) {
         if (field != null || base != null) {
             throw new RuntimeException("Can't do that");
         }

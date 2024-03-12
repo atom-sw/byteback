@@ -2,7 +2,7 @@ package soot.jimple.toolkits.callgraph;
 
 import soot.Kind;
 import soot.MethodOrMethodContext;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.Stmt;
 import soot.util.queue.ChunkedQueue;
@@ -178,7 +178,7 @@ public class CallGraph implements Iterable<Edge> {
      * @param method
      * @return
      */
-    public boolean isEntryMethod(SootMethod method) {
+    public boolean isEntryMethod(MethodModel method) {
         return !tgtToEdge.containsKey(method);
     }
 
@@ -191,7 +191,7 @@ public class CallGraph implements Iterable<Edge> {
      * @param callee
      * @return
      */
-    public Edge findEdge(Unit u, SootMethod callee) {
+    public Edge findEdge(Unit u, MethodModel callee) {
         Edge e = srcUnitToEdge.get(u);
         if (e != null) {
             while (e.srcUnit() == u && e.kind() != Kind.INVALID) {

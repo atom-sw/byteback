@@ -22,6 +22,9 @@ package soot.jimple.toolkits.invoke;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.shimple.Shimple;
@@ -38,7 +41,7 @@ public class SynchronizerManager {
     /**
      * Maps classes to class$ fields. Don't trust default.
      */
-    public HashMap<ClassModel, SootField> classToClassField = new HashMap<ClassModel, SootField>();
+    public HashMap<ClassModel, FieldModel> classToClassField = new HashMap<ClassModel, FieldModel>();
 
     public SynchronizerManager(Singletons.Global g) {
     }
@@ -113,7 +116,7 @@ public class SynchronizerManager {
 
     private Local addStmtsToFetchClassBefore(Body b, Stmt target, boolean createNewAsShimple) {
         ClassModel sc = b.getMethod().getDeclaringClass();
-        SootField classCacher = classToClassField.get(sc);
+        FieldModel classCacher = classToClassField.get(sc);
         if (classCacher == null) {
             // Add a unique field named [__]class$name
             String n = "class$" + sc.getName().replace('.', '$');
@@ -122,7 +125,7 @@ public class SynchronizerManager {
             }
 
             classCacher = Scene.v().makeSootField(n, RefType.v("java.lang.Class"), Modifier.STATIC);
-            sc.addField(classCacher);
+            sc.addFieldModel(classCacher);
             classToClassField.put(sc, classCacher);
         }
 
@@ -162,7 +165,7 @@ public class SynchronizerManager {
     /**
      * @see #getClassFetcherFor(ClassModel, boolean)
      */
-    public SootMethod getClassFetcherFor(ClassModel c) {
+    public MethodModel getClassFetcherFor(ClassModel c) {
         return getClassFetcherFor(c, false);
     }
 
@@ -172,10 +175,10 @@ public class SynchronizerManager {
      * <p>
      * Uses dumb matching to do search. Not worth doing symbolic analysis for this!
      */
-    public SootMethod getClassFetcherFor(final ClassModel c, boolean createNewAsShimple) {
+    public MethodModel getClassFetcherFor(final ClassModel c, boolean createNewAsShimple) {
         final String prefix = '<' + c.getName().replace('.', '$') + ": java.lang.Class ";
         for (String methodName = "class$"; true; methodName = '_' + methodName) {
-            SootMethod m = c.getMethodByNameUnsafe(methodName);
+            MethodModel m = c.getMethodByNameUnsafe(methodName);
             if (m == null) {
                 return createClassFetcherFor(c, methodName, createNewAsShimple);
             }
@@ -232,7 +235,7 @@ public class SynchronizerManager {
     /**
      * @see #createClassFetcherFor(ClassModel, java.lang.String, boolean)
      */
-    public SootMethod createClassFetcherFor(ClassModel c, String methodName) {
+    public MethodModel createClassFetcherFor(ClassModel c, String methodName) {
         return createClassFetcherFor(c, methodName, false);
     }
 
@@ -267,13 +270,13 @@ public class SynchronizerManager {
      * }
      * </pre></code>
      */
-    public SootMethod createClassFetcherFor(ClassModel c, String methodName, boolean createNewAsShimple) {
+    public MethodModel createClassFetcherFor(ClassModel c, String methodName, boolean createNewAsShimple) {
         final RefType refTyString = RefType.v("java.lang.String");
         final RefType refTypeClass = RefType.v("java.lang.Class");
         final Scene scene = Scene.v();
 
         // Create the method
-        SootMethod method
+        MethodModel method
                 = scene.makeSootMethod(methodName, Collections.singletonList(refTyString), refTypeClass, Modifier.STATIC);
         c.addMethod(method);
 

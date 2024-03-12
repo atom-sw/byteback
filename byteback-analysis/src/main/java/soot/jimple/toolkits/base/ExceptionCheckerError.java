@@ -22,30 +22,30 @@ package soot.jimple.toolkits.base;
  * #L%
  */
 
-import soot.ClassModel;
-import soot.SootMethod;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.Stmt;
 import soot.tag.SourceLnPosTag;
 
 public class ExceptionCheckerError extends Exception {
 
-    private SootMethod method;
+    private MethodModel method;
     private ClassModel excType;
     private Stmt throwing;
     private SourceLnPosTag position;
 
-    public ExceptionCheckerError(SootMethod m, ClassModel sc, Stmt s, SourceLnPosTag pos) {
+    public ExceptionCheckerError(MethodModel m, ClassModel sc, Stmt s, SourceLnPosTag pos) {
         method(m);
         excType(sc);
         throwing(s);
         position(pos);
     }
 
-    public SootMethod method() {
+    public MethodModel method() {
         return method;
     }
 
-    public void method(SootMethod sm) {
+    public void method(MethodModel sm) {
         method = sm;
     }
 

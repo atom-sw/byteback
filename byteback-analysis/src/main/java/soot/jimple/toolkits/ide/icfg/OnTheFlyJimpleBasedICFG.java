@@ -22,6 +22,8 @@ package soot.jimple.toolkits.ide.icfg;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import heros.SynchronizedBy;
@@ -45,8 +47,8 @@ import java.util.*;
  * that the hierarchy is intact. Clients should call {@link #loadAllClassesOnClassPathToSignatures()} to load all required
  * classes to this level.
  *
- * @see FastHierarchy#resolveConcreteDispatch(ClassModel, SootMethod)
- * @see FastHierarchy#resolveAbstractDispatch(ClassModel, SootMethod)
+ * @see FastHierarchy#resolveConcreteDispatch(ClassModel, MethodModel)
+ * @see FastHierarchy#resolveAbstractDispatch(ClassModel, MethodModel)
  */
 public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 
@@ -60,10 +62,10 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
     });
 
     @SynchronizedBy("by use of synchronized LoadingCache class")
-    protected final LoadingCache<Unit, Set<SootMethod>> unitToCallees
-            = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<Unit, Set<SootMethod>>() {
+    protected final LoadingCache<Unit, Set<MethodModel>> unitToCallees
+            = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<Unit, Set<MethodModel>>() {
         @Override
-        public Set<SootMethod> load(Unit u) throws Exception {
+        public Set<MethodModel> load(Unit u) throws Exception {
             Stmt stmt = (Stmt) u;
             InvokeExpr ie = stmt.getInvokeExpr();
             FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
@@ -79,7 +81,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
                     RefType concreteType = bodyToLMNAA.getUnchecked(getBodyOf(u)).concreteType(base, stmt);
                     if (concreteType != null) {
                         // the base variable definitely points to a single concrete type
-                        SootMethod singleTargetMethod
+                        MethodModel singleTargetMethod
                                 = fastHierarchy.resolveConcreteDispatch(concreteType.getSootClass(), iie.getMethod());
                         return Collections.singleton(singleTargetMethod);
                     } else {
@@ -105,19 +107,19 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
     });
 
     @SynchronizedBy("explicit lock on data structure")
-    protected Map<SootMethod, Set<Unit>> methodToCallers = new HashMap<SootMethod, Set<Unit>>();
+    protected Map<MethodModel, Set<Unit>> methodToCallers = new HashMap<MethodModel, Set<Unit>>();
 
-    public OnTheFlyJimpleBasedICFG(SootMethod... entryPoints) {
+    public OnTheFlyJimpleBasedICFG(MethodModel... entryPoints) {
         this(Arrays.asList(entryPoints));
     }
 
-    public OnTheFlyJimpleBasedICFG(Collection<SootMethod> entryPoints) {
-        for (SootMethod m : entryPoints) {
+    public OnTheFlyJimpleBasedICFG(Collection<MethodModel> entryPoints) {
+        for (MethodModel m : entryPoints) {
             initForMethod(m);
         }
     }
 
-    protected Body initForMethod(SootMethod m) {
+    protected Body initForMethod(MethodModel m) {
         assert Scene.v().hasFastHierarchy();
         Body b = null;
         if (m.isConcrete()) {
@@ -142,7 +144,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 
     private synchronized void ensureClassHasBodies(ClassModel cl) {
         assert Scene.v().hasFastHierarchy();
-        if (cl.resolvingLevel() < ClassModel.BODIES) {
+        if (cl.getResolvingLevel() < ClassModel.BODIES) {
             Scene.v().forceResolve(cl.getName(), ClassModel.BODIES);
             Scene.v().getOrMakeFastHierarchy();
         }
@@ -150,16 +152,16 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
     }
 
     @Override
-    public Set<SootMethod> getCalleesOfCallAt(Unit u) {
-        Set<SootMethod> targets = unitToCallees.getUnchecked(u);
-        for (SootMethod m : targets) {
+    public Set<MethodModel> getCalleesOfCallAt(Unit u) {
+        Set<MethodModel> targets = unitToCallees.getUnchecked(u);
+        for (MethodModel m : targets) {
             addCallerForMethod(u, m);
             initForMethod(m);
         }
         return targets;
     }
 
-    private void addCallerForMethod(Unit callSite, SootMethod target) {
+    private void addCallerForMethod(Unit callSite, MethodModel target) {
         synchronized (methodToCallers) {
             Set<Unit> callers = methodToCallers.get(target);
             if (callers == null) {
@@ -171,7 +173,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
     }
 
     @Override
-    public Set<Unit> getCallersOf(SootMethod m) {
+    public Set<Unit> getCallersOf(MethodModel m) {
         Set<Unit> callers = methodToCallers.get(m);
         return callers == null ? Collections.emptySet() : callers;
 
@@ -197,15 +199,15 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 
                 loadAllClassesOnClassPathToSignatures();
 
-                SootMethod mainMethod = Scene.v().getMainMethod();
+                MethodModel mainMethod = Scene.v().getMainMethod();
                 OnTheFlyJimpleBasedICFG icfg = new OnTheFlyJimpleBasedICFG(mainMethod);
-                Set<SootMethod> worklist = new LinkedHashSet<SootMethod>();
-                Set<SootMethod> visited = new HashSet<SootMethod>();
+                Set<MethodModel> worklist = new LinkedHashSet<MethodModel>();
+                Set<MethodModel> visited = new HashSet<MethodModel>();
                 worklist.add(mainMethod);
                 int monomorphic = 0, polymorphic = 0;
                 while (!worklist.isEmpty()) {
-                    Iterator<SootMethod> iter = worklist.iterator();
-                    SootMethod currMethod = iter.next();
+                    Iterator<MethodModel> iter = worklist.iterator();
+                    MethodModel currMethod = iter.next();
                     iter.remove();
                     visited.add(currMethod);
                     System.err.println(currMethod);
@@ -217,7 +219,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
                     for (Unit u : body.getUnits()) {
                         Stmt s = (Stmt) u;
                         if (s.containsInvokeExpr()) {
-                            Set<SootMethod> calleesOfCallAt = icfg.getCalleesOfCallAt(s);
+                            Set<MethodModel> calleesOfCallAt = icfg.getCalleesOfCallAt(s);
                             if (s.getInvokeExpr() instanceof VirtualInvokeExpr || s.getInvokeExpr() instanceof InterfaceInvokeExpr) {
                                 if (calleesOfCallAt.size() <= 1) {
                                     monomorphic++;
@@ -226,7 +228,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
                                 }
                                 System.err.println("mono: " + monomorphic + "   poly: " + polymorphic);
                             }
-                            for (SootMethod callee : calleesOfCallAt) {
+                            for (MethodModel callee : calleesOfCallAt) {
                                 if (!visited.contains(callee)) {
                                     System.err.println(callee);
                                     // worklist.add(callee);

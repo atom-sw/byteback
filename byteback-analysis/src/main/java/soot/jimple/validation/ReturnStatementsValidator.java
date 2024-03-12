@@ -23,7 +23,7 @@ package soot.jimple.validation;
  */
 
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.VoidType;
 import soot.baf.syntax.GotoInst;
@@ -49,7 +49,7 @@ public enum ReturnStatementsValidator implements BodyValidator {
 
     @Override
     public void validate(Body body, List<ValidationException> exceptions) {
-        final SootMethod method = body.getMethod();
+        final MethodModel method = body.getMethod();
 
         // Checks that this Body actually contains a throw or return statement, and
         // that the return statement is of the appropriate type (i.e. void/non-void)

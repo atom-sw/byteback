@@ -24,7 +24,7 @@ package soot.jimple.toolkits.thread.mhp;
 
 import soot.Body;
 import soot.Hierarchy;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.ExitMonitorStmt;
 import soot.jimple.spark.pag.AllocNode;
@@ -107,7 +107,7 @@ public class PegGraph implements DirectedGraph
 
     Set allocNodes;
     List<List> inlineSites;
-    Map<SootMethod, String> synchObj;
+    Map<MethodModel, String> synchObj;
     Set multiRunAllocNodes;
 
     /**
@@ -122,7 +122,7 @@ public class PegGraph implements DirectedGraph
 
     public PegGraph(CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set<Object> methodsNeedingInlining,
                     Set<AllocNode> allocNodes, List inlineSites, Map synchObj, Set<AllocNode> multiRunAllocNodes, Map allocNodeToObj,
-                    Body unitBody, SootMethod sm, boolean addExceptionEdges,
+                    Body unitBody, MethodModel sm, boolean addExceptionEdges,
                     boolean dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock) {
 
         /*
@@ -146,8 +146,8 @@ public class PegGraph implements DirectedGraph
      * @param PointsToAnalysis                                      Using point to analysis (SPARK package) to improve the precision of results
      */
     public PegGraph(CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set methodsNeedingInlining, Set allocNodes,
-                    List<List> inlineSites, Map<SootMethod, String> synchObj, Set multiRunAllocNodes,
-                    Map<AllocNode, String> allocNodeToObj, Body unitBody, String threadName, SootMethod sm, boolean addExceEdge,
+                    List<List> inlineSites, Map<MethodModel, String> synchObj, Set multiRunAllocNodes,
+                    Map<AllocNode, String> allocNodeToObj, Body unitBody, String threadName, MethodModel sm, boolean addExceEdge,
                     boolean dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock) {
         this.allocNodeToObj = allocNodeToObj;
         this.multiRunAllocNodes = multiRunAllocNodes;

@@ -23,7 +23,7 @@ package soot.jimple.toolkits.thread.mhp.findobject;
  */
 
 import soot.Scene;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 import soot.toolkits.graph.CompleteUnitGraph;
@@ -49,9 +49,9 @@ import java.util.*;
 
 public class MultiCalledMethods {
 
-    Set<SootMethod> multiCalledMethods = new HashSet<SootMethod>();
+    Set<MethodModel> multiCalledMethods = new HashSet<MethodModel>();
 
-    MultiCalledMethods(PegCallGraph pcg, Set<SootMethod> mcm) {
+    MultiCalledMethods(PegCallGraph pcg, Set<MethodModel> mcm) {
         multiCalledMethods = mcm;
         byMCalledS0(pcg);
         finder1(pcg);
@@ -62,7 +62,7 @@ public class MultiCalledMethods {
     private void byMCalledS0(PegCallGraph pcg) {
         Iterator it = pcg.iterator();
         while (it.hasNext()) {
-            SootMethod sm = (SootMethod) it.next();
+            MethodModel sm = (MethodModel) it.next();
             UnitGraph graph = new CompleteUnitGraph(sm.getActiveBody());
             CallGraph callGraph = Scene.v().getCallGraph();
             MultiRunStatementsFinder finder = new MultiRunStatementsFinder(graph, sm, multiCalledMethods, callGraph);
@@ -72,11 +72,11 @@ public class MultiCalledMethods {
     }
 
     private void propagate(PegCallGraph pcg) {
-        Set<SootMethod> visited = new HashSet();
-        List<SootMethod> reachable = new ArrayList<SootMethod>();
+        Set<MethodModel> visited = new HashSet();
+        List<MethodModel> reachable = new ArrayList<MethodModel>();
         reachable.addAll(multiCalledMethods);
         while (reachable.size() >= 1) {
-            SootMethod popped = reachable.remove(0);
+            MethodModel popped = reachable.remove(0);
             if (visited.contains(popped)) {
                 continue;
             }
@@ -85,7 +85,7 @@ public class MultiCalledMethods {
             Iterator succIt = pcg.getSuccsOf(popped).iterator();
             while (succIt.hasNext()) {
                 Object succ = succIt.next();
-                reachable.add((SootMethod) succ);
+                reachable.add((MethodModel) succ);
 
             }
         }
@@ -115,7 +115,7 @@ public class MultiCalledMethods {
                     } else if (clinitMethods.contains(succ)) {
                         continue;
                     } else {
-                        multiCalledMethods.add((SootMethod) succ);
+                        multiCalledMethods.add((MethodModel) succ);
                     }
                 }
                 queue.remove(root);
@@ -129,12 +129,12 @@ public class MultiCalledMethods {
     private void finder2(PegCallGraph pcg) {
 
         pcg.trim();
-        Set<SootMethod> first = new HashSet<SootMethod>();
-        Set<SootMethod> second = new HashSet<SootMethod>();
+        Set<MethodModel> first = new HashSet<MethodModel>();
+        Set<MethodModel> second = new HashSet<MethodModel>();
         // Visit each node
         Iterator it = pcg.iterator();
         while (it.hasNext()) {
-            SootMethod s = (SootMethod) it.next();
+            MethodModel s = (MethodModel) it.next();
 
             if (!second.contains(s)) {
 
@@ -144,7 +144,7 @@ public class MultiCalledMethods {
 
     }
 
-    private void visitNode(SootMethod node, PegCallGraph pcg, Set<SootMethod> first, Set<SootMethod> second) {
+    private void visitNode(MethodModel node, PegCallGraph pcg, Set<MethodModel> first, Set<MethodModel> second) {
         if (first.contains(node)) {
             second.add(node);
             multiCalledMethods.add(node);
@@ -154,14 +154,14 @@ public class MultiCalledMethods {
 
         Iterator it = pcg.getTrimSuccsOf(node).iterator();
         while (it.hasNext()) {
-            SootMethod succ = (SootMethod) it.next();
+            MethodModel succ = (MethodModel) it.next();
             if (!second.contains(succ)) {
                 visitNode(succ, pcg, first, second);
             }
         }
     }
 
-    public Set<SootMethod> getMultiCalledMethods() {
+    public Set<MethodModel> getMultiCalledMethods() {
         return multiCalledMethods;
     }
 

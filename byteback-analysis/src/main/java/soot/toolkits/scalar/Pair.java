@@ -24,7 +24,7 @@ package soot.toolkits.scalar;
  */
 
 import soot.PointsToAnalysis;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 /**
  * Just a pair of arbitrary objects.
@@ -87,14 +87,14 @@ public class Pair<T, U> {
      * Decide if this pair represents a method parameter.
      */
     public boolean isParameter() {
-        return o1 instanceof SootMethod && o2 instanceof Integer;
+        return o1 instanceof MethodModel && o2 instanceof Integer;
     }
 
     /**
      * Decide if this pair stores the THIS parameter for a method.
      */
     public boolean isThisParameter() {
-        return o1 instanceof SootMethod && PointsToAnalysis.THIS_NODE.equals(o2);
+        return o1 instanceof MethodModel && PointsToAnalysis.THIS_NODE.equals(o2);
     }
 
     public T getO1() {

@@ -22,6 +22,7 @@ package soot.jimple.spark.internal;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.spark.pag.*;
 
@@ -35,7 +36,7 @@ public class SparkLibraryHelper extends TypeSwitch {
 
     private final PAG pag;
     private final Node node;
-    private final SootMethod method;
+    private final MethodModel method;
 
     /**
      * The constructor for this {@link TypeSwitch}.
@@ -44,7 +45,7 @@ public class SparkLibraryHelper extends TypeSwitch {
      * @param node   the node of the value for which allocations should be made.
      * @param method the method in which the allocations should take place. This parameter can be null.
      */
-    public SparkLibraryHelper(PAG pag, Node node, SootMethod method) {
+    public SparkLibraryHelper(PAG pag, Node node, MethodModel method) {
         this.pag = pag;
         this.node = node;
         this.method = method;

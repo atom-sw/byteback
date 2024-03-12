@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -35,7 +35,7 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -61,7 +61,7 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
      * <p>
      * private static native java.lang.ClassLoader latestUserDefinedLoader() throws java.lang.ClassNotFoundException;
      */
-    public void java_io_ObjectInputStream_latestUserDefinedLoader(SootMethod method, ReferenceVariable thisVar,
+    public void java_io_ObjectInputStream_latestUserDefinedLoader(MethodModel method, ReferenceVariable thisVar,
                                                                   ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
     }
@@ -72,7 +72,7 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
      * private static native java.lang.Object allocateNewObject(java.lang.Class, java.lang.Class) throws
      * java.lang.InstantiationException, java.lang.IllegalAccessException;
      */
-    public void java_io_ObjectInputStream_allocateNewObject(SootMethod method, ReferenceVariable thisVar,
+    public void java_io_ObjectInputStream_allocateNewObject(MethodModel method, ReferenceVariable thisVar,
                                                             ReferenceVariable returnVar, ReferenceVariable[] params) {
         throw new NativeMethodNotSupportedException(method);
     }
@@ -80,7 +80,7 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
     /**
      * private static native java.lang.Object allocateNewArray(java.lang.Class, int);
      */
-    public void java_io_ObjectInputStream_allocateNewArray(SootMethod method, ReferenceVariable thisVar,
+    public void java_io_ObjectInputStream_allocateNewArray(MethodModel method, ReferenceVariable thisVar,
                                                            ReferenceVariable returnVar, ReferenceVariable[] params) {
         throw new NativeMethodNotSupportedException(method);
     }

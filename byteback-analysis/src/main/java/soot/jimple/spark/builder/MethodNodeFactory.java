@@ -22,6 +22,8 @@ package soot.jimple.spark.builder;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
@@ -65,7 +67,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     /**
      * Sets the method for which a graph is currently being built.
      */
-    private void setCurrentMethod(SootMethod m) {
+    private void setCurrentMethod(MethodModel m) {
         method = m;
         if (!m.isStatic()) {
             ClassModel c = m.getDeclaringClass();
@@ -221,8 +223,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     }
 
     final public Node caseThis() {
-        VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, String>(method, PointsToAnalysis.THIS_NODE),
-                method.getDeclaringClass().getType(), method);
+        VarNode ret = pag.makeLocalVarNode(new Pair<MethodModel, String>(method, PointsToAnalysis.THIS_NODE),
+                method.getDeclaringClass().getClassType(), method);
         ret.setInterProcTarget();
         return ret;
     }
@@ -233,7 +235,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         if (method.getParameterCount() < index + 1) {
             return null;
         }
-        VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, Integer>(method, index),
+        VarNode ret = pag.makeLocalVarNode(new Pair<MethodModel, Integer>(method, index),
                 method.getParameterType(index), method);
         ret.setInterProcTarget();
         return ret;
@@ -419,6 +421,6 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
     protected final PAG pag;
     protected final MethodPAG mpag;
-    protected SootMethod method;
+    protected MethodModel method;
     protected ClientAccessibilityOracle accessibilityOracle = Scene.v().getClientAccessibilityOracle();
 }

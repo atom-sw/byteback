@@ -22,7 +22,7 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.Stmt;
 
 /**
@@ -33,9 +33,9 @@ import soot.jimple.Stmt;
 public class AbstractCallSite {
 
     protected Stmt stmt;
-    protected SootMethod container;
+    protected MethodModel container;
 
-    public AbstractCallSite(Stmt stmt, SootMethod container) {
+    public AbstractCallSite(Stmt stmt, MethodModel container) {
         this.stmt = stmt;
         this.container = container;
     }
@@ -44,7 +44,7 @@ public class AbstractCallSite {
         return stmt;
     }
 
-    public SootMethod getContainer() {
+    public MethodModel getContainer() {
         return container;
     }
 

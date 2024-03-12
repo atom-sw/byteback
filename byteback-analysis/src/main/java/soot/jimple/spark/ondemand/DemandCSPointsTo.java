@@ -22,6 +22,8 @@ package soot.jimple.spark.ondemand;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -59,7 +61,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         }
     }
 
-    protected static final class CallSiteToTargetsMap extends HashSetMultiMap<CallSiteAndContext, SootMethod> {
+    protected static final class CallSiteToTargetsMap extends HashSetMultiMap<CallSiteAndContext, MethodModel> {
     }
 
     protected static abstract class IncomingEdgeHandler {
@@ -181,7 +183,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
     protected final CallSiteToTargetsMap callSiteToResolvedTargets = new CallSiteToTargetsMap();
 
-    protected HashMap<List<Object>, Set<SootMethod>> callTargetsArgCache = new HashMap<List<Object>, Set<SootMethod>>();
+    protected HashMap<List<Object>, Set<MethodModel>> callTargetsArgCache = new HashMap<List<Object>, Set<MethodModel>>();
 
     protected final Stack<VarAndContext> contextForAllocsStack = new Stack<VarAndContext>();
 
@@ -649,7 +651,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
                     if (enteringCall) {
                         Integer callSite = assignEdge.getCallSite();
                         if (csInfo.isVirtCall(callSite) && refineVirtCalls) {
-                            Set<SootMethod> targets = refineCallSite(assignEdge.getCallSite(), callingContext);
+                            Set<MethodModel> targets = refineCallSite(assignEdge.getCallSite(), callingContext);
                             LocalVarNode nodeInTargetMethod
                                     = forward ? (LocalVarNode) assignEdge.getSrc() : (LocalVarNode) assignEdge.getDst();
                             if (targets.contains(nodeInTargetMethod.getMethod())) {
@@ -1012,7 +1014,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
                         newContext = pushWithRecursionCheck(curContext, assignEdge);
                     }
                     if (assignEdge.isReturnEdge() && curContext.isEmpty() && csInfo.isVirtCall(assignEdge.getCallSite())) {
-                        Set<SootMethod> targets = refineCallSite(assignEdge.getCallSite(), newContext);
+                        Set<MethodModel> targets = refineCallSite(assignEdge.getCallSite(), newContext);
                         if (!targets.contains(((LocalVarNode) assignEdge.getDst()).getMethod())) {
                             continue;
                         }
@@ -1079,14 +1081,14 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     }
 
     @SuppressWarnings("unchecked")
-    protected Set<SootMethod> getCallTargets(PointsToSetInternal p2Set, SootMethod callee, Type receiverType,
-                                             Set<SootMethod> possibleTargets) {
+    protected Set<MethodModel> getCallTargets(PointsToSetInternal p2Set, MethodModel callee, Type receiverType,
+                                              Set<MethodModel> possibleTargets) {
         List<Object> args = Arrays.asList(p2Set, callee, receiverType, possibleTargets);
         if (callTargetsArgCache.containsKey(args)) {
             return callTargetsArgCache.get(args);
         }
         Set<Type> types = p2Set.possibleTypes();
-        Set<SootMethod> ret = new HashSet<SootMethod>();
+        Set<MethodModel> ret = new HashSet<MethodModel>();
         for (Type type : types) {
             ret.addAll(getCallTargetsForType(type, callee, receiverType, possibleTargets));
         }
@@ -1094,8 +1096,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         return ret;
     }
 
-    protected Set<SootMethod> getCallTargetsForType(Type type, SootMethod callee, Type receiverType,
-                                                    Set<SootMethod> possibleTargets) {
+    protected Set<MethodModel> getCallTargetsForType(Type type, MethodModel callee, Type receiverType,
+                                                     Set<MethodModel> possibleTargets) {
         if (!pag.getTypeManager().castNeverFails(type, receiverType)) {
             return Collections.emptySet();
         }
@@ -1112,10 +1114,10 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
             // we'll invoke the java.lang.Object method in this
             // case
             // Assert.chk(varNodeType.toString().equals("java.lang.Object"));
-            type = Scene.v().getSootClass(Scene.v().getObjectType().toString()).getType();
+            type = Scene.v().getSootClass(Scene.v().getObjectType().toString()).getClassType();
         }
         RefType refType = (RefType) type;
-        SootMethod targetMethod = null;
+        MethodModel targetMethod = null;
         targetMethod = VirtualCalls.v().resolveNonSpecial(refType, callee.makeRef());
         return Collections.singleton(targetMethod);
 
@@ -1170,7 +1172,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
                         newContext = pushWithRecursionCheck(curContext, assignEdge);
                     }
                     if (assignEdge.isReturnEdge() && curContext.isEmpty() && csInfo.isVirtCall(assignEdge.getCallSite())) {
-                        Set<SootMethod> targets = refineCallSite(assignEdge.getCallSite(), newContext);
+                        Set<MethodModel> targets = refineCallSite(assignEdge.getCallSite(), newContext);
                         if (!targets.contains(((LocalVarNode) assignEdge.getDst()).getMethod())) {
                             continue;
                         }
@@ -1255,7 +1257,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         }
         Integer callSite = assignEdge.getCallSite();
         if (context.contains(callSite)) {
-            Set<SootMethod> toBeCollapsed = new ArraySet<SootMethod>();
+            Set<MethodModel> toBeCollapsed = new ArraySet<MethodModel>();
             int callSiteInd = 0;
             for (; callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite); callSiteInd++) {
 
@@ -1270,8 +1272,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     }
 
     protected boolean isRecursiveCallSite(Integer callSite) {
-        SootMethod invokingMethod = csInfo.getInvokingMethod(callSite);
-        SootMethod invokedMethod = csInfo.getInvokedMethod(callSite);
+        MethodModel invokingMethod = csInfo.getInvokingMethod(callSite);
+        MethodModel invokedMethod = csInfo.getInvokedMethod(callSite);
         return sccManager.inSameSCC(invokingMethod, invokedMethod);
     }
 
@@ -1361,11 +1363,11 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
                     if (assignEdge.isParamEdge()) {
                         Integer callSite = assignEdge.getCallSite();
                         if (csInfo.isVirtCall(callSite) && !weirdCall(callSite)) {
-                            Set<SootMethod> targets = refineCallSite(callSite, newContext);
+                            Set<MethodModel> targets = refineCallSite(callSite, newContext);
                             if (DEBUG) {
                                 debugPrint(targets.toString());
                             }
-                            SootMethod targetMethod = ((LocalVarNode) assignEdge.getDst()).getMethod();
+                            MethodModel targetMethod = ((LocalVarNode) assignEdge.getDst()).getMethod();
                             if (!targets.contains(targetMethod)) {
                                 if (DEBUG) {
                                     debugPrint("skipping call because of call graph");
@@ -1430,7 +1432,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
                 if (true) {
                     throw new TerminateEarlyException();
                 }
-                Set<SootMethod> toBeCollapsed = new ArraySet<SootMethod>();
+                Set<MethodModel> toBeCollapsed = new ArraySet<MethodModel>();
                 int callSiteInd = 0;
                 for (; callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite); callSiteInd++) {
 
@@ -1506,7 +1508,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         }
     }
 
-    protected Set<SootMethod> refineCallSite(Integer callSite, ImmutableStack<Integer> origContext) {
+    protected Set<MethodModel> refineCallSite(Integer callSite, ImmutableStack<Integer> origContext) {
         CallSiteAndContext callSiteAndContext = new CallSiteAndContext(callSite, origContext);
         if (queriedCallSites.contains(callSiteAndContext)) {
             // if (DEBUG_VIRT) {
@@ -1527,8 +1529,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         }
         final VarNode receiver = csInfo.getReceiverForVirtCallSite(callSite);
         final Type receiverType = receiver.getType();
-        final SootMethod invokedMethod = csInfo.getInvokedMethod(callSite);
-        final Set<SootMethod> allTargets = csInfo.getCallSiteTargets(callSite);
+        final MethodModel invokedMethod = csInfo.getInvokedMethod(callSite);
+        final Set<MethodModel> allTargets = csInfo.getCallSiteTargets(callSite);
         if (!refineCallGraph) {
             callGraphStack.pop();
             return allTargets;
@@ -1567,7 +1569,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
             Node[] newNodes = pag.allocInvLookup(curVar);
             for (int i = 0; i < newNodes.length; i++) {
                 AllocNode allocNode = (AllocNode) newNodes[i];
-                for (SootMethod method : getCallTargetsForType(allocNode.getType(), invokedMethod, receiverType, allTargets)) {
+                for (MethodModel method : getCallTargetsForType(allocNode.getType(), invokedMethod, receiverType, allTargets)) {
                     callSiteToResolvedTargets.put(callSiteAndContext, method);
                 }
             }
@@ -1621,10 +1623,10 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
                         boolean skipMatch = false;
                         if (oneMatch) {
                             PointsToSetInternal matchSrcPTo = matchSrc.getP2Set();
-                            Set<SootMethod> matchSrcCallTargets = getCallTargets(matchSrcPTo, invokedMethod, receiverType, allTargets);
+                            Set<MethodModel> matchSrcCallTargets = getCallTargets(matchSrcPTo, invokedMethod, receiverType, allTargets);
                             if (matchSrcCallTargets.size() <= 1) {
                                 skipMatch = true;
-                                for (SootMethod method : matchSrcCallTargets) {
+                                for (MethodModel method : matchSrcCallTargets) {
                                     callSiteToResolvedTargets.put(callSiteAndContext, method);
                                 }
                             }
@@ -1790,7 +1792,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     }
 
     protected boolean weirdCall(Integer callSite) {
-        SootMethod invokedMethod = csInfo.getInvokedMethod(callSite);
+        MethodModel invokedMethod = csInfo.getInvokedMethod(callSite);
         return SootUtil.isThreadStartMethod(invokedMethod) || SootUtil.isNewInstanceMethod(invokedMethod);
     }
 
@@ -1808,7 +1810,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
      *
      * @throws UnsupportedOperationException always
      */
-    public PointsToSet reachingObjects(Context c, Local l, SootField f) {
+    public PointsToSet reachingObjects(Context c, Local l, FieldModel f) {
         throw new UnsupportedOperationException();
     }
 
@@ -1817,7 +1819,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
      *
      * @throws UnsupportedOperationException always
      */
-    public PointsToSet reachingObjects(Local l, SootField f) {
+    public PointsToSet reachingObjects(Local l, FieldModel f) {
         throw new UnsupportedOperationException();
     }
 
@@ -1826,7 +1828,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
      *
      * @throws UnsupportedOperationException always
      */
-    public PointsToSet reachingObjects(PointsToSet s, SootField f) {
+    public PointsToSet reachingObjects(PointsToSet s, FieldModel f) {
         throw new UnsupportedOperationException();
     }
 
@@ -1835,7 +1837,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
      *
      * @throws UnsupportedOperationException always
      */
-    public PointsToSet reachingObjects(SootField f) {
+    public PointsToSet reachingObjects(FieldModel f) {
         throw new UnsupportedOperationException();
     }
 

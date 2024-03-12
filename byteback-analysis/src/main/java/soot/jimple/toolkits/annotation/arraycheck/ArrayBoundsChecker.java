@@ -22,6 +22,8 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -77,7 +79,7 @@ public class ArrayBoundsChecker extends BodyTransformer {
         addColorTags = options.add_color_tags();
 
         {
-            SootMethod m = body.getMethod();
+            MethodModel m = body.getMethod();
 
             Date start = new Date();
 
@@ -93,11 +95,11 @@ public class ArrayBoundsChecker extends BodyTransformer {
             }
 
             ClassModel counterClass = null;
-            SootMethod increase = null;
+            MethodModel increase = null;
 
             if (options.profiling()) {
                 counterClass = Scene.v().loadClassAndSupport("MultiCounter");
-                increase = counterClass.getMethod("void increase(int)");
+                increase = counterClass.getMethodModel("void increase(int)");
             }
 
             Chain units = body.getUnits();

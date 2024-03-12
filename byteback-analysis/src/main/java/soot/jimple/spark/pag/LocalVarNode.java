@@ -22,7 +22,7 @@ package soot.jimple.spark.pag;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class LocalVarNode extends VarNode {
         return cvns == null ? null : cvns.get(context);
     }
 
-    public SootMethod getMethod() {
+    public MethodModel getMethod() {
         return method;
     }
 
@@ -48,7 +48,7 @@ public class LocalVarNode extends VarNode {
     }
     /* End of public methods. */
 
-    LocalVarNode(PAG pag, Object variable, Type t, SootMethod m) {
+    LocalVarNode(PAG pag, Object variable, Type t, MethodModel m) {
         super(pag, variable, t);
         this.method = m;
         // if( m == null ) throw new RuntimeException( "method shouldn't be null" );
@@ -67,5 +67,5 @@ public class LocalVarNode extends VarNode {
     /* End of package methods. */
 
     protected Map<Object, ContextVarNode> cvns;
-    protected SootMethod method;
+    protected MethodModel method;
 }

@@ -22,7 +22,7 @@ package soot.jimple.spark.geom.geomPA;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 import soot.jimple.spark.geom.dataMgr.Obj_full_extractor;
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
@@ -145,7 +145,7 @@ public abstract class IVarAbstraction implements Numberable {
         return me instanceof LocalVarNode;
     }
 
-    public SootMethod enclosingMethod() {
+    public MethodModel enclosingMethod() {
         if (me instanceof LocalVarNode) {
             return ((LocalVarNode) me).getMethod();
         }

@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread.mhp.stmt;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.toolkits.graph.UnitGraph;
 
 // *** USE AT YOUR OWN RISK ***
@@ -38,12 +38,12 @@ import soot.toolkits.graph.UnitGraph;
 
 public class BeginStmt extends JPegStmt {
 
-    public BeginStmt(String obj, String ca, UnitGraph ug, SootMethod sm) {
+    public BeginStmt(String obj, String ca, UnitGraph ug, MethodModel sm) {
         this.object = obj;
         this.name = "begin";
         this.caller = ca;
         this.unitGraph = ug;
-        this.sootMethod = sm;
+        this.methodModel = sm;
     }
 
 }

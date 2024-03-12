@@ -22,6 +22,8 @@ package soot.jimple;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -57,7 +59,7 @@ public class JimpleBody extends StmtBody {
      *
      * @param m
      */
-    public JimpleBody(SootMethod m) {
+    public JimpleBody(MethodModel m) {
         super(m);
         if (Options.v().verbose()) {
             logger.debug("[" + getMethod().getName() + "] Constructing JimpleBody...");

@@ -23,7 +23,7 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import soot.Local;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.ConstantArrayAnalysis.ArrayTypes;
@@ -39,11 +39,11 @@ public class InvokeCallSite extends AbstractCallSite {
     private final int nullnessCode;
     private final ArrayTypes reachingTypes;
 
-    public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base) {
+    public InvokeCallSite(Stmt stmt, MethodModel container, InstanceInvokeExpr iie, Local base) {
         this(stmt, container, iie, base, (Local) null, 0);
     }
 
-    public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, Local argArray,
+    public InvokeCallSite(Stmt stmt, MethodModel container, InstanceInvokeExpr iie, Local base, Local argArray,
                           int nullnessCode) {
         super(stmt, container);
         this.iie = iie;
@@ -53,7 +53,7 @@ public class InvokeCallSite extends AbstractCallSite {
         this.reachingTypes = null;
     }
 
-    public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, ArrayTypes reachingArgTypes,
+    public InvokeCallSite(Stmt stmt, MethodModel container, InstanceInvokeExpr iie, Local base, ArrayTypes reachingArgTypes,
                           int nullnessCode) {
         super(stmt, container);
         this.iie = iie;
@@ -75,7 +75,7 @@ public class InvokeCallSite extends AbstractCallSite {
      * @deprecated use {@link #getContainer()}
      */
     @Deprecated
-    public SootMethod container() {
+    public MethodModel container() {
         return container;
     }
 

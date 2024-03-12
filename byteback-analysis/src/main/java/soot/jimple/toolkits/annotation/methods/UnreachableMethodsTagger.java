@@ -22,6 +22,8 @@ package soot.jimple.toolkits.annotation.methods;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.tag.ColorTag;
 import soot.tag.StringTag;
@@ -44,15 +46,15 @@ public class UnreachableMethodsTagger extends SceneTransformer {
     protected void internalTransform(String phaseName, Map options) {
 
         // make list of all unreachable methods
-        ArrayList<SootMethod> methodList = new ArrayList<SootMethod>();
+        ArrayList<MethodModel> methodList = new ArrayList<MethodModel>();
 
         Iterator getClassesIt = Scene.v().getApplicationClasses().iterator();
         while (getClassesIt.hasNext()) {
             ClassModel appClass = (ClassModel) getClassesIt.next();
 
-            Iterator getMethodsIt = appClass.getMethods().iterator();
+            Iterator getMethodsIt = appClass.getMethodModels().iterator();
             while (getMethodsIt.hasNext()) {
-                SootMethod method = (SootMethod) getMethodsIt.next();
+                MethodModel method = (MethodModel) getMethodsIt.next();
                 // System.out.println("adding method: "+method);
                 if (!Scene.v().getReachableMethods().contains(method)) {
                     methodList.add(method);
@@ -61,9 +63,9 @@ public class UnreachableMethodsTagger extends SceneTransformer {
         }
 
         // tag unused methods
-        Iterator<SootMethod> unusedIt = methodList.iterator();
+        Iterator<MethodModel> unusedIt = methodList.iterator();
         while (unusedIt.hasNext()) {
-            SootMethod unusedMethod = unusedIt.next();
+            MethodModel unusedMethod = unusedIt.next();
             unusedMethod.addTag(new StringTag("Method " + unusedMethod.getName() + " is not reachable!", "Unreachable Methods"));
             unusedMethod.addTag(new ColorTag(255, 0, 0, true, "Unreachable Methods"));
             // System.out.println("tagged method: "+unusedMethod);

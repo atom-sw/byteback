@@ -22,6 +22,7 @@ package soot.shimple;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -70,7 +71,7 @@ public class Shimple {
     /**
      * Returns an empty ShimpleBody associated with method m, using default phase options.
      */
-    public ShimpleBody newBody(SootMethod m) {
+    public ShimpleBody newBody(MethodModel m) {
         Map<String, String> options = PhaseOptions.v().getPhaseOptions(PHASE);
         return new ShimpleBody(m, options);
     }
@@ -78,7 +79,7 @@ public class Shimple {
     /**
      * Returns an empty ShimpleBody associated with method m, using provided option map.
      */
-    public ShimpleBody newBody(SootMethod m, Map<String, String> options) {
+    public ShimpleBody newBody(MethodModel m, Map<String, String> options) {
         return new ShimpleBody(m, options);
     }
 

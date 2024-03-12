@@ -22,6 +22,7 @@ package soot.jimple.toolkits.typing;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
 import soot.*;
 import soot.jimple.*;
 
@@ -135,7 +136,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
             if (uses) {
                 TypeVariable baseType = resolver.typeVariable((Local) ref.getBase());
-                SootField field = ref.getField();
+                FieldModel field = ref.getField();
                 baseType.addParent(resolver.typeVariable(field.getDeclaringClass()));
                 left = resolver.typeVariable(field.getType());
             }

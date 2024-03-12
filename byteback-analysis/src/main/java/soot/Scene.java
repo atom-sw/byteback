@@ -1,5 +1,8 @@
 package soot;
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.slf4j.Logger;
@@ -60,7 +63,7 @@ public class Scene {
     protected PointsToAnalysis activePointsToAnalysis;
     protected CallGraph activeCallGraph;
     protected ReachableMethods reachableMethods;
-    protected List<SootMethod> entryPoints;
+    protected List<MethodModel> entryPoints;
     protected ContextSensitiveCallGraph cscg;
     protected ClientAccessibilityOracle accessibilityOracle;
 
@@ -221,12 +224,12 @@ public class Scene {
         return mainClass;
     }
 
-    public SootMethod getMainMethod() {
+    public MethodModel getMainMethod() {
         if (!hasMainClass()) {
             throw new RuntimeException("There is no main class set!");
         }
 
-        SootMethod mainMethod = mainClass.getMethodUnsafe("main", Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
+        MethodModel mainMethod = mainClass.getMethodUnsafe("main", Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
 
         if (mainMethod == null) {
             throw new RuntimeException("Main class declares no main method!");
@@ -745,7 +748,7 @@ public class Scene {
 
             classes.add(c);
 
-            c.getType().setSootClass(c);
+            c.getClassType().setSootClass(c);
             c.setInScene(true);
 
             // Phantom classes are not really part of the hierarchy anyway, so
@@ -753,7 +756,7 @@ public class Scene {
             if (!c.isPhantom) {
                 modifyHierarchy();
             }
-            nameToClass.computeIfAbsent(c.getName(), k -> c.getType());
+            nameToClass.computeIfAbsent(c.getName(), k -> c.getClassType());
         }
     }
 
@@ -772,7 +775,7 @@ public class Scene {
             applicationClasses.remove(c);
         }
 
-        c.getType().setSootClass(null);
+        c.getClassType().setSootClass(null);
         c.setInScene(false);
         modifyHierarchy();
     }
@@ -816,7 +819,7 @@ public class Scene {
         return sepIndexToSubsignature(sig, signatureSeparatorIndex(sig));
     }
 
-    public SootField grabField(String fieldSignature) {
+    public FieldModel grabField(String fieldSignature) {
         int index = signatureSeparatorIndex(fieldSignature);
         String cname = sepIndexToClass(fieldSignature, index);
         if (!containsClass(cname)) {
@@ -830,7 +833,7 @@ public class Scene {
         return grabField(fieldSignature) != null;
     }
 
-    public SootMethod grabMethod(String methodSignature) {
+    public MethodModel grabMethod(String methodSignature) {
         int index = signatureSeparatorIndex(methodSignature);
         String cname = sepIndexToClass(methodSignature, index);
         if (!containsClass(cname)) {
@@ -844,16 +847,16 @@ public class Scene {
         return grabMethod(methodSignature) != null;
     }
 
-    public SootField getField(String fieldSignature) {
-        SootField f = grabField(fieldSignature);
+    public FieldModel getField(String fieldSignature) {
+        FieldModel f = grabField(fieldSignature);
         if (f != null) {
             return f;
         }
         throw new RuntimeException("tried to get nonexistent field " + fieldSignature);
     }
 
-    public SootMethod getMethod(String methodSignature) {
-        SootMethod m = grabMethod(methodSignature);
+    public MethodModel getMethod(String methodSignature) {
+        MethodModel m = grabMethod(methodSignature);
         if (m != null) {
             return m;
         }
@@ -1320,8 +1323,8 @@ public class Scene {
     /**
      * Get the set of entry points that are used to build the call graph.
      */
-    public List<SootMethod> getEntryPoints() {
-        List<SootMethod> temp = this.entryPoints;
+    public List<MethodModel> getEntryPoints() {
+        List<MethodModel> temp = this.entryPoints;
         if (temp == null) {
             temp = EntryPoints.v().all();
             this.entryPoints = temp;
@@ -1332,7 +1335,7 @@ public class Scene {
     /**
      * Change the set of entry point methods used to build the call graph.
      */
-    public void setEntryPoints(List<SootMethod> entryPoints) {
+    public void setEntryPoints(List<MethodModel> entryPoints) {
         this.entryPoints = entryPoints;
     }
 
@@ -1877,7 +1880,7 @@ public class Scene {
      * Create an unresolved reference to a constructor.
      */
     public SootMethodRef makeConstructorRef(ClassModel declaringClass, List<Type> parameterTypes) {
-        return makeMethodRef(declaringClass, SootMethod.constructorName, parameterTypes, VoidType.v(), false);
+        return makeMethodRef(declaringClass, MethodModel.constructorName, parameterTypes, VoidType.v(), false);
     }
 
     /**
@@ -1893,7 +1896,7 @@ public class Scene {
     public List<ClassModel> getClasses(int desiredLevel) {
         List<ClassModel> ret = new ArrayList<ClassModel>();
         for (ClassModel cl : getClasses()) {
-            if (cl.resolvingLevel() >= desiredLevel) {
+            if (cl.getResolvingLevel() >= desiredLevel) {
                 ret.add(cl);
             }
         }
@@ -1983,25 +1986,25 @@ public class Scene {
         return new ClassModel(name, modifiers);
     }
 
-    public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType) {
-        return new SootMethod(name, parameterTypes, returnType);
+    public MethodModel makeSootMethod(String name, List<Type> parameterTypes, Type returnType) {
+        return new MethodModel(name, parameterTypes, returnType);
     }
 
-    public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers) {
-        return new SootMethod(name, parameterTypes, returnType, modifiers);
+    public MethodModel makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers) {
+        return new MethodModel(name, parameterTypes, returnType, modifiers);
     }
 
-    public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers,
-                                     List<ClassModel> thrownExceptions) {
-        return new SootMethod(name, parameterTypes, returnType, modifiers, thrownExceptions);
+    public MethodModel makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers,
+                                      List<ClassModel> thrownExceptions) {
+        return new MethodModel(name, parameterTypes, returnType, modifiers, thrownExceptions);
     }
 
-    public SootField makeSootField(String name, Type type, int modifiers) {
-        return new SootField(name, type, modifiers);
+    public FieldModel makeSootField(String name, Type type, int modifiers) {
+        return new FieldModel(name, type, modifiers);
     }
 
-    public SootField makeSootField(String name, Type type) {
-        return new SootField(name, type);
+    public FieldModel makeSootField(String name, Type type) {
+        return new FieldModel(name, type);
     }
 
     public RefType getOrAddRefType(String refTypeName) {

@@ -468,7 +468,7 @@ public class VirtualEdgesSummaries {
          * @param invokeStmt The statement at the call site
          */
         public InstanceinvokeSource(Stmt invokeStmt) {
-            this(invokeStmt.getInvokeExpr().getMethodRef().getDeclaringClass().getType(),
+            this(invokeStmt.getInvokeExpr().getMethodRef().getDeclaringClass().getClassType(),
                     invokeStmt.getInvokeExpr().getMethodRef().getSubSignature().getString());
         }
 

@@ -22,13 +22,15 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
+
 /**
  * A common interface for either just a method, or a method with context.
  *
  * @author Ondrej Lhotak
  */
 public interface MethodOrMethodContext {
-    SootMethod method();
+    MethodModel method();
 
     Context context();
 }

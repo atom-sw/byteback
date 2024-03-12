@@ -22,6 +22,8 @@ package soot.jimple.toolkits.base;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.tag.SourceLnPosTag;
@@ -112,7 +114,7 @@ public class ExceptionChecker extends BodyTransformer {
         }
 
         for (Trap trap : b.getTraps()) {
-            RefType type = trap.getException().getType();
+            RefType type = trap.getException().getClassType();
             if (type.equals(throwType) || hierarchy.isSubclass(throwType.getSootClass(), type.getSootClass())) {
                 if (isThrowInStmtRange(b, (Stmt) trap.getBeginUnit(), (Stmt) trap.getEndUnit(), s)) {
                     return true;
@@ -144,7 +146,7 @@ public class ExceptionChecker extends BodyTransformer {
     // interface had declared the method. Returns null if no supertype declares
     // the method.
     private List<ClassModel> getExceptionSpec(ClassModel intrface, NumberedString sig) {
-        SootMethod sm = intrface.getMethodUnsafe(sig);
+        MethodModel sm = intrface.getMethodUnsafe(sig);
         if (sm != null) {
             return sm.getExceptions();
         }
@@ -154,7 +156,7 @@ public class ExceptionChecker extends BodyTransformer {
         }
 
         List<ClassModel> result = sm == null ? null : new ArrayList<ClassModel>(sm.getExceptions());
-        for (ClassModel suprintr : intrface.getInterfaces()) {
+        for (ClassModel suprintr : intrface.getInterfaceTypes()) {
             List<ClassModel> other = getExceptionSpec(suprintr, sig);
             if (other != null) {
                 if (result == null) {
@@ -189,7 +191,7 @@ public class ExceptionChecker extends BodyTransformer {
 
         if (exceptions != null) {
             for (ClassModel sc : exceptions) {
-                if (isThrowDeclared(b, sc) || isExceptionCaught(b, s, sc.getType())) {
+                if (isThrowDeclared(b, sc) || isExceptionCaught(b, s, sc.getClassType())) {
                     continue;
                 }
                 if (reporter != null) {

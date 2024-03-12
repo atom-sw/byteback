@@ -23,7 +23,7 @@ package soot.jimple.validation;
  */
 
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.baf.syntax.BafBody;
 import soot.jimple.InvokeExpr;
@@ -58,7 +58,7 @@ public enum InvokeArgumentValidator implements BodyValidator {
                 Stmt s = (Stmt) unit;
                 if (s.containsInvokeExpr()) {
                     InvokeExpr iinvExpr = s.getInvokeExpr();
-                    SootMethod callee = iinvExpr.getMethod();
+                    MethodModel callee = iinvExpr.getMethod();
                     if (callee != null && iinvExpr.getArgCount() != callee.getParameterCount()) {
                         exceptions.add(new ValidationException(s, "Invalid number of arguments"));
                     }

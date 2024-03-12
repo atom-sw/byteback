@@ -23,7 +23,7 @@ package soot.jimple.internal;
  * #L%
  */
 
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;

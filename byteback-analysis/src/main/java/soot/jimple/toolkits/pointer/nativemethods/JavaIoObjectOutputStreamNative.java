@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 
@@ -34,7 +34,7 @@ public class JavaIoObjectOutputStreamNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -54,7 +54,7 @@ public class JavaIoObjectOutputStreamNative extends NativeMethodClass {
      * <p>
      * private static native java.lang.Object getObjectFieldValue(java.lang.Object, long);
      */
-    public void java_io_ObjectOutputStream_getObjectFieldValue(SootMethod method, ReferenceVariable thisVar,
+    public void java_io_ObjectOutputStream_getObjectFieldValue(MethodModel method, ReferenceVariable thisVar,
                                                                ReferenceVariable returnVar, ReferenceVariable[] params) {
         throw new NativeMethodNotSupportedException(method);
     }

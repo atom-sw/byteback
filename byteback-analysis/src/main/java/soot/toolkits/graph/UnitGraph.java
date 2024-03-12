@@ -25,7 +25,7 @@ package soot.toolkits.graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.UnitBox;
 import soot.options.Options;
@@ -48,7 +48,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
 
     protected final Body body;
     protected final Chain<Unit> unitChain;
-    protected final SootMethod method;
+    protected final MethodModel method;
 
     protected List<Unit> heads;
     protected List<Unit> tails;

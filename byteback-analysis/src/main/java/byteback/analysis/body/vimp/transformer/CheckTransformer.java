@@ -3,6 +3,7 @@ package byteback.analysis.body.vimp.transformer;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
+import byteback.analysis.model.ClassModel;
 import soot.*;
 import soot.grimp.Grimp;
 import soot.jimple.Jimple;
@@ -28,9 +29,9 @@ public abstract class CheckTransformer extends BodyTransformer {
     public Chain<Unit> makeThrowUnits(final Supplier<Local> exceptionLocalSupplier) {
         final Chain<Unit> units = new HashChain<>();
         final Local local = exceptionLocalSupplier.get();
-        final Unit initUnit = Grimp.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getType()));
+        final Unit initUnit = Grimp.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getClassType()));
         units.addLast(initUnit);
-        final SootMethodRef constructorRef = exceptionClass.getMethod("<init>", Collections.emptyList()).makeRef();
+        final SootMethodRef constructorRef = exceptionClass.getMethodModel("<init>", Collections.emptyList()).makeRef();
         final SpecialInvokeExpr invokeExpr = Grimp.v().newSpecialInvokeExpr(local, constructorRef,
                 Collections.emptyList());
         final Unit constructorUnit = Grimp.v().newInvokeStmt(invokeExpr);
@@ -47,7 +48,7 @@ public abstract class CheckTransformer extends BodyTransformer {
         final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
         final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
         final Supplier<Local> exceptionLocalSupplier = () ->
-                localGenerator.generateLocal(exceptionClass.getType());
+                localGenerator.generateLocal(exceptionClass.getClassType());
         final VimpExprFactory builder = new VimpExprFactory(localGenerator);
 
         while (unitIterator.hasNext()) {

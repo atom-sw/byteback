@@ -1,4 +1,4 @@
-package soot;
+package byteback.analysis.model;
 
 /*-
  * #%L
@@ -25,6 +25,7 @@ package soot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import soot.*;
 import soot.options.Options;
 import soot.tag.AbstractHost;
 import soot.util.NumberedString;
@@ -36,9 +37,9 @@ import java.util.function.Consumer;
  * Soot representation of a Java method. Can be declared to belong to a {@link ClassModel}. Does not contain the actual code,
  * which belongs to a {@link Body}. The {@link #getActiveBody()} method points to the currently-active body.
  */
-public class SootMethod extends AbstractHost implements ClassMember, MethodOrMethodContext, SootMethodInterface {
+public class MethodModel extends AbstractHost implements ClassMemberModel, MethodOrMethodContext, SootMethodInterface {
 
-    private static final Logger logger = LoggerFactory.getLogger(SootMethod.class);
+    private static final Logger logger = LoggerFactory.getLogger(MethodModel.class);
 
     public static final String constructorName = "<init>";
     public static final String staticInitializerName = "<clinit>";
@@ -49,7 +50,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     protected String name;
 
     /**
-     * An array of parameter types taken by this {@link SootMethod} object, in declaration order.
+     * An array of parameter types taken by this {@link MethodModel} object, in declaration order.
      */
     protected Type[] parameterTypes;
 
@@ -59,7 +60,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     protected Type returnType;
 
     /**
-     * True when some {@link ClassModel} object declares this {@link SootMethod} object.
+     * True when some {@link ClassModel} object declares this {@link MethodModel} object.
      */
     protected boolean isDeclared;
 
@@ -69,7 +70,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     protected ClassModel declaringClass;
 
     /**
-     * Modifiers associated with this {@link SootMethod} (e.g. private, protected, etc.)
+     * Modifiers associated with this {@link MethodModel} (e.g. private, protected, etc.)
      */
     protected int modifiers;
 
@@ -98,24 +99,24 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     protected NumberedString subsignature;
 
     /**
-     * Constructs a {@link SootMethod} with the given name, parameter types and return type.
+     * Constructs a {@link MethodModel} with the given name, parameter types and return type.
      */
-    public SootMethod(String name, List<Type> parameterTypes, Type returnType) {
+    public MethodModel(String name, List<Type> parameterTypes, Type returnType) {
         this(name, parameterTypes, returnType, 0, Collections.emptyList());
     }
 
     /**
-     * Constructs a {@link SootMethod} with the given name, parameter types, return type and modifiers.
+     * Constructs a {@link MethodModel} with the given name, parameter types, return type and modifiers.
      */
-    public SootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers) {
+    public MethodModel(String name, List<Type> parameterTypes, Type returnType, int modifiers) {
         this(name, parameterTypes, returnType, modifiers, Collections.emptyList());
     }
 
     /**
-     * Constructs a {@link SootMethod} with the given name, parameter types, return type, and list of thrown exceptions.
+     * Constructs a {@link MethodModel} with the given name, parameter types, return type, and list of thrown exceptions.
      */
-    public SootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers,
-                      List<ClassModel> thrownExceptions) {
+    public MethodModel(String name, List<Type> parameterTypes, Type returnType, int modifiers,
+                       List<ClassModel> thrownExceptions) {
         this.name = name;
 
         if (parameterTypes != null && !parameterTypes.isEmpty()) {
@@ -175,7 +176,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     }
 
     /**
-     * Returns the class which declares the current {@link SootMethod}.
+     * Returns the class which declares the current {@link MethodModel}.
      */
     @Override
     public ClassModel getDeclaringClass() {
@@ -190,7 +191,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     }
 
     /**
-     * Returns true when some {@link ClassModel} object declares this {@link SootMethod} object.
+     * Returns true when some {@link ClassModel} object declares this {@link MethodModel} object.
      */
     @Override
     public boolean isDeclared() {
@@ -198,7 +199,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     }
 
     /**
-     * Returns true when this {@link SootMethod} object is phantom.
+     * Returns true when this {@link MethodModel} object is phantom.
      */
     @Override
     public boolean isPhantom() {
@@ -316,14 +317,14 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     }
 
     /**
-     * Returns the {@link MethodSource} of the current {@link SootMethod}.
+     * Returns the {@link MethodSource} of the current {@link MethodModel}.
      */
     public MethodSource getSource() {
         return ms;
     }
 
     /**
-     * Sets the {@link MethodSource} of the current {@link SootMethod}.
+     * Sets the {@link MethodSource} of the current {@link MethodModel}.
      */
     public synchronized void setSource(MethodSource ms) {
         this.ms = ms;
@@ -616,7 +617,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
      * @return yes, if this is a class initializer or main function.
      */
     public boolean isEntryMethod() {
-        if (isStatic() && SootMethod.staticInitializerName.equals(subsignature.getString())) {
+        if (isStatic() && MethodModel.staticInitializerName.equals(subsignature.getString())) {
             return true;
         }
         return isMain();
@@ -787,7 +788,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     }
 
     @Override
-    public SootMethod method() {
+    public MethodModel method() {
         return this;
     }
 

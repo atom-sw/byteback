@@ -1,5 +1,6 @@
 package soot.toolkits.exceptions;
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.baf.syntax.ThrowInst;
 import soot.grimp.NewInvokeExpr;
@@ -31,7 +32,7 @@ public abstract class AbstractThrowAnalysis implements ThrowAnalysis {
         return mightThrowExplicitly(t, null);
     }
 
-    public ThrowableSet mightThrowExplicitly(ThrowStmt t, SootMethod sm) {
+    public ThrowableSet mightThrowExplicitly(ThrowStmt t, MethodModel sm) {
         Value thrownExpression = t.getOp();
         Type thrownType = thrownExpression.getType();
         if (thrownType == null || thrownType instanceof UnknownType) {

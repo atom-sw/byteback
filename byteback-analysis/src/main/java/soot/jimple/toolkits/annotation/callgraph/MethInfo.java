@@ -23,14 +23,14 @@ package soot.jimple.toolkits.annotation.callgraph;
  */
 
 import soot.Kind;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 public class MethInfo {
-    private SootMethod method;
+    private MethodModel method;
     private boolean canExpandCollapse;
     private Kind edgeKind;
 
-    public MethInfo(SootMethod meth, boolean b, Kind kind) {
+    public MethInfo(MethodModel meth, boolean b, Kind kind) {
         method(meth);
         canExpandCollapse(b);
         edgeKind(kind);
@@ -52,11 +52,11 @@ public class MethInfo {
         canExpandCollapse = b;
     }
 
-    public SootMethod method() {
+    public MethodModel method() {
         return method;
     }
 
-    public void method(SootMethod m) {
+    public void method(MethodModel m) {
         method = m;
     }
 }

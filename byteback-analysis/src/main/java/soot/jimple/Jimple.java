@@ -22,6 +22,8 @@ package soot.jimple;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.internal.*;
 
@@ -658,7 +660,7 @@ public class Jimple {
     /**
      * Returns an empty JimpleBody associated with method m.
      */
-    public JimpleBody newBody(SootMethod m) {
+    public JimpleBody newBody(MethodModel m) {
         return new JimpleBody(m);
     }
 

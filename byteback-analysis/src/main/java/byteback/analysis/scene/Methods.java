@@ -2,7 +2,7 @@ package byteback.analysis.scene;
 
 import byteback.common.function.Lazy;
 import soot.Local;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.internal.JimpleLocal;
 
 import java.util.ArrayList;
@@ -19,11 +19,11 @@ public class Methods {
     private Methods() {
     }
 
-    public List<Local> makeFakeParameterLocals(final SootMethod method) {
+    public List<Local> makeFakeParameterLocals(final MethodModel method) {
         final List<Local> parameterLocals = new ArrayList<>();
 
         if (!method.isStatic()) {
-            parameterLocals.add(new JimpleLocal("this", method.getDeclaringClass().getType()));
+            parameterLocals.add(new JimpleLocal("this", method.getDeclaringClass().getClassType()));
         }
 
         for (int i = 0; i < method.getParameterCount(); ++i) {

@@ -22,6 +22,7 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
@@ -37,7 +38,7 @@ public class UnreachableMethodTransformer extends BodyTransformer {
     protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
         // System.out.println( "Performing UnreachableMethodTransformer" );
 
-        SootMethod method = b.getMethod();
+        MethodModel method = b.getMethod();
         final Scene scene = Scene.v();
         // System.out.println( "Method: " + method.getName() );
         if (scene.getReachableMethods().contains(method)) {
@@ -52,7 +53,7 @@ public class UnreachableMethodTransformer extends BodyTransformer {
         list.add(jimp.newAssignStmt(tmpRef,
                 jimp.newStaticFieldRef(scene.getField("<java.lang.System: java.io.PrintStream out>").makeRef())));
 
-        SootMethod toCall = scene.getMethod("<java.lang.Thread: void dumpStack()>");
+        MethodModel toCall = scene.getMethod("<java.lang.Thread: void dumpStack()>");
         list.add(jimp.newInvokeStmt(jimp.newStaticInvokeExpr(toCall.makeRef())));
 
         toCall = scene.getMethod("<java.io.PrintStream: void println(java.lang.String)>");

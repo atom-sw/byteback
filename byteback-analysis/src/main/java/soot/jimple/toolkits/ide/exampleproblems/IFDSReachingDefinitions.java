@@ -22,6 +22,7 @@ package soot.jimple.toolkits.ide.exampleproblems;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -37,14 +38,14 @@ import soot.toolkits.scalar.Pair;
 import java.util.*;
 
 public class IFDSReachingDefinitions
-        extends DefaultJimpleIFDSTabulationProblem<Pair<Value, Set<DefinitionStmt>>, InterproceduralCFG<Unit, SootMethod>> {
-    public IFDSReachingDefinitions(InterproceduralCFG<Unit, SootMethod> icfg) {
+        extends DefaultJimpleIFDSTabulationProblem<Pair<Value, Set<DefinitionStmt>>, InterproceduralCFG<Unit, MethodModel>> {
+    public IFDSReachingDefinitions(InterproceduralCFG<Unit, MethodModel> icfg) {
         super(icfg);
     }
 
     @Override
-    public FlowFunctions<Unit, Pair<Value, Set<DefinitionStmt>>, SootMethod> createFlowFunctionsFactory() {
-        return new FlowFunctions<Unit, Pair<Value, Set<DefinitionStmt>>, SootMethod>() {
+    public FlowFunctions<Unit, Pair<Value, Set<DefinitionStmt>>, MethodModel> createFlowFunctionsFactory() {
+        return new FlowFunctions<Unit, Pair<Value, Set<DefinitionStmt>>, MethodModel>() {
 
             @Override
             public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getNormalFlowFunction(final Unit curr, Unit succ) {
@@ -73,7 +74,7 @@ public class IFDSReachingDefinitions
 
             @Override
             public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getCallFlowFunction(Unit callStmt,
-                                                                                      final SootMethod destinationMethod) {
+                                                                                      final MethodModel destinationMethod) {
                 Stmt stmt = (Stmt) callStmt;
                 InvokeExpr invokeExpr = stmt.getInvokeExpr();
                 final List<Value> args = invokeExpr.getArgs();
@@ -110,7 +111,7 @@ public class IFDSReachingDefinitions
 
             @Override
             public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getReturnFlowFunction(final Unit callSite,
-                                                                                        SootMethod calleeMethod, final Unit exitStmt, Unit returnSite) {
+                                                                                        MethodModel calleeMethod, final Unit exitStmt, Unit returnSite) {
                 if (!(callSite instanceof DefinitionStmt) || (exitStmt instanceof ReturnVoidStmt)) {
                     return KillAll.v();
                 }

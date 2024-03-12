@@ -23,7 +23,7 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import soot.Scene;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
@@ -32,12 +32,12 @@ import soot.toolkits.scalar.HashSparseSet;
 
 import java.util.Iterator;
 
-public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMethod>> {
+public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<MethodModel>> {
 
     private final CallGraph cg = Scene.v().getCallGraph();
     private final UnitGraph g;
 
-    private static FlowSet<SootMethod> cachedFlowSet = null;
+    private static FlowSet<MethodModel> cachedFlowSet = null;
 
     public ClinitElimAnalysis(UnitGraph g) {
         super(g);
@@ -47,23 +47,23 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
     }
 
     @Override
-    public void merge(FlowSet<SootMethod> in1, FlowSet<SootMethod> in2, FlowSet<SootMethod> out) {
+    public void merge(FlowSet<MethodModel> in1, FlowSet<MethodModel> in2, FlowSet<MethodModel> out) {
         in1.intersection(in2, out);
     }
 
     @Override
-    public void copy(FlowSet<SootMethod> src, FlowSet<SootMethod> dest) {
+    public void copy(FlowSet<MethodModel> src, FlowSet<MethodModel> dest) {
         src.copy(dest);
     }
 
     @Override
-    protected void copyFreshToExisting(FlowSet<SootMethod> in, FlowSet<SootMethod> dest) {
+    protected void copyFreshToExisting(FlowSet<MethodModel> in, FlowSet<MethodModel> dest) {
         in.copyFreshToExisting(dest);
     }
 
     // out(s) = in(s) intersect { target methods of s where edge kind is clinit}
     @Override
-    protected void flowThrough(FlowSet<SootMethod> inVal, Unit stmt, FlowSet<SootMethod> outVal) {
+    protected void flowThrough(FlowSet<MethodModel> inVal, Unit stmt, FlowSet<MethodModel> outVal) {
         inVal.copy(outVal);
 
         for (Iterator<Edge> edges = cg.edgesOutOf(stmt); edges.hasNext(); ) {
@@ -75,13 +75,13 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
     }
 
     @Override
-    protected FlowSet<SootMethod> entryInitialFlow() {
-        return new HashSparseSet<SootMethod>();
+    protected FlowSet<MethodModel> entryInitialFlow() {
+        return new HashSparseSet<MethodModel>();
     }
 
     @Override
-    protected FlowSet<SootMethod> newInitialFlow() {
-        HashSparseSet<SootMethod> returnedFlowSet = new HashSparseSet<>();
+    protected FlowSet<MethodModel> newInitialFlow() {
+        HashSparseSet<MethodModel> returnedFlowSet = new HashSparseSet<>();
         if (cachedFlowSet == null) {
             cachedFlowSet = calculateInitialFlow();
         }
@@ -89,8 +89,8 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
         return returnedFlowSet;
     }
 
-    protected FlowSet<SootMethod> calculateInitialFlow() {
-        HashSparseSet<SootMethod> newFlowSet = new HashSparseSet<>();
+    protected FlowSet<MethodModel> calculateInitialFlow() {
+        HashSparseSet<MethodModel> newFlowSet = new HashSparseSet<>();
         for (Iterator<Edge> mIt = cg.edgesOutOf(g.getBody().getMethod()); mIt.hasNext(); ) {
             Edge edge = mIt.next();
             if (edge.isClinit()) {

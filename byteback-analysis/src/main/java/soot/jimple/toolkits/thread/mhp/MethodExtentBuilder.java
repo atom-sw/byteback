@@ -23,7 +23,7 @@ package soot.jimple.toolkits.thread.mhp;
  */
 
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Value;
 import soot.jimple.InvokeExpr;
 import soot.jimple.MonitorStmt;
@@ -71,13 +71,13 @@ public class MethodExtentBuilder {
 
         Iterator it = pcg.iterator();
         while (it.hasNext()) {
-            SootMethod method = (SootMethod) it.next();
+            MethodModel method = (MethodModel) it.next();
             computeForMethodInlining(method, cg);
         }
 
     }
 
-    private void computeForMethodInlining(SootMethod targetMethod, CallGraph cg) {
+    private void computeForMethodInlining(MethodModel targetMethod, CallGraph cg) {
         // System.out.println("method: "+targetMethod);
 
         if (targetMethod.isSynchronized()) {
@@ -100,7 +100,7 @@ public class MethodExtentBuilder {
                     // System.out.println("stmt is: "+stmt);
                     Value invokeExpr = (stmt).getInvokeExpr();
 
-                    SootMethod method = ((InvokeExpr) invokeExpr).getMethod();
+                    MethodModel method = ((InvokeExpr) invokeExpr).getMethod();
 
                     String name = method.getName();
 
@@ -115,9 +115,9 @@ public class MethodExtentBuilder {
                         if (method.isConcrete() && !method.getDeclaringClass().isLibraryClass()) {
                             Iterator it = cg.edgesOutOf(stmt);
                             TargetMethodsFinder tmd = new TargetMethodsFinder();
-                            Iterator<SootMethod> targetIt = (tmd.find(stmt, cg, true, false)).iterator();
+                            Iterator<MethodModel> targetIt = (tmd.find(stmt, cg, true, false)).iterator();
                             while (targetIt.hasNext()) {
-                                SootMethod target = targetIt.next();
+                                MethodModel target = targetIt.next();
                                 if (target.isSynchronized()) {
                                     // System.out.println("method is synchronized: "+method);
                                     methodsNeedingInlining.add(targetMethod);

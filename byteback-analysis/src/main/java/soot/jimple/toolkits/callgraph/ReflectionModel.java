@@ -22,17 +22,17 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.Stmt;
 
 public interface ReflectionModel {
 
-    void methodInvoke(SootMethod container, Stmt invokeStmt);
+    void methodInvoke(MethodModel container, Stmt invokeStmt);
 
-    void classNewInstance(SootMethod source, Stmt s);
+    void classNewInstance(MethodModel source, Stmt s);
 
-    void contructorNewInstance(SootMethod source, Stmt s);
+    void contructorNewInstance(MethodModel source, Stmt s);
 
-    void classForName(SootMethod source, Stmt s);
+    void classForName(MethodModel source, Stmt s);
 
 }

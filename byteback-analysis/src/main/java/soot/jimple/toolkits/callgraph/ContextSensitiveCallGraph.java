@@ -24,7 +24,7 @@ package soot.jimple.toolkits.callgraph;
 
 import soot.Context;
 import soot.MethodOrMethodContext;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 
 import java.util.Iterator;
@@ -48,15 +48,15 @@ public interface ContextSensitiveCallGraph {
     /**
      * Returns all ContextSensitiveEdge's out of unit srcUnit in method src in context srcCtxt.
      */
-    Iterator<ContextSensitiveEdge> edgesOutOf(Context srcCtxt, SootMethod src, Unit srcUnit);
+    Iterator<ContextSensitiveEdge> edgesOutOf(Context srcCtxt, MethodModel src, Unit srcUnit);
 
     /**
      * Returns all ContextSensitiveEdge's out of method src in context srcCtxt.
      */
-    Iterator<ContextSensitiveEdge> edgesOutOf(Context srcCtxt, SootMethod src);
+    Iterator<ContextSensitiveEdge> edgesOutOf(Context srcCtxt, MethodModel src);
 
     /**
      * Returns all ContextSensitiveEdge's into method tgt in context tgtCtxt.
      */
-    Iterator<ContextSensitiveEdge> edgesInto(Context tgtCtxt, SootMethod tgt);
+    Iterator<ContextSensitiveEdge> edgesInto(Context tgtCtxt, MethodModel tgt);
 }

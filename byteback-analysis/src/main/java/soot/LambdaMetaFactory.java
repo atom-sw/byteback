@@ -23,6 +23,9 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.asm.AsmUtil;
@@ -146,28 +149,28 @@ public class LambdaMetaFactory {
         ClassModel classModel = Scene.v().makeClassModel(className);
         classModel.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
         classModel.setSuperclass(Scene.v().getObjectType().getSootClass());
-        classModel.addInterface(functionalInterfaceToImplement);
+        classModel.addInterfaceType(functionalInterfaceToImplement);
         classModel.addTag(new ArtificialEntityTag());
 
         // additions from altMetafactory
         if (serializable) {
-            classModel.addInterface(RefType.v("java.io.Serializable").getSootClass());
+            classModel.addInterfaceType(RefType.v("java.io.Serializable").getSootClass());
         }
         for (int i = 0; i < markerInterfaces.size(); i++) {
             String internal = markerInterfaces.get(i).getValue();
             RefType refType = ((RefType) AsmUtil.toBaseType(internal));
             ClassModel interfaceClass = refType.getSootClass();
             if (!interfaceClass.equals(functionalInterfaceToImplement)) {
-                classModel.addInterface(interfaceClass);
+                classModel.addInterfaceType(interfaceClass);
             }
         }
 
         // It contains fields for all the captures in the lambda
-        List<SootField> capFields = new ArrayList<SootField>(capTypes.size());
+        List<FieldModel> capFields = new ArrayList<FieldModel>(capTypes.size());
         for (int i = 0, e = capTypes.size(); i < e; i++) {
-            SootField f = Scene.v().makeSootField("cap" + i, capTypes.get(i), 0);
+            FieldModel f = Scene.v().makeSootField("cap" + i, capTypes.get(i), 0);
             capFields.add(f);
-            classModel.addField(f);
+            classModel.addFieldModel(f);
         }
 
         // if the implMethod is a new private static in the enclosing class, make it public access so
@@ -175,7 +178,7 @@ public class LambdaMetaFactory {
         if (MethodHandle.Kind.REF_INVOKE_STATIC.getValue() == implMethod.getKind()) {
             ClassModel declClass = implMethod.getMethodRef().getDeclaringClass();
             if (declClass.getName().equals(enclosingClassname)) {
-                SootMethod method = implMethod.getMethodRef().resolve();
+                MethodModel method = implMethod.getMethodRef().resolve();
                 method.setModifiers((method.getModifiers() & ~Modifier.PRIVATE) | Modifier.PUBLIC);
             }
         }
@@ -183,13 +186,13 @@ public class LambdaMetaFactory {
         MethodSource ms = new ThunkMethodSource(capFields, samMethodType, implMethod, instantiatedMethodType);
 
         // Bootstrap method creates a new instance of this class
-        SootMethod tboot = Scene.v().makeSootMethod("bootstrap$", capTypes, functionalInterfaceToImplement.getType(),
+        MethodModel tboot = Scene.v().makeSootMethod("bootstrap$", capTypes, functionalInterfaceToImplement.getClassType(),
                 Modifier.PUBLIC | Modifier.STATIC);
         classModel.addMethod(tboot);
         tboot.setSource(ms);
 
         // Constructor just copies the captures
-        SootMethod tctor = Scene.v().makeSootMethod("<init>", capTypes, VoidType.v(), Modifier.PUBLIC);
+        MethodModel tctor = Scene.v().makeSootMethod("<init>", capTypes, VoidType.v(), Modifier.PUBLIC);
         classModel.addMethod(tctor);
         tctor.setSource(ms);
 
@@ -201,7 +204,7 @@ public class LambdaMetaFactory {
             addDispatch(name, classModel, bridgeType, instantiatedMethodType, capFields, implMethod);
         }
 
-        for (SootMethod m : classModel.getMethods()) {
+        for (MethodModel m : classModel.getMethodModels()) {
             // There is no reason not to load the bodies directly. After all,
             // we are introducing new classes while loading bodies.
             m.retrieveActiveBody();
@@ -249,9 +252,9 @@ public class LambdaMetaFactory {
     }
 
     private void addDispatch(String name, ClassModel tclass, MethodType implMethodType, MethodType instantiatedMethodType,
-                             List<SootField> capFields, MethodHandle implMethod) {
+                             List<FieldModel> capFields, MethodHandle implMethod) {
         ThunkMethodSource ms = new ThunkMethodSource(capFields, implMethodType, implMethod, instantiatedMethodType);
-        SootMethod m = Scene.v().makeSootMethod(name, implMethodType.getParameterTypes(), implMethodType.getReturnType(),
+        MethodModel m = Scene.v().makeSootMethod(name, implMethodType.getParameterTypes(), implMethodType.getReturnType(),
                 Modifier.PUBLIC);
         tclass.addMethod(m);
         m.setSource(ms);
@@ -268,18 +271,18 @@ public class LambdaMetaFactory {
         /**
          * valueOf(primitive) method signature
          */
-        final Map<PrimType, SootMethod> valueOf;
+        final Map<PrimType, MethodModel> valueOf;
         /**
          * primitiveValue() method signature
          */
-        final Map<RefType, SootMethod> primitiveValue;
+        final Map<RefType, MethodModel> primitiveValue;
 
         public Wrapper() {
             final Scene sc = Scene.v();
             Map<RefType, PrimType> wrapperTypesTmp = new HashMap<>();
             Map<PrimType, RefType> primitiveTypesTmp = new HashMap<>();
-            Map<PrimType, SootMethod> valueOfTmp = new HashMap<>();
-            Map<RefType, SootMethod> primitiveValueTmp = new HashMap<>();
+            Map<PrimType, MethodModel> valueOfTmp = new HashMap<>();
+            Map<RefType, MethodModel> primitiveValueTmp = new HashMap<>();
 
             PrimType[] primTypes = {BooleanType.v(), ByteType.v(), CharType.v(), DoubleType.v(), FloatType.v(), IntType.v(),
                     LongType.v(), ShortType.v()};
@@ -307,7 +310,7 @@ public class LambdaMetaFactory {
         /**
          * fields storing capture variables, in the order they appear in invokedType; to be prepended at target invocation site
          */
-        private final List<SootField> capFields;
+        private final List<FieldModel> capFields;
         /**
          * MethodType of method to implemented by function object; either samMethodType or bridgeMethodType *
          */
@@ -321,7 +324,7 @@ public class LambdaMetaFactory {
          */
         private final MethodType instantiatedMethodType;
 
-        public ThunkMethodSource(List<SootField> capFields, MethodType implMethodType, MethodHandle implMethod,
+        public ThunkMethodSource(List<FieldModel> capFields, MethodType implMethodType, MethodHandle implMethod,
                                  MethodType instantiatedMethodType) {
             this.capFields = capFields;
             this.implMethodType = implMethodType;
@@ -330,7 +333,7 @@ public class LambdaMetaFactory {
         }
 
         @Override
-        public Body getBody(SootMethod m, String phaseName) {
+        public Body getBody(MethodModel m, String phaseName) {
             if (!"jb".equals(phaseName)) {
                 throw new Error("unsupported body type: " + phaseName);
             }
@@ -369,13 +372,13 @@ public class LambdaMetaFactory {
             LocalGenerator lc = Scene.v().createLocalGenerator(jb);
 
             // @this
-            Local l = lc.generateLocal(tclass.getType());
-            us.add(jimp.newIdentityStmt(l, jimp.newThisRef(tclass.getType())));
+            Local l = lc.generateLocal(tclass.getClassType());
+            us.add(jimp.newIdentityStmt(l, jimp.newThisRef(tclass.getClassType())));
 
             // @parameters
             Chain<Local> capLocals = new HashChain<>();
             int i = 0;
-            for (SootField f : capFields) {
+            for (FieldModel f : capFields) {
                 Local l2 = lc.generateLocal(f.getType());
                 us.add(jimp.newIdentityStmt(l2, jimp.newParameterRef(f.getType(), i)));
                 capLocals.add(l2);
@@ -389,7 +392,7 @@ public class LambdaMetaFactory {
 
             // assign parameters to fields
             Iterator<Local> localItr = capLocals.iterator();
-            for (SootField f : capFields) {
+            for (FieldModel f : capFields) {
                 Local l2 = localItr.next();
                 us.add(jimp.newAssignStmt(jimp.newInstanceFieldRef(l, f.makeRef()), l2));
             }
@@ -405,7 +408,7 @@ public class LambdaMetaFactory {
             List<Value> capValues = new ArrayList<Value>();
             List<Type> capTypes = new ArrayList<Type>();
             int i = 0;
-            for (SootField capField : capFields) {
+            for (FieldModel capField : capFields) {
                 Type type = capField.getType();
                 capTypes.add(type);
                 Local p = lc.generateLocal(type);
@@ -413,8 +416,8 @@ public class LambdaMetaFactory {
                 capValues.add(p);
                 i++;
             }
-            Local l = lc.generateLocal(tclass.getType());
-            us.add(jimp.newAssignStmt(l, jimp.newNewExpr(tclass.getType())));
+            Local l = lc.generateLocal(tclass.getClassType());
+            us.add(jimp.newAssignStmt(l, jimp.newNewExpr(tclass.getClassType())));
             us.add(jimp.newInvokeStmt(jimp.newSpecialInvokeExpr(l, Scene.v().makeConstructorRef(tclass, capTypes), capValues)));
             us.add(jimp.newReturnStmt(l));
         }
@@ -431,8 +434,8 @@ public class LambdaMetaFactory {
             LocalGenerator lc = Scene.v().createLocalGenerator(jb);
 
             // @this
-            Local this_ = lc.generateLocal(tclass.getType());
-            us.add(jimp.newIdentityStmt(this_, jimp.newThisRef(tclass.getType())));
+            Local this_ = lc.generateLocal(tclass.getClassType());
+            us.add(jimp.newIdentityStmt(this_, jimp.newThisRef(tclass.getClassType())));
 
             // @parameter for direct arguments
             Chain<Local> samParamLocals = new HashChain<>();
@@ -454,7 +457,7 @@ public class LambdaMetaFactory {
 
             // captured arguments
             List<Local> args = new ArrayList<Local>();
-            for (SootField f : capFields) {
+            for (FieldModel f : capFields) {
                 Local l = lc.generateLocal(f.getType());
                 us.add(jimp.newAssignStmt(l, jimp.newInstanceFieldRef(this_, f.makeRef())));
                 args.add(l);
@@ -472,7 +475,7 @@ public class LambdaMetaFactory {
             // the new object
             Iterator<Local> iplItr = instParamLocals.iterator();
             if (capFields.isEmpty() && iplItr.hasNext() && needsReceiver) {
-                args.add(adapt(iplItr.next(), implMethod.getMethodRef().getDeclaringClass().getType(), jb, us, lc));
+                args.add(adapt(iplItr.next(), implMethod.getMethodRef().getDeclaringClass().getClassType(), jb, us, lc));
             }
 
             int j = args.size();
@@ -559,7 +562,7 @@ public class LambdaMetaFactory {
          */
         private Local box(Local fromLocal, JimpleBody jb, PatchingChain<Unit> us, LocalGenerator lc) {
             PrimType primitiveType = (PrimType) fromLocal.getType();
-            SootMethod valueOfMethod = wrapper.valueOf.get(primitiveType);
+            MethodModel valueOfMethod = wrapper.valueOf.get(primitiveType);
 
             Local lBox = lc.generateLocal(primitiveType.boxedType());
             if (lBox == null || valueOfMethod == null || us == null) {
@@ -695,10 +698,10 @@ public class LambdaMetaFactory {
                     // It can be the case that the method is not in the same class (or a super class).
                     // As such, we need a virtual call in these cases.
                     if (currentClass == calledClass
-                            || Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass.getSuperclass(), calledClass)) {
+                            || Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass.getSuperType(), calledClass)) {
                         return Jimple.v().newSpecialInvokeExpr(args.get(0), methodRef, rest(args));
                     } else {
-                        SootMethod m = implMethod.getMethodRef().resolve();
+                        MethodModel m = implMethod.getMethodRef().resolve();
                         if (!m.isPublic()) {
                             // make sure the method is public
                             int mod = Modifier.PUBLIC | m.getModifiers();
@@ -716,7 +719,7 @@ public class LambdaMetaFactory {
                     }
                 case REF_INVOKE_CONSTRUCTOR:
                     final Jimple jimp = Jimple.v();
-                    RefType type = methodRef.getDeclaringClass().getType();
+                    RefType type = methodRef.getDeclaringClass().getClassType();
 
                     Local newLocal = lc.generateLocal(type);
                     us.add(jimp.newAssignStmt(newLocal, jimp.newNewExpr(type)));

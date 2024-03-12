@@ -23,6 +23,7 @@ package soot.jimple.internal;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.InvokeExpr;
 
@@ -52,7 +53,7 @@ public abstract class AbstractInvokeExpr implements InvokeExpr {
     }
 
     @Override
-    public SootMethod getMethod() {
+    public MethodModel getMethod() {
         return methodRef.resolve();
     }
 

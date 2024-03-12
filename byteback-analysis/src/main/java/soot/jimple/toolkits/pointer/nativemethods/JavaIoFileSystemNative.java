@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -35,7 +35,7 @@ public class JavaIoFileSystemNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -55,7 +55,7 @@ public class JavaIoFileSystemNative extends NativeMethodClass {
      * <p>
      * public static native java.io.FileSystem getFileSystem();
      */
-    public void java_io_FileSystem_getFileSystem(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_io_FileSystem_getFileSystem(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                  ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getFileSystemObject());
     }

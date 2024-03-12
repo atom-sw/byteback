@@ -24,8 +24,8 @@ package soot.jimple.spark.pag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.ClassModel;
-import soot.SootMethod;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
@@ -273,7 +273,7 @@ public class PAGDumper {
           dumpNode(fn.getBase(), out);
             out.print(" " + fieldToNum(fn.getField()));
         } else if (pag.getOpts().class_method_var() && n instanceof VarNode vn) {
-          SootMethod m = null;
+          MethodModel m = null;
             if (vn instanceof LocalVarNode) {
                 m = ((LocalVarNode) vn).getMethod();
             }

@@ -22,6 +22,7 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import soot.util.Chain;
 
 import java.util.*;

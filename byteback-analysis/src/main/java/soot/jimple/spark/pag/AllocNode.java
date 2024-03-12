@@ -22,6 +22,7 @@ package soot.jimple.spark.pag;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.options.CGOptions;
 
@@ -63,7 +64,7 @@ public class AllocNode extends Node implements Context {
 
     /* End of public methods. */
 
-    AllocNode(PAG pag, Object newExpr, Type t, SootMethod m) {
+    AllocNode(PAG pag, Object newExpr, Type t, MethodModel m) {
         super(pag, t);
         this.method = m;
         if (t instanceof RefType rt) {
@@ -103,9 +104,9 @@ public class AllocNode extends Node implements Context {
     protected Object newExpr;
     protected Map<SparkField, AllocDotField> fields;
 
-    private final SootMethod method;
+    private final MethodModel method;
 
-    public SootMethod getMethod() {
+    public MethodModel getMethod() {
         return method;
     }
 }

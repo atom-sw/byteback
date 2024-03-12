@@ -2,8 +2,8 @@ package byteback.analysis.common.namespace;
 
 import byteback.analysis.common.Hosts;
 import byteback.common.function.Lazy;
-import soot.ClassModel;
-import soot.SootMethod;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 
 /**
  * Contains the definitions of the names for the BBLib specification.
@@ -99,11 +99,11 @@ public class BBLibNames {
         return classModel.getPackageName().equals(ANNOTATION_PACKAGE);
     }
 
-    public boolean isFunctionMethod(final SootMethod method) {
+    public boolean isFunctionMethod(final MethodModel method) {
         return Hosts.v().hasAnnotation(method, PURE_ANNOTATION);
     }
 
-    public boolean isPredicateMethod(final SootMethod method) {
+    public boolean isPredicateMethod(final MethodModel method) {
         return Hosts.v().hasAnnotation(method, PREDICATE_ANNOTATION);
     }
 

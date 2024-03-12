@@ -23,7 +23,7 @@ package soot.toolkits.graph.pdg;
  */
 
 import soot.Body;
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.toolkits.graph.*;
 
 import java.util.*;

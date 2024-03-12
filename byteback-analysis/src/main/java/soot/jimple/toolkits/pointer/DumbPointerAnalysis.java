@@ -22,6 +22,7 @@ package soot.jimple.toolkits.pointer;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
 import soot.*;
 
 /**
@@ -63,7 +64,7 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
      * Returns the set of objects pointed to by static field f.
      */
     @Override
-    public PointsToSet reachingObjects(SootField f) {
+    public PointsToSet reachingObjects(FieldModel f) {
         Type t = f.getType();
         return (t instanceof RefType) ? FullObjectSet.v((RefType) t) : FullObjectSet.v();
     }
@@ -72,7 +73,7 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
      * Returns the set of objects pointed to by instance field f of the objects in the PointsToSet s.
      */
     @Override
-    public PointsToSet reachingObjects(PointsToSet s, SootField f) {
+    public PointsToSet reachingObjects(PointsToSet s, FieldModel f) {
         return reachingObjects(f);
     }
 
@@ -80,7 +81,7 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
      * Returns the set of objects pointed to by instance field f of the objects pointed to by l.
      */
     @Override
-    public PointsToSet reachingObjects(Local l, SootField f) {
+    public PointsToSet reachingObjects(Local l, FieldModel f) {
         return reachingObjects(f);
     }
 
@@ -88,7 +89,7 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
      * Returns the set of objects pointed to by instance field f of the objects pointed to by l in context c.
      */
     @Override
-    public PointsToSet reachingObjects(Context c, Local l, SootField f) {
+    public PointsToSet reachingObjects(Context c, Local l, FieldModel f) {
         return reachingObjects(f);
     }
 

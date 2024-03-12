@@ -22,6 +22,9 @@ package soot.toolkits.scalar;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -62,15 +65,15 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
      */
     public void transformClass(ClassModel sc, boolean removeAssignments) {
         // If this class has no <clinit> method, we're done
-        SootMethod smInit = sc.getMethodByNameUnsafe("<clinit>");
+        MethodModel smInit = sc.getMethodByNameUnsafe("<clinit>");
         if (smInit == null || !smInit.isConcrete()) {
             return;
         }
 
-        Set<SootField> nonConstantFields = new HashSet<SootField>();
-        Map<SootField, ConstantValueTag> newTags = new HashMap<SootField, ConstantValueTag>();
+        Set<FieldModel> nonConstantFields = new HashSet<FieldModel>();
+        Map<FieldModel, ConstantValueTag> newTags = new HashMap<FieldModel, ConstantValueTag>();
         // in case of mismatch between code/constant table values, constant tags are removed
-        Set<SootField> removeTagList = new HashSet<SootField>();
+        Set<FieldModel> removeTagList = new HashSet<FieldModel>();
         for (Iterator<Unit> itU = smInit.getActiveBody().getUnits().snapshotIterator(); itU.hasNext(); ) {
             Unit u = itU.next();
             if (u instanceof AssignStmt assign) {
@@ -78,7 +81,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
                 if (leftOp instanceof StaticFieldRef) {
                     final Value rightOp = assign.getRightOp();
                     if (rightOp instanceof Constant) {
-                        SootField field = null;
+                        FieldModel field = null;
                         try {
                             field = ((StaticFieldRef) leftOp).getField();
                             if (field == null || nonConstantFields.contains(field)) {
@@ -130,7 +133,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
                     } else {
                         // a non-constant is assigned to the field
                         try {
-                            SootField sf = ((StaticFieldRef) leftOp).getField();
+                            FieldModel sf = ((StaticFieldRef) leftOp).getField();
                             if (sf != null) {
                                 removeTagList.add(sf);
                             }
@@ -143,8 +146,8 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
         }
 
         // Do the actual assignment
-        for (Entry<SootField, ConstantValueTag> entry : newTags.entrySet()) {
-            SootField field = entry.getKey();
+        for (Entry<FieldModel, ConstantValueTag> entry : newTags.entrySet()) {
+            FieldModel field = entry.getKey();
             if (!removeTagList.contains(field)) {
                 field.addTag(entry.getValue());
             }
@@ -157,7 +160,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
                     final Value leftOp = ((AssignStmt) u).getLeftOp();
                     if (leftOp instanceof FieldRef) {
                         try {
-                            SootField fld = ((FieldRef) leftOp).getField();
+                            FieldModel fld = ((FieldRef) leftOp).getField();
                             if (fld != null && newTags.containsKey(fld)) {
                                 itU.remove();
                             }
@@ -170,7 +173,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
         }
 
         // remove constant tags
-        for (SootField sf : removeTagList) {
+        for (FieldModel sf : removeTagList) {
             if (removeTagList.contains(sf)) {
                 List<Tag> toRemoveTagList = new ArrayList<Tag>();
                 for (Tag t : sf.getTags()) {

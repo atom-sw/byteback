@@ -22,6 +22,8 @@ package soot.jimple.spark.geom.helper;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -105,7 +107,7 @@ public class GeomEvaluator {
         }
 
         // We first count the LOC
-        for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
+        for (MethodModel sm : ptsProvider.getAllReachableMethods()) {
             if (!sm.isConcrete()) {
                 continue;
             }
@@ -182,14 +184,14 @@ public class GeomEvaluator {
     /**
      * We assess the quality of building the 1-cfa call graph with the geometric points-to result.
      */
-    private void test_1cfa_call_graph(LocalVarNode vn, SootMethod caller, SootMethod callee_signature, Histogram ce_range) {
+    private void test_1cfa_call_graph(LocalVarNode vn, MethodModel caller, MethodModel callee_signature, Histogram ce_range) {
         long l, r;
         IVarAbstraction pn = ptsProvider.findInternalNode(vn);
         if (pn == null) {
             return;
         }
         pn = pn.getRepresentative();
-        Set<SootMethod> tgts = new HashSet<SootMethod>();
+        Set<MethodModel> tgts = new HashSet<MethodModel>();
         Set<AllocNode> set = pn.get_all_points_to_objects();
 
         LinkedList<CgEdge> list = ptsProvider.getCallEdgesInto(ptsProvider.getIDFromSootMethod(caller));
@@ -248,7 +250,7 @@ public class GeomEvaluator {
 
             // get an edge
             Edge anyEdge = edges.next();
-            SootMethod src = anyEdge.src();
+            MethodModel src = anyEdge.src();
 
             if (!ptsProvider.isReachableMethod(src) || !ptsProvider.isValidMethod(src)) {
                 continue;
@@ -318,7 +320,7 @@ public class GeomEvaluator {
         ArrayList<IVarAbstraction> al = new ArrayList<IVarAbstraction>();
         Value[] values = new Value[2];
 
-        for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
+        for (MethodModel sm : ptsProvider.getAllReachableMethods()) {
             if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
                 continue;
             }
@@ -342,7 +344,7 @@ public class GeomEvaluator {
                         // We only care those pointers p involving in the
                         // expression: p.f
                         if (v instanceof InstanceFieldRef ifr) {
-                            final SootField field = ifr.getField();
+                            final FieldModel field = ifr.getField();
                             if (!(field.getType() instanceof RefType)) {
                                 continue;
                             }
@@ -412,7 +414,7 @@ public class GeomEvaluator {
      */
     public void checkCastsSafety() {
 
-        for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
+        for (MethodModel sm : ptsProvider.getAllReachableMethods()) {
             if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
                 continue;
             }
@@ -499,7 +501,7 @@ public class GeomEvaluator {
 
         Date begin = new Date();
 
-        for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
+        for (MethodModel sm : ptsProvider.getAllReachableMethods()) {
             if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
                 continue;
             }
@@ -532,7 +534,7 @@ public class GeomEvaluator {
                 }
 
                 if (ifr != null) {
-                    final SootField field = ifr.getField();
+                    final FieldModel field = ifr.getField();
 
                     LocalVarNode vn = ptsProvider.findLocalVarNode(ifr.getBase());
                     if (vn == null) {

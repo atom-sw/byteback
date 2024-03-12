@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -35,7 +35,7 @@ public class JavaLangThreadNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -57,7 +57,7 @@ public class JavaLangThreadNative extends NativeMethodClass {
      * <p>
      * public static native java.lang.Thread currentThread();
      */
-    public void java_lang_Thread_currentThread(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Thread_currentThread(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getThreadObject());
     }

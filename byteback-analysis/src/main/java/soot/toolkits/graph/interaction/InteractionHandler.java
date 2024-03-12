@@ -22,6 +22,7 @@ package soot.toolkits.graph.interaction;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -168,13 +169,13 @@ public class InteractionHandler {
         return grapher;
     }
 
-    private SootMethod nextMethod;
+    private MethodModel nextMethod;
 
-    public void setNextMethod(SootMethod m) {
+    public void setNextMethod(MethodModel m) {
         nextMethod = m;
     }
 
-    private SootMethod getNextMethod() {
+    private MethodModel getNextMethod() {
         return nextMethod;
     }
 

@@ -23,7 +23,7 @@ package soot.baf.syntax;
  */
 
 import soot.AbstractJasminClass;
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 import soot.SootFieldRef;
 import soot.UnitPrinter;
 import soot.util.Switch;
@@ -86,7 +86,7 @@ public class BStaticGetInst extends AbstractInst implements StaticGetInst {
     }
 
     @Override
-    public SootField getField() {
+    public FieldModel getField() {
         return fieldRef.resolve();
     }
 

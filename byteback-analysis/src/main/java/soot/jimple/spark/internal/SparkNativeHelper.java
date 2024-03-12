@@ -22,6 +22,9 @@ package soot.jimple.spark.internal;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.toolkits.pointer.representations.AbstractObject;
@@ -80,7 +83,7 @@ public class SparkNativeHelper extends NativeHelper {
 
     protected ReferenceVariable staticFieldImpl(String className, String fieldName) {
         ClassModel c = RefType.v(className).getSootClass();
-        SootField f = c.getFieldByName(fieldName);
+        FieldModel f = c.getFieldByName(fieldName);
         return pag.makeGlobalVarNode(f, f.getType());
     }
 
@@ -93,7 +96,7 @@ public class SparkNativeHelper extends NativeHelper {
                 Scene.v().getObjectType());
     }
 
-    protected ReferenceVariable tempLocalVariableImpl(SootMethod method) {
+    protected ReferenceVariable tempLocalVariableImpl(MethodModel method) {
         return pag.makeLocalVarNode(new Pair("TempVar", Integer.valueOf(++G.v().SparkNativeHelper_tempVar)),
                 Scene.v().getObjectType(), method);
     }

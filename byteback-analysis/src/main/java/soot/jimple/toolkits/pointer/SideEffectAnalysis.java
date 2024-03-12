@@ -22,6 +22,7 @@ package soot.jimple.toolkits.pointer;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -37,8 +38,8 @@ import java.util.Map;
  */
 public class SideEffectAnalysis {
 
-    private final Map<SootMethod, MethodRWSet> methodToNTReadSet = new HashMap<SootMethod, MethodRWSet>();
-    private final Map<SootMethod, MethodRWSet> methodToNTWriteSet = new HashMap<SootMethod, MethodRWSet>();
+    private final Map<MethodModel, MethodRWSet> methodToNTReadSet = new HashMap<MethodModel, MethodRWSet>();
+    private final Map<MethodModel, MethodRWSet> methodToNTWriteSet = new HashMap<MethodModel, MethodRWSet>();
     private final PointsToAnalysis pa;
     private final CallGraph cg;
     private final TransitiveTargets tt;
@@ -70,7 +71,7 @@ public class SideEffectAnalysis {
         this(pa, cg, new TransitiveTargets(cg, filter));
     }
 
-    public void findNTRWSets(SootMethod method) {
+    public void findNTRWSets(MethodModel method) {
         if (methodToNTReadSet.containsKey(method) && methodToNTWriteSet.containsKey(method)) {
             return;
         }
@@ -98,17 +99,17 @@ public class SideEffectAnalysis {
         methodToNTWriteSet.put(method, write);
     }
 
-    public RWSet nonTransitiveReadSet(SootMethod method) {
+    public RWSet nonTransitiveReadSet(MethodModel method) {
         findNTRWSets(method);
         return methodToNTReadSet.get(method);
     }
 
-    public RWSet nonTransitiveWriteSet(SootMethod method) {
+    public RWSet nonTransitiveWriteSet(MethodModel method) {
         findNTRWSets(method);
         return methodToNTWriteSet.get(method);
     }
 
-    private RWSet ntReadSet(SootMethod method, Stmt stmt) {
+    private RWSet ntReadSet(MethodModel method, Stmt stmt) {
         if (stmt instanceof AssignStmt) {
             return addValue(((AssignStmt) stmt).getRightOp(), method, stmt);
         } else {
@@ -116,10 +117,10 @@ public class SideEffectAnalysis {
         }
     }
 
-    public RWSet readSet(SootMethod method, Stmt stmt) {
+    public RWSet readSet(MethodModel method, Stmt stmt) {
         RWSet ret = null;
         for (Iterator<MethodOrMethodContext> targets = tt.iterator(stmt); targets.hasNext(); ) {
-            SootMethod target = (SootMethod) targets.next();
+            MethodModel target = (MethodModel) targets.next();
             if (target.isNative()) {
                 if (ret == null) {
                     ret = new SiteRWSet();
@@ -143,7 +144,7 @@ public class SideEffectAnalysis {
         }
     }
 
-    private RWSet ntWriteSet(SootMethod method, Stmt stmt) {
+    private RWSet ntWriteSet(MethodModel method, Stmt stmt) {
         if (stmt instanceof AssignStmt) {
             return addValue(((AssignStmt) stmt).getLeftOp(), method, stmt);
         } else {
@@ -151,10 +152,10 @@ public class SideEffectAnalysis {
         }
     }
 
-    public RWSet writeSet(SootMethod method, Stmt stmt) {
+    public RWSet writeSet(MethodModel method, Stmt stmt) {
         RWSet ret = null;
         for (Iterator<MethodOrMethodContext> targets = tt.iterator(stmt); targets.hasNext(); ) {
-            SootMethod target = (SootMethod) targets.next();
+            MethodModel target = (MethodModel) targets.next();
             if (target.isNative()) {
                 if (ret == null) {
                     ret = new SiteRWSet();
@@ -178,7 +179,7 @@ public class SideEffectAnalysis {
         }
     }
 
-    protected RWSet addValue(Value v, SootMethod m, Stmt s) {
+    protected RWSet addValue(Value v, MethodModel m, Stmt s) {
         RWSet ret = null;
         if (v instanceof InstanceFieldRef ifr) {
             PointsToSet base = pa.reachingObjects((Local) ifr.getBase());

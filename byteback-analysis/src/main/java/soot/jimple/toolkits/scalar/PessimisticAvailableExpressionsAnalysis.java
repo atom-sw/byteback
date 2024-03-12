@@ -23,7 +23,7 @@ package soot.jimple.toolkits.scalar;
  */
 
 import soot.SideEffectTester;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
@@ -34,7 +34,7 @@ import soot.toolkits.scalar.FlowSet;
  */
 public class PessimisticAvailableExpressionsAnalysis extends SlowAvailableExpressionsAnalysis {
 
-    public PessimisticAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, SootMethod m, SideEffectTester st) {
+    public PessimisticAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, MethodModel m, SideEffectTester st) {
         super(dg);
     }
 

@@ -23,7 +23,7 @@ package soot.jimple.toolkits.pointer;
  */
 
 import soot.PointsToSet;
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 
 import java.util.Set;
 
@@ -53,7 +53,7 @@ public abstract class RWSet {
      */
     public abstract boolean union(RWSet other);
 
-    public abstract boolean addGlobal(SootField global);
+    public abstract boolean addGlobal(FieldModel global);
 
     public abstract boolean addFieldRef(PointsToSet otherBase, Object field);
 

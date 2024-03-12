@@ -22,6 +22,9 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassMemberModel;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.SpecialInvokeExpr;
 import soot.util.ArraySet;
 import soot.util.Chain;
@@ -84,7 +87,7 @@ public class Hierarchy {
      */
     protected void initializeHierarchy(Chain<ClassModel> allClasses) {
         for (ClassModel c : allClasses) {
-            if (c.resolvingLevel() < ClassModel.HIERARCHY) {
+            if (c.getResolvingLevel() < ClassModel.HIERARCHY) {
                 continue;
             }
 
@@ -98,15 +101,15 @@ public class Hierarchy {
         }
 
         for (ClassModel c : allClasses) {
-            if (c.resolvingLevel() < ClassModel.HIERARCHY) {
+            if (c.getResolvingLevel() < ClassModel.HIERARCHY) {
                 continue;
             }
 
             if (c.hasSuperclass()) {
                 if (c.isInterface()) {
                     List<ClassModel> l2 = interfaceToDirSuperinterfaces.get(c);
-                    for (ClassModel i : c.getInterfaces()) {
-                        if (c.resolvingLevel() < ClassModel.HIERARCHY) {
+                    for (ClassModel i : c.getInterfaceTypes()) {
+                        if (c.getResolvingLevel() < ClassModel.HIERARCHY) {
                             continue;
                         }
                         List<ClassModel> l = interfaceToDirSubinterfaces.get(i);
@@ -118,13 +121,13 @@ public class Hierarchy {
                         }
                     }
                 } else {
-                    List<ClassModel> l = classToDirSubclasses.get(c.getSuperclass());
+                    List<ClassModel> l = classToDirSubclasses.get(c.getSuperType());
                     if (l != null) {
                         l.add(c);
                     }
 
-                    for (ClassModel i : c.getInterfaces()) {
-                        if (c.resolvingLevel() < ClassModel.HIERARCHY) {
+                    for (ClassModel i : c.getInterfaceTypes()) {
+                        if (c.getResolvingLevel() < ClassModel.HIERARCHY) {
                             continue;
                         }
                         List<ClassModel> l2 = interfaceToDirImplementers.get(i);
@@ -138,13 +141,13 @@ public class Hierarchy {
 
         // Fill the directImplementers lists with subclasses.
         for (ClassModel c : allClasses) {
-            if (c.resolvingLevel() < ClassModel.HIERARCHY) {
+            if (c.getResolvingLevel() < ClassModel.HIERARCHY) {
                 continue;
             }
             if (c.isInterface()) {
                 Set<ClassModel> s = new ArraySet<ClassModel>();
                 for (ClassModel c0 : interfaceToDirImplementers.get(c)) {
-                    if (c.resolvingLevel() < ClassModel.HIERARCHY) {
+                    if (c.getResolvingLevel() < ClassModel.HIERARCHY) {
                         continue;
                     }
                     s.addAll(getSubclassesOfIncluding(c0));
@@ -205,7 +208,7 @@ public class Hierarchy {
         {
             ArrayList<ClassModel> l = new ArrayList<ClassModel>();
             for (ClassModel cls : classToDirSubclasses.get(c)) {
-                if (cls.resolvingLevel() < ClassModel.HIERARCHY) {
+                if (cls.getResolvingLevel() < ClassModel.HIERARCHY) {
                     continue;
                 }
                 l.addAll(getSubclassesOfIncluding(cls));
@@ -253,7 +256,7 @@ public class Hierarchy {
 
         final List<ClassModel> superclasses = new ArrayList<>();
         for (ClassModel current = classModel; current.hasSuperclass(); ) {
-            ClassModel superclass = current.getSuperclass();
+            ClassModel superclass = current.getSuperType();
             superclasses.add(superclass);
             current = superclass;
         }
@@ -616,7 +619,7 @@ public class Hierarchy {
     /**
      * Returns true if the classmember m is visible from code in the class from.
      */
-    public boolean isVisible(ClassModel from, ClassMember m) {
+    public boolean isVisible(ClassModel from, ClassMemberModel m) {
         from.checkLevel(ClassModel.HIERARCHY);
         final ClassModel declaringClass = m.getDeclaringClass();
         declaringClass.checkLevel(ClassModel.HIERARCHY);
@@ -641,7 +644,7 @@ public class Hierarchy {
     /**
      * Given an object of actual type C (o = new C()), returns the method which will be called on an o.f() invocation.
      */
-    public SootMethod resolveConcreteDispatch(ClassModel concreteType, SootMethod m) {
+    public MethodModel resolveConcreteDispatch(ClassModel concreteType, MethodModel m) {
         concreteType.checkLevel(ClassModel.HIERARCHY);
         m.getDeclaringClass().checkLevel(ClassModel.HIERARCHY);
         checkState();
@@ -652,7 +655,7 @@ public class Hierarchy {
 
         final String methodSig = m.getSubSignature();
         for (ClassModel c : getSuperclassesOfIncluding(concreteType)) {
-            SootMethod sm = c.getMethodUnsafe(methodSig);
+            MethodModel sm = c.getMethodUnsafe(methodSig);
             if (sm != null && isVisible(c, m)) {
                 return sm;
             }
@@ -663,11 +666,11 @@ public class Hierarchy {
     /**
      * Given a set of definite receiver types, returns a list of possible targets.
      */
-    public List<SootMethod> resolveConcreteDispatch(List<Type> classes, SootMethod m) {
+    public List<MethodModel> resolveConcreteDispatch(List<Type> classes, MethodModel m) {
         m.getDeclaringClass().checkLevel(ClassModel.HIERARCHY);
         checkState();
 
-        Set<SootMethod> s = new ArraySet<SootMethod>();
+        Set<MethodModel> s = new ArraySet<MethodModel>();
         for (Type cls : classes) {
             if (cls instanceof RefType) {
                 s.add(resolveConcreteDispatch(((RefType) cls).getSootClass(), m));
@@ -678,7 +681,7 @@ public class Hierarchy {
             }
         }
 
-        return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
+        return Collections.unmodifiableList(new ArrayList<MethodModel>(s));
     }
 
     // what can get called for c & all its subclasses
@@ -686,7 +689,7 @@ public class Hierarchy {
     /**
      * Given an abstract dispatch to an object of type c and a method m, gives a list of possible receiver methods.
      */
-    public List<SootMethod> resolveAbstractDispatch(ClassModel c, SootMethod m) {
+    public List<MethodModel> resolveAbstractDispatch(ClassModel c, MethodModel m) {
         c.checkLevel(ClassModel.HIERARCHY);
         m.getDeclaringClass().checkLevel(ClassModel.HIERARCHY);
         checkState();
@@ -701,14 +704,14 @@ public class Hierarchy {
             classes = getSubclassesOfIncluding(c);
         }
 
-        Set<SootMethod> s = new ArraySet<SootMethod>();
+        Set<MethodModel> s = new ArraySet<MethodModel>();
         for (ClassModel cl : classes) {
             if (!Modifier.isAbstract(cl.getModifiers())) {
                 s.add(resolveConcreteDispatch(cl, m));
             }
         }
 
-        return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
+        return Collections.unmodifiableList(new ArrayList<MethodModel>(s));
     }
 
     // what can get called if you have a set of possible receiver types
@@ -716,24 +719,24 @@ public class Hierarchy {
     /**
      * Returns a list of possible targets for the given method and set of receiver types.
      */
-    public List<SootMethod> resolveAbstractDispatch(List<ClassModel> classes, SootMethod m) {
+    public List<MethodModel> resolveAbstractDispatch(List<ClassModel> classes, MethodModel m) {
         m.getDeclaringClass().checkLevel(ClassModel.HIERARCHY);
 
-        Set<SootMethod> s = new ArraySet<SootMethod>();
+        Set<MethodModel> s = new ArraySet<MethodModel>();
         for (ClassModel classModel : classes) {
             s.addAll(resolveAbstractDispatch(classModel, m));
         }
 
-        return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
+        return Collections.unmodifiableList(new ArrayList<MethodModel>(s));
     }
 
     /**
      * Returns the target for the given SpecialInvokeExpr.
      */
-    public SootMethod resolveSpecialDispatch(SpecialInvokeExpr ie, SootMethod container) {
+    public MethodModel resolveSpecialDispatch(SpecialInvokeExpr ie, MethodModel container) {
         final ClassModel containerClass = container.getDeclaringClass();
         containerClass.checkLevel(ClassModel.HIERARCHY);
-        final SootMethod target = ie.getMethod();
+        final MethodModel target = ie.getMethod();
         final ClassModel targetClass = target.getDeclaringClass();
         targetClass.checkLevel(ClassModel.HIERARCHY);
 

@@ -22,6 +22,7 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -229,7 +230,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
                 if (fieldin) {
                     if (v instanceof InstanceFieldRef) {
                         Value base = ((InstanceFieldRef) v).getBase();
-                        SootField field = ((InstanceFieldRef) v).getField();
+                        FieldModel field = ((InstanceFieldRef) v).getField();
 
                         HashSet<Value> baseset = localToFieldRef.get(base);
                         if (baseset == null) {
@@ -315,7 +316,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
                 killset.add(lhs);
                 condset.add(lhs);
             } else if (lhs instanceof InstanceFieldRef) {
-                SootField field = ((InstanceFieldRef) lhs).getField();
+                FieldModel field = ((InstanceFieldRef) lhs).getField();
                 HashSet<Value> related = fieldToFieldRef.get(field);
                 if (related != null) {
                     killset.addAll(related);

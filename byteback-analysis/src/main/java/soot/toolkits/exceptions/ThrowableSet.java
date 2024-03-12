@@ -21,6 +21,7 @@ package soot.toolkits.exceptions;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import com.google.common.cache.CacheBuilder;
 import soot.*;
 import soot.options.Options;

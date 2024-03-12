@@ -22,6 +22,7 @@ package soot.jimple.toolkits.pointer;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.Stmt;
 import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
@@ -43,7 +44,7 @@ public class InstanceKey {
     protected final LocalMustAliasAnalysis lmaa;
     protected final LocalMustNotAliasAnalysis lnma;
     protected final Stmt stmtAfterAssignStmt;
-    protected final SootMethod owner;
+    protected final MethodModel owner;
     protected final int hashCode;
     protected final PointsToSet pts;
 
@@ -57,7 +58,7 @@ public class InstanceKey {
      * @param lmaa  a {@link LocalMustAliasAnalysis}
      * @param lmna  a {@link LocalMustNotAliasAnalysis}
      */
-    public InstanceKey(Local local, Stmt stmt, SootMethod owner, LocalMustAliasAnalysis lmaa, LocalMustNotAliasAnalysis lmna) {
+    public InstanceKey(Local local, Stmt stmt, MethodModel owner, LocalMustAliasAnalysis lmaa, LocalMustNotAliasAnalysis lmna) {
         this.assignedLocal = local;
         this.owner = owner;
         this.stmtAfterAssignStmt = stmt;
@@ -167,7 +168,7 @@ public class InstanceKey {
         return true;
     }
 
-    public SootMethod getOwner() {
+    public MethodModel getOwner() {
         return owner;
     }
 

@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Local;
 import soot.RefLikeType;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -116,7 +116,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
     private static class Filter implements SootMethodFilter {
 
         @Override
-        public boolean want(SootMethod method) {
+        public boolean want(MethodModel method) {
             // could be optimized with HashSet....
             String c = method.getDeclaringClass().toString();
             String m = method.getName();
@@ -142,7 +142,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
     /**
      * The constructor does it all!
      */
-    PurityInterproceduralAnalysis(CallGraph cg, Iterator<SootMethod> heads, PurityOptions opts) {
+    PurityInterproceduralAnalysis(CallGraph cg, Iterator<MethodModel> heads, PurityOptions opts) {
         super(cg, new Filter(), heads, opts.dump_cg());
 
         if (opts.dump_cg()) {
@@ -174,8 +174,8 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
             logger.debug("[AM] Dumping .dot full intra-procedural method analyses");
             // relaunch the interprocedural analysis once on each method
             // to get a purity graph at each statement, not only summaries
-            for (Iterator<SootMethod> it = getAnalysedMethods(); it.hasNext(); ) {
-                SootMethod method = it.next();
+            for (Iterator<MethodModel> it = getAnalysedMethods(); it.hasNext(); ) {
+                MethodModel method = it.next();
                 if (opts.verbose()) {
                     logger.debug("  |- " + method);
                 }
@@ -188,8 +188,8 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
 
         {
             logger.debug("[AM] Annotate methods. ");
-            for (Iterator<SootMethod> it = getAnalysedMethods(); it.hasNext(); ) {
-                SootMethod m = it.next();
+            for (Iterator<MethodModel> it = getAnalysedMethods(); it.hasNext(); ) {
+                MethodModel m = it.next();
                 PurityGraphBox b = getSummaryFor(m);
 
                 // purity
@@ -282,7 +282,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
     }
 
     @Override
-    protected void analyseMethod(SootMethod method, PurityGraphBox dst) {
+    protected void analyseMethod(MethodModel method, PurityGraphBox dst) {
         new PurityIntraproceduralAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(method.retrieveActiveBody()),
                 this).copyResult(dst);
     }
@@ -293,7 +293,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
      * @see PurityGraph.freshGraph
      */
     @Override
-    protected PurityGraphBox summaryOfUnanalysedMethod(SootMethod method) {
+    protected PurityGraphBox summaryOfUnanalysedMethod(MethodModel method) {
         PurityGraphBox b = new PurityGraphBox();
         String c = method.getDeclaringClass().toString();
         String m = method.getName();

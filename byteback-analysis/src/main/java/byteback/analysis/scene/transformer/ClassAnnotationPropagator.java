@@ -6,10 +6,10 @@ import byteback.analysis.common.namespace.ClassNames;
 import byteback.analysis.scene.AnnotationElems;
 import byteback.analysis.scene.Annotations;
 import byteback.common.function.Lazy;
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.Scene;
 import soot.SceneTransformer;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.tag.AnnotationElement;
 import soot.tag.AnnotationTag;
 
@@ -49,10 +49,10 @@ public class ClassAnnotationPropagator extends SceneTransformer {
             }
 
             final ClassModel hostClass = Scene.v().loadClassAndSupport(ClassNames.stripDescriptor(value));
-            final List<SootMethod> methodsSnapshot = new ArrayList<>(attachedClass.getMethods());
+            final List<MethodModel> methodsSnapshot = new ArrayList<>(attachedClass.getMethodModels());
 
-            for (final SootMethod attachedMethod : methodsSnapshot) {
-                final SootMethod hostMethod = hostClass.getMethodUnsafe(attachedMethod.getNumberedSubSignature());
+            for (final MethodModel attachedMethod : methodsSnapshot) {
+                final MethodModel hostMethod = hostClass.getMethodUnsafe(attachedMethod.getNumberedSubSignature());
                 attachedClass.removeMethod(attachedMethod);
                 attachedMethod.setDeclared(false);
 

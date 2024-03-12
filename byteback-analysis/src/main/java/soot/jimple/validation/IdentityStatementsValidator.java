@@ -23,7 +23,7 @@ package soot.jimple.validation;
  */
 
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
@@ -52,7 +52,7 @@ public enum IdentityStatementsValidator implements BodyValidator {
      */
     @Override
     public void validate(Body body, List<ValidationException> exceptions) {
-        SootMethod method = body.getMethod();
+        MethodModel method = body.getMethod();
         if (method.isAbstract()) {
             return;
         }

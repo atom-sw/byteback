@@ -23,7 +23,7 @@ package soot.jimple;
  */
 
 import soot.RefType;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 import soot.util.Switch;
 
@@ -54,7 +54,7 @@ public class MethodType extends Constant {
 
     @Override
     public String toString() {
-        return "methodtype: " + SootMethod.getSubSignature("__METHODTYPE__", parameterTypes, returnType);
+        return "methodtype: " + MethodModel.getSubSignature("__METHODTYPE__", parameterTypes, returnType);
     }
 
     public List<Type> getParameterTypes() {

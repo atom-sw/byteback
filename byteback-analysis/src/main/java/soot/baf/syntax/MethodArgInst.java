@@ -22,11 +22,11 @@ package soot.baf.syntax;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.SootMethodRef;
 
 public interface MethodArgInst extends Inst {
     SootMethodRef getMethodRef();
 
-    SootMethod getMethod();
+    MethodModel getMethod();
 }

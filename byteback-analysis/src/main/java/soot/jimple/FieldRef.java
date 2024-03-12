@@ -23,7 +23,7 @@ package soot.jimple;
  * #L%
  */
 
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 import soot.SootFieldRef;
 
 public interface FieldRef extends ConcreteRef {
@@ -31,5 +31,5 @@ public interface FieldRef extends ConcreteRef {
 
     void setFieldRef(SootFieldRef sfr);
 
-    SootField getField();
+    FieldModel getField();
 }

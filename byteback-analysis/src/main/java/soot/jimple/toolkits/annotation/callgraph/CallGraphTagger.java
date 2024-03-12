@@ -22,6 +22,7 @@ package soot.jimple.toolkits.annotation.callgraph;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -60,20 +61,20 @@ public class CallGraphTagger extends BodyTransformer {
 
             while (edges.hasNext()) {
                 Edge e = (Edge) edges.next();
-                SootMethod m = e.tgt();
+                MethodModel m = e.tgt();
                 s.addTag(new LinkTag("CallGraph: Type: " + e.kind() + " Target Method/Context: " + e.getTgt().toString(), m,
                         m.getDeclaringClass().getName(), "Call Graph"));
 
             }
         }
 
-        SootMethod m = b.getMethod();
+        MethodModel m = b.getMethod();
         for (Iterator momcIt = methodToContexts.get(m).iterator(); momcIt.hasNext(); ) {
             final MethodOrMethodContext momc = (MethodOrMethodContext) momcIt.next();
             Iterator callerEdges = cg.edgesInto(momc);
             while (callerEdges.hasNext()) {
                 Edge callEdge = (Edge) callerEdges.next();
-                SootMethod methodCaller = callEdge.src();
+                MethodModel methodCaller = callEdge.src();
                 Host src = methodCaller;
                 if (callEdge.srcUnit() != null) {
                     src = callEdge.srcUnit();

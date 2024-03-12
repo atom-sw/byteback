@@ -23,11 +23,11 @@ package soot.baf.syntax;
  * #L%
  */
 
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 import soot.SootFieldRef;
 
 public interface FieldArgInst extends Inst {
     SootFieldRef getFieldRef();
 
-    SootField getField();
+    FieldModel getField();
 }

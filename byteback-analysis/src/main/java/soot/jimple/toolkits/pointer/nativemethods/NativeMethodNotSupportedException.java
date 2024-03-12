@@ -22,13 +22,13 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 public class NativeMethodNotSupportedException extends RuntimeException {
 
     private String msg;
 
-    public NativeMethodNotSupportedException(SootMethod method) {
+    public NativeMethodNotSupportedException(MethodModel method) {
         String message = "The following native method is not supported: \n  " + method.getSignature();
         this.msg = message;
     }

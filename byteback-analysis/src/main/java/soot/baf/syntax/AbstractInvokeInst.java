@@ -22,6 +22,7 @@ package soot.baf.syntax;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 
 public abstract class AbstractInvokeInst extends AbstractInst {
@@ -32,7 +33,7 @@ public abstract class AbstractInvokeInst extends AbstractInst {
         return methodRef;
     }
 
-    public SootMethod getMethod() {
+    public MethodModel getMethod() {
         return methodRef.resolve();
     }
 

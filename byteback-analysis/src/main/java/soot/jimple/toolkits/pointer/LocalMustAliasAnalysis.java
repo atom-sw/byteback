@@ -23,6 +23,7 @@ package soot.jimple.toolkits.pointer;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
@@ -82,7 +83,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
     /**
      * the containing method
      */
-    protected SootMethod container;
+    protected MethodModel container;
 
     /**
      * Creates a new {@link LocalMustAliasAnalysis} tracking local variables.
@@ -150,9 +151,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
                     = new ReachableMethods(Scene.v().getCallGraph(), Collections.<MethodOrMethodContext>singletonList(container));
             reachableMethods.update();
             for (Iterator<MethodOrMethodContext> iterator = reachableMethods.listener(); iterator.hasNext(); ) {
-                SootMethod m = (SootMethod) iterator.next();
+                MethodModel m = (MethodModel) iterator.next();
                 // exclude static initializer of same class (assume that it has already been executed)
-                if (m.hasActiveBody() && !(SootMethod.staticInitializerName.equals(m.getName())
+                if (m.hasActiveBody() && !(MethodModel.staticInitializerName.equals(m.getName())
                         && m.getDeclaringClass().equals(container.getDeclaringClass()))) {
                     for (Unit u : m.getActiveBody().getUnits()) {
                         for (ValueBox defBox : u.getDefBoxes()) {

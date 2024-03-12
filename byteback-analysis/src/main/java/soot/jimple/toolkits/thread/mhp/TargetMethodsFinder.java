@@ -23,7 +23,7 @@ package soot.jimple.toolkits.thread.mhp;
  */
 
 import soot.Kind;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
@@ -38,12 +38,12 @@ import java.util.List;
  */
 public class TargetMethodsFinder {
 
-    public List<SootMethod> find(Unit unit, CallGraph cg, boolean canBeNullList, boolean canBeNative) {
-        List<SootMethod> target = new ArrayList<SootMethod>();
+    public List<MethodModel> find(Unit unit, CallGraph cg, boolean canBeNullList, boolean canBeNative) {
+        List<MethodModel> target = new ArrayList<MethodModel>();
         Iterator<Edge> it = cg.edgesOutOf(unit);
         while (it.hasNext()) {
             Edge edge = it.next();
-            SootMethod targetMethod = edge.tgt();
+            MethodModel targetMethod = edge.tgt();
             if ((targetMethod.isNative() && !canBeNative) || (edge.kind() == Kind.CLINIT)) {
                 continue;
             }

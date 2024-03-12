@@ -25,7 +25,7 @@ package soot.shimple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
@@ -71,7 +71,7 @@ public class ShimpleBody extends StmtBody {
     /**
      * Construct an empty ShimpleBody associated with m.
      */
-    ShimpleBody(SootMethod m, Map<String, String> options) {
+    ShimpleBody(MethodModel m, Map<String, String> options) {
         super(m);
 
         // must happen before SPatchingChain gets created

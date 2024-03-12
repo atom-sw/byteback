@@ -1,5 +1,7 @@
 package soot;
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import heros.solver.CountingThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -656,7 +658,7 @@ public class PackManager {
         // such adding of methods happens in rare occasions: for instance when
         // resolving a method reference to a non-existing method, then this
         // method is created as a phantom method when phantom-refs are enabled
-        for (SootMethod m : new ArrayList<SootMethod>(c.getMethods())) {
+        for (MethodModel m : new ArrayList<MethodModel>(c.getMethodModels())) {
             if (DEBUG) {
                 if (!m.getExceptions().isEmpty()) {
                     System.out.println("PackManager printing out jimple body exceptions for method " + m + " "
@@ -726,7 +728,7 @@ public class PackManager {
         }
     }
 
-    public BafBody convertJimpleBodyToBaf(SootMethod m) {
+    public BafBody convertJimpleBodyToBaf(MethodModel m) {
         JimpleBody body = (JimpleBody) m.getActiveBody().clone();
         // Change
         // ConditionalBranchFolder.v().transform(body);
@@ -863,8 +865,8 @@ public class PackManager {
     }
 
     private void releaseBodies(ClassModel cl) {
-        for (Iterator<SootMethod> methodIt = cl.methodIterator(); methodIt.hasNext(); ) {
-            SootMethod m = methodIt.next();
+        for (Iterator<MethodModel> methodIt = cl.methodIterator(); methodIt.hasNext(); ) {
+            MethodModel m = methodIt.next();
             if (m.hasActiveBody()) {
                 m.releaseActiveBody();
             }
@@ -881,7 +883,7 @@ public class PackManager {
             // note: the following is a snapshot iterator;
             // this is necessary because it can happen that phantom methods
             // are added during resolution
-            for (SootMethod m : new ArrayList<SootMethod>(cl.getMethods())) {
+            for (MethodModel m : new ArrayList<MethodModel>(cl.getMethodModels())) {
                 if (m.isConcrete()) {
                     executor.execute(m::retrieveActiveBody);
                 }

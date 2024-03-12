@@ -22,6 +22,9 @@ package soot.jimple.toolkits.infoflow;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -50,7 +53,7 @@ import java.util.List;
 public class SimpleMethodInfoFlowAnalysis
         extends ForwardFlowAnalysis<Unit, FlowSet<Pair<EquivalentValue, EquivalentValue>>> {
     private static final Logger logger = LoggerFactory.getLogger(SimpleMethodInfoFlowAnalysis.class);
-    SootMethod sm;
+    MethodModel sm;
     Value thisLocal;
     InfoFlowAnalysis dfa;
     boolean refOnly;
@@ -81,7 +84,7 @@ public class SimpleMethodInfoFlowAnalysis
         }
 
         // Add every field of this class
-        for (SootField sf : sm.getDeclaringClass().getFields()) {
+        for (FieldModel sf : sm.getDeclaringClass().getFieldModels()) {
             EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
             if (!infoFlowGraph.containsNode(fieldRefEqVal)) {
                 infoFlowGraph.addNode(fieldRefEqVal);
@@ -91,17 +94,17 @@ public class SimpleMethodInfoFlowAnalysis
         // Add every field of this class's superclasses
         ClassModel superclass = sm.getDeclaringClass();
         if (superclass.hasSuperclass()) {
-            superclass = sm.getDeclaringClass().getSuperclass();
+            superclass = sm.getDeclaringClass().getSuperType();
         }
         while (superclass.hasSuperclass()) // we don't want to process Object
         {
-            for (SootField scField : superclass.getFields()) {
+            for (FieldModel scField : superclass.getFieldModels()) {
                 EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
                 if (!infoFlowGraph.containsNode(fieldRefEqVal)) {
                     infoFlowGraph.addNode(fieldRefEqVal);
                 }
             }
-            superclass = superclass.getSuperclass();
+            superclass = superclass.getSuperType();
         }
 
         // Add thisref of this class

@@ -22,6 +22,7 @@ package soot.jimple.toolkits.typing;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -87,12 +88,12 @@ class TypeNode {
 
             ClassModel superclass = sClass.getSuperclassUnsafe();
             if (superclass != null && !sClass.getName().equals(Scene.v().getObjectType().toString())) {
-                TypeNode parent = hierarchy.typeNode(RefType.v(sClass.getSuperclass().getName()));
+                TypeNode parent = hierarchy.typeNode(RefType.v(sClass.getSuperType().getName()));
                 plist.add(parent);
                 parentClass = parent;
             }
 
-            for (Iterator<ClassModel> i = sClass.getInterfaces().iterator(); i.hasNext(); ) {
+            for (Iterator<ClassModel> i = sClass.getInterfaceTypes().iterator(); i.hasNext(); ) {
                 TypeNode parent = hierarchy.typeNode(RefType.v((i.next()).getName()));
                 plist.add(parent);
             }
@@ -139,7 +140,7 @@ class TypeNode {
               ClassModel sClass = baseType.getSootClass();
                 ClassModel superClass = sClass.getSuperclassUnsafe();
                 if (superClass != null && !superClass.getName().equals(Scene.v().getObjectType().toString())) {
-                    TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v(sClass.getSuperclass().getName()), type.numDimensions));
+                    TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v(sClass.getSuperType().getName()), type.numDimensions));
                     plist.add(parent);
                     parentClass = parent;
                 } else if (type.numDimensions == 1) {
@@ -164,7 +165,7 @@ class TypeNode {
                     parentClass = hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1));
                 }
 
-                for (Iterator<ClassModel> i = sClass.getInterfaces().iterator(); i.hasNext(); ) {
+                for (Iterator<ClassModel> i = sClass.getInterfaceTypes().iterator(); i.hasNext(); ) {
                     TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v((i.next()).getName()), type.numDimensions));
                     plist.add(parent);
                 }

@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.options.Options;
@@ -80,7 +82,7 @@ public class AbstractFieldRef implements SootFieldRef {
 
     @Override
     public String getSignature() {
-        return SootField.getSignature(declaringClass, name, type);
+        return FieldModel.getSignature(declaringClass, name, type);
     }
 
     public class FieldResolutionFailedException extends ResolutionFailedException {
@@ -104,11 +106,11 @@ public class AbstractFieldRef implements SootFieldRef {
     }
 
     @Override
-    public SootField resolve() {
+    public FieldModel resolve() {
         return resolve(null);
     }
 
-    private SootField checkStatic(SootField ret) {
+    private FieldModel checkStatic(FieldModel ret) {
         if ((Options.v().wrong_staticness() == Options.wrong_staticness_fail
                 || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) && ret.isStatic() != isStatic()
                 && !ret.isPhantom()) {
@@ -117,15 +119,15 @@ public class AbstractFieldRef implements SootFieldRef {
         return ret;
     }
 
-    private SootField resolve(StringBuffer trace) {
+    private FieldModel resolve(StringBuffer trace) {
         ClassModel cl = declaringClass;
         while (true) {
             if (trace != null) {
-                trace.append("Looking in " + cl + " which has fields " + cl.getFields() + "\n");
+                trace.append("Looking in " + cl + " which has fields " + cl.getFieldModels() + "\n");
             }
 
             // Check whether we have the field in the current class
-            SootField clField = cl.getFieldUnsafe(name, type);
+            FieldModel clField = cl.getFieldUnsafe(name, type);
             if (clField != null) {
                 return checkStatic(clField);
             }
@@ -141,21 +143,21 @@ public class AbstractFieldRef implements SootFieldRef {
                     }
 
                     // Make sure that we don't have a conflicting field
-                    SootField existingField = cl.getFieldByNameUnsafe(name);
+                    FieldModel existingField = cl.getFieldByNameUnsafe(name);
                     if (existingField != null) {
                         return handleFieldTypeMismatch(clField);
                     }
 
                     // Create the phantom field
-                    SootField f = Scene.v().makeSootField(name, type, isStatic() ? Modifier.STATIC : 0);
+                    FieldModel f = Scene.v().makeSootField(name, type, isStatic() ? Modifier.STATIC : 0);
                     f.setPhantom(true);
-                    cl.addField(f);
+                    cl.addFieldModel(f);
                     return f;
                 }
             } else {
                 // Since this class is not phantom, we look at its interfaces
                 ArrayDeque<ClassModel> queue = new ArrayDeque<ClassModel>();
-                queue.addAll(cl.getInterfaces());
+                queue.addAll(cl.getInterfaceTypes());
                 while (true) {
                     ClassModel iface = queue.poll();
                     if (iface == null) {
@@ -163,19 +165,19 @@ public class AbstractFieldRef implements SootFieldRef {
                     }
 
                     if (trace != null) {
-                        trace.append("Looking in " + iface + " which has fields " + iface.getFields() + "\n");
+                        trace.append("Looking in " + iface + " which has fields " + iface.getFieldModels() + "\n");
                     }
-                    SootField ifaceField = iface.getFieldUnsafe(name, type);
+                    FieldModel ifaceField = iface.getFieldUnsafe(name, type);
                     if (ifaceField != null) {
                         return checkStatic(ifaceField);
                     }
-                    queue.addAll(iface.getInterfaces());
+                    queue.addAll(iface.getInterfaceTypes());
                 }
 
                 // If we have not found a suitable field in the current class,
                 // try the superclass
                 if (cl.hasSuperclass()) {
-                    cl = cl.getSuperclass();
+                    cl = cl.getSuperType();
                 } else {
                     break;
                 }
@@ -184,12 +186,12 @@ public class AbstractFieldRef implements SootFieldRef {
 
         // If we allow phantom refs, we construct phantom fields
         if (Options.v().allow_phantom_refs()) {
-            SootField sf = Scene.v().makeSootField(name, type, isStatic ? Modifier.STATIC : 0);
+            FieldModel sf = Scene.v().makeSootField(name, type, isStatic ? Modifier.STATIC : 0);
             sf.setPhantom(true);
             synchronized (declaringClass) {
                 // Be careful: Another thread may have already created this
                 // field in the meantime, so better check twice.
-                SootField clField = declaringClass.getFieldByNameUnsafe(name);
+                FieldModel clField = declaringClass.getFieldByNameUnsafe(name);
                 if (clField != null) {
                     if (clField.getType().equals(type)) {
                         return checkStatic(clField);
@@ -198,7 +200,7 @@ public class AbstractFieldRef implements SootFieldRef {
                     }
                 } else {
                     // Add the new phantom field
-                    declaringClass.addField(sf);
+                    declaringClass.addFieldModel(sf);
                     return sf;
                 }
             }
@@ -215,7 +217,7 @@ public class AbstractFieldRef implements SootFieldRef {
         return null;
     }
 
-    protected SootField handleFieldTypeMismatch(SootField clField) {
+    protected FieldModel handleFieldTypeMismatch(FieldModel clField) {
         switch (Options.v().field_type_mismatches()) {
             case Options.field_type_mismatches_fail:
                 throw new ConflictingFieldRefException(clField, type);

@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread.mhp.findobject;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
@@ -55,7 +55,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
     protected int lastIndex = 0;
 
     // add soot method here just for debug
-    public MultiRunStatementsFinder(UnitGraph g, SootMethod sm, Set<SootMethod> multiCalledMethods, CallGraph cg) {
+    public MultiRunStatementsFinder(UnitGraph g, MethodModel sm, Set<MethodModel> multiCalledMethods, CallGraph cg) {
         super(g);
 
         nodeToIndex = new HashMap<Object, Integer>();
@@ -69,7 +69,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
         // testMultiObjSites(sm);
     }
 
-    private void findMultiCalledMethodsIntra(Set<SootMethod> multiCalledMethods, CallGraph callGraph) {
+    private void findMultiCalledMethodsIntra(Set<MethodModel> multiCalledMethods, CallGraph callGraph) {
         Iterator<Unit> it = multiRunStatements.iterator();
         while (it.hasNext()) {
             Stmt stmt = (Stmt) it.next();
@@ -77,8 +77,8 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
 
                 InvokeExpr invokeExpr = stmt.getInvokeExpr();
 
-                List<SootMethod> targetList = new ArrayList<SootMethod>();
-                SootMethod method = invokeExpr.getMethod();
+                List<MethodModel> targetList = new ArrayList<MethodModel>();
+                MethodModel method = invokeExpr.getMethod();
                 if (invokeExpr instanceof StaticInvokeExpr) {
                     targetList.add(method);
                 } else if (invokeExpr instanceof InstanceInvokeExpr) {
@@ -89,9 +89,9 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
                 }
 
                 if (targetList != null) {
-                    Iterator<SootMethod> iterator = targetList.iterator();
+                    Iterator<MethodModel> iterator = targetList.iterator();
                     while (iterator.hasNext()) {
-                        SootMethod obj = iterator.next();
+                        MethodModel obj = iterator.next();
                         if (!obj.isNative()) {
                             multiCalledMethods.add(obj);
                         }

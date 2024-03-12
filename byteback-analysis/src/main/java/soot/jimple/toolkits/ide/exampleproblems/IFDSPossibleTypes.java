@@ -22,6 +22,7 @@ package soot.jimple.toolkits.ide.exampleproblems;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -37,14 +38,14 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 public class IFDSPossibleTypes
-        extends DefaultJimpleIFDSTabulationProblem<Pair<Value, Type>, InterproceduralCFG<Unit, SootMethod>> {
+        extends DefaultJimpleIFDSTabulationProblem<Pair<Value, Type>, InterproceduralCFG<Unit, MethodModel>> {
 
-    public IFDSPossibleTypes(InterproceduralCFG<Unit, SootMethod> icfg) {
+    public IFDSPossibleTypes(InterproceduralCFG<Unit, MethodModel> icfg) {
         super(icfg);
     }
 
-    public FlowFunctions<Unit, Pair<Value, Type>, SootMethod> createFlowFunctionsFactory() {
-        return new FlowFunctions<Unit, Pair<Value, Type>, SootMethod>() {
+    public FlowFunctions<Unit, Pair<Value, Type>, MethodModel> createFlowFunctionsFactory() {
+        return new FlowFunctions<Unit, Pair<Value, Type>, MethodModel>() {
 
             public FlowFunction<Pair<Value, Type>> getNormalFlowFunction(Unit src, Unit dest) {
                 if (src instanceof DefinitionStmt defnStmt) {
@@ -127,7 +128,7 @@ public class IFDSPossibleTypes
                 return Identity.v();
             }
 
-            public FlowFunction<Pair<Value, Type>> getCallFlowFunction(final Unit src, final SootMethod dest) {
+            public FlowFunction<Pair<Value, Type>> getCallFlowFunction(final Unit src, final MethodModel dest) {
                 Stmt stmt = (Stmt) src;
                 InvokeExpr ie = stmt.getInvokeExpr();
                 final List<Value> callArgs = ie.getArgs();
@@ -149,7 +150,7 @@ public class IFDSPossibleTypes
                 };
             }
 
-            public FlowFunction<Pair<Value, Type>> getReturnFlowFunction(Unit callSite, SootMethod callee, Unit exitStmt,
+            public FlowFunction<Pair<Value, Type>> getReturnFlowFunction(Unit callSite, MethodModel callee, Unit exitStmt,
                                                                          Unit retSite) {
                 if (exitStmt instanceof ReturnStmt returnStmt) {
                     Value op = returnStmt.getOp();

@@ -22,16 +22,19 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
+
 import java.util.List;
 
 /**
- * The common interface of {@link SootMethod} (resolved method) and {@link SootMethodRef} (unresolved method). Therefore it
+ * The common interface of {@link MethodModel} (resolved method) and {@link SootMethodRef} (unresolved method). Therefore it
  * allows to access the properties independently whether the method is a resolved one or not.
  */
 public interface SootMethodInterface {
 
     /**
-     * @return The class which declares the current {@link SootMethod}/{@link SootMethodRef}
+     * @return The class which declares the current {@link MethodModel}/{@link SootMethodRef}
      */
     ClassModel getDeclaringClass();
 

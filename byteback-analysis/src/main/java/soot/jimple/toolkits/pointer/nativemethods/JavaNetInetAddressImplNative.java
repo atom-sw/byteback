@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -35,7 +35,7 @@ public class JavaNetInetAddressImplNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -63,7 +63,7 @@ public class JavaNetInetAddressImplNative extends NativeMethodClass {
      * <p>
      * native java.lang.String getLocalHostName() throws java.net.UnknownHostException;
      */
-    public void java_net_InetAddressImpl_getLocalHostName(SootMethod method, ReferenceVariable thisVar,
+    public void java_net_InetAddressImpl_getLocalHostName(MethodModel method, ReferenceVariable thisVar,
                                                           ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getStringObject());
     }
@@ -73,7 +73,7 @@ public class JavaNetInetAddressImplNative extends NativeMethodClass {
      * <p>
      * native java.lang.String getHostByAddr(int) throws java.net.UnknownHostException;
      */
-    public void java_net_InetAddressImpl_getHostByAddr(SootMethod method, ReferenceVariable thisVar,
+    public void java_net_InetAddressImpl_getHostByAddr(MethodModel method, ReferenceVariable thisVar,
                                                        ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getStringObject());
     }

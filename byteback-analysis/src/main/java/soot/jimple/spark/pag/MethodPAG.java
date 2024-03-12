@@ -22,6 +22,8 @@ package soot.jimple.spark.pag;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.Stmt;
 import soot.jimple.spark.builder.MethodNodeFactory;
@@ -47,7 +49,7 @@ public final class MethodPAG {
         return pag;
     }
 
-    protected MethodPAG(PAG pag, SootMethod m) {
+    protected MethodPAG(PAG pag, MethodModel m) {
         this.pag = pag;
         this.method = m;
         this.nodeFactory = new MethodNodeFactory(pag, this);
@@ -139,9 +141,9 @@ public final class MethodPAG {
     private final QueueReader<Node> inReader = inEdges.reader();
     private final QueueReader<Node> outReader = outEdges.reader();
 
-    SootMethod method;
+    MethodModel method;
 
-    public SootMethod getMethod() {
+    public MethodModel getMethod() {
         return method;
     }
 
@@ -151,7 +153,7 @@ public final class MethodPAG {
         return nodeFactory;
     }
 
-    public static MethodPAG v(PAG pag, SootMethod m) {
+    public static MethodPAG v(PAG pag, MethodModel m) {
         MethodPAG ret = G.v().MethodPAG_methodToPag.get(m);
         if (ret == null || pag != ret.pag) {
             ret = new MethodPAG(pag, m);
@@ -178,7 +180,7 @@ public final class MethodPAG {
     }
 
     protected VarNode parameterize(LocalVarNode vn, Context varNodeParameter) {
-        SootMethod m = vn.getMethod();
+        MethodModel m = vn.getMethod();
         if (m != method && m != null) {
             throw new RuntimeException("VarNode " + vn + " with method " + m + " parameterized in method " + method);
         }
@@ -240,7 +242,7 @@ public final class MethodPAG {
         pag.nativeMethodDriver.process(method, thisNode, retNode, args);
     }
 
-    private final static String mainSubSignature = SootMethod.getSubSignature("main",
+    private final static String mainSubSignature = MethodModel.getSubSignature("main",
             Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
 
     protected void addMiscEdges() {
@@ -277,7 +279,7 @@ public final class MethodPAG {
         }
 
         boolean isImplicit = false;
-        for (SootMethod implicitMethod : EntryPoints.v().implicit()) {
+        for (MethodModel implicitMethod : EntryPoints.v().implicit()) {
             if (implicitMethod.getNumberedSubSignature().equals(method.getNumberedSubSignature())) {
                 isImplicit = true;
                 break;
@@ -291,7 +293,7 @@ public final class MethodPAG {
                     if (!c.hasSuperclass()) {
                         break outer;
                     }
-                    c = c.getSuperclass();
+                    c = c.getSuperType();
                 }
                 if (method.getName().equals("<init>")) {
                     continue;

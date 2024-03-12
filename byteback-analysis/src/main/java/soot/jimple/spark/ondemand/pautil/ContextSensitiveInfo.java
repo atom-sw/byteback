@@ -24,7 +24,7 @@ package soot.jimple.spark.ondemand.pautil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.InvokeExpr;
 import soot.jimple.spark.ondemand.genericutil.ArraySet;
 import soot.jimple.spark.ondemand.genericutil.ArraySetMultiMap;
@@ -68,25 +68,25 @@ public class ContextSensitiveInfo {
     /**
      * nodes in each method
      */
-    private final ArraySetMultiMap<SootMethod, VarNode> methodToNodes = new ArraySetMultiMap<SootMethod, VarNode>();
+    private final ArraySetMultiMap<MethodModel, VarNode> methodToNodes = new ArraySetMultiMap<MethodModel, VarNode>();
 
-    private final ArraySetMultiMap<SootMethod, VarNode> methodToOutPorts = new ArraySetMultiMap<SootMethod, VarNode>();
+    private final ArraySetMultiMap<MethodModel, VarNode> methodToOutPorts = new ArraySetMultiMap<MethodModel, VarNode>();
 
-    private final ArraySetMultiMap<SootMethod, VarNode> methodToInPorts = new ArraySetMultiMap<SootMethod, VarNode>();
+    private final ArraySetMultiMap<MethodModel, VarNode> methodToInPorts = new ArraySetMultiMap<MethodModel, VarNode>();
 
-    private final ArraySetMultiMap<SootMethod, Integer> callSitesInMethod = new ArraySetMultiMap<SootMethod, Integer>();
+    private final ArraySetMultiMap<MethodModel, Integer> callSitesInMethod = new ArraySetMultiMap<MethodModel, Integer>();
 
-    private final ArraySetMultiMap<SootMethod, Integer> callSitesInvokingMethod = new ArraySetMultiMap<SootMethod, Integer>();
+    private final ArraySetMultiMap<MethodModel, Integer> callSitesInvokingMethod = new ArraySetMultiMap<MethodModel, Integer>();
 
-    private final ArraySetMultiMap<Integer, SootMethod> callSiteToTargets = new ArraySetMultiMap<Integer, SootMethod>();
+    private final ArraySetMultiMap<Integer, MethodModel> callSiteToTargets = new ArraySetMultiMap<Integer, MethodModel>();
 
     private final ArraySetMultiMap<Integer, AssignEdge> callSiteToEdges = new ArraySetMultiMap<Integer, AssignEdge>();
 
     private final Map<Integer, LocalVarNode> virtCallSiteToReceiver = new HashMap<Integer, LocalVarNode>();
 
-    private final Map<Integer, SootMethod> callSiteToInvokedMethod = new HashMap<Integer, SootMethod>();
+    private final Map<Integer, MethodModel> callSiteToInvokedMethod = new HashMap<Integer, MethodModel>();
 
-    private final Map<Integer, SootMethod> callSiteToInvokingMethod = new HashMap<Integer, SootMethod>();
+    private final Map<Integer, MethodModel> callSiteToInvokingMethod = new HashMap<Integer, MethodModel>();
 
     private final ArraySetMultiMap<LocalVarNode, Integer> receiverToVirtCallSites
             = new ArraySetMultiMap<LocalVarNode, Integer>();
@@ -99,7 +99,7 @@ public class ContextSensitiveInfo {
         for (Iterator iter = pag.getVarNodeNumberer().iterator(); iter.hasNext(); ) {
             VarNode varNode = (VarNode) iter.next();
             if (varNode instanceof LocalVarNode local) {
-                SootMethod method = local.getMethod();
+                MethodModel method = local.getMethod();
                 assert method != null : local;
                 methodToNodes.put(method, local);
                 if (SootUtil.isRetNode(local)) {
@@ -127,7 +127,7 @@ public class ContextSensitiveInfo {
                 }
                 boolean isFinalizerNode = false;
                 if (assignTarget instanceof LocalVarNode local) {
-                    SootMethod method = local.getMethod();
+                    MethodModel method = local.getMethod();
                     if (method.toString().indexOf("finalize()") != -1 && SootUtil.isThisNode(local)) {
                         isFinalizerNode = true;
                     }
@@ -146,7 +146,7 @@ public class ContextSensitiveInfo {
                         // System.err.println("G2G " + assignSource + " --> "
                         // + assignTarget);
                     } else {
-                        SootMethod method = ((LocalVarNode) assignTarget).getMethod();
+                        MethodModel method = ((LocalVarNode) assignTarget).getMethod();
                         // don't want to include things assigned something that
                         // is already an in port
                         if (!methodToInPorts.get(method).contains(assignTarget)) {
@@ -155,7 +155,7 @@ public class ContextSensitiveInfo {
                     }
                 } else {
                     if (targetGlobal) {
-                        SootMethod method = ((LocalVarNode) assignSource).getMethod();
+                        MethodModel method = ((LocalVarNode) assignSource).getMethod();
                         // don't want to include things assigned from something
                         // that
                         // is already an out port
@@ -180,7 +180,7 @@ public class ContextSensitiveInfo {
             InvokeExpr ie = (InvokeExpr) iter.next();
             Integer callSite = Integer.valueOf(callSiteNum++);
             callSiteToInvokedMethod.put(callSite, ie.getMethod());
-            SootMethod invokingMethod = pag.callToMethod.get(ie);
+            MethodModel invokingMethod = pag.callToMethod.get(ie);
             callSiteToInvokingMethod.put(callSite, invokingMethod);
             if (PRINT_CALL_SITE_INFO) {
                 callSiteWriter.println(callSite + " " + callSiteToInvokingMethod.get(callSite) + " " + ie);
@@ -221,7 +221,7 @@ public class ContextSensitiveInfo {
                 if (SootUtil.isParamNode(dst)) {
                     // assert src instanceof LocalVarNode : src + " " + dst;
                     edge.setParamEdge();
-                    SootMethod invokedMethod = ((LocalVarNode) dst).getMethod();
+                    MethodModel invokedMethod = ((LocalVarNode) dst).getMethod();
                     callSiteToTargets.put(callSite, invokedMethod);
                     callSitesInvokingMethod.put(invokedMethod, callSite);
                     // assert src instanceof LocalVarNode : src + " NOT LOCAL";
@@ -230,7 +230,7 @@ public class ContextSensitiveInfo {
                     }
                 } else if (SootUtil.isRetNode(src)) {
                     edge.setReturnEdge();
-                    SootMethod invokedMethod = ((LocalVarNode) src).getMethod();
+                    MethodModel invokedMethod = ((LocalVarNode) src).getMethod();
                     callSiteToTargets.put(callSite, invokedMethod);
                     callSitesInvokingMethod.put(invokedMethod, callSite);
                     if (dst instanceof LocalVarNode) {
@@ -320,19 +320,19 @@ public class ContextSensitiveInfo {
         return contextSensitiveAssignBarEdges.get(node);
     }
 
-    public Set<SootMethod> methods() {
+    public Set<MethodModel> methods() {
         return methodToNodes.keySet();
     }
 
-    public ArraySet<VarNode> getNodesForMethod(SootMethod method) {
+    public ArraySet<VarNode> getNodesForMethod(MethodModel method) {
         return methodToNodes.get(method);
     }
 
-    public ArraySet<VarNode> getInPortsForMethod(SootMethod method) {
+    public ArraySet<VarNode> getInPortsForMethod(MethodModel method) {
         return methodToInPorts.get(method);
     }
 
-    public ArraySet<VarNode> getOutPortsForMethod(SootMethod method) {
+    public ArraySet<VarNode> getOutPortsForMethod(MethodModel method) {
         return methodToOutPorts.get(method);
     }
 
@@ -340,11 +340,11 @@ public class ContextSensitiveInfo {
      * @param method
      * @return
      */
-    public ArraySet<Integer> getCallSitesInMethod(SootMethod method) {
+    public ArraySet<Integer> getCallSitesInMethod(MethodModel method) {
         return callSitesInMethod.get(method);
     }
 
-    public Set<Integer> getCallSitesInvokingMethod(SootMethod method) {
+    public Set<Integer> getCallSitesInvokingMethod(MethodModel method) {
         return callSitesInvokingMethod.get(method);
     }
 
@@ -352,7 +352,7 @@ public class ContextSensitiveInfo {
         return callSiteToEdges.get(callSite);
     }
 
-    public ArraySet<SootMethod> getCallSiteTargets(Integer callSite) {
+    public ArraySet<MethodModel> getCallSiteTargets(Integer callSite) {
         return callSiteToTargets.get(callSite);
     }
 
@@ -366,11 +366,11 @@ public class ContextSensitiveInfo {
         return receiverToVirtCallSites.get(receiver);
     }
 
-    public SootMethod getInvokedMethod(Integer callSite) {
+    public MethodModel getInvokedMethod(Integer callSite) {
         return callSiteToInvokedMethod.get(callSite);
     }
 
-    public SootMethod getInvokingMethod(Integer callSite) {
+    public MethodModel getInvokingMethod(Integer callSite) {
         return callSiteToInvokingMethod.get(callSite);
     }
 

@@ -22,6 +22,8 @@ package soot.shimple;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -56,7 +58,7 @@ public class ShimpleTransformer extends SceneTransformer {
 
         for (ClassModel sClass : Scene.v().getClasses()) {
             if (!sClass.isPhantom()) {
-                for (SootMethod method : sClass.getMethods()) {
+                for (MethodModel method : sClass.getMethodModels()) {
                     if (method.isConcrete()) {
                         if (method.hasActiveBody()) {
                             Body body = method.getActiveBody();

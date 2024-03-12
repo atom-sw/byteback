@@ -1,4 +1,4 @@
-package soot;
+package byteback.analysis.model;
 
 /*-
  * #%L
@@ -25,7 +25,7 @@ package soot;
 /**
  * Provides methods common to Soot objects belonging to classes, namely SootField and SootMethod.
  */
-public interface ClassMember {
+public interface ClassMemberModel {
     /**
      * Returns the SootClass declaring this one.
      */

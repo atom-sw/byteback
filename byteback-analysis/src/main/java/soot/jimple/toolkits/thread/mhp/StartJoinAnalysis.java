@@ -22,6 +22,8 @@ package soot.jimple.toolkits.thread.mhp;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -60,11 +62,11 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
 
     Hierarchy hierarchy;
 
-    Map<Stmt, List<SootMethod>> startToRunMethods;
+    Map<Stmt, List<MethodModel>> startToRunMethods;
     Map<Stmt, List<AllocNode>> startToAllocNodes;
     Map<Stmt, Stmt> startToJoin;
 
-    public StartJoinAnalysis(UnitGraph g, SootMethod sm, CallGraph callGraph, PAG pag) {
+    public StartJoinAnalysis(UnitGraph g, MethodModel sm, CallGraph callGraph, PAG pag) {
         super(g);
 
         startStatements = new HashSet<Stmt>();
@@ -72,7 +74,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
 
         hierarchy = Scene.v().getActiveHierarchy();
 
-        startToRunMethods = new HashMap<Stmt, List<SootMethod>>();
+        startToRunMethods = new HashMap<Stmt, List<MethodModel>>();
         startToAllocNodes = new HashMap<Stmt, List<AllocNode>>();
         startToJoin = new HashMap<Stmt, Stmt>();
 
@@ -93,7 +95,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
             while (startIt.hasNext()) {
                 Stmt start = startIt.next();
 
-                List<SootMethod> runMethodsList = new ArrayList<SootMethod>(); // will be a list of possible run methods called by
+                List<MethodModel> runMethodsList = new ArrayList<MethodModel>(); // will be a list of possible run methods called by
                 // this start stmt
                 List<AllocNode> allocNodesList = new ArrayList<AllocNode>(); // will be a list of possible allocation nodes for the
                 // thread object that's
@@ -110,7 +112,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
                 // For each possible thread object, get run method
                 Iterator<MethodOrMethodContext> mayRunIt = runMethodTargets.iterator(start); // fails for some call graphs
                 while (mayRunIt.hasNext()) {
-                    SootMethod runMethod = (SootMethod) mayRunIt.next();
+                    MethodModel runMethod = (MethodModel) mayRunIt.next();
                     if (runMethod.getSubSignature().equals("void run()")) {
                         runMethodsList.add(runMethod);
                     }
@@ -124,7 +126,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
                     Iterator<ClassModel> threadClassesIt = threadClasses.iterator();
                     while (threadClassesIt.hasNext()) {
                         ClassModel currentClass = threadClassesIt.next();
-                        SootMethod currentMethod = currentClass.getMethodUnsafe("void run()");
+                        MethodModel currentMethod = currentClass.getMethodUnsafe("void run()");
                         if (currentMethod != null) {
                             runMethodsList.add(currentMethod);
                         }
@@ -197,7 +199,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
         return joinStatements;
     }
 
-    public Map<Stmt, List<SootMethod>> getStartToRunMethods() {
+    public Map<Stmt, List<MethodModel>> getStartToRunMethods() {
         return startToRunMethods;
     }
 
@@ -244,7 +246,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
             // If this is a start stmt, add it to startStatements
             InvokeExpr ie = stmt.getInvokeExpr();
             if (ie instanceof InstanceInvokeExpr iie) {
-              SootMethod invokeMethod = ie.getMethod();
+              MethodModel invokeMethod = ie.getMethod();
                 if (invokeMethod.getName().equals("start")) {
                     RefType baseType = (RefType) iie.getBase().getType();
                     if (!baseType.getSootClass().isInterface()) // the start method we're looking for is NOT an interface method

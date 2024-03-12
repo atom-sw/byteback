@@ -1,5 +1,6 @@
 package soot.jimple.toolkits.typing.fast;
 
+import byteback.analysis.model.ClassModel;
 import soot.*;
 
 import java.util.*;
@@ -52,14 +53,14 @@ public class BytecodeHierarchy implements IHierarchy {
             } else {
                 ClassModel sc = node.type.getSootClass();
 
-                for (ClassModel i : sc.getInterfaces()) {
-                    leafs.add(new AncestryTreeNode(node, (i).getType()));
+                for (ClassModel i : sc.getInterfaceTypes()) {
+                    leafs.add(new AncestryTreeNode(node, (i).getClassType()));
                 }
 
                 // The superclass of all interfaces is Object
                 // -- try to discard phantom interfaces.
                 if ((!sc.isInterface() || sc.getInterfaceCount() == 0) && !sc.isPhantom() && sc.hasSuperclass()) {
-                    leafs.add(new AncestryTreeNode(node, sc.getSuperclass().getType()));
+                    leafs.add(new AncestryTreeNode(node, sc.getSuperType().getClassType()));
                 }
 
             }
@@ -231,8 +232,8 @@ public class BytecodeHierarchy implements IHierarchy {
         }
 
         for (ClassModel sc = t.getSootClass(); sc.hasSuperclass(); ) {
-            sc = sc.getSuperclass();
-            RefType cur = sc.getType();
+            sc = sc.getSuperType();
+            RefType cur = sc.getClassType();
             r.addFirst(cur);
             if (TypeResolver.typesEqual(cur, anchor)) {
                 break;

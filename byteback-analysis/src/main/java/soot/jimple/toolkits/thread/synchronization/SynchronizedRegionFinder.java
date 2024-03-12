@@ -22,6 +22,7 @@ package soot.jimple.toolkits.thread.synchronization;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -51,7 +52,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 
     Body body;
     Chain<Unit> units;
-    SootMethod method;
+    MethodModel method;
     ExceptionalUnitGraph egraph;
     LocalUses slu;
     CriticalSectionAwareSideEffectAnalysis tasea;

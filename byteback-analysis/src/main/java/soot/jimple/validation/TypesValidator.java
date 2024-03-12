@@ -24,7 +24,7 @@ package soot.jimple.validation;
 
 import soot.Body;
 import soot.Local;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
@@ -44,7 +44,7 @@ public enum TypesValidator implements BodyValidator {
 
     @Override
     public void validate(Body body, List<ValidationException> exceptions) {
-        SootMethod method = body.getMethod();
+        MethodModel method = body.getMethod();
 
         if (method != null) {
             if (!method.getReturnType().isAllowedInFinalCode()) {

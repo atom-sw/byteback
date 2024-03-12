@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -35,7 +35,7 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -63,7 +63,7 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
      * <p>
      * protected native java.lang.Class getClassContext()[];
      */
-    public void java_lang_SecurityManager_getClassContext(SootMethod method, ReferenceVariable thisVar,
+    public void java_lang_SecurityManager_getClassContext(MethodModel method, ReferenceVariable thisVar,
                                                           ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -77,7 +77,7 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
      * <p>
      * private native java.lang.ClassLoader currentClassLoader0();
      */
-    public void java_lang_SecurityManager_currentClassLoader0(SootMethod method, ReferenceVariable thisVar,
+    public void java_lang_SecurityManager_currentClassLoader0(MethodModel method, ReferenceVariable thisVar,
                                                               ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
     }
@@ -87,7 +87,7 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
      * <p>
      * private native java.lang.Class currentLoadedClass0();
      */
-    public void java_lang_SecurityManager_currentLoadedClass0(SootMethod method, ReferenceVariable thisVar,
+    public void java_lang_SecurityManager_currentLoadedClass0(MethodModel method, ReferenceVariable thisVar,
                                                               ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }

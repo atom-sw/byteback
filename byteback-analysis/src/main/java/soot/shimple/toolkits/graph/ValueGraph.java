@@ -22,6 +22,8 @@ package soot.shimple.toolkits.graph;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.shimple.AbstractShimpleValueSwitch;
@@ -400,7 +402,7 @@ public class ValueGraph {
 
         Scene.v().loadClassAndSupport(args[0]);
         ClassModel sc = Scene.v().getSootClass(args[0]);
-        SootMethod sm = sc.getMethod(args[1]);
+        MethodModel sm = sc.getMethodModel(args[1]);
         Body b = sm.retrieveActiveBody();
         ShimpleBody sb = Shimple.v().newBody(b);
         CompleteBlockGraph cfg = new CompleteBlockGraph(sb);

@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.MethodOrMethodContext;
 import soot.Scene;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -81,19 +81,19 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
     @DontSynchronize("readonly")
     protected final CallGraph cg;
 
-    protected CacheLoader<Unit, Collection<SootMethod>> loaderUnitToCallees = new CacheLoader<Unit, Collection<SootMethod>>() {
+    protected CacheLoader<Unit, Collection<MethodModel>> loaderUnitToCallees = new CacheLoader<Unit, Collection<MethodModel>>() {
         @Override
-        public Collection<SootMethod> load(Unit u) throws Exception {
-            ArrayList<SootMethod> res = null;
+        public Collection<MethodModel> load(Unit u) throws Exception {
+            ArrayList<MethodModel> res = null;
             // only retain callers that are explicit call sites or
             // Thread.start()
             Iterator<Edge> edgeIter = createEdgeFilter().wrap(cg.edgesOutOf(u));
             while (edgeIter.hasNext()) {
                 Edge edge = edgeIter.next();
-                SootMethod m = edge.getTgt().method();
+                MethodModel m = edge.getTgt().method();
                 if (includePhantomCallees || m.hasActiveBody()) {
                     if (res == null) {
-                        res = new ArrayList<SootMethod>();
+                        res = new ArrayList<MethodModel>();
                     }
                     res.add(m);
                 } else if (IDESolver.DEBUG) {
@@ -107,7 +107,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
             } else {
                 if (fallbackToImmediateCallees && u instanceof Stmt s) {
                     if (s.containsInvokeExpr()) {
-                        SootMethod immediate = s.getInvokeExpr().getMethod();
+                        MethodModel immediate = s.getInvokeExpr().getMethod();
                         if (includePhantomCallees || immediate.hasActiveBody()) {
                             return Collections.singleton(immediate);
                         }
@@ -120,13 +120,13 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
     };
 
     @SynchronizedBy("by use of synchronized LoadingCache class")
-    protected final LoadingCache<Unit, Collection<SootMethod>> unitToCallees
+    protected final LoadingCache<Unit, Collection<MethodModel>> unitToCallees
             = IDESolver.DEFAULT_CACHE_BUILDER.build(loaderUnitToCallees);
 
-    protected CacheLoader<SootMethod, Collection<Unit>> loaderMethodToCallers
-            = new CacheLoader<SootMethod, Collection<Unit>>() {
+    protected CacheLoader<MethodModel, Collection<Unit>> loaderMethodToCallers
+            = new CacheLoader<MethodModel, Collection<Unit>>() {
         @Override
-        public Collection<Unit> load(SootMethod m) throws Exception {
+        public Collection<Unit> load(MethodModel m) throws Exception {
             ArrayList<Unit> res = new ArrayList<Unit>();
             // only retain callers that are explicit call sites or
             // Thread.start()
@@ -140,7 +140,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
         }
     };
     @SynchronizedBy("by use of synchronized LoadingCache class")
-    protected final LoadingCache<SootMethod, Collection<Unit>> methodToCallers
+    protected final LoadingCache<MethodModel, Collection<Unit>> methodToCallers
             = IDESolver.DEFAULT_CACHE_BUILDER.build(loaderMethodToCallers);
 
     public JimpleBasedInterproceduralCFG() {
@@ -161,18 +161,18 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 
     protected void initializeUnitToOwner() {
         for (Iterator<MethodOrMethodContext> iter = Scene.v().getReachableMethods().listener(); iter.hasNext(); ) {
-            SootMethod m = iter.next().method();
+            MethodModel m = iter.next().method();
             initializeUnitToOwner(m);
         }
     }
 
     @Override
-    public Collection<SootMethod> getCalleesOfCallAt(Unit u) {
+    public Collection<MethodModel> getCalleesOfCallAt(Unit u) {
         return unitToCallees.getUnchecked(u);
     }
 
     @Override
-    public Collection<Unit> getCallersOf(SootMethod m) {
+    public Collection<Unit> getCallersOf(MethodModel m) {
         return methodToCallers.getUnchecked(m);
     }
 

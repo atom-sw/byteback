@@ -23,6 +23,9 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.options.Options;
@@ -110,7 +113,7 @@ public class SootResolver {
         } catch (SootClassNotFoundException e) {
             // remove unresolved class and rethrow
             if (resolvedClass != null) {
-                assert (resolvedClass.resolvingLevel() == ClassModel.DANGLING);
+                assert (resolvedClass.getResolvingLevel() == ClassModel.DANGLING);
                 Scene.v().removeClass(resolvedClass);
             }
             throw e;
@@ -135,10 +138,10 @@ public class SootResolver {
                     if (onlySignatures) {
                         bringToSignatures(sc);
                         sc.setPhantomClass();
-                        for (SootMethod m : sc.getMethods()) {
+                        for (MethodModel m : sc.getMethodModels()) {
                             m.setPhantom(true);
                         }
-                        for (SootField f : sc.getFields()) {
+                        for (FieldModel f : sc.getFieldModels()) {
                             f.setPhantom(true);
                         }
                     } else {
@@ -176,7 +179,7 @@ public class SootResolver {
     }
 
     protected void addToResolveWorklist(ClassModel sc, int desiredLevel) {
-        if (sc.resolvingLevel() >= desiredLevel) {
+        if (sc.getResolvingLevel() >= desiredLevel) {
             return;
         }
         nextClasses[desiredLevel].add(sc);
@@ -187,7 +190,7 @@ public class SootResolver {
      * enclosing types.
      */
     protected void bringToHierarchy(ClassModel sc) {
-        if (sc.resolvingLevel() >= ClassModel.HIERARCHY) {
+        if (sc.getResolvingLevel() >= ClassModel.HIERARCHY) {
             return;
         }
 
@@ -249,7 +252,7 @@ public class SootResolver {
         if (outerClass != null) {
             addToResolveWorklist(outerClass, level);
         }
-        for (ClassModel iface : sc.getInterfaces()) {
+        for (ClassModel iface : sc.getInterfaceTypes()) {
             addToResolveWorklist(iface, level);
         }
     }
@@ -259,7 +262,7 @@ public class SootResolver {
      * these signatures.
      */
     protected void bringToSignatures(ClassModel sc) {
-        if (sc.resolvingLevel() >= ClassModel.SIGNATURES) {
+        if (sc.getResolvingLevel() >= ClassModel.SIGNATURES) {
             return;
         }
         bringToHierarchy(sc);
@@ -272,10 +275,10 @@ public class SootResolver {
     }
 
     protected void bringToSignaturesUnchecked(ClassModel sc) {
-        for (SootField f : sc.getFields()) {
+        for (FieldModel f : sc.getFieldModels()) {
             addToResolveWorklist(f.getType(), ClassModel.HIERARCHY);
         }
-        for (SootMethod m : sc.getMethods()) {
+        for (MethodModel m : sc.getMethodModels()) {
             addToResolveWorklist(m.getReturnType(), ClassModel.HIERARCHY);
             for (Type ptype : m.getParameterTypes()) {
                 addToResolveWorklist(ptype, ClassModel.HIERARCHY);
@@ -299,7 +302,7 @@ public class SootResolver {
      * conservative and brings all of them to signatures. But this could/should be improved.
      */
     protected void bringToBodies(ClassModel sc) {
-        if (sc.resolvingLevel() >= ClassModel.BODIES) {
+        if (sc.getResolvingLevel() >= ClassModel.BODIES) {
             return;
         }
         bringToSignatures(sc);
@@ -335,7 +338,7 @@ public class SootResolver {
     }
 
     public void reResolve(ClassModel cl, int newResolvingLevel) {
-        int resolvingLevel = cl.resolvingLevel();
+        int resolvingLevel = cl.getResolvingLevel();
         if (resolvingLevel >= newResolvingLevel) {
             return;
         }

@@ -22,6 +22,7 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 
 /**
@@ -30,9 +31,9 @@ import soot.*;
  * @author Ondrej Lhotak
  */
 public interface ContextManager {
-    void addStaticEdge(MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind);
+    void addStaticEdge(MethodOrMethodContext src, Unit srcUnit, MethodModel target, Kind kind);
 
-    void addVirtualEdge(MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind, Context typeContext);
+    void addVirtualEdge(MethodOrMethodContext src, Unit srcUnit, MethodModel target, Kind kind, Context typeContext);
 
     CallGraph callGraph();
 }

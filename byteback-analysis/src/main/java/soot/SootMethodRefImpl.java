@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.jimple.*;
@@ -49,7 +51,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     private final Type returnType;
     private final boolean isStatic;
 
-    private SootMethod resolveCache = null;
+    private MethodModel resolveCache = null;
 
     private NumberedString subsig;
 
@@ -150,13 +152,13 @@ public class SootMethodRefImpl implements SootMethodRef {
         }
 
         // This method is expensive, so it makes sense to cache the result
-        subsig = Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+        subsig = Scene.v().getSubSigNumberer().findOrAdd(MethodModel.getSubSignature(name, parameterTypes, returnType));
         return subsig;
     }
 
     @Override
     public String getSignature() {
-        return SootMethod.getSignature(declaringClass, name, parameterTypes, returnType);
+        return MethodModel.getSignature(declaringClass, name, parameterTypes, returnType);
     }
 
     @Override
@@ -189,8 +191,8 @@ public class SootMethodRefImpl implements SootMethodRef {
     }
 
     @Override
-    public SootMethod resolve() {
-        SootMethod cached = this.resolveCache;
+    public MethodModel resolve() {
+        MethodModel cached = this.resolveCache;
         // Use the cached SootMethod if available and still valid
         if (cached == null || !cached.isValidResolve(this)) {
             cached = resolve(null);
@@ -200,11 +202,11 @@ public class SootMethodRefImpl implements SootMethodRef {
     }
 
     @Override
-    public SootMethod tryResolve() {
+    public MethodModel tryResolve() {
         return tryResolve(null);
     }
 
-    private void checkStatic(SootMethod method) {
+    private void checkStatic(MethodModel method) {
         final int opt = Options.v().wrong_staticness();
         if ((opt == Options.wrong_staticness_fail || opt == Options.wrong_staticness_fixstrict)
                 && method.isStatic() != isStatic() && !method.isPhantom()) {
@@ -212,10 +214,10 @@ public class SootMethodRefImpl implements SootMethodRef {
         }
     }
 
-    protected SootMethod tryResolve(final StringBuilder trace) {
+    protected MethodModel tryResolve(final StringBuilder trace) {
         // let's do a dispatch and allow abstract method for resolution
         // we do not have a base object for call so we just take the type of the declaring class
-        SootMethod resolved = Scene.v().getOrMakeFastHierarchy().resolveMethod(declaringClass, declaringClass, name,
+        MethodModel resolved = Scene.v().getOrMakeFastHierarchy().resolveMethod(declaringClass, declaringClass, name,
                 parameterTypes, returnType, true, this.getSubSignature());
 
         if (resolved != null) {
@@ -226,7 +228,7 @@ public class SootMethodRefImpl implements SootMethodRef {
             // if not found check for phantom class in the superclass.
             for (ClassModel selectedClass = declaringClass; selectedClass != null; ) {
                 if (selectedClass.isPhantom()) {
-                    SootMethod phantomMethod
+                    MethodModel phantomMethod
                             = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
                     phantomMethod.setPhantom(true);
                     phantomMethod = selectedClass.getOrAddMethod(phantomMethod);
@@ -250,7 +252,7 @@ public class SootMethodRefImpl implements SootMethodRef {
                 classToAddTo = declaringClass;
             }
 
-            SootMethod method = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+            MethodModel method = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
             method.setPhantom(true);
             method = classToAddTo.getOrAddMethod(method);
             checkStatic(method);
@@ -260,8 +262,8 @@ public class SootMethodRefImpl implements SootMethodRef {
         return null;
     }
 
-    private SootMethod resolve(final StringBuilder trace) {
-        SootMethod resolved = tryResolve(trace);
+    private MethodModel resolve(final StringBuilder trace) {
+        MethodModel resolved = tryResolve(trace);
         if (resolved != null) {
             return resolved;
         }
@@ -288,10 +290,10 @@ public class SootMethodRefImpl implements SootMethodRef {
      * @param declaringClass The class that was supposed to contain the method
      * @return The created SootMethod
      */
-    private SootMethod createUnresolvedErrorMethod(ClassModel declaringClass) {
+    private MethodModel createUnresolvedErrorMethod(ClassModel declaringClass) {
         final Jimple jimp = Jimple.v();
 
-        SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+        MethodModel m = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
         int modifiers = Modifier.PUBLIC; // we don't know who will be calling us
         if (isStatic()) {
             modifiers |= Modifier.STATIC;

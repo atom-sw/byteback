@@ -22,6 +22,7 @@ package soot.validation;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import soot.*;
 import soot.jimple.*;
 
@@ -55,7 +56,7 @@ public enum CheckTypesValidator implements BodyValidator {
                     SootMethodRef called = iexpr.getMethodRef();
 
                     if (iexpr instanceof InstanceInvokeExpr iiexpr) {
-                      checkCopy(stmt, exception, called.getDeclaringClass().getType(), iiexpr.getBase().getType(),
+                      checkCopy(stmt, exception, called.getDeclaringClass().getClassType(), iiexpr.getBase().getType(),
                                 " in receiver of call" + errorSuffix);
                     }
 

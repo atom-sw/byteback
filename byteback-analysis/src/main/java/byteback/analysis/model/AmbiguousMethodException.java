@@ -1,4 +1,4 @@
-package soot;
+package byteback.analysis.model;
 
 /*-
  * #%L

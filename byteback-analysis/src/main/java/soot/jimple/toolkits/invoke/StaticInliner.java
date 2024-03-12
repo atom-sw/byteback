@@ -22,6 +22,8 @@ package soot.jimple.toolkits.invoke;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -38,7 +40,7 @@ import java.util.*;
 public class StaticInliner extends SceneTransformer {
     private static final Logger logger = LoggerFactory.getLogger(StaticInliner.class);
 
-    private final HashMap<SootMethod, Integer> methodToOriginalSize = new HashMap<SootMethod, Integer>();
+    private final HashMap<MethodModel, Integer> methodToOriginalSize = new HashMap<MethodModel, Integer>();
 
     public StaticInliner(Singletons.Global g) {
     }
@@ -64,9 +66,9 @@ public class StaticInliner extends SceneTransformer {
             final CallGraph cg = Scene.v().getCallGraph();
             final TopologicalOrderer orderer = new TopologicalOrderer(cg);
             orderer.go();
-            List<SootMethod> order = orderer.order();
-            for (ListIterator<SootMethod> it = order.listIterator(order.size()); it.hasPrevious(); ) {
-                SootMethod container = it.previous();
+            List<MethodModel> order = orderer.order();
+            for (ListIterator<MethodModel> it = order.listIterator(order.size()); it.hasPrevious(); ) {
+                MethodModel container = it.previous();
                 if (!container.isConcrete() || !methodToOriginalSize.containsKey(container)
                         || !explicitInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
                     continue;
@@ -82,7 +84,7 @@ public class StaticInliner extends SceneTransformer {
                     if (!targets.hasNext()) {
                         continue;
                     }
-                    final SootMethod target = (SootMethod) targets.next();
+                    final MethodModel target = (MethodModel) targets.next();
                     if (targets.hasNext() || !target.isConcrete() || !target.getDeclaringClass().isApplicationClass()
                             || !InlinerSafetyManager.ensureInlinability(target, s, container, modifierOptions)) {
                         continue;
@@ -100,10 +102,10 @@ public class StaticInliner extends SceneTransformer {
             final int maxInlineeSize = PhaseOptions.getInt(options, "max-inlinee-size");
             final Pack jbPack = PhaseOptions.getBoolean(options, "rerun-jb") ? PackManager.v().getPack("jb") : null;
             for (Host[] site : sitesToInline) {
-                SootMethod inlinee = (SootMethod) site[0];
+                MethodModel inlinee = (MethodModel) site[0];
                 int inlineeSize = inlinee.retrieveActiveBody().getUnits().size();
 
-                SootMethod container = (SootMethod) site[2];
+                MethodModel container = (MethodModel) site[2];
                 int containerSize = container.retrieveActiveBody().getUnits().size();
 
                 if (inlineeSize > maxInlineeSize) {
@@ -130,8 +132,8 @@ public class StaticInliner extends SceneTransformer {
     private void computeAverageMethodSizeAndSaveOriginalSizes() {
         // long sum = 0, count = 0;
         for (ClassModel c : Scene.v().getApplicationClasses()) {
-            for (Iterator<SootMethod> methodsIt = c.methodIterator(); methodsIt.hasNext(); ) {
-                SootMethod m = methodsIt.next();
+            for (Iterator<MethodModel> methodsIt = c.methodIterator(); methodsIt.hasNext(); ) {
+                MethodModel m = methodsIt.next();
                 if (m.isConcrete()) {
                     int size = m.retrieveActiveBody().getUnits().size();
                     // sum += size;

@@ -22,6 +22,9 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.objectweb.asm.*;
 import org.objectweb.asm.util.TraceClassVisitor;
 import soot.asm.AsmUtil;
@@ -48,7 +51,7 @@ import static soot.util.backend.ASMBackendUtils.*;
  */
 public abstract class AbstractASMBackend {
 
-    private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<>();
+    private final Map<MethodModel, BafBody> bafBodyCache = new HashMap<>();
 
     // The SootClass that is to be converted into bytecode
     protected final ClassModel sc;
@@ -88,7 +91,7 @@ public abstract class AbstractASMBackend {
      * @param method The method for which to obtain a baf body
      * @return The baf body for the given method
      */
-    protected BafBody getBafBody(SootMethod method) {
+    protected BafBody getBafBody(MethodModel method) {
         final Body activeBody = method.getActiveBody();
         if (activeBody instanceof BafBody) {
             return (BafBody) activeBody;
@@ -125,7 +128,7 @@ public abstract class AbstractASMBackend {
         if (containsGenericSignatureTag(sc)) {
             minVersion = Options.java_version_1_5;
         }
-        for (SootField sf : sc.getFields()) {
+        for (FieldModel sf : sc.getFieldModels()) {
             if (minVersion >= Options.java_version_1_5) {
                 break;
             }
@@ -140,7 +143,7 @@ public abstract class AbstractASMBackend {
         // We need to clone the method list, because it may happen during writeout
         // that we need to split methods, which are longer than the JVM spec allows.
         // This feature is work in progress.
-        for (SootMethod sm : new ArrayList<>(sc.getMethods())) {
+        for (MethodModel sm : new ArrayList<>(sc.getMethodModels())) {
             if (minVersion >= Options.java_version_1_8) {
                 break;
             }
@@ -169,7 +172,7 @@ public abstract class AbstractASMBackend {
      * @param sm The SootMethod the minimum Java version is to be determined for
      * @return The minimum Java version required for the given SootMethod
      */
-    protected int getMinJavaVersion(SootMethod sm) {
+    protected int getMinJavaVersion(MethodModel sm) {
         return Options.java_version_1_7;
     }
 
@@ -242,10 +245,10 @@ public abstract class AbstractASMBackend {
      *
      * @author Steven Arzt
      */
-    private static class SootMethodComparator implements Comparator<SootMethod> {
+    private static class SootMethodComparator implements Comparator<MethodModel> {
 
         @Override
-        public int compare(SootMethod o1, SootMethod o2) {
+        public int compare(MethodModel o1, MethodModel o2) {
             return o1.getName().compareTo(o2.getName());
         }
     }
@@ -254,9 +257,9 @@ public abstract class AbstractASMBackend {
      * Emits the bytecode for all methods of the class
      */
     protected void generateMethods() {
-        List<SootMethod> sortedMethods = new ArrayList<SootMethod>(sc.getMethods());
+        List<MethodModel> sortedMethods = new ArrayList<MethodModel>(sc.getMethodModels());
         Collections.sort(sortedMethods, new SootMethodComparator());
-        for (SootMethod sm : sortedMethods) {
+        for (MethodModel sm : sortedMethods) {
             if (sm.isPhantom()) {
                 continue;
             }
@@ -329,7 +332,7 @@ public abstract class AbstractASMBackend {
      * Emits the bytecode for all fields of the class
      */
     protected void generateFields() {
-        for (SootField f : sc.getFields()) {
+        for (FieldModel f : sc.getFieldModels()) {
             if (f.isPhantom()) {
                 continue;
             }
@@ -417,7 +420,7 @@ public abstract class AbstractASMBackend {
      * @param fv The FieldVisitor to emit the bytecode to
      * @param f  The SootField the bytecode is to be emitted for
      */
-    protected void generateAttributes(FieldVisitor fv, SootField f) {
+    protected void generateAttributes(FieldVisitor fv, FieldModel f) {
         for (Tag t : f.getTags()) {
             if (t instanceof Attribute) {
                 fv.visitAttribute(createASMAttribute((Attribute) t));
@@ -431,7 +434,7 @@ public abstract class AbstractASMBackend {
      * @param mv The MethodVisitor to emit the bytecode to
      * @param m  The SootMethod the bytecode is to be emitted for
      */
-    protected void generateAttributes(MethodVisitor mv, SootMethod m) {
+    protected void generateAttributes(MethodVisitor mv, MethodModel m) {
         for (Tag t : m.getTags()) {
             if (t instanceof Attribute) {
                 mv.visitAttribute(createASMAttribute((Attribute) t));
@@ -462,7 +465,7 @@ public abstract class AbstractASMBackend {
 
                     generateAnnotationElems(av, at.getElems(), true);
                 }
-            } else if (t instanceof AnnotationDefaultTag adt && host instanceof SootMethod) {
+            } else if (t instanceof AnnotationDefaultTag adt && host instanceof MethodModel) {
                 // Visit AnnotationDefault on methods
               AnnotationVisitor av = ((MethodVisitor) visitor).visitAnnotationDefault();
                 generateAnnotationElems(av, Collections.singleton(adt.getDefaultVal()), true);
@@ -592,7 +595,7 @@ public abstract class AbstractASMBackend {
         // Retrieve directly implemented interfaces
         String[] interfaces = new String[sc.getInterfaceCount()];
         int i = 0;
-        for (ClassModel interf : sc.getInterfaces()) {
+        for (ClassModel interf : sc.getInterfaceTypes()) {
             interfaces[i] = slashify(interf.getName());
             ++i;
         }
@@ -618,7 +621,7 @@ public abstract class AbstractASMBackend {
             modifier |= Opcodes.ACC_PROTECTED;
         }
         // Retrieve static-modifier
-        if (Modifier.isStatic(modVal) && ((host instanceof SootField) || (host instanceof SootMethod))) {
+        if (Modifier.isStatic(modVal) && ((host instanceof FieldModel) || (host instanceof MethodModel))) {
             modifier |= Opcodes.ACC_STATIC;
         }
         // Retrieve final-modifier
@@ -626,7 +629,7 @@ public abstract class AbstractASMBackend {
             modifier |= Opcodes.ACC_FINAL;
         }
         // Retrieve synchronized-modifier
-        if (Modifier.isSynchronized(modVal) && host instanceof SootMethod) {
+        if (Modifier.isSynchronized(modVal) && host instanceof MethodModel) {
             modifier |= Opcodes.ACC_SYNCHRONIZED;
         }
         // Retrieve volatile/bridge-modifier
@@ -638,7 +641,7 @@ public abstract class AbstractASMBackend {
             modifier |= Opcodes.ACC_TRANSIENT;
         }
         // Retrieve native-modifier
-        if (Modifier.isNative(modVal) && host instanceof SootMethod) {
+        if (Modifier.isNative(modVal) && host instanceof MethodModel) {
             modifier |= Opcodes.ACC_NATIVE;
         }
         // Retrieve interface-modifier
@@ -651,11 +654,11 @@ public abstract class AbstractASMBackend {
             modifier |= Opcodes.ACC_SUPER;
         }
         // Retrieve abstract-modifier
-        if (Modifier.isAbstract(modVal) && !(host instanceof SootField)) {
+        if (Modifier.isAbstract(modVal) && !(host instanceof FieldModel)) {
             modifier |= Opcodes.ACC_ABSTRACT;
         }
         // Retrieve strictFP-modifier
-        if (Modifier.isStrictFP(modVal) && host instanceof SootMethod) {
+        if (Modifier.isStrictFP(modVal) && host instanceof MethodModel) {
             modifier |= Opcodes.ACC_STRICT;
         }
         /*
@@ -670,7 +673,7 @@ public abstract class AbstractASMBackend {
             modifier |= Opcodes.ACC_ANNOTATION;
         }
         // Retrieve enum-modifier
-        if (Modifier.isEnum(modVal) && !(host instanceof SootMethod)) {
+        if (Modifier.isEnum(modVal) && !(host instanceof MethodModel)) {
             modifier |= Opcodes.ACC_ENUM;
         }
         return modifier;
@@ -682,5 +685,5 @@ public abstract class AbstractASMBackend {
      * @param mv     The MethodVisitor to emit the bytecode to
      * @param method The SootMethod the bytecode is to be emitted for
      */
-    protected abstract void generateMethodBody(MethodVisitor mv, SootMethod method);
+    protected abstract void generateMethodBody(MethodVisitor mv, MethodModel method);
 }

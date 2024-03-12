@@ -22,6 +22,8 @@ package soot.asm.body;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -1806,13 +1808,13 @@ public class AsmMethodSource implements MethodSource {
 
     private void emitLocals() {
         JimpleBody jb = body;
-        SootMethod m = jb.getMethod();
+        MethodModel m = jb.getMethod();
         Collection<Local> jbl = jb.getLocals();
         Collection<Unit> jbu = jb.getUnits();
         int iloc = 0;
         if (!m.isStatic()) {
             Local l = getLocal(iloc++);
-            jbu.add(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(m.getDeclaringClass().getType())));
+            jbu.add(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(m.getDeclaringClass().getClassType())));
         }
         int nrp = 0;
         for (Object ot : m.getParameterTypes()) {
@@ -1979,7 +1981,7 @@ public class AsmMethodSource implements MethodSource {
     }
 
     @Override
-    public Body getBody(SootMethod m, String phaseName) {
+    public Body getBody(MethodModel m, String phaseName) {
         if (!m.isConcrete() || instructions == null || instructions.size() == 0) {
             return null;
         }

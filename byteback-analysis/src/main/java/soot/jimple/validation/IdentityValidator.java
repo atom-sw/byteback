@@ -22,6 +22,7 @@ package soot.jimple.validation;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
@@ -44,7 +45,7 @@ public enum IdentityValidator implements BodyValidator {
 
     @Override
     public void validate(Body body, List<ValidationException> exceptions) {
-        final SootMethod method = body.getMethod();
+        final MethodModel method = body.getMethod();
         final int paramCount = method.getParameterCount();
         final boolean[] parameterRefs = new boolean[paramCount];
 

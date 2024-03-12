@@ -22,7 +22,7 @@ package soot.jimple.spark.fieldrw;
  * #L%
  */
 
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 import soot.tag.Tag;
 
 import java.util.Set;
@@ -34,10 +34,10 @@ public abstract class FieldRWTag implements Tag {
 
     private final String fieldNames;
 
-    FieldRWTag(Set<SootField> fields) {
+    FieldRWTag(Set<FieldModel> fields) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (SootField field : fields) {
+        for (FieldModel field : fields) {
             if (first) {
                 first = false;
             } else {

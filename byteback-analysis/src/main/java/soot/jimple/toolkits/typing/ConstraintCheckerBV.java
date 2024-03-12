@@ -83,9 +83,9 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
             if (base instanceof Local) {
                 Local local = (Local) base;
 
-                if (!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.declaringClass().getType()))) {
+                if (!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.declaringClass().getClassType()))) {
                     if (fix) {
-                        invoke.setBase(insertCast(local, method.declaringClass().getType(), invokestmt));
+                        invoke.setBase(insertCast(local, method.declaringClass().getClassType(), invokestmt));
                     } else {
                         error("Type Error(7): local " + local + " is of incompatible type " + local.getType());
                     }
@@ -115,9 +115,9 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
             if (base instanceof Local) {
                 Local local = (Local) base;
 
-                if (!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.declaringClass().getType()))) {
+                if (!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.declaringClass().getClassType()))) {
                     if (fix) {
-                        invoke.setBase(insertCast(local, method.declaringClass().getType(), invokestmt));
+                        invoke.setBase(insertCast(local, method.declaringClass().getClassType(), invokestmt));
                     } else {
                         error("Type Error(9)");
                     }
@@ -147,9 +147,9 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
             if (base instanceof Local) {
                 Local local = (Local) base;
 
-                if (!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.declaringClass().getType()))) {
+                if (!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(method.declaringClass().getClassType()))) {
                     if (fix) {
-                        invoke.setBase(insertCast(local, method.declaringClass().getType(), invokestmt));
+                        invoke.setBase(insertCast(local, method.declaringClass().getClassType(), invokestmt));
                     } else {
                         error("Type Error(13)");
                     }
@@ -239,9 +239,9 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
 
             TypeNode base = hierarchy.typeNode(ref.getBase().getType());
 
-            if (!base.hasAncestorOrSelf(hierarchy.typeNode(ref.getField().getDeclaringClass().getType()))) {
+            if (!base.hasAncestorOrSelf(hierarchy.typeNode(ref.getField().getDeclaringClass().getClassType()))) {
                 if (fix) {
-                    ref.setBase(insertCast((Local) ref.getBase(), ref.getField().getDeclaringClass().getType(), stmt));
+                    ref.setBase(insertCast((Local) ref.getBase(), ref.getField().getDeclaringClass().getClassType(), stmt));
                 } else {
                     error("Type Error(18)");
                 }
@@ -520,9 +520,9 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
             InstanceFieldRef ref = (InstanceFieldRef) r;
 
             TypeNode baseType = hierarchy.typeNode(ref.getBase().getType());
-            if (!baseType.hasAncestorOrSelf(hierarchy.typeNode(ref.getField().getDeclaringClass().getType()))) {
+            if (!baseType.hasAncestorOrSelf(hierarchy.typeNode(ref.getField().getDeclaringClass().getClassType()))) {
                 if (fix) {
-                    ref.setBase(insertCast((Local) ref.getBase(), ref.getField().getDeclaringClass().getType(), stmt));
+                    ref.setBase(insertCast((Local) ref.getBase(), ref.getField().getDeclaringClass().getClassType(), stmt));
                 } else {
                     error("Type Error(42)");
                 }

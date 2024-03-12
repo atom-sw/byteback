@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.AbstractObject;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
@@ -36,7 +36,7 @@ public class JavaLangClassNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -140,7 +140,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * private static native java.lang.Class forName0(java.lang.String, boolean, java.lang.ClassLoader) throws
      * java.lang.ClassNotFoundException;
      */
-    public void java_lang_Class_forName0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_forName0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                          ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -150,7 +150,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.Object newInstance0() throws java.lang.InstantiationException, java.lang.IllegalAccessException
      */
-    public void java_lang_Class_newInstance0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_newInstance0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                              ReferenceVariable[] params) {
         ReferenceVariable instanceVar = helper.newInstanceOf(thisVar);
         helper.assign(returnVar, instanceVar);
@@ -161,7 +161,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * public native java.lang.String getName();
      */
-    public void java_lang_Class_getName(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getName(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                         ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getStringObject());
     }
@@ -174,7 +174,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.ClassLoader getClassLoader0();
      */
-    public void java_lang_Class_getClassLoader0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getClassLoader0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                 ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
     }
@@ -184,7 +184,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * public native java.lang.Class getSuperclass();
      */
-    public void java_lang_Class_getSuperclass(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getSuperclass(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                               ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -194,7 +194,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * public native java.lang.Class getInterfaces()[];
      */
-    public void java_lang_Class_getInterfaces(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getInterfaces(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                               ReferenceVariable[] params) {
         /* currently, we do not distinguish array object and scalar object. */
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
@@ -206,7 +206,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * public native java.lang.Class getComponentType();
      */
-    public void java_lang_Class_getComponentType(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getComponentType(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                  ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -217,7 +217,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * native void setSigners(java.lang.Object[]);
      */
-    public void java_lang_Class_setSigners(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_setSigners(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                            ReferenceVariable[] params) {
         ReferenceVariable tempFld = helper.tempField("<java.lang.Class signers>");
         helper.assign(tempFld, params[0]);
@@ -228,7 +228,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * public native java.lang.Object getSigners()[];
      */
-    public void java_lang_Class_getSigners(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getSigners(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                            ReferenceVariable[] params) {
         ReferenceVariable tempFld = helper.tempField("<java.lang.Class signers>");
         helper.assign(returnVar, tempFld);
@@ -244,7 +244,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * public native java.lang.Class getDeclaringClass();
      */
-    public void java_lang_Class_getDeclaringClass(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getDeclaringClass(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                   ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -256,7 +256,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * native void setProtectionDomain0(java.security.ProtectionDomain);
      */
-    public void java_lang_Class_setProtectionDomain0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_setProtectionDomain0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                      ReferenceVariable[] params) {
         ReferenceVariable protdmn = helper.tempField("<java.lang.Class ProtDmn>");
         helper.assign(protdmn, params[0]);
@@ -265,7 +265,7 @@ public class JavaLangClassNative extends NativeMethodClass {
     /**
      * private native java.security.ProtectionDomain getProtectionDomain0();
      */
-    public void java_lang_Class_getProtectionDomain0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getProtectionDomain0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                      ReferenceVariable[] params) {
         ReferenceVariable protdmn = helper.tempField("<java.lang.Class ProtDmn>");
         helper.assign(returnVar, protdmn);
@@ -276,7 +276,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * static native java.lang.Class getPrimitiveClass(java.lang.String);
      */
-    public void java_lang_Class_getPrimitiveClass(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getPrimitiveClass(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                   ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -287,7 +287,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.reflect.Field getFields0(int)[];
      */
-    public void java_lang_Class_getFields0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getFields0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                            ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getArrayFields());
     }
@@ -299,7 +299,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.reflect.Method getMethods0(int)[];
      */
-    public void java_lang_Class_getMethods0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getMethods0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                             ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getArrayMethods());
     }
@@ -311,7 +311,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.reflect.Constructor getConstructors0(int)[];
      */
-    public void java_lang_Class_getConstructors0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getConstructors0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                  ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getArrayConstructor());
     }
@@ -327,7 +327,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.reflect.Field getField0(java.lang.String, int);
      */
-    public void java_lang_Class_getField0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getField0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                           ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getArrayFields());
     }
@@ -340,7 +340,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.reflect.Method getMethod0(java.lang.String, java.lang.Class[], int);
      */
-    public void java_lang_Class_getMethod0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getMethod0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                            ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getMethodObject());
     }
@@ -350,7 +350,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.reflect.Constructor getConstructor0(java.lang.Class[], int);
      */
-    public void java_lang_Class_getConstructor0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getConstructor0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                 ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getConstructorObject());
     }
@@ -361,7 +361,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.Class[] getDeclaredClasses0();
      */
-    public void java_lang_Class_getDeclaredClasses0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Class_getDeclaredClasses0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                     ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getArrayClasses());
     }
@@ -372,7 +372,7 @@ public class JavaLangClassNative extends NativeMethodClass {
      * <p>
      * private native java.lang.reflect.Constructor[] getDeclaredConstructors0(boolean);
      */
-    public void java_lang_Class_getDeclaredConstructors0(SootMethod method, ReferenceVariable thisVar,
+    public void java_lang_Class_getDeclaredConstructors0(MethodModel method, ReferenceVariable thisVar,
                                                          ReferenceVariable returnVar, ReferenceVariable[] params) {
         AbstractObject array = Environment.v().getArrayConstructor();
         AbstractObject cons = Environment.v().getConstructorObject();

@@ -23,6 +23,8 @@ package soot.jimple.internal;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.baf.syntax.Baf;
 import soot.jimple.*;
@@ -114,7 +116,7 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
         return bsmRef;
     }
 
-    public SootMethod getBootstrapMethod() {
+    public MethodModel getBootstrapMethod() {
         return bsmRef.resolve();
     }
 
@@ -171,7 +173,7 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
 
         buf.append(methodRef.name()); // quoted method name (can be any UTF8 string)
         buf.append("\" <");
-        buf.append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
+        buf.append(MethodModel.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
         buf.append(">(");
 
         if (argBoxes != null) {
@@ -200,7 +202,7 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
     @Override
     public void toString(UnitPrinter up) {
         up.literal(Jimple.DYNAMICINVOKE + " \"" + methodRef.name() + "\" <"
-                + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType())
+                + MethodModel.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType())
                 + ">(");
 
         if (argBoxes != null) {

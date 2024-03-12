@@ -22,6 +22,7 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.util.Invalidable;
@@ -72,7 +73,7 @@ public final class Edge implements Invalidable {
         this.tgt = tgt;
     }
 
-    public SootMethod src() {
+    public MethodModel src() {
         return (src == null) ? null : src.method();
     }
 
@@ -92,7 +93,7 @@ public final class Edge implements Invalidable {
         return (Stmt) srcUnit;
     }
 
-    public SootMethod tgt() {
+    public MethodModel tgt() {
         return (tgt == null) ? null : tgt.method();
     }
 

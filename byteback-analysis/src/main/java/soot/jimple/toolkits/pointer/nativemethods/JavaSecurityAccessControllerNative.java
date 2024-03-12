@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -35,7 +35,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -80,7 +80,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
      * public static native java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,
      * java.security.AccessControlContext) throws java.security.PrivilegedActionException;
      */
-    public void java_security_AccessController_doPrivileged(SootMethod method, ReferenceVariable thisVar,
+    public void java_security_AccessController_doPrivileged(MethodModel method, ReferenceVariable thisVar,
                                                             ReferenceVariable returnVar, ReferenceVariable[] params) {
         // No longer necessary since Spark handles it itself in a more precise
         // way.
@@ -93,7 +93,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
      * <p>
      * private static native java.security.AccessControlContext getStackAccessControlContext();
      */
-    public void java_security_AccessController_getStackAccessControlContext(SootMethod method, ReferenceVariable thisVar,
+    public void java_security_AccessController_getStackAccessControlContext(MethodModel method, ReferenceVariable thisVar,
                                                                             ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getAccessControlContext());
     }
@@ -103,7 +103,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
      * <p>
      * static native java.security.AccessControlContext getInheritedAccessControlContext();
      */
-    public void java_security_AccessController_getInheritedAccessControlContext(SootMethod method, ReferenceVariable thisVar,
+    public void java_security_AccessController_getInheritedAccessControlContext(MethodModel method, ReferenceVariable thisVar,
                                                                                 ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getAccessControlContext());
     }

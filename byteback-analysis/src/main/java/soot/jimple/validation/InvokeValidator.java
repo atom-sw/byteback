@@ -22,6 +22,8 @@ package soot.jimple.validation;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.validation.BodyValidator;
@@ -45,7 +47,7 @@ public enum InvokeValidator implements BodyValidator {
                     final InvokeExpr ie = statement.getInvokeExpr();
                     final SootMethodRef methodRef = ie.getMethodRef();
                     try {
-                        final SootMethod method = methodRef.resolve();
+                        final MethodModel method = methodRef.resolve();
                         if (!method.isPhantom()) {
                             if (method.isStaticInitializer()) {
                                 exceptions.add(new ValidationException(unit, "Calling <clinit> methods is not allowed."));

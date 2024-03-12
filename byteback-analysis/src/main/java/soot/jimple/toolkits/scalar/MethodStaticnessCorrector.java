@@ -22,6 +22,7 @@ package soot.jimple.toolkits.scalar;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -61,7 +62,7 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
                     if (iexpr instanceof StaticInvokeExpr) {
                         SootMethodRef methodRef = iexpr.getMethodRef();
                         if (isClassLoaded(methodRef.declaringClass())) {
-                            SootMethod target = Scene.v().grabMethod(methodRef.getSignature());
+                            MethodModel target = Scene.v().grabMethod(methodRef.getSignature());
                             if (target != null && !target.isStatic()) {
                                 if (canBeMadeStatic(target)) {
                                     // Remove the this-assignment to prevent
@@ -85,7 +86,7 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
      * @param target The method to check
      * @return True if the given method can be made static, otherwise false
      */
-    private boolean canBeMadeStatic(SootMethod target) {
+    private boolean canBeMadeStatic(MethodModel target) {
         if (!target.hasActiveBody()) {
             return false;
         }

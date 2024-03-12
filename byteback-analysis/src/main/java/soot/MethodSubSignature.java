@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import com.google.common.base.Joiner;
 import soot.jimple.Stmt;
 import soot.util.NumberedString;
@@ -113,7 +115,7 @@ public class MethodSubSignature {
      * @param c the class
      * @return the method (or null)
      */
-    public SootMethod getInClassUnsafe(ClassModel c) {
+    public MethodModel getInClassUnsafe(ClassModel c) {
         return c.getMethodUnsafe(numberedSubSig);
     }
 

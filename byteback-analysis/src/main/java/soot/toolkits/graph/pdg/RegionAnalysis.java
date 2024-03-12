@@ -22,6 +22,8 @@ package soot.toolkits.graph.pdg;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -46,7 +48,7 @@ public class RegionAnalysis {
     private static final Logger logger = LoggerFactory.getLogger(RegionAnalysis.class);
 
     protected ClassModel m_class = null;
-    protected SootMethod m_method = null;
+    protected MethodModel m_method = null;
     protected Body m_methodBody;
     protected UnitGraph m_cfg;
     protected UnitGraph m_reverseCFG;
@@ -61,7 +63,7 @@ public class RegionAnalysis {
     protected Region m_topLevelRegion = null;
     protected Hashtable<Block, Region> m_block2region = null;
 
-    public RegionAnalysis(UnitGraph cfg, SootMethod m, ClassModel c) {
+    public RegionAnalysis(UnitGraph cfg, MethodModel m, ClassModel c) {
         this.m_methodBody = cfg.getBody();
         this.m_cfg = cfg;
         this.m_method = m;

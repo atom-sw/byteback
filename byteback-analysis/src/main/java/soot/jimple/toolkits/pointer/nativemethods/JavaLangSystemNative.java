@@ -24,7 +24,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -39,7 +39,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -82,7 +82,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
      * <p>
      * public static native void arraycopy(java.lang.Object, int, java.lang.Object, int, int);
      */
-    public void java_lang_System_arraycopy(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_System_arraycopy(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                            ReferenceVariable[] params) {
         ReferenceVariable srcElm = helper.arrayElementOf(params[0]);
         ReferenceVariable dstElm = helper.arrayElementOf(params[2]);
@@ -98,7 +98,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
      * <p>
      * private static native void setIn0(java.io.InputStream);
      */
-    public void java_lang_System_setIn0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_System_setIn0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                         ReferenceVariable[] params) {
         ReferenceVariable sysIn = helper.staticField("java.lang.System", "in");
         helper.assign(sysIn, params[0]);
@@ -109,7 +109,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
      * <p>
      * private static native void setOut0(java.io.PrintStream);
      */
-    public void java_lang_System_setOut0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_System_setOut0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                          ReferenceVariable[] params) {
         ReferenceVariable sysOut = helper.staticField("java.lang.System", "out");
         helper.assign(sysOut, params[0]);
@@ -120,7 +120,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
      * <p>
      * private static native void setErr0(java.io.PrintStream);
      */
-    public void java_lang_System_setErr0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_System_setErr0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                          ReferenceVariable[] params) {
         ReferenceVariable sysErr = helper.staticField("java.lang.System", "err");
         helper.assign(sysErr, params[0]);
@@ -133,7 +133,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
      * <p>
      * private static native java.util.Properties initProperties(java.util.Properties);
      */
-    public void java_lang_System_initProperties(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_System_initProperties(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                 ReferenceVariable[] params) {
         ReferenceVariable sysProps = helper.staticField("java.lang.System", "props");
         helper.assign(returnVar, sysProps);
@@ -145,7 +145,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
      * <p>
      * public static native java.lang.String mapLibraryName(java.lang.String);
      */
-    public void java_lang_System_mapLibraryName(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_System_mapLibraryName(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                 ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getStringObject());
     }
@@ -155,7 +155,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
      * <p>
      * static native java.lang.Class getCallerClass();
      */
-    public void java_lang_System_getCallerClass(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_System_getCallerClass(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                 ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }

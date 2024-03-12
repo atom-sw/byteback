@@ -23,6 +23,7 @@ package soot.jimple;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
 import soot.*;
 import soot.baf.syntax.Baf;
 import soot.util.Switch;
@@ -61,7 +62,7 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf {
         this.fieldRef = fieldRef;
     }
 
-    public SootField getField() {
+    public FieldModel getField() {
         return fieldRef.resolve();
     }
 

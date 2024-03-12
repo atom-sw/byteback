@@ -22,6 +22,7 @@ package soot.jimple.toolkits.annotation.nullcheck;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;

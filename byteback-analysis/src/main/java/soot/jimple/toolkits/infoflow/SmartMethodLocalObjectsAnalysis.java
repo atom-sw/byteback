@@ -25,7 +25,7 @@ package soot.jimple.toolkits.infoflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.EquivalentValue;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Value;
 import soot.jimple.Constant;
 import soot.jimple.FieldRef;
@@ -45,11 +45,11 @@ public class SmartMethodLocalObjectsAnalysis {
     public static int counter = 0;
     static boolean printMessages;
 
-    SootMethod method;
+    MethodModel method;
     InfoFlowAnalysis dfa;
     SmartMethodInfoFlowAnalysis smdfa;
 
-    public SmartMethodLocalObjectsAnalysis(SootMethod method, InfoFlowAnalysis dfa) {
+    public SmartMethodLocalObjectsAnalysis(MethodModel method, InfoFlowAnalysis dfa) {
         this.method = method;
         this.dfa = dfa;
         this.smdfa = dfa.getMethodInfoFlowAnalysis(method);
@@ -101,7 +101,7 @@ public class SmartMethodLocalObjectsAnalysis {
         return true;
     }
 
-    public static boolean isObjectLocal(InfoFlowAnalysis dfa, SootMethod method, CallLocalityContext context, Value local) {
+    public static boolean isObjectLocal(InfoFlowAnalysis dfa, MethodModel method, CallLocalityContext context, Value local) {
         SmartMethodInfoFlowAnalysis smdfa = dfa.getMethodInfoFlowAnalysis(method);
 
         EquivalentValue localEqVal;

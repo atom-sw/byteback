@@ -23,18 +23,18 @@ package soot.jimple.toolkits.annotation.arraycheck;
  */
 
 import soot.Local;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 class ArrayReferenceNode {
-    private final SootMethod m;
+    private final MethodModel m;
     private final Local l;
 
-    public ArrayReferenceNode(SootMethod method, Local local) {
+    public ArrayReferenceNode(MethodModel method, Local local) {
         m = method;
         l = local;
     }
 
-    public SootMethod getMethod() {
+    public MethodModel getMethod() {
         return m;
     }
 

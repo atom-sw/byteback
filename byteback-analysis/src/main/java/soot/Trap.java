@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+
 import java.util.List;
 
 /**

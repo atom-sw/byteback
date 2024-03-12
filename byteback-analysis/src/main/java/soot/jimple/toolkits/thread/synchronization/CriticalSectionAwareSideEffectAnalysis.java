@@ -22,6 +22,9 @@ package soot.jimple.toolkits.thread.synchronization;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -73,8 +76,8 @@ class WholeObject {
             return type == ((FieldRef) o).getType();
         } else if (o instanceof SootFieldRef) {
             return type == ((SootFieldRef) o).type();
-        } else if (o instanceof SootField) {
-            return type == ((SootField) o).getType();
+        } else if (o instanceof FieldModel) {
+            return type == ((FieldModel) o).getType();
         } else {
             return true;
         }
@@ -84,8 +87,8 @@ class WholeObject {
 public class CriticalSectionAwareSideEffectAnalysis {
     PointsToAnalysis pa;
     CallGraph cg;
-    Map<SootMethod, CodeBlockRWSet> methodToNTReadSet = new HashMap<SootMethod, CodeBlockRWSet>();
-    Map<SootMethod, CodeBlockRWSet> methodToNTWriteSet = new HashMap<SootMethod, CodeBlockRWSet>();
+    Map<MethodModel, CodeBlockRWSet> methodToNTReadSet = new HashMap<MethodModel, CodeBlockRWSet>();
+    Map<MethodModel, CodeBlockRWSet> methodToNTWriteSet = new HashMap<MethodModel, CodeBlockRWSet>();
     int rwsetcount = 0;
     CriticalSectionVisibleEdgesPred tve;
     TransitiveTargets tt;
@@ -100,7 +103,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
     public Vector sigWriteGraylist;
     public Vector subSigBlacklist;
 
-    public void findNTRWSets(SootMethod method) {
+    public void findNTRWSets(MethodModel method) {
         if (methodToNTReadSet.containsKey(method) && methodToNTWriteSet.containsKey(method)) {
             return;
         }
@@ -141,7 +144,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
                 }
                 if (s.containsInvokeExpr()) {
                     InvokeExpr ie = s.getInvokeExpr();
-                    SootMethod calledMethod = ie.getMethod();
+                    MethodModel calledMethod = ie.getMethod();
 
                     // if it's an invoke on certain lib methods
                     if (calledMethod.getDeclaringClass().toString().startsWith("java.util")
@@ -196,12 +199,12 @@ public class CriticalSectionAwareSideEffectAnalysis {
         tve.setExemptTransaction(tn);
     }
 
-    public RWSet nonTransitiveReadSet(SootMethod method) {
+    public RWSet nonTransitiveReadSet(MethodModel method) {
         findNTRWSets(method);
         return methodToNTReadSet.get(method);
     }
 
-    public RWSet nonTransitiveWriteSet(SootMethod method) {
+    public RWSet nonTransitiveWriteSet(MethodModel method) {
         findNTRWSets(method);
         return methodToNTWriteSet.get(method);
     }
@@ -257,7 +260,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
          */
     }
 
-    private RWSet ntReadSet(SootMethod method, Stmt stmt) {
+    private RWSet ntReadSet(MethodModel method, Stmt stmt) {
         if (stmt instanceof AssignStmt a) {
           Value r = a.getRightOp();
             if (r instanceof NewExpr) {
@@ -270,7 +273,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
 
     private final HashMap<Stmt, RWSet> RCache = new HashMap<Stmt, RWSet>();
 
-    public RWSet approximatedReadSet(SootMethod method, Stmt stmt, Value specialRead, boolean allFields) { // used for stmts
+    public RWSet approximatedReadSet(MethodModel method, Stmt stmt, Value specialRead, boolean allFields) { // used for stmts
         // with method calls
         // where the
         // effect of the
@@ -297,8 +300,8 @@ public class CriticalSectionAwareSideEffectAnalysis {
                         List<ClassModel> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
                         if (!baseClasses.contains(RefType.v("java.lang.Exception").getSootClass())) {
                             for (ClassModel baseClass : baseClasses) {
-                                for (Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); ) {
-                                    SootField baseField = (SootField) baseFieldIt.next();
+                                for (Iterator baseFieldIt = baseClass.getFieldModels().iterator(); baseFieldIt.hasNext(); ) {
+                                    FieldModel baseField = (FieldModel) baseFieldIt.next();
                                     if (!baseField.isStatic()) {
                                         ret.addFieldRef(base, baseField);
                                     }
@@ -356,11 +359,11 @@ public class CriticalSectionAwareSideEffectAnalysis {
         return ret;
     }
 
-    public RWSet readSet(SootMethod method, Stmt stmt, CriticalSection tn, Set uses) {
+    public RWSet readSet(MethodModel method, Stmt stmt, CriticalSection tn, Set uses) {
         boolean ignore = false;
         if (stmt.containsInvokeExpr()) {
             InvokeExpr ie = stmt.getInvokeExpr();
-            SootMethod calledMethod = ie.getMethod();
+            MethodModel calledMethod = ie.getMethod();
             if (ie instanceof StaticInvokeExpr) {
                 // ignore = false;
             } else if (ie instanceof InstanceInvokeExpr) {
@@ -377,7 +380,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
         tve.setExemptTransaction(tn);
         Iterator<MethodOrMethodContext> targets = tt.iterator(stmt);
         while (!ignore && targets.hasNext()) {
-            SootMethod target = (SootMethod) targets.next();
+            MethodModel target = (MethodModel) targets.next();
             // if( target.isNative() ) {
             // if( ret == null ) ret = new SiteRWSet();
             // ret.setCallsNative();
@@ -429,7 +432,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
 
         if (stmt.containsInvokeExpr()) {
             InvokeExpr ie = stmt.getInvokeExpr();
-            SootMethod calledMethod = ie.getMethod();
+            MethodModel calledMethod = ie.getMethod();
 
             // if it's an invoke on certain lib methods
             if (calledMethod.getDeclaringClass().toString().startsWith("java.util")
@@ -468,7 +471,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
         return ret;
     }
 
-    private RWSet ntWriteSet(SootMethod method, Stmt stmt) {
+    private RWSet ntWriteSet(MethodModel method, Stmt stmt) {
         if (stmt instanceof AssignStmt a) {
           Value l = a.getLeftOp();
             return addValue(l, method, stmt);
@@ -478,7 +481,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
 
     private final HashMap<Stmt, RWSet> WCache = new HashMap<Stmt, RWSet>();
 
-    public RWSet approximatedWriteSet(SootMethod method, Stmt stmt, Value v, boolean allFields) { // used for stmts with method
+    public RWSet approximatedWriteSet(MethodModel method, Stmt stmt, Value v, boolean allFields) { // used for stmts with method
         // calls where the effect
         // of
         // the method call should be
@@ -500,8 +503,8 @@ public class CriticalSectionAwareSideEffectAnalysis {
                         List<ClassModel> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
                         if (!baseClasses.contains(RefType.v("java.lang.Exception").getSootClass())) {
                             for (ClassModel baseClass : baseClasses) {
-                                for (Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); ) {
-                                    SootField baseField = (SootField) baseFieldIt.next();
+                                for (Iterator baseFieldIt = baseClass.getFieldModels().iterator(); baseFieldIt.hasNext(); ) {
+                                    FieldModel baseField = (FieldModel) baseFieldIt.next();
                                     if (!baseField.isStatic()) {
                                         ret.addFieldRef(base, baseField);
                                     }
@@ -553,11 +556,11 @@ public class CriticalSectionAwareSideEffectAnalysis {
         return ret;
     }
 
-    public RWSet writeSet(SootMethod method, Stmt stmt, CriticalSection tn, Set uses) {
+    public RWSet writeSet(MethodModel method, Stmt stmt, CriticalSection tn, Set uses) {
         boolean ignore = false;
         if (stmt.containsInvokeExpr()) {
             InvokeExpr ie = stmt.getInvokeExpr();
-            SootMethod calledMethod = ie.getMethod();
+            MethodModel calledMethod = ie.getMethod();
             if (ie instanceof StaticInvokeExpr) {
                 // ignore = false;
             } else if (ie instanceof InstanceInvokeExpr) {
@@ -574,7 +577,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
         tve.setExemptTransaction(tn);
         Iterator<MethodOrMethodContext> targets = tt.iterator(stmt);
         while (!ignore && targets.hasNext()) {
-            SootMethod target = (SootMethod) targets.next();
+            MethodModel target = (MethodModel) targets.next();
             // if( target.isNative() ) {
             // if( ret == null ) ret = new SiteRWSet();
             // ret.setCallsNative();
@@ -620,7 +623,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
 
         if (stmt.containsInvokeExpr()) {
             InvokeExpr ie = stmt.getInvokeExpr();
-            SootMethod calledMethod = ie.getMethod();
+            MethodModel calledMethod = ie.getMethod();
 
             // if it's an invoke on certain lib methods
             if (calledMethod.getDeclaringClass().toString().startsWith("java.util")
@@ -655,7 +658,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
         return ret;
     }
 
-    public RWSet valueRWSet(Value v, SootMethod m, Stmt s, CriticalSection tn) {
+    public RWSet valueRWSet(Value v, MethodModel m, Stmt s, CriticalSection tn) {
         RWSet ret = null;
 
         if (tlo != null) {
@@ -714,7 +717,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
         return ret;
     }
 
-    protected RWSet addValue(Value v, SootMethod m, Stmt s) {
+    protected RWSet addValue(Value v, MethodModel m, Stmt s) {
         RWSet ret = null;
 
         if (tlo != null) {

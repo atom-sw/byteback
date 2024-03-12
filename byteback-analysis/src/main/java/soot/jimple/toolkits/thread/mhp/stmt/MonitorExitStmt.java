@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread.mhp.stmt;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
 
@@ -39,7 +39,7 @@ import soot.toolkits.graph.UnitGraph;
 
 public class MonitorExitStmt extends JPegStmt {
 
-    public MonitorExitStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm) {
+    public MonitorExitStmt(String obj, String ca, Unit un, UnitGraph ug, MethodModel sm) {
         this.object = obj;
         this.name = "exit";
         this.caller = ca;
@@ -47,12 +47,12 @@ public class MonitorExitStmt extends JPegStmt {
         this.unitGraph = ug;
     }
 
-    public MonitorExitStmt(String obj, String ca, UnitGraph ug, SootMethod sm) {
+    public MonitorExitStmt(String obj, String ca, UnitGraph ug, MethodModel sm) {
         this.object = obj;
         this.name = "exit";
         this.caller = ca;
         this.unitGraph = ug;
-        this.sootMethod = sm;
+        this.methodModel = sm;
     }
 
 }

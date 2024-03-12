@@ -22,6 +22,8 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -100,21 +102,21 @@ public class OnFlyCallGraphBuilder {
 
     // end type based reflection resolution
     protected final Map<Local, List<VirtualCallSite>> receiverToSites;
-    protected final Map<SootMethod, List<Local>> methodToReceivers;
-    protected final Map<SootMethod, List<Local>> methodToInvokeBases;
-    protected final Map<SootMethod, List<Local>> methodToInvokeArgs;
-    protected final Map<SootMethod, List<Local>> methodToStringConstants;
+    protected final Map<MethodModel, List<Local>> methodToReceivers;
+    protected final Map<MethodModel, List<Local>> methodToInvokeBases;
+    protected final Map<MethodModel, List<Local>> methodToInvokeArgs;
+    protected final Map<MethodModel, List<Local>> methodToStringConstants;
     protected final Map<Local, List<VirtualCallSite>> stringConstToSites;
 
-    protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
+    protected final HashSet<MethodModel> analyzedMethods = new HashSet<MethodModel>();
     protected final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
     protected final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
     protected final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
     protected final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
     protected final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
     protected final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
-    protected final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
-    protected final QueueReader<SootMethod> targets = targetsQueue.reader();
+    protected final ChunkedQueue<MethodModel> targetsQueue = new ChunkedQueue<MethodModel>();
+    protected final QueueReader<MethodModel> targets = targetsQueue.reader();
 
     protected final ReflectionModel reflectionModel;
     protected final CGOptions options;
@@ -131,7 +133,7 @@ public class OnFlyCallGraphBuilder {
 
     protected NullnessAnalysis nullnessCache = null;
     protected ConstantArrayAnalysis arrayCache = null;
-    protected SootMethod analysisKey = null;
+    protected MethodModel analysisKey = null;
 
     public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm, boolean appOnly) {
         final Scene sc = Scene.v();
@@ -143,10 +145,10 @@ public class OnFlyCallGraphBuilder {
         }
         {
             this.receiverToSites = new HashMap<Local, List<VirtualCallSite>>();
-            this.methodToReceivers = new HashMap<SootMethod, List<Local>>();
-            this.methodToInvokeBases = new HashMap<SootMethod, List<Local>>();
-            this.methodToInvokeArgs = new HashMap<SootMethod, List<Local>>();
-            this.methodToStringConstants = new HashMap<SootMethod, List<Local>>();
+            this.methodToReceivers = new HashMap<MethodModel, List<Local>>();
+            this.methodToInvokeBases = new HashMap<MethodModel, List<Local>>();
+            this.methodToInvokeArgs = new HashMap<MethodModel, List<Local>>();
+            this.methodToStringConstants = new HashMap<MethodModel, List<Local>>();
             this.stringConstToSites = new HashMap<Local, List<VirtualCallSite>>();
         }
 
@@ -189,19 +191,19 @@ public class OnFlyCallGraphBuilder {
         return cm;
     }
 
-    public Map<SootMethod, List<Local>> methodToReceivers() {
+    public Map<MethodModel, List<Local>> methodToReceivers() {
         return methodToReceivers;
     }
 
-    public Map<SootMethod, List<Local>> methodToInvokeArgs() {
+    public Map<MethodModel, List<Local>> methodToInvokeArgs() {
         return methodToInvokeArgs;
     }
 
-    public Map<SootMethod, List<Local>> methodToInvokeBases() {
+    public Map<MethodModel, List<Local>> methodToInvokeBases() {
         return methodToInvokeBases;
     }
 
-    public Map<SootMethod, List<Local>> methodToStringConstants() {
+    public Map<MethodModel, List<Local>> methodToStringConstants() {
         return methodToStringConstants;
     }
 
@@ -217,7 +219,7 @@ public class OnFlyCallGraphBuilder {
             if (momc == null) {
                 continue;
             }
-            SootMethod m = momc.method();
+            MethodModel m = momc.method();
             if (appOnly && !m.getDeclaringClass().isApplicationClass()) {
                 continue;
             }
@@ -309,7 +311,7 @@ public class OnFlyCallGraphBuilder {
             final FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
             for (LinkedList<ClassModel> worklist = new LinkedList<>(classRoots); !worklist.isEmpty(); ) {
                 ClassModel cls = worklist.removeFirst();
-                if (resolved.add(cls.getType())) {
+                if (resolved.add(cls.getClassType())) {
                     worklist.addAll(fh.getSubclassesOf(cls));
                 }
             }
@@ -342,8 +344,8 @@ public class OnFlyCallGraphBuilder {
                     }
                     ClassModel baseClass = ((RefType) bType).getSootClass();
                     assert (!baseClass.isInterface());
-                    for (Iterator<SootMethod> mIt = getPublicNullaryMethodIterator(baseClass); mIt.hasNext(); ) {
-                        SootMethod sm = mIt.next();
+                    for (Iterator<MethodModel> mIt = getPublicNullaryMethodIterator(baseClass); mIt.hasNext(); ) {
+                        MethodModel sm = mIt.next();
                         cm.addVirtualEdge(ics.getContainer(), ics.getStmt(), sm, Kind.REFL_INVOKE, null);
                     }
                 }
@@ -369,9 +371,9 @@ public class OnFlyCallGraphBuilder {
                     // we do not handle static methods or array reflection
                     if (!(bType instanceof NullType) && !(bType instanceof ArrayType)) {
                         ClassModel baseClass = ((RefType) bType).getSootClass();
-                        Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, reachingTypes, methodSizes, mustNotBeNull);
+                        Iterator<MethodModel> mIt = getPublicMethodIterator(baseClass, reachingTypes, methodSizes, mustNotBeNull);
                         while (mIt.hasNext()) {
-                            SootMethod sm = mIt.next();
+                            MethodModel sm = mIt.next();
                             cm.addVirtualEdge(ics.container(), ics.stmt(), sm, Kind.REFL_INVOKE, null);
                         }
                     }
@@ -390,17 +392,17 @@ public class OnFlyCallGraphBuilder {
                 continue;
             }
             ClassModel baseClass = ((RefType) bType).getSootClass();
-            for (Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, at); mIt.hasNext(); ) {
-                SootMethod sm = mIt.next();
+            for (Iterator<MethodModel> mIt = getPublicMethodIterator(baseClass, at); mIt.hasNext(); ) {
+                MethodModel sm = mIt.next();
                 cm.addVirtualEdge(ics.getContainer(), ics.getStmt(), sm, Kind.REFL_INVOKE, null);
             }
         }
     }
 
-    private static Iterator<SootMethod> getPublicMethodIterator(ClassModel baseClass, final ArrayTypes at) {
+    private static Iterator<MethodModel> getPublicMethodIterator(ClassModel baseClass, final ArrayTypes at) {
         return new AbstractMethodIterator(baseClass) {
             @Override
-            protected boolean acceptMethod(SootMethod m) {
+            protected boolean acceptMethod(MethodModel m) {
                 if (!at.possibleSizes.contains(m.getParameterCount())) {
                     return false;
                 }
@@ -472,14 +474,14 @@ public class OnFlyCallGraphBuilder {
         }
     }
 
-    private static Iterator<SootMethod> getPublicMethodIterator(final ClassModel baseClass, final Set<Type> reachingTypes,
-                                                                final BitSet methodSizes, final boolean mustNotBeNull) {
+    private static Iterator<MethodModel> getPublicMethodIterator(final ClassModel baseClass, final Set<Type> reachingTypes,
+                                                                 final BitSet methodSizes, final boolean mustNotBeNull) {
         if (baseClass.isPhantom()) {
             return Collections.emptyIterator();
         }
         return new AbstractMethodIterator(baseClass) {
             @Override
-            protected boolean acceptMethod(SootMethod n) {
+            protected boolean acceptMethod(MethodModel n) {
                 if (methodSizes != null) {
                     // if the arg array can be null we have to still allow for nullary methods
                     int nParams = n.getParameterCount();
@@ -498,13 +500,13 @@ public class OnFlyCallGraphBuilder {
         };
     }
 
-    private static Iterator<SootMethod> getPublicNullaryMethodIterator(final ClassModel baseClass) {
+    private static Iterator<MethodModel> getPublicNullaryMethodIterator(final ClassModel baseClass) {
         if (baseClass.isPhantom()) {
             return Collections.emptyIterator();
         }
         return new AbstractMethodIterator(baseClass) {
             @Override
-            protected boolean acceptMethod(SootMethod n) {
+            protected boolean acceptMethod(MethodModel n) {
                 return n.getParameterCount() == 0;
             }
         };
@@ -523,7 +525,7 @@ public class OnFlyCallGraphBuilder {
 
                 final InstanceInvokeExpr iie = site.iie();
                 if (iie instanceof SpecialInvokeExpr && !Kind.isFake(site.kind())) {
-                    SootMethod target = virtualCalls.resolveSpecial(iie.getMethodRef(), site.getContainer(), appOnly);
+                    MethodModel target = virtualCalls.resolveSpecial(iie.getMethodRef(), site.getContainer(), appOnly);
                     // if the call target resides in a phantom class then "target" will be null;
                     // simply do not add the target in that case
                     if (target != null) {
@@ -566,7 +568,7 @@ public class OnFlyCallGraphBuilder {
                     }
                 }
                 while (targets.hasNext()) {
-                    SootMethod target = targets.next();
+                    MethodModel target = targets.next();
                     cm.addVirtualEdge(MethodContext.v(site.getContainer(), srcContext), site.getStmt(), target, site.kind(),
                             typeContext);
                 }
@@ -614,7 +616,7 @@ public class OnFlyCallGraphBuilder {
                     if (!sootcls.isApplicationClass() && !sootcls.isPhantom()) {
                         sootcls.setLibraryClass();
                     }
-                    for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
+                    for (MethodModel clinit : EntryPoints.v().clinitsOf(sootcls)) {
                         cm.addStaticEdge(MethodContext.v(site.getContainer(), srcContext), site.getStmt(), clinit, Kind.CLINIT);
                     }
                 } else if (options.verbose()) {
@@ -673,7 +675,7 @@ public class OnFlyCallGraphBuilder {
      * Finally, for cases like o.invoke(b, foo, bar, baz); it is very easy to statically determine precisely which types are in
      * which argument positions. This is computed using the ConstantArrayAnalysis and are resolved using resolveStaticTypes().
      */
-    private void addInvokeCallSite(Stmt s, SootMethod container, InstanceInvokeExpr d) {
+    private void addInvokeCallSite(Stmt s, MethodModel container, InstanceInvokeExpr d) {
         Local l = (Local) d.getArg(0);
         Value argArray = d.getArg(1);
         InvokeCallSite ics;
@@ -709,7 +711,7 @@ public class OnFlyCallGraphBuilder {
         baseToInvokeSite.put(l, ics);
     }
 
-    private void addVirtualCallSite(Stmt s, SootMethod m, Local receiver, InstanceInvokeExpr iie, MethodSubSignature subSig,
+    private void addVirtualCallSite(Stmt s, MethodModel m, Local receiver, InstanceInvokeExpr iie, MethodSubSignature subSig,
                                     Kind kind) {
         List<VirtualCallSite> sites = receiverToSites.get(receiver);
         if (sites == null) {
@@ -723,7 +725,7 @@ public class OnFlyCallGraphBuilder {
         sites.add(new VirtualCallSite(s, m, iie, subSig, kind));
     }
 
-    protected void processNewMethod(SootMethod m) {
+    protected void processNewMethod(MethodModel m) {
         if (m.isConcrete()) {
             Body b = m.retrieveActiveBody();
             getImplicitTargets(m);
@@ -731,7 +733,7 @@ public class OnFlyCallGraphBuilder {
         }
     }
 
-    protected void findReceivers(SootMethod m, Body b) {
+    protected void findReceivers(MethodModel m, Body b) {
         for (final Unit u : b.getUnits()) {
             final Stmt s = (Stmt) u;
             if (s.containsInvokeExpr()) {
@@ -752,7 +754,7 @@ public class OnFlyCallGraphBuilder {
                         logger.warn("InvokeDynamic to " + ie + " not resolved during call-graph construction.");
                     }
                 } else {
-                    SootMethod tgt = ie.getMethod();
+                    MethodModel tgt = ie.getMethod();
                     if (tgt != null) {
                         addEdge(m, s, tgt);
                         String signature = tgt.getSignature();
@@ -780,7 +782,7 @@ public class OnFlyCallGraphBuilder {
         }
     }
 
-    protected void processVirtualEdgeSummary(SootMethod m, final Stmt s, Local receiver, VirtualEdgeTarget target,
+    protected void processVirtualEdgeSummary(MethodModel m, final Stmt s, Local receiver, VirtualEdgeTarget target,
                                              Kind edgeType) {
         processVirtualEdgeSummary(m, s, s, receiver, target, edgeType);
     }
@@ -843,7 +845,7 @@ public class OnFlyCallGraphBuilder {
         return l == null ? Collections.emptySet() : Collections.singleton(l);
     }
 
-    protected void processVirtualEdgeSummary(SootMethod callSiteMethod, Stmt callSite, final Stmt curStmt, Local receiver,
+    protected void processVirtualEdgeSummary(MethodModel callSiteMethod, Stmt callSite, final Stmt curStmt, Local receiver,
                                              VirtualEdgeTarget target, Kind edgeType) {
         // Get the target object referenced by this edge summary
         InvokeExpr ie = curStmt.getInvokeExpr();
@@ -882,7 +884,7 @@ public class OnFlyCallGraphBuilder {
         }
     }
 
-    private void getImplicitTargets(SootMethod source) {
+    private void getImplicitTargets(MethodModel source) {
         final ClassModel scl = source.getDeclaringClass();
         if (!source.isConcrete()) {
             return;
@@ -918,7 +920,7 @@ public class OnFlyCallGraphBuilder {
                 }
                 if (ie instanceof StaticInvokeExpr) {
                     ClassModel cl = ie.getMethodRef().getDeclaringClass();
-                    for (SootMethod clinit : EntryPoints.v().clinitsOf(cl)) {
+                    for (MethodModel clinit : EntryPoints.v().clinitsOf(cl)) {
                         addEdge(source, s, clinit, Kind.CLINIT);
                     }
                 }
@@ -927,7 +929,7 @@ public class OnFlyCallGraphBuilder {
                 FieldRef fr = s.getFieldRef();
                 if (fr instanceof StaticFieldRef) {
                     ClassModel cl = fr.getFieldRef().declaringClass();
-                    for (SootMethod clinit : EntryPoints.v().clinitsOf(cl)) {
+                    for (MethodModel clinit : EntryPoints.v().clinitsOf(cl)) {
                         addEdge(source, s, clinit, Kind.CLINIT);
                     }
                 }
@@ -936,7 +938,7 @@ public class OnFlyCallGraphBuilder {
                 Value rhs = ((AssignStmt) s).getRightOp();
                 if (rhs instanceof NewExpr r) {
                   ClassModel cl = r.getBaseType().getSootClass();
-                    for (SootMethod clinit : EntryPoints.v().clinitsOf(cl)) {
+                    for (MethodModel clinit : EntryPoints.v().clinitsOf(cl)) {
                         addEdge(source, s, clinit, Kind.CLINIT);
                     }
                 } else if (rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr) {
@@ -946,7 +948,7 @@ public class OnFlyCallGraphBuilder {
                     }
                     if (t instanceof RefType) {
                         ClassModel cl = ((RefType) t).getSootClass();
-                        for (SootMethod clinit : EntryPoints.v().clinitsOf(cl)) {
+                        for (MethodModel clinit : EntryPoints.v().clinitsOf(cl)) {
                             addEdge(source, s, clinit, Kind.CLINIT);
                         }
                     }
@@ -956,18 +958,18 @@ public class OnFlyCallGraphBuilder {
     }
 
     protected void processNewMethodContext(MethodOrMethodContext momc) {
-        SootMethod m = momc.method();
+        MethodModel m = momc.method();
         for (Iterator<Edge> it = cicg.edgesOutOf(m); it.hasNext(); ) {
             Edge e = it.next();
             cm.addStaticEdge(momc, e.srcUnit(), e.tgt(), e.kind());
         }
     }
 
-    private void handleInit(SootMethod source, final ClassModel scl) {
+    private void handleInit(MethodModel source, final ClassModel scl) {
         addEdge(source, null, scl, sigFinalize, Kind.FINALIZE);
     }
 
-    private void constantForName(final String cls, SootMethod src, Stmt srcUnit) {
+    private void constantForName(final String cls, MethodModel src, Stmt srcUnit) {
         final int clsLen = cls.length();
         if (clsLen > 0 && cls.charAt(0) == '[') {
             if (clsLen > 2 && cls.charAt(1) == 'L' && cls.charAt(clsLen - 1) == ';') {
@@ -981,7 +983,7 @@ public class OnFlyCallGraphBuilder {
                     if (!sootcls.isApplicationClass()) {
                         sootcls.setLibraryClass();
                     }
-                    for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
+                    for (MethodModel clinit : EntryPoints.v().clinitsOf(sootcls)) {
                         addEdge(src, srcUnit, clinit, Kind.CLINIT);
                     }
                 }
@@ -991,21 +993,21 @@ public class OnFlyCallGraphBuilder {
         }
     }
 
-    private void addEdge(SootMethod src, Stmt stmt, SootMethod tgt, Kind kind) {
+    private void addEdge(MethodModel src, Stmt stmt, MethodModel tgt, Kind kind) {
         if (src.equals(tgt) && src.isStaticInitializer()) {
             return;
         }
         cicg.addEdge(new Edge(src, stmt, tgt, kind));
     }
 
-    private void addEdge(SootMethod src, Stmt stmt, ClassModel cls, NumberedString methodSubSig, Kind kind) {
-        SootMethod sm = cls.getMethodUnsafe(methodSubSig);
+    private void addEdge(MethodModel src, Stmt stmt, ClassModel cls, NumberedString methodSubSig, Kind kind) {
+        MethodModel sm = cls.getMethodUnsafe(methodSubSig);
         if (sm != null) {
             addEdge(src, stmt, sm, kind);
         }
     }
 
-    private void addEdge(SootMethod src, Stmt stmt, SootMethod tgt) {
+    private void addEdge(MethodModel src, Stmt stmt, MethodModel tgt) {
         InvokeExpr ie = stmt.getInvokeExpr();
         addEdge(src, stmt, tgt, Edge.ieToKind(ie));
     }
@@ -1014,10 +1016,10 @@ public class OnFlyCallGraphBuilder {
 
         protected final CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 
-        protected final HashSet<SootMethod> warnedAlready = new HashSet<SootMethod>();
+        protected final HashSet<MethodModel> warnedAlready = new HashSet<MethodModel>();
 
         @Override
-        public void classForName(SootMethod source, Stmt s) {
+        public void classForName(MethodModel source, Stmt s) {
             List<Local> stringConstants = methodToStringConstants.get(source);
             if (stringConstants == null) {
                 methodToStringConstants.put(source, stringConstants = new ArrayList<Local>());
@@ -1028,13 +1030,13 @@ public class OnFlyCallGraphBuilder {
                 constantForName(cls, source, s);
             } else if (className instanceof Local constant) {
               if (options.safe_forname()) {
-                    for (SootMethod tgt : EntryPoints.v().clinits()) {
+                    for (MethodModel tgt : EntryPoints.v().clinits()) {
                         addEdge(source, s, tgt, Kind.CLINIT);
                     }
                 } else {
                     final EntryPoints ep = EntryPoints.v();
                     for (ClassModel cls : Scene.v().dynamicClasses()) {
-                        for (SootMethod clinit : ep.clinitsOf(cls)) {
+                        for (MethodModel clinit : ep.clinitsOf(cls)) {
                             addEdge(source, s, clinit, Kind.CLINIT);
                         }
                     }
@@ -1050,14 +1052,14 @@ public class OnFlyCallGraphBuilder {
         }
 
         @Override
-        public void classNewInstance(SootMethod source, Stmt s) {
+        public void classNewInstance(MethodModel source, Stmt s) {
             if (options.safe_newinstance()) {
-                for (SootMethod tgt : EntryPoints.v().inits()) {
+                for (MethodModel tgt : EntryPoints.v().inits()) {
                     addEdge(source, s, tgt, Kind.NEWINSTANCE);
                 }
             } else {
                 for (ClassModel cls : Scene.v().dynamicClasses()) {
-                    SootMethod sm = cls.getMethodUnsafe(sigInit);
+                    MethodModel sm = cls.getMethodUnsafe(sigInit);
                     if (sm != null) {
                         addEdge(source, s, sm, Kind.NEWINSTANCE);
                     }
@@ -1071,14 +1073,14 @@ public class OnFlyCallGraphBuilder {
         }
 
         @Override
-        public void contructorNewInstance(SootMethod source, Stmt s) {
+        public void contructorNewInstance(MethodModel source, Stmt s) {
             if (options.safe_newinstance()) {
-                for (SootMethod tgt : EntryPoints.v().allInits()) {
+                for (MethodModel tgt : EntryPoints.v().allInits()) {
                     addEdge(source, s, tgt, Kind.NEWINSTANCE);
                 }
             } else {
                 for (ClassModel cls : Scene.v().dynamicClasses()) {
-                    for (SootMethod m : cls.getMethods()) {
+                    for (MethodModel m : cls.getMethodModels()) {
                         if ("<init>".equals(m.getName())) {
                             addEdge(source, s, m, Kind.NEWINSTANCE);
                         }
@@ -1092,7 +1094,7 @@ public class OnFlyCallGraphBuilder {
         }
 
         @Override
-        public void methodInvoke(SootMethod container, Stmt invokeStmt) {
+        public void methodInvoke(MethodModel container, Stmt invokeStmt) {
             if (!warnedAlready(container)) {
                 if (options.verbose()) {
                     logger.warn("Call to java.lang.reflect.Method: invoke() from " + container + "; graph will be incomplete!");
@@ -1101,18 +1103,18 @@ public class OnFlyCallGraphBuilder {
             }
         }
 
-        private void markWarned(SootMethod m) {
+        private void markWarned(MethodModel m) {
             warnedAlready.add(m);
         }
 
-        private boolean warnedAlready(SootMethod m) {
+        private boolean warnedAlready(MethodModel m) {
             return warnedAlready.contains(m);
         }
     }
 
     public class TypeBasedReflectionModel extends DefaultReflectionModel {
         @Override
-        public void methodInvoke(SootMethod container, Stmt invokeStmt) {
+        public void methodInvoke(MethodModel container, Stmt invokeStmt) {
             if (container.getDeclaringClass().isJavaLibraryClass()) {
                 super.methodInvoke(container, invokeStmt);
                 return;
@@ -1149,7 +1151,7 @@ public class OnFlyCallGraphBuilder {
          * Adds an edge to all class initializers of all possible receivers of Class.forName() calls within source.
          */
         @Override
-        public void classForName(SootMethod container, Stmt forNameInvokeStmt) {
+        public void classForName(MethodModel container, Stmt forNameInvokeStmt) {
             Set<String> classNames = reflectionInfo.classForNameClassNames(container);
             if (classNames == null || classNames.isEmpty()) {
                 registerGuard(container, forNameInvokeStmt,
@@ -1165,7 +1167,7 @@ public class OnFlyCallGraphBuilder {
          * Adds an edge to the constructor of the target class from this call to {@link Class#newInstance()}.
          */
         @Override
-        public void classNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
+        public void classNewInstance(MethodModel container, Stmt newInstanceInvokeStmt) {
             Set<String> classNames = reflectionInfo.classNewInstanceClassNames(container);
             if (classNames == null || classNames.isEmpty()) {
                 registerGuard(container, newInstanceInvokeStmt,
@@ -1173,7 +1175,7 @@ public class OnFlyCallGraphBuilder {
             } else {
                 final Scene sc = Scene.v();
                 for (String clsName : classNames) {
-                    SootMethod constructor = sc.getSootClass(clsName).getMethodUnsafe(sigInit);
+                    MethodModel constructor = sc.getSootClass(clsName).getMethodUnsafe(sigInit);
                     if (constructor != null) {
                         addEdge(container, newInstanceInvokeStmt, constructor, Kind.REFL_CLASS_NEWINSTANCE);
                     }
@@ -1182,7 +1184,7 @@ public class OnFlyCallGraphBuilder {
         }
 
         @Override
-        public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
+        public void contructorNewInstance(MethodModel container, Stmt newInstanceInvokeStmt) {
             Set<String> constructorSignatures = reflectionInfo.constructorNewInstanceSignatures(container);
             if (constructorSignatures == null || constructorSignatures.isEmpty()) {
                 registerGuard(container, newInstanceInvokeStmt,
@@ -1190,27 +1192,27 @@ public class OnFlyCallGraphBuilder {
             } else {
                 final Scene sc = Scene.v();
                 for (String constructorSignature : constructorSignatures) {
-                    SootMethod constructor = sc.getMethod(constructorSignature);
+                    MethodModel constructor = sc.getMethod(constructorSignature);
                     addEdge(container, newInstanceInvokeStmt, constructor, Kind.REFL_CONSTR_NEWINSTANCE);
                 }
             }
         }
 
         @Override
-        public void methodInvoke(SootMethod container, Stmt invokeStmt) {
+        public void methodInvoke(MethodModel container, Stmt invokeStmt) {
             Set<String> methodSignatures = reflectionInfo.methodInvokeSignatures(container);
             if (methodSignatures == null || methodSignatures.isEmpty()) {
                 registerGuard(container, invokeStmt, "Method.invoke(..) call site; Soot did not expect this site to be reached");
             } else {
                 final Scene sc = Scene.v();
                 for (String methodSignature : methodSignatures) {
-                    SootMethod method = sc.getMethod(methodSignature);
+                    MethodModel method = sc.getMethod(methodSignature);
                     addEdge(container, invokeStmt, method, Kind.REFL_INVOKE);
                 }
             }
         }
 
-        private void registerGuard(SootMethod container, Stmt stmt, String string) {
+        private void registerGuard(MethodModel container, Stmt stmt, String string) {
             guards.add(new Guard(container, stmt, string));
 
             if (options.verbose()) {
@@ -1253,7 +1255,7 @@ public class OnFlyCallGraphBuilder {
                 return;
             }
 
-            SootMethod container = guard.container;
+            MethodModel container = guard.container;
             if (!container.hasActiveBody()) {
                 logger.warn("Tried to insert guard into " + container + " but couldn't because method has no body.");
             } else {
@@ -1270,7 +1272,7 @@ public class OnFlyCallGraphBuilder {
 
                 // exc.<init>(message)
                 SootMethodRef cref = runtimeExceptionType.getSootClass()
-                        .getMethod("<init>", Collections.singletonList(RefType.v("java.lang.String"))).makeRef();
+                        .getMethodModel("<init>", Collections.singletonList(RefType.v("java.lang.String"))).makeRef();
                 InvokeStmt initStmt
                         = jimp.newInvokeStmt(jimp.newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v(guard.message)));
                 units.insertAfter(initStmt, assignStmt);
@@ -1280,7 +1282,7 @@ public class OnFlyCallGraphBuilder {
                         // logger.error(exc.getMessage(), exc);
                         VirtualInvokeExpr printStackTraceExpr = jimp.newVirtualInvokeExpr(exceptionLocal,
                                 Scene.v().getSootClass(Scene.v().getBaseExceptionType().toString())
-                                        .getMethod("printStackTrace", Collections.emptyList()).makeRef());
+                                        .getMethodModel("printStackTrace", Collections.emptyList()).makeRef());
                         units.insertAfter(jimp.newInvokeStmt(printStackTraceExpr), initStmt);
                         break;
                     case "throw":
@@ -1294,21 +1296,21 @@ public class OnFlyCallGraphBuilder {
     }
 
     static final class Guard {
-        final SootMethod container;
+        final MethodModel container;
         final Stmt stmt;
         final String message;
 
-        public Guard(SootMethod container, Stmt stmt, String message) {
+        public Guard(MethodModel container, Stmt stmt, String message) {
             this.container = container;
             this.stmt = stmt;
             this.message = message;
         }
     }
 
-    private static abstract class AbstractMethodIterator implements Iterator<SootMethod> {
-        private SootMethod next;
+    private static abstract class AbstractMethodIterator implements Iterator<MethodModel> {
+        private MethodModel next;
         private ClassModel currClass;
-        private Iterator<SootMethod> methodIterator;
+        private Iterator<MethodModel> methodIterator;
 
         AbstractMethodIterator(ClassModel baseClass) {
             this.currClass = baseClass;
@@ -1322,7 +1324,7 @@ public class OnFlyCallGraphBuilder {
             if (methodIterator != null) {
                 while (true) {
                     while (methodIterator.hasNext()) {
-                        SootMethod n = methodIterator.next();
+                        MethodModel n = methodIterator.next();
                         if (!n.isPublic() || n.isStatic() || n.isConstructor() || n.isStaticInitializer() || !n.isConcrete()) {
                             continue;
                         }
@@ -1336,7 +1338,7 @@ public class OnFlyCallGraphBuilder {
                         methodIterator = null;
                         return;
                     }
-                    ClassModel superclass = currClass.getSuperclass();
+                    ClassModel superclass = currClass.getSuperType();
                     if (superclass.isPhantom() || Scene.v().getObjectType().toString().equals(superclass.getName())) {
                         methodIterator = null;
                         return;
@@ -1354,8 +1356,8 @@ public class OnFlyCallGraphBuilder {
         }
 
         @Override
-        public SootMethod next() {
-            SootMethod toRet = next;
+        public MethodModel next() {
+            MethodModel toRet = next;
             findNextMethod();
             return toRet;
         }
@@ -1365,7 +1367,7 @@ public class OnFlyCallGraphBuilder {
             throw new UnsupportedOperationException();
         }
 
-        protected abstract boolean acceptMethod(SootMethod m);
+        protected abstract boolean acceptMethod(MethodModel m);
     }
 
     public VirtualEdgesSummaries getVirtualEdgeSummaries() {

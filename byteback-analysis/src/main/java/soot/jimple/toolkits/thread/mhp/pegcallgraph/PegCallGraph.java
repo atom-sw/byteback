@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread.mhp.pegcallgraph;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.toolkits.graph.DirectedGraph;
@@ -75,7 +75,7 @@ public class PegCallGraph implements DirectedGraph {
         System.out.println("******** chain of pegcallgraph********");
         Iterator it = chain.iterator();
         while (it.hasNext()) {
-            SootMethod sm = (SootMethod) it.next();
+            MethodModel sm = (MethodModel) it.next();
             System.out.println(sm);
             // System.out.println("name: "+sm.getName());
         }
@@ -88,7 +88,7 @@ public class PegCallGraph implements DirectedGraph {
     private void buildChainAndSuccs(CallGraph cg) {
         Iterator it = cg.sourceMethods();
         while (it.hasNext()) {
-            SootMethod sm = (SootMethod) it.next();
+            MethodModel sm = (MethodModel) it.next();
             if (sm.getName().equals("main")) {
                 heads.add(sm);
             }
@@ -102,7 +102,7 @@ public class PegCallGraph implements DirectedGraph {
                 Iterator edgeIt = cg.edgesOutOf(sm);
                 while (edgeIt.hasNext()) {
                     Edge edge = (Edge) edgeIt.next();
-                    SootMethod target = edge.tgt();
+                    MethodModel target = edge.tgt();
                     // if (target.isConcrete() && !target.getDeclaringClass().isLibraryClass()){
                     // if (target.hasActiveBody() && target.getDeclaringClass().isApplicationClass()){
                     if (target.isConcrete() && target.getDeclaringClass().isApplicationClass()) {
@@ -131,7 +131,7 @@ public class PegCallGraph implements DirectedGraph {
         {
             Iterator chainIt = chain.iterator();
             while (chainIt.hasNext()) {
-                SootMethod sm = (SootMethod) chainIt.next();
+                MethodModel sm = (MethodModel) chainIt.next();
 
                 if (!methodToSuccs.containsKey(sm)) {
                     methodToSuccs.put(sm, new ArrayList());
@@ -143,7 +143,7 @@ public class PegCallGraph implements DirectedGraph {
         {
             Iterator chainIt = chain.iterator();
             while (it.hasNext()) {
-                SootMethod s = (SootMethod) chainIt.next();
+                MethodModel s = (MethodModel) chainIt.next();
                 if (methodToSuccs.containsKey(s)) {
                     List succList = methodToSuccs.get(s);
                     if (succList.size() <= 0) {
@@ -159,7 +159,7 @@ public class PegCallGraph implements DirectedGraph {
             Iterator chainIt = chain.iterator();
             while (chainIt.hasNext()) {
 
-                SootMethod s = (SootMethod) chainIt.next();
+                MethodModel s = (MethodModel) chainIt.next();
                 // System.out.println(s);
                 if (methodToSuccs.containsKey(s)) {
                     methodToSuccs.put(s, Collections.unmodifiableList(methodToSuccs.get(s)));
@@ -215,7 +215,7 @@ public class PegCallGraph implements DirectedGraph {
             Iterator unitIt = chain.iterator();
 
             while (unitIt.hasNext()) {
-                SootMethod s = (SootMethod) unitIt.next();
+                MethodModel s = (MethodModel) unitIt.next();
                 if (methodToPreds.containsKey(s)) {
                     List predList = methodToPreds.get(s);
                     methodToPreds.put(s, Collections.unmodifiableList(predList));

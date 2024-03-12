@@ -22,6 +22,9 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+
 /**
  * Representation of a reference to a field as it appears in a class file. Note that the field directly referred to may not
  * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
@@ -39,5 +42,5 @@ public interface SootFieldRef {
 
     String getSignature();
 
-    SootField resolve();
+    FieldModel resolve();
 }

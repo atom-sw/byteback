@@ -4,7 +4,7 @@ import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.common.namespace.BBLibNames;
 import byteback.common.function.Lazy;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 
@@ -22,10 +22,10 @@ public class ConditionalExprTransformer extends ValueTransformer {
     @Override
     public void transformValue(final ValueBox valueBox) {
         if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
-            final SootMethod invokedMethod = invokeExpr.getMethod();
+            final MethodModel invokedMethod = invokeExpr.getMethod();
 
             if (BBLibNames.v().isSpecialClass(invokedMethod.getDeclaringClass())) {
-                final SootMethod method = invokeExpr.getMethod();
+                final MethodModel method = invokeExpr.getMethod();
 
                 if (method.getName().equals("condition")) {
                     valueBox.setValue(Vimp.v().newOldExpr(invokeExpr.getArg(0)));

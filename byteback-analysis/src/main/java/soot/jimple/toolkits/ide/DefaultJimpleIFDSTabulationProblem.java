@@ -25,14 +25,14 @@ package soot.jimple.toolkits.ide;
 import heros.InterproceduralCFG;
 import heros.template.DefaultIDETabulationProblem;
 import heros.template.DefaultIFDSTabulationProblem;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 
 /**
- * A {@link DefaultIDETabulationProblem} with {@link Unit}s as nodes and {@link SootMethod}s as methods.
+ * A {@link DefaultIDETabulationProblem} with {@link Unit}s as nodes and {@link MethodModel}s as methods.
  */
-public abstract class DefaultJimpleIFDSTabulationProblem<D, I extends InterproceduralCFG<Unit, SootMethod>>
-        extends DefaultIFDSTabulationProblem<Unit, D, SootMethod, I> {
+public abstract class DefaultJimpleIFDSTabulationProblem<D, I extends InterproceduralCFG<Unit, MethodModel>>
+        extends DefaultIFDSTabulationProblem<Unit, D, MethodModel, I> {
 
     public DefaultJimpleIFDSTabulationProblem(I icfg) {
         super(icfg);

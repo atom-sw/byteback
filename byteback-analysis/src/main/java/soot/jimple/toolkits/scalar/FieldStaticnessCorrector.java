@@ -22,6 +22,7 @@ package soot.jimple.toolkits.scalar;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.FieldRef;
@@ -57,7 +58,7 @@ public class FieldStaticnessCorrector extends AbstractStaticnessCorrector {
                     if (isTypeLoaded(ref.getFieldRef().type())) {
                         try {
                             if (ref instanceof InstanceFieldRef) {
-                                SootField fld = ref.getField();
+                                FieldModel fld = ref.getField();
                                 if (fld != null && fld.isStatic()) {
                                     if (assignStmt.getLeftOp() == ref) {
                                         assignStmt.setLeftOp(Jimple.v().newStaticFieldRef(ref.getField().makeRef()));

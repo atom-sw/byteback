@@ -23,7 +23,7 @@ package soot.jimple.validation;
  */
 
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
@@ -44,13 +44,13 @@ public enum MethodValidator implements BodyValidator {
      */
     @Override
     public void validate(Body body, List<ValidationException> exceptions) {
-        SootMethod method = body.getMethod();
+        MethodModel method = body.getMethod();
         if (method.isAbstract()) {
             return;
         }
         if (method.isStaticInitializer() && !method.isStatic()) {
             exceptions.add(new ValidationException(method,
-                    SootMethod.staticInitializerName + " should be static! Static initializer without 'static'('0x8') modifier"
+                    MethodModel.staticInitializerName + " should be static! Static initializer without 'static'('0x8') modifier"
                             + " will cause problem when running on android platform: "
                             + "\"<clinit> is not flagged correctly wrt/ static\"!"));
         }

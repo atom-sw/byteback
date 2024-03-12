@@ -25,7 +25,7 @@ package soot.jimple.toolkits.thread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 
 import java.util.ArrayList;
@@ -41,24 +41,24 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 {
     private static final Logger logger = LoggerFactory.getLogger(EncapsulatedObjectAnalysis.class);
     List cachedClasses;
-    List<SootMethod> objectPureMethods;
-    List<SootMethod> objectPureInitMethods;
+    List<MethodModel> objectPureMethods;
+    List<MethodModel> objectPureInitMethods;
 
     public EncapsulatedObjectAnalysis() {
         cachedClasses = new ArrayList();
-        objectPureMethods = new ArrayList<SootMethod>();
-        objectPureInitMethods = new ArrayList<SootMethod>();
+        objectPureMethods = new ArrayList<MethodModel>();
+        objectPureInitMethods = new ArrayList<MethodModel>();
     }
 
-    public boolean isMethodPureOnObject(SootMethod sm) {
+    public boolean isMethodPureOnObject(MethodModel sm) {
         if (!cachedClasses.contains(sm.getDeclaringClass()) && sm.isConcrete()) // NOT A COMPLETE SOLUTION (ignores subclassing)
         {
-            SootMethod initMethod = null;
-            Collection methods = sm.getDeclaringClass().getMethods();
+            MethodModel initMethod = null;
+            Collection methods = sm.getDeclaringClass().getMethodModels();
             Iterator methodsIt = methods.iterator();
-            List<SootMethod> mayBePureMethods = new ArrayList<SootMethod>(methods.size());
+            List<MethodModel> mayBePureMethods = new ArrayList<MethodModel>(methods.size());
             while (methodsIt.hasNext()) {
-                SootMethod method = (SootMethod) methodsIt.next();
+                MethodModel method = (MethodModel) methodsIt.next();
                 if (method.isConcrete()) {
                     if (method.getSubSignature().startsWith("void <init>")) {
                         initMethod = method;
@@ -85,7 +85,7 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
         return objectPureMethods.contains(sm);
     }
 
-    public boolean isInitMethodPureOnObject(SootMethod sm) {
+    public boolean isInitMethodPureOnObject(MethodModel sm) {
         // logger.debug("Testing Init Method Encapsulation: " + sm + " Encapsulated: ");
         if (isMethodPureOnObject(sm)) {
             boolean ret = objectPureInitMethods.contains(sm);
@@ -96,7 +96,7 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
         return false;
     }
 
-    public List<SootMethod> getObjectPureMethodsSoFar() {
+    public List<MethodModel> getObjectPureMethodsSoFar() {
         return objectPureMethods;
     }
 }

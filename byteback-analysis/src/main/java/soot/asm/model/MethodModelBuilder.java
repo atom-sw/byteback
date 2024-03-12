@@ -22,6 +22,7 @@ package soot.asm.model;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
@@ -48,12 +49,12 @@ public class MethodModelBuilder extends JSRInlinerAdapter {
     private VisibilityAnnotationTag[] invisibleParamAnnotations;
     private List<VisibilityAnnotationTag> visibleLocalVarAnnotations;
     private List<VisibilityAnnotationTag> invisibleLocalVarAnnotations;
-    private final SootMethod method;
+    private final MethodModel method;
     private final ClassModelBuilder classBuilder;
     private final String[] parameterNames;
     private final Map<Integer, Integer> slotToParameter;
 
-    public MethodModelBuilder(SootMethod method, ClassModelBuilder classBuilder, String desc, String[] ex) {
+    public MethodModelBuilder(MethodModel method, ClassModelBuilder classBuilder, String desc, String[] ex) {
         super(Opcodes.ASM6, null, method.getModifiers(), method.getName(), desc, null, ex);
         this.method = method;
         this.classBuilder = classBuilder;

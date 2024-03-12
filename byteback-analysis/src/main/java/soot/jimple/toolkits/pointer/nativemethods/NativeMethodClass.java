@@ -24,7 +24,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 
@@ -41,7 +41,7 @@ public abstract class NativeMethodClass {
     /*
      * If a native method has no side effect, call this method. Currently, it does nothing.
      */
-    public static void defaultMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public static void defaultMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                      ReferenceVariable[] params) {
         if (DEBUG) {
             logger.debug("No side effects : " + method.toString());
@@ -49,7 +49,7 @@ public abstract class NativeMethodClass {
     }
 
     /* To be implemented by individual classes */
-    public abstract void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public abstract void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                         ReferenceVariable[] params);
 
 }

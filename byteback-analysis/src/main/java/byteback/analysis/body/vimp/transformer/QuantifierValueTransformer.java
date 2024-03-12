@@ -4,6 +4,8 @@ import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.QuantifierExpr;
 import byteback.analysis.common.namespace.BBLibNames;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.*;
@@ -32,7 +34,7 @@ public class QuantifierValueTransformer extends ValueTransformer {
 
             if (unit instanceof AssignStmt assignStmt) {
                 if (assignStmt.getRightOp() instanceof InvokeExpr invokeExpr) {
-                    final SootMethod invokedMethod = invokeExpr.getMethod();
+                    final MethodModel invokedMethod = invokeExpr.getMethod();
                     final ClassModel declaringClass = invokedMethod.getDeclaringClass();
 
                     if (BBLibNames.v().isBindingClass(declaringClass)) {
@@ -58,7 +60,7 @@ public class QuantifierValueTransformer extends ValueTransformer {
             public void caseStaticInvokeExpr(final StaticInvokeExpr invokeExpr) {
                 assert invokeExpr.getArgCount() == 2;
 
-                final SootMethod method = invokeExpr.getMethod();
+                final MethodModel method = invokeExpr.getMethod();
                 final ClassModel clazz = method.getDeclaringClass();
 
                 if (BBLibNames.v().isQuantifierClass(clazz)) {

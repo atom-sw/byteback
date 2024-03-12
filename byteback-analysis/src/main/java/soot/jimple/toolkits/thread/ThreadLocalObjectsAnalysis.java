@@ -24,9 +24,9 @@ package soot.jimple.toolkits.thread;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.EquivalentValue;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Value;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
@@ -69,7 +69,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
     public void precompute() {
         for (AbstractRuntimeThread thread : threads) {
             for (Object item : thread.getRunMethods()) {
-                SootMethod runMethod = (SootMethod) item;
+                MethodModel runMethod = (MethodModel) item;
                 if (runMethod.getDeclaringClass().isApplicationClass()) {
                     getClassLocalObjectsAnalysis(runMethod.getDeclaringClass());
                 }
@@ -81,13 +81,13 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
     protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa,
                                                                      UseFinder uf, ClassModel sc) {
         // find the right run methods to use for threads of type sc
-        List<SootMethod> runMethods = new ArrayList<SootMethod>();
+        List<MethodModel> runMethods = new ArrayList<MethodModel>();
         Iterator<AbstractRuntimeThread> threadsIt = threads.iterator();
         while (threadsIt.hasNext()) {
             AbstractRuntimeThread thread = threadsIt.next();
             Iterator<Object> runMethodsIt = thread.getRunMethods().iterator();
             while (runMethodsIt.hasNext()) {
-                SootMethod runMethod = (SootMethod) runMethodsIt.next();
+                MethodModel runMethod = (MethodModel) runMethodsIt.next();
                 if (runMethod.getDeclaringClass() == sc) {
                     runMethods.add(runMethod);
                 }
@@ -98,7 +98,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
     }
 
     // Determines if a RefType Local or a FieldRef is Thread-Local
-    public boolean isObjectThreadLocal(Value localOrRef, SootMethod sm) {
+    public boolean isObjectThreadLocal(Value localOrRef, MethodModel sm) {
         if (threads.size() <= 1) {
             return true;
             // Pair cacheKey = new Pair(new EquivalentValue(localOrRef), sm);
@@ -115,7 +115,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
         if (mhpThreads != null) {
             for (AbstractRuntimeThread thread : mhpThreads) {
                 for (Object meth : thread.getRunMethods()) {
-                    SootMethod runMethod = (SootMethod) meth;
+                    MethodModel runMethod = (MethodModel) meth;
 
                     if (runMethod.getDeclaringClass().isApplicationClass() && !isObjectLocalToContext(localOrRef, sm, runMethod)) {
                         if (printDebug) {
@@ -149,7 +149,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
      * return true; }
      */
 
-    public boolean hasNonThreadLocalEffects(SootMethod containingMethod, InvokeExpr ie) {
+    public boolean hasNonThreadLocalEffects(MethodModel containingMethod, InvokeExpr ie) {
         if (threads.size() <= 1) {
             return true;
         }
@@ -174,7 +174,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
     /**
      * Returns a list of thread-shared sources and sinks. Returns empty list if not actually a shared value.
      */
-    public List escapesThrough(Value sharedValue, SootMethod containingMethod) {
+    public List escapesThrough(Value sharedValue, MethodModel containingMethod) {
         List ret = new ArrayList();
 
         // The containingMethod might be called from multiple threads
@@ -184,7 +184,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
             // Each "abstract thread" from the MHP analysis actually represents a "Thread.start()" statement that could
             // be starting one of several different kinds of threads. We must consider each kind separately.
             for (Object meth : thread.getRunMethods()) {
-                SootMethod runMethod = (SootMethod) meth;
+                MethodModel runMethod = (MethodModel) meth;
 
                 // We can only analyze application classes for TLO
                 if (runMethod.getDeclaringClass().isApplicationClass()

@@ -22,6 +22,8 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -55,35 +57,35 @@ public class VirtualCalls {
         return G.v().soot_jimple_toolkits_callgraph_VirtualCalls();
     }
 
-    public SootMethod resolveSpecial(SootMethodRef calleeRef, SootMethod container) {
+    public MethodModel resolveSpecial(SootMethodRef calleeRef, MethodModel container) {
         return resolveSpecial(calleeRef, container, false);
     }
 
-    public SootMethod resolveSpecial(SootMethodRef calleeRef, SootMethod container, boolean appOnly) {
-        SootMethod callee = calleeRef.resolve();
+    public MethodModel resolveSpecial(SootMethodRef calleeRef, MethodModel container, boolean appOnly) {
+        MethodModel callee = calleeRef.resolve();
         /* cf. JVM spec, invokespecial instruction */
         final ClassModel containerCls = container.getDeclaringClass();
         final ClassModel calleeCls = callee.getDeclaringClass();
-        if (containerCls.getType() != calleeCls.getType()
-                && Scene.v().getOrMakeFastHierarchy().canStoreType(containerCls.getType(), calleeCls.getType())
-                && !SootMethod.constructorName.equals(callee.getName()) && !SootMethod.staticInitializerName.equals(callee.getName())
+        if (containerCls.getClassType() != calleeCls.getClassType()
+                && Scene.v().getOrMakeFastHierarchy().canStoreType(containerCls.getClassType(), calleeCls.getClassType())
+                && !MethodModel.constructorName.equals(callee.getName()) && !MethodModel.staticInitializerName.equals(callee.getName())
                 // default interface methods are explicitly dispatched to the default
                 // method with a specialinvoke instruction (i.e. do not dispatch to an
                 // overwritten version of that method)
                 && !calleeCls.isInterface()) {
             // The invokespecial instruction is used to invoke instance initialization methods as well
             // as private methods and methods of a superclass of the current class.
-            return resolveNonSpecial(containerCls.getSuperclass().getType(), calleeRef, appOnly);
+            return resolveNonSpecial(containerCls.getSuperType().getClassType(), calleeRef, appOnly);
         } else {
             return callee;
         }
     }
 
-    public SootMethod resolveNonSpecial(RefType t, SootMethodRef callee) {
+    public MethodModel resolveNonSpecial(RefType t, SootMethodRef callee) {
         return resolveNonSpecial(t, callee, false);
     }
 
-    public SootMethod resolveNonSpecial(RefType t, SootMethodRef callee, boolean appOnly) {
+    public MethodModel resolveNonSpecial(RefType t, SootMethodRef callee, boolean appOnly) {
         ClassModel cls = t.getSootClass();
         if (appOnly && cls.isLibraryClass()) {
             return null;
@@ -94,23 +96,23 @@ public class VirtualCalls {
         }
     }
 
-    public void resolve(Type t, Type declaredType, SootMethodRef callee, SootMethod container,
-                        ChunkedQueue<SootMethod> targets) {
+    public void resolve(Type t, Type declaredType, SootMethodRef callee, MethodModel container,
+                        ChunkedQueue<MethodModel> targets) {
         resolve(t, declaredType, null, callee, container, targets);
     }
 
-    public void resolve(Type t, Type declaredType, SootMethodRef callee, SootMethod container,
-                        ChunkedQueue<SootMethod> targets, boolean appOnly) {
+    public void resolve(Type t, Type declaredType, SootMethodRef callee, MethodModel container,
+                        ChunkedQueue<MethodModel> targets, boolean appOnly) {
         resolve(t, declaredType, null, callee, container, targets, appOnly);
     }
 
-    public void resolve(Type t, Type declaredType, Type sigType, SootMethodRef callee, SootMethod container,
-                        ChunkedQueue<SootMethod> targets) {
+    public void resolve(Type t, Type declaredType, Type sigType, SootMethodRef callee, MethodModel container,
+                        ChunkedQueue<MethodModel> targets) {
         resolve(t, declaredType, sigType, callee, container, targets, false);
     }
 
-    public void resolve(Type t, Type declaredType, Type sigType, SootMethodRef callee, SootMethod container,
-                        ChunkedQueue<SootMethod> targets, boolean appOnly) {
+    public void resolve(Type t, Type declaredType, Type sigType, SootMethodRef callee, MethodModel container,
+                        ChunkedQueue<MethodModel> targets, boolean appOnly) {
         if (declaredType instanceof ArrayType) {
             declaredType = Scene.v().getObjectType();
         }
@@ -124,7 +126,7 @@ public class VirtualCalls {
         if (declaredType != null && !fastHierachy.canStoreType(t, declaredType)) {
         } else if (sigType != null && !fastHierachy.canStoreType(t, sigType)) {
         } else if (t instanceof RefType) {
-            SootMethod target = resolveNonSpecial((RefType) t, callee, appOnly);
+            MethodModel target = resolveNonSpecial((RefType) t, callee, appOnly);
             if (target != null) {
                 targets.add(target);
             }
@@ -146,7 +148,7 @@ public class VirtualCalls {
                 LOGGER.warn("Deprecated library dispatch is conducted. The results might be unsound...");
                 resolveLibrarySignature(declaredType, sigType, callee, container, targets, appOnly, base);
             } else {
-                for (SootMethod dispatch : Scene.v().getOrMakeFastHierarchy().resolveAbstractDispatch(base.getSootClass(), callee)) {
+                for (MethodModel dispatch : Scene.v().getOrMakeFastHierarchy().resolveAbstractDispatch(base.getSootClass(), callee)) {
                     targets.add(dispatch);
                 }
             }
@@ -157,7 +159,7 @@ public class VirtualCalls {
         }
     }
 
-    public void resolveSuperType(Type t, Type declaredType, SootMethodRef callee, ChunkedQueue<SootMethod> targets,
+    public void resolveSuperType(Type t, Type declaredType, SootMethodRef callee, ChunkedQueue<MethodModel> targets,
                                  boolean appOnly) {
         if (declaredType == null || t == null) {
             return;
@@ -179,7 +181,7 @@ public class VirtualCalls {
             }
             FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
             if (fh.canStoreClass(child.getSootClass(), ((RefType) declaredType).getSootClass())) {
-                SootMethod target = resolveNonSpecial(child, callee, appOnly);
+                MethodModel target = resolveNonSpecial(child, callee, appOnly);
                 if (target != null) {
                     targets.add(target);
                 }
@@ -188,8 +190,8 @@ public class VirtualCalls {
     }
 
     @Deprecated
-    protected void resolveLibrarySignature(Type declaredType, Type sigType, SootMethodRef callee, SootMethod container,
-                                           ChunkedQueue<SootMethod> targets, boolean appOnly, RefType base) {
+    protected void resolveLibrarySignature(Type declaredType, Type sigType, SootMethodRef callee, MethodModel container,
+                                           ChunkedQueue<MethodModel> targets, boolean appOnly, RefType base) {
         // This is an old piece of code from before the refactoring of dispatch behavior to
         // FastHierarchy
         // This cannot handle default interfaces and it's questionable if the logic makes sense. The
@@ -224,7 +226,7 @@ public class VirtualCalls {
         List<Type> declaredParamTypes = callee.getParameterTypes();
         String declaredName = callee.getName();
         for (ClassModel sc : Scene.v().getClasses()) {
-            for (SootMethod sm : sc.getMethods()) {
+            for (MethodModel sm : sc.getMethodModels()) {
                 if (!sm.isAbstract()) {
                     // method name has to match
                     // the return type has to be a the declared return
@@ -248,7 +250,7 @@ public class VirtualCalls {
                     }
 
                     if (check) {
-                        Type st = sc.getType();
+                        Type st = sc.getClassType();
                         if (!fh.canStoreType(st, declaredType)) {
                             // final classes can not be extended and
                             // therefore not used in library client

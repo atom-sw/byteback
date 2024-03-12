@@ -22,6 +22,7 @@ package soot.jimple.toolkits.annotation.nullcheck;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -71,8 +72,8 @@ public class NullPointerChecker extends BodyTransformer {
         final BranchedRefVarsAnalysis analysis
                 = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
 
-        final SootMethod increase
-                = isProfiling ? Scene.v().loadClassAndSupport("MultiCounter").getMethod("void increase(int)") : null;
+        final MethodModel increase
+                = isProfiling ? Scene.v().loadClassAndSupport("MultiCounter").getMethodModel("void increase(int)") : null;
 
         final Chain<Unit> units = body.getUnits();
         for (Iterator<Unit> stmtIt = units.snapshotIterator(); stmtIt.hasNext(); ) {

@@ -22,6 +22,7 @@ package soot.jimple.spark.ondemand.pautil;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.ondemand.genericutil.ImmutableStack;
@@ -139,15 +140,15 @@ public interface AllocationSiteHandler {
 
         public Type receiverType;
 
-        public SootMethod callee;
+        public MethodModel callee;
 
-        public Set<SootMethod> possibleMethods = new HashSet<SootMethod>();
+        public Set<MethodModel> possibleMethods = new HashSet<MethodModel>();
 
         /**
          * @param pag
          * @param receiverType
          */
-        public VirtualCallHandler(PAG pag, Type receiverType, SootMethod callee) {
+        public VirtualCallHandler(PAG pag, Type receiverType, MethodModel callee) {
             super();
             this.pag = pag;
             this.receiverType = receiverType;
@@ -173,10 +174,10 @@ public interface AllocationSiteHandler {
                 // we'll invoke the java.lang.Object method in this
                 // case
                 // Assert.chk(varNodeType.toString().equals("java.lang.Object"));
-                type = Scene.v().getSootClass(Scene.v().getObjectType().toString()).getType();
+                type = Scene.v().getSootClass(Scene.v().getObjectType().toString()).getClassType();
             }
             RefType refType = (RefType) type;
-            SootMethod targetMethod = null;
+            MethodModel targetMethod = null;
             targetMethod = VirtualCalls.v().resolveNonSpecial(refType, callee.makeRef());
             if (!possibleMethods.contains(targetMethod)) {
                 possibleMethods.add(targetMethod);

@@ -22,6 +22,8 @@ package soot.jimple.toolkits.annotation.profiling;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.options.ProfilingOptions;
@@ -49,11 +51,11 @@ public class ProfilingGenerator extends BodyTransformer {
         }
 
         {
-            SootMethod m = body.getMethod();
+            MethodModel m = body.getMethod();
 
             ClassModel counterClass = Scene.v().loadClassAndSupport("MultiCounter");
-            SootMethod reset = counterClass.getMethod("void reset()");
-            SootMethod report = counterClass.getMethod("void report()");
+            MethodModel reset = counterClass.getMethodModel("void reset()");
+            MethodModel report = counterClass.getMethodModel("void report()");
 
             boolean isMainMethod = m.getSubSignature().equals(mainSignature);
 
@@ -71,7 +73,7 @@ public class ProfilingGenerator extends BodyTransformer {
                     InvokeExpr iexpr = stmt.getInvokeExpr();
 
                     if (iexpr instanceof StaticInvokeExpr) {
-                        SootMethod tempm = iexpr.getMethod();
+                        MethodModel tempm = iexpr.getMethod();
 
                         if (tempm.getSignature().equals("<java.lang.System: void exit(int)>")) {
                             units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(report.makeRef())), stmt);

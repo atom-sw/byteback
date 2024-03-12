@@ -22,6 +22,8 @@ package soot.util;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -222,7 +224,7 @@ public class PhaseDumper {
 
     private void dumpAllBodies(String baseName, boolean deleteGraphFiles) {
         for (ClassModel cls : Scene.v().getClasses(ClassModel.BODIES)) {
-            for (SootMethod method : cls.getMethods()) {
+            for (MethodModel method : cls.getMethodModels()) {
                 if (method.hasActiveBody()) {
                     Body body = method.getActiveBody();
                     if (deleteGraphFiles) {

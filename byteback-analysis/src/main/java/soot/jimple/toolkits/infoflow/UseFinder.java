@@ -22,6 +22,9 @@ package soot.jimple.toolkits.infoflow;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
@@ -96,13 +99,13 @@ public class UseFinder {
     }
 
     // This is an incredibly stupid way to do this... we should just use the call graph for faster/better info!
-    public List<SootMethod> getExtMethods(ClassModel sc) {
+    public List<MethodModel> getExtMethods(ClassModel sc) {
         if (classToExtCalls.containsKey(sc)) {
             List extCalls = classToExtCalls.get(sc);
-            List<SootMethod> extMethods = new ArrayList<SootMethod>();
+            List<MethodModel> extMethods = new ArrayList<MethodModel>();
             for (Iterator callIt = extCalls.iterator(); callIt.hasNext(); ) {
                 Pair call = (Pair) callIt.next();
-                SootMethod calledMethod = ((Stmt) call.getO2()).getInvokeExpr().getMethod();
+                MethodModel calledMethod = ((Stmt) call.getO2()).getInvokeExpr().getMethod();
                 if (!extMethods.contains(calledMethod)) {
                     extMethods.add(calledMethod);
                 }
@@ -112,13 +115,13 @@ public class UseFinder {
         throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
     }
 
-    public List<SootField> getExtFields(ClassModel sc) {
+    public List<FieldModel> getExtFields(ClassModel sc) {
         if (classToExtFieldAccesses.containsKey(sc)) {
             List extAccesses = classToExtFieldAccesses.get(sc);
-            List<SootField> extFields = new ArrayList<SootField>();
+            List<FieldModel> extFields = new ArrayList<FieldModel>();
             for (Iterator accessIt = extAccesses.iterator(); accessIt.hasNext(); ) {
                 Pair access = (Pair) accessIt.next();
-                SootField accessedField = ((Stmt) access.getO2()).getFieldRef().getField();
+                FieldModel accessedField = ((Stmt) access.getO2()).getFieldRef().getField();
                 if (!extFields.contains(accessedField)) {
                     extFields.add(accessedField);
                 }
@@ -145,9 +148,9 @@ public class UseFinder {
         appClassesIt = appClasses.iterator();
         while (appClassesIt.hasNext()) {
             ClassModel appClass = (ClassModel) appClassesIt.next();
-            Iterator methodsIt = appClass.getMethods().iterator();
+            Iterator methodsIt = appClass.getMethodModels().iterator();
             while (methodsIt.hasNext()) {
-                SootMethod method = (SootMethod) methodsIt.next();
+                MethodModel method = (MethodModel) methodsIt.next();
                 if (method.isConcrete() && rm.contains(method)) {
                     Body b = method.retrieveActiveBody();
                     Iterator unitsIt = b.getUnits().iterator();

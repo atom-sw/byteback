@@ -23,7 +23,7 @@ package soot.jimple.toolkits.scalar;
  */
 
 import soot.BodyTransformer;
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.RefType;
 import soot.Type;
 
@@ -36,7 +36,7 @@ import soot.Type;
 public abstract class AbstractStaticnessCorrector extends BodyTransformer {
 
     protected static boolean isClassLoaded(ClassModel sc) {
-        return sc.resolvingLevel() >= ClassModel.SIGNATURES;
+        return sc.getResolvingLevel() >= ClassModel.SIGNATURES;
     }
 
     protected static boolean isTypeLoaded(Type tp) {

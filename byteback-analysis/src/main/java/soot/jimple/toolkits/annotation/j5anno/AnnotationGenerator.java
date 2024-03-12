@@ -22,11 +22,11 @@ package soot.jimple.toolkits.annotation.j5anno;
  * #L%
  */
 
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.G;
 import soot.Singletons.Global;
-import soot.SootField;
-import soot.SootMethod;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.tag.*;
 
 import java.lang.annotation.Annotation;
@@ -66,8 +66,8 @@ public class AnnotationGenerator {
     }
 
     /**
-     * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link ClassModel}, {@link SootMethod} or
-     * {@link SootField}.
+     * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link ClassModel}, {@link MethodModel} or
+     * {@link FieldModel}.
      *
      * @param h     a method, field, or class
      * @param klass the class of the annotation to apply to <code>h</code>
@@ -79,8 +79,8 @@ public class AnnotationGenerator {
     }
 
     /**
-     * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link ClassModel}, {@link SootMethod} or
-     * {@link SootField}.
+     * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link ClassModel}, {@link MethodModel} or
+     * {@link FieldModel}.
      *
      * @param h     a method, field, or class
      * @param klass the class of the annotation to apply to <code>h</code>
@@ -96,11 +96,11 @@ public class AnnotationGenerator {
             if (!elementTypes.contains(ElementType.TYPE)) {
                 throw new RuntimeException(ERR);
             }
-        } else if (h instanceof SootMethod) {
+        } else if (h instanceof MethodModel) {
             if (!elementTypes.contains(ElementType.METHOD)) {
                 throw new RuntimeException(ERR);
             }
-        } else if (h instanceof SootField) {
+        } else if (h instanceof FieldModel) {
             if (!elementTypes.contains(ElementType.FIELD)) {
                 throw new RuntimeException(ERR);
             }
@@ -132,8 +132,8 @@ public class AnnotationGenerator {
     }
 
     /**
-     * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link ClassModel}, {@link SootMethod} or
-     * {@link SootField}.
+     * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link ClassModel}, {@link MethodModel} or
+     * {@link FieldModel}.
      *
      * @param h              a method, field, or class
      * @param annotationName the qualified name of the annotation class

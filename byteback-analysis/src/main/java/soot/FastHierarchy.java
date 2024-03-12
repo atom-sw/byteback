@@ -1,5 +1,7 @@
 package soot;
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import soot.jimple.spark.internal.TypeManager;
@@ -24,7 +26,7 @@ public class FastHierarchy {
 
     protected static final int USE_INTERVALS_BOUNDARY = 100;
 
-    protected Table<ClassModel, NumberedString, SootMethod> typeToVtbl = HashBasedTable.create();
+    protected Table<ClassModel, NumberedString, MethodModel> typeToVtbl = HashBasedTable.create();
 
     /**
      * This map holds all key,value pairs such that value.getSuperclass() == key. This is one of the three maps that hold the
@@ -136,7 +138,7 @@ public class FastHierarchy {
 
     protected void buildInverseMaps() {
         for (ClassModel cl : sc.getClasses().getElementsUnsorted()) {
-            if (cl.resolvingLevel() < ClassModel.HIERARCHY) {
+            if (cl.getResolvingLevel() < ClassModel.HIERARCHY) {
                 continue;
             }
             if (!cl.isInterface()) {
@@ -145,7 +147,7 @@ public class FastHierarchy {
                     classToSubclasses.put(superClass, cl);
                 }
             }
-            for (ClassModel supercl : cl.getInterfaces()) {
+            for (ClassModel supercl : cl.getInterfaceTypes()) {
                 if (cl.isInterface()) {
                     interfaceToSubinterfaces.put(supercl, cl);
                 } else {
@@ -377,7 +379,7 @@ public class FastHierarchy {
                     return true;
                 }
                 if (parentIsInterface) {
-                    for (ClassModel interf : sc.getInterfaces()) {
+                    for (ClassModel interf : sc.getInterfaceTypes()) {
                         if (interf == parent) {
                             return true;
                         }
@@ -390,13 +392,13 @@ public class FastHierarchy {
         return false;
     }
 
-    public Collection<SootMethod> resolveConcreteDispatchWithoutFailing(Collection<Type> concreteTypes, SootMethod m,
-                                                                        RefType declaredTypeOfBase) {
+    public Collection<MethodModel> resolveConcreteDispatchWithoutFailing(Collection<Type> concreteTypes, MethodModel m,
+                                                                         RefType declaredTypeOfBase) {
 
         final ClassModel declaringClass = declaredTypeOfBase.getSootClass();
         declaringClass.checkLevel(ClassModel.HIERARCHY);
 
-        Set<SootMethod> ret = new HashSet<SootMethod>();
+        Set<MethodModel> ret = new HashSet<MethodModel>();
         for (final Type t : concreteTypes) {
             if (t instanceof AnySubType) {
                 HashSet<ClassModel> s = new HashSet<ClassModel>();
@@ -405,7 +407,7 @@ public class FastHierarchy {
                     final ClassModel c = s.iterator().next();
                     s.remove(c);
                     if (!c.isInterface() && !c.isAbstract() && canStoreClass(c, declaringClass)) {
-                        SootMethod concreteM = resolveConcreteDispatch(c, m);
+                        MethodModel concreteM = resolveConcreteDispatch(c, m);
                         if (concreteM != null) {
                             ret.add(concreteM);
                         }
@@ -435,7 +437,7 @@ public class FastHierarchy {
                 if (!canStoreClass(concreteClass, declaringClass)) {
                     continue;
                 }
-                SootMethod concreteM;
+                MethodModel concreteM;
                 try {
                     concreteM = resolveConcreteDispatch(concreteClass, m);
                 } catch (Exception e) {
@@ -445,7 +447,7 @@ public class FastHierarchy {
                     ret.add(concreteM);
                 }
             } else if (t instanceof ArrayType) {
-                SootMethod concreteM;
+                MethodModel concreteM;
                 try {
                     concreteM = resolveConcreteDispatch(sc.getObjectType().getSootClass(), m);
                 } catch (Exception e) {
@@ -461,13 +463,13 @@ public class FastHierarchy {
         return ret;
     }
 
-    public Collection<SootMethod> resolveConcreteDispatch(Collection<Type> concreteTypes, SootMethod m,
-                                                          RefType declaredTypeOfBase) {
+    public Collection<MethodModel> resolveConcreteDispatch(Collection<Type> concreteTypes, MethodModel m,
+                                                           RefType declaredTypeOfBase) {
 
         final ClassModel declaringClass = declaredTypeOfBase.getSootClass();
         declaringClass.checkLevel(ClassModel.HIERARCHY);
 
-        Set<SootMethod> ret = new HashSet<SootMethod>();
+        Set<MethodModel> ret = new HashSet<MethodModel>();
         for (final Type t : concreteTypes) {
             if (t instanceof AnySubType) {
                 HashSet<ClassModel> s = new HashSet<ClassModel>();
@@ -476,7 +478,7 @@ public class FastHierarchy {
                     final ClassModel c = s.iterator().next();
                     s.remove(c);
                     if (!c.isInterface() && !c.isAbstract() && canStoreClass(c, declaringClass)) {
-                        SootMethod concreteM = resolveConcreteDispatch(c, m);
+                        MethodModel concreteM = resolveConcreteDispatch(c, m);
                         if (concreteM != null) {
                             ret.add(concreteM);
                         }
@@ -506,12 +508,12 @@ public class FastHierarchy {
                 if (!canStoreClass(concreteClass, declaringClass)) {
                     continue;
                 }
-                SootMethod concreteM = resolveConcreteDispatch(concreteClass, m);
+                MethodModel concreteM = resolveConcreteDispatch(concreteClass, m);
                 if (concreteM != null) {
                     ret.add(concreteM);
                 }
             } else if (t instanceof ArrayType) {
-                SootMethod concreteM = resolveConcreteDispatch(rtObject.getSootClass(), m);
+                MethodModel concreteM = resolveConcreteDispatch(rtObject.getSootClass(), m);
                 if (concreteM != null) {
                     ret.add(concreteM);
                 }
@@ -564,7 +566,7 @@ public class FastHierarchy {
      *
      * @param baseType The declared type C
      */
-    public Set<SootMethod> resolveAbstractDispatch(ClassModel baseType, SootMethod m) {
+    public Set<MethodModel> resolveAbstractDispatch(ClassModel baseType, MethodModel m) {
         return resolveAbstractDispatch(baseType, m.makeRef());
     }
 
@@ -573,9 +575,9 @@ public class FastHierarchy {
      *
      * @param baseType The declared type C
      */
-    public Set<SootMethod> resolveAbstractDispatch(ClassModel baseType, SootMethodRef m) {
+    public Set<MethodModel> resolveAbstractDispatch(ClassModel baseType, SootMethodRef m) {
         HashSet<ClassModel> resolved = new HashSet<>();
-        HashSet<SootMethod> ret = new HashSet<>();
+        HashSet<MethodModel> ret = new HashSet<>();
 
         ArrayDeque<ClassModel> worklist = new ArrayDeque<ClassModel>() {
             @Override
@@ -615,7 +617,7 @@ public class FastHierarchy {
             }
 
             if (!resolved.contains(concreteType)) {
-                SootMethod resolvedMethod = resolveMethod(concreteType, m, false, resolved);
+                MethodModel resolvedMethod = resolveMethod(concreteType, m, false, resolved);
                 if (resolvedMethod != null) {
                     ret.add(resolvedMethod);
                 }
@@ -630,7 +632,7 @@ public class FastHierarchy {
      *
      * @param baseType The actual type C
      */
-    public SootMethod resolveConcreteDispatch(ClassModel baseType, SootMethod m) {
+    public MethodModel resolveConcreteDispatch(ClassModel baseType, MethodModel m) {
         return resolveConcreteDispatch(baseType, m.makeRef());
     }
 
@@ -639,7 +641,7 @@ public class FastHierarchy {
      *
      * @param baseType The actual type C
      */
-    public SootMethod resolveConcreteDispatch(ClassModel baseType, SootMethodRef m) {
+    public MethodModel resolveConcreteDispatch(ClassModel baseType, SootMethodRef m) {
         baseType.checkLevel(ClassModel.HIERARCHY);
         if (baseType.isInterface()) {
             throw new RuntimeException("A concrete type cannot be an interface: " + baseType);
@@ -661,7 +663,7 @@ public class FastHierarchy {
      * @param m        The method f to resolve
      * @return The concrete method o.f() to call
      */
-    public SootMethod resolveMethod(ClassModel baseType, SootMethod m, boolean allowAbstract) {
+    public MethodModel resolveMethod(ClassModel baseType, MethodModel m, boolean allowAbstract) {
         return resolveMethod(baseType, m.makeRef(), allowAbstract);
     }
 
@@ -678,7 +680,7 @@ public class FastHierarchy {
      * @param m        The method f to resolve
      * @return The concrete method o.f() to call
      */
-    public SootMethod resolveMethod(ClassModel baseType, SootMethodRef m, boolean allowAbstract) {
+    public MethodModel resolveMethod(ClassModel baseType, SootMethodRef m, boolean allowAbstract) {
         return resolveMethod(baseType, m, allowAbstract, new HashSet<>());
     }
 
@@ -701,7 +703,7 @@ public class FastHierarchy {
      *                   by resolving the same classes multiple times.
      * @return The concrete method o.f() to call
      */
-    private SootMethod resolveMethod(ClassModel baseType, SootMethodRef m, boolean allowAbstract, Set<ClassModel> ignoreList) {
+    private MethodModel resolveMethod(ClassModel baseType, SootMethodRef m, boolean allowAbstract, Set<ClassModel> ignoreList) {
         return resolveMethod(baseType, m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(),
                 allowAbstract, ignoreList, m.getSubSignature());
     }
@@ -720,8 +722,8 @@ public class FastHierarchy {
      * @param name           Name of the method to resolve
      * @return The concrete method o.f() to call
      */
-    public SootMethod resolveMethod(ClassModel baseType, ClassModel declaringClass, String name, List<Type> parameterTypes,
-                                    Type returnType, boolean allowAbstract) {
+    public MethodModel resolveMethod(ClassModel baseType, ClassModel declaringClass, String name, List<Type> parameterTypes,
+                                     Type returnType, boolean allowAbstract) {
         return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(), null);
     }
 
@@ -740,8 +742,8 @@ public class FastHierarchy {
      * @param subsignature   The subsignature (can be null) to speed up the resolving process.
      * @return The concrete method o.f() to call
      */
-    public SootMethod resolveMethod(ClassModel baseType, ClassModel declaringClass, String name, List<Type> parameterTypes,
-                                    Type returnType, boolean allowAbstract, NumberedString subsignature) {
+    public MethodModel resolveMethod(ClassModel baseType, ClassModel declaringClass, String name, List<Type> parameterTypes,
+                                     Type returnType, boolean allowAbstract, NumberedString subsignature) {
         return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(),
                 subsignature);
     }
@@ -764,26 +766,26 @@ public class FastHierarchy {
      * @param subsignature   The subsignature (can be null) to speed up the resolving process.
      * @return The concrete method o.f() to call
      */
-    private SootMethod resolveMethod(final ClassModel baseType, final ClassModel declaringClass, final String name,
-                                     final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<ClassModel> ignoreList,
-                                     NumberedString subsignature) {
+    private MethodModel resolveMethod(final ClassModel baseType, final ClassModel declaringClass, final String name,
+                                      final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<ClassModel> ignoreList,
+                                      NumberedString subsignature) {
         final NumberedString methodSignature;
         if (subsignature == null) {
             methodSignature
-                    = Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+                    = Scene.v().getSubSigNumberer().findOrAdd(MethodModel.getSubSignature(name, parameterTypes, returnType));
         } else {
             methodSignature = subsignature;
         }
 
         {
-            SootMethod resolvedMethod = typeToVtbl.get(baseType, methodSignature);
+            MethodModel resolvedMethod = typeToVtbl.get(baseType, methodSignature);
             if (resolvedMethod != null) {
                 return resolvedMethod;
             }
         }
 
         // When there is no proper dispatch found, we simply return null to let the caller decide what to do
-        SootMethod candidate = null;
+        MethodModel candidate = null;
         boolean calleeExist = declaringClass.getMethodUnsafe(subsignature) != null;
         for (ClassModel concreteType = baseType; concreteType != null && ignoreList.add(concreteType); ) {
             candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
@@ -812,7 +814,7 @@ public class FastHierarchy {
             // determining the most specific super interface
             HashSet<ClassModel> interfaceIgnoreList = new HashSet<>();
             for (ClassModel concreteType = baseType; concreteType != null; ) {
-                Queue<ClassModel> worklist = new ArrayDeque<>(concreteType.getInterfaces());
+                Queue<ClassModel> worklist = new ArrayDeque<>(concreteType.getInterfaceTypes());
                 // we have to determine the "most specific super interface"
                 while (!worklist.isEmpty()) {
                     ClassModel iFace = worklist.poll();
@@ -821,7 +823,7 @@ public class FastHierarchy {
                         continue;
                     }
 
-                    SootMethod method = getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
+                    MethodModel method = getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
                     if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
                         if (!allowAbstract && method.isAbstract()) {
                             // abstract method cannot be dispatched
@@ -831,7 +833,7 @@ public class FastHierarchy {
                         }
                     } else {
                         // go up the interface hierarchy
-                        worklist.addAll(iFace.getInterfaces());
+                        worklist.addAll(iFace.getInterfaceTypes());
                     }
                 }
 
@@ -857,15 +859,15 @@ public class FastHierarchy {
     /**
      * Returns the target for the given SpecialInvokeExpr.
      */
-    public SootMethod resolveSpecialDispatch(SootMethod callee, SootMethod container) {
+    public MethodModel resolveSpecialDispatch(MethodModel callee, MethodModel container) {
         /*
          * This is a bizarre condition! Hopefully the implementation is correct. See VM Spec, 2nd Edition, Chapter 6, in the
          * definition of invokespecial.
          */
         final ClassModel containerClass = container.getDeclaringClass();
         final ClassModel calleeClass = callee.getDeclaringClass();
-        if (containerClass.getType() != calleeClass.getType() && canStoreType(containerClass.getType(), calleeClass.getType())
-                && !SootMethod.constructorName.equals(callee.getName()) && !SootMethod.staticInitializerName.equals(callee.getName())
+        if (containerClass.getClassType() != calleeClass.getClassType() && canStoreType(containerClass.getClassType(), calleeClass.getClassType())
+                && !MethodModel.constructorName.equals(callee.getName()) && !MethodModel.staticInitializerName.equals(callee.getName())
                 // default interface methods are explicitly dispatched to the default
                 // method with a specialinvoke instruction (i.e. do not dispatch to an
                 // overwritten version of that method)
@@ -883,15 +885,15 @@ public class FastHierarchy {
      * @param concreteType
      * @return
      */
-    private SootMethod getSignaturePolymorphicMethod(ClassModel concreteType, String name, List<Type> parameterTypes,
-                                                     Type returnType) {
+    private MethodModel getSignaturePolymorphicMethod(ClassModel concreteType, String name, List<Type> parameterTypes,
+                                                      Type returnType) {
         if (concreteType == null) {
             throw new RuntimeException("The concreteType cannot not be null!");
         }
 
-        SootMethod candidate = null;
+        MethodModel candidate = null;
 
-        for (SootMethod method : concreteType.getMethodsByNameAndParamCount(name, parameterTypes.size())) {
+        for (MethodModel method : concreteType.getMethodsByNameAndParamCount(name, parameterTypes.size())) {
             if (method.getParameterTypes().equals(parameterTypes) && canStoreType(method.getReturnType(), returnType)) {
                 candidate = method;
                 returnType = method.getReturnType();

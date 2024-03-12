@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread.mhp;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.toolkits.thread.AbstractRuntimeThread;
 
@@ -34,9 +34,9 @@ import java.util.List;
  */
 
 public interface MhpTester {
-    boolean mayHappenInParallel(SootMethod m1, SootMethod m2); // method level MHP
+    boolean mayHappenInParallel(MethodModel m1, MethodModel m2); // method level MHP
 
-    boolean mayHappenInParallel(SootMethod m1, Unit u1, SootMethod m2, Unit u2); // stmt level MHP
+    boolean mayHappenInParallel(MethodModel m1, Unit u1, MethodModel m2, Unit u2); // stmt level MHP
 
     void printMhpSummary();
 

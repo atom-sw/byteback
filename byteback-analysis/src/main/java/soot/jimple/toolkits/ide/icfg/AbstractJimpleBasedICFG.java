@@ -22,6 +22,7 @@ package soot.jimple.toolkits.ide.icfg;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import heros.SynchronizedBy;
@@ -35,7 +36,7 @@ import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<Unit, SootMethod> {
+public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<Unit, MethodModel> {
 
     protected final boolean enableExceptions;
 
@@ -52,19 +53,19 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     });
 
     @SynchronizedBy("by use of synchronized LoadingCache class")
-    protected LoadingCache<SootMethod, List<Value>> methodToParameterRefs
-            = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, List<Value>>() {
+    protected LoadingCache<MethodModel, List<Value>> methodToParameterRefs
+            = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<MethodModel, List<Value>>() {
         @Override
-        public List<Value> load(SootMethod m) throws Exception {
+        public List<Value> load(MethodModel m) throws Exception {
             return m.getActiveBody().getParameterRefs();
         }
     });
 
     @SynchronizedBy("by use of synchronized LoadingCache class")
-    protected LoadingCache<SootMethod, Set<Unit>> methodToCallsFromWithin
-            = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, Set<Unit>>() {
+    protected LoadingCache<MethodModel, Set<Unit>> methodToCallsFromWithin
+            = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<MethodModel, Set<Unit>>() {
         @Override
-        public Set<Unit> load(SootMethod m) throws Exception {
+        public Set<Unit> load(MethodModel m) throws Exception {
             return getCallsFromWithinMethod(m);
         }
     });
@@ -93,7 +94,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     }
 
     @Override
-    public SootMethod getMethodOf(Unit u) {
+    public MethodModel getMethodOf(Unit u) {
         Body b = getBodyOf(u);
         return b == null ? null : b.getMethod();
     }
@@ -109,7 +110,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     }
 
     @Override
-    public DirectedGraph<Unit> getOrCreateUnitGraph(SootMethod m) {
+    public DirectedGraph<Unit> getOrCreateUnitGraph(MethodModel m) {
         return getOrCreateUnitGraph(m.getActiveBody());
     }
 
@@ -121,7 +122,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
         return enableExceptions ? ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body) : new BriefUnitGraph(body);
     }
 
-    protected Set<Unit> getCallsFromWithinMethod(SootMethod m) {
+    protected Set<Unit> getCallsFromWithinMethod(MethodModel m) {
         Set<Unit> res = null;
         for (Unit u : m.getActiveBody().getUnits()) {
             if (isCallStmt(u)) {
@@ -173,12 +174,12 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     }
 
     @Override
-    public List<Value> getParameterRefs(SootMethod m) {
+    public List<Value> getParameterRefs(MethodModel m) {
         return methodToParameterRefs.getUnchecked(m);
     }
 
     @Override
-    public Collection<Unit> getStartPointsOf(SootMethod m) {
+    public Collection<Unit> getStartPointsOf(MethodModel m) {
         if (m.hasActiveBody()) {
             Body body = m.getActiveBody();
             DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
@@ -226,11 +227,11 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     }
 
     @Override
-    public Set<Unit> getCallsFromWithin(SootMethod m) {
+    public Set<Unit> getCallsFromWithin(MethodModel m) {
         return methodToCallsFromWithin.getUnchecked(m);
     }
 
-    public void initializeUnitToOwner(SootMethod m) {
+    public void initializeUnitToOwner(MethodModel m) {
         if (m.hasActiveBody()) {
             Body b = m.getActiveBody();
             initializeUnitToOwner(b);
@@ -256,7 +257,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     }
 
     @Override
-    public Collection<Unit> getEndPointsOf(SootMethod m) {
+    public Collection<Unit> getEndPointsOf(MethodModel m) {
         if (m.hasActiveBody()) {
             Body body = m.getActiveBody();
             DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);

@@ -24,9 +24,9 @@ package soot.jimple.spark.builder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.Scene;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.internal.SparkNativeHelper;
 import soot.jimple.spark.pag.MethodPAG;
@@ -57,7 +57,7 @@ public class ContextInsensitiveBuilder {
             change = false;
             for (Iterator<ClassModel> cIt = new ArrayList<>(Scene.v().getClasses()).iterator(); cIt.hasNext(); ) {
                 final ClassModel c = cIt.next();
-                for (final SootMethod m : c.getMethods()) {
+                for (final MethodModel m : c.getMethodModels()) {
                     if (!m.isConcrete() || m.isNative() || m.isPhantom()) {
                         continue;
                     }
@@ -132,7 +132,7 @@ public class ContextInsensitiveBuilder {
     protected void handleClass(ClassModel c) {
         boolean incedClasses = false;
         if (c.isConcrete() || Scene.v().getFastHierarchy().getSubclassesOf(c).stream().anyMatch(ClassModel::isConcrete)) {
-            for (SootMethod m : c.getMethods()) {
+            for (MethodModel m : c.getMethodModels()) {
                 if (!m.isConcrete() && !m.isNative()) {
                     continue;
                 }

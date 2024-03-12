@@ -89,7 +89,7 @@ public class GuardTransformer extends BodyTransformer {
                 if (throwUnit.getOp().getType() instanceof RefType) {
                     for (int i = activeTraps.size() - 1; i >= 0; --i) {
                         final Trap activeTrap = activeTraps.get(i);
-                        final RefType trapType = activeTrap.getException().getType();
+                        final RefType trapType = activeTrap.getException().getClassType();
                         final Value condition = Vimp.v().newInstanceOfExpr(Vimp.v().newCaughtExceptionRef(), trapType);
                         final Unit ifUnit = Vimp.v().newIfStmt(condition, activeTrap.getHandlerUnit());
                         units.insertAfter(ifUnit, indexUnit);

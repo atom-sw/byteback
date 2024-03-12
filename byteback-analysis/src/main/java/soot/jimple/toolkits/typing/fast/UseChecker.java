@@ -76,7 +76,7 @@ public class UseChecker extends AbstractStmtSwitch {
         SootMethodRef m = ie.getMethodRef();
 
         if (ie instanceof InstanceInvokeExpr iie) {
-            iie.setBase(this.uv.visit(iie.getBase(), m.getDeclaringClass().getType(), stmt));
+            iie.setBase(this.uv.visit(iie.getBase(), m.getDeclaringClass().getClassType(), stmt));
         }
 
         for (int i = 0, e = ie.getArgCount(); i < e; i++) {
@@ -116,7 +116,7 @@ public class UseChecker extends AbstractStmtSwitch {
     }
 
     private void handleInstanceFieldRef(InstanceFieldRef ifr, Stmt stmt) {
-        ifr.setBase(this.uv.visit(ifr.getBase(), ifr.getFieldRef().declaringClass().getType(), stmt));
+        ifr.setBase(this.uv.visit(ifr.getBase(), ifr.getFieldRef().declaringClass().getClassType(), stmt));
     }
 
     @Override

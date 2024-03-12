@@ -22,6 +22,7 @@ package soot.grimp;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -46,7 +47,7 @@ public class GrimpBody extends StmtBody {
     /**
      * Construct an empty GrimpBody
      */
-    GrimpBody(SootMethod m) {
+    GrimpBody(MethodModel m) {
         super(m);
     }
 

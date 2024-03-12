@@ -4,7 +4,7 @@ import byteback.analysis.common.Hosts;
 import byteback.analysis.scene.Annotations;
 import byteback.common.function.Lazy;
 import soot.Scene;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Value;
 
 import java.util.Set;
@@ -20,7 +20,7 @@ public class PostconditionsProperty extends ConditionsProperty {
         return instance.get();
     }
 
-    protected static Set<Value> scanPostconditions(final SootMethod method) {
+    protected static Set<Value> scanPostconditions(final MethodModel method) {
         Hosts.v().getAnnotations(method)
                 .forEach(annotationTag ->
                         Annotations.v().getAnnotations(annotationTag)
@@ -31,7 +31,7 @@ public class PostconditionsProperty extends ConditionsProperty {
     }
 
     @Override
-    public void collect(final SootMethod traceMethod, final Set<Value> upperConditions) {
+    public void collect(final MethodModel traceMethod, final Set<Value> upperConditions) {
     }
 
 }

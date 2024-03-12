@@ -24,7 +24,7 @@ package soot.jimple.toolkits.annotation.purity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.SourceLocator;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -67,10 +67,10 @@ public abstract class AbstractInterproceduralAnalysis<S> {
     public static final boolean doCheck = false;
 
     protected final CallGraph cg; // analysed call-graph
-    protected final DirectedGraph<SootMethod> dg; // filtered trimed call-graph
-    protected final Map<SootMethod, S> data; // SootMethod -> summary
-    protected final Map<SootMethod, Integer> order; // SootMethod -> topo order
-    protected final Map<SootMethod, S> unanalysed; // SootMethod -> summary
+    protected final DirectedGraph<MethodModel> dg; // filtered trimed call-graph
+    protected final Map<MethodModel, S> data; // SootMethod -> summary
+    protected final Map<MethodModel, Integer> order; // SootMethod -> topo order
+    protected final Map<MethodModel, S> unanalysed; // SootMethod -> summary
 
     /**
      * The constructor performs some preprocessing, but you have to call doAnalysis to preform the real stuff.
@@ -80,19 +80,19 @@ public abstract class AbstractInterproceduralAnalysis<S> {
      * @param verbose
      * @param heads
      */
-    public AbstractInterproceduralAnalysis(CallGraph cg, SootMethodFilter filter, Iterator<SootMethod> heads,
+    public AbstractInterproceduralAnalysis(CallGraph cg, SootMethodFilter filter, Iterator<MethodModel> heads,
                                            boolean verbose) {
         this.cg = cg;
 
         this.dg = new DirectedCallGraph(cg, filter, heads, verbose);
-        this.data = new HashMap<SootMethod, S>();
-        this.unanalysed = new HashMap<SootMethod, S>();
+        this.data = new HashMap<MethodModel, S>();
+        this.unanalysed = new HashMap<MethodModel, S>();
 
         // construct reverse pseudo topological order on filtered methods
-        this.order = new HashMap<SootMethod, Integer>();
+        this.order = new HashMap<MethodModel, Integer>();
 
         int i = 0;
-        for (SootMethod m : new PseudoTopologicalOrderer<SootMethod>().newList(dg, true)) {
+        for (MethodModel m : new PseudoTopologicalOrderer<MethodModel>().newList(dg, true)) {
             this.order.put(m, i);
             i++;
         }
@@ -115,7 +115,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
      * @param method
      * @return
      */
-    protected abstract S summaryOfUnanalysedMethod(SootMethod method);
+    protected abstract S summaryOfUnanalysedMethod(MethodModel method);
 
     /**
      * Compute the summary for a method by analysing its body.
@@ -125,7 +125,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
      * @param method is the method to be analysed
      * @param dst    is where to put the computed method summary
      */
-    protected abstract void analyseMethod(SootMethod method, S dst);
+    protected abstract void analyseMethod(MethodModel method, S dst);
 
     /**
      * Interprocedural analysis will call applySummary repeatedly as a consequence to
@@ -173,13 +173,13 @@ public abstract class AbstractInterproceduralAnalysis<S> {
     /**
      * Analyse the call {@code callStmt} in the context {@code src}, and put the result into {@code dst}. For each possible
      * target of the call, this will get the summary for the target method (possibly
-     * {@link #summaryOfUnanalysedMethod(SootMethod)}) and {@link #applySummary(Object, Stmt, Object, Object)}, then merge the
+     * {@link #summaryOfUnanalysedMethod(MethodModel)}) and {@link #applySummary(Object, Stmt, Object, Object)}, then merge the
      * results into {@code dst} using {@link #merge(Object, Object, Object)}.
      *
      * @param src
      * @param dst
      * @param callStmt
-     * @see #summaryOfUnanalysedMethod(SootMethod)
+     * @see #summaryOfUnanalysedMethod(MethodModel)
      * @see #applySummary(Object, Stmt, Object, Object)
      */
     public void analyseCall(S src, Stmt callStmt, S dst) {
@@ -188,7 +188,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
         // System.out.println("Edges out of " + callStmt + "...");
         for (Iterator<Edge> it = cg.edgesOutOf(callStmt); it.hasNext(); ) {
             Edge edge = it.next();
-            SootMethod m = edge.tgt();
+            MethodModel m = edge.tgt();
             // System.out.println("\t-> " + m.getSignature());
             S elem;
             if (data.containsKey(m)) {
@@ -222,11 +222,11 @@ public abstract class AbstractInterproceduralAnalysis<S> {
         dot.setGraphAttribute("compound", "true");
         // dot.setGraphAttribute("rankdir","LR");
         int id = 0;
-        Map<SootMethod, Integer> idmap = new HashMap<SootMethod, Integer>();
+        Map<MethodModel, Integer> idmap = new HashMap<MethodModel, Integer>();
 
         // draw sub-graph cluster
         // draw sub-graph cluster
-        for (SootMethod m : dg) {
+        for (MethodModel m : dg) {
             DotGraph sub = dot.createSubGraph("cluster" + id);
             DotGraphNode label = sub.drawNode("head" + id);
             idmap.put(m, id);
@@ -241,8 +241,8 @@ public abstract class AbstractInterproceduralAnalysis<S> {
         }
 
         // connect edges
-        for (SootMethod m : dg) {
-            for (SootMethod mm : dg.getSuccsOf(m)) {
+        for (MethodModel m : dg) {
+            for (MethodModel mm : dg.getSuccsOf(m)) {
                 DotGraphEdge edge = dot.drawEdge("head" + idmap.get(m), "head" + idmap.get(mm));
                 edge.setAttribute("ltail", "cluster" + idmap.get(m));
                 edge.setAttribute("lhead", "cluster" + idmap.get(mm));
@@ -261,7 +261,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
      * @see fillDotGraph
      */
     public void drawAsManyDot(String prefix, boolean drawUnanalysed) {
-        for (SootMethod m : data.keySet()) {
+        for (MethodModel m : data.keySet()) {
             DotGraph dot = new DotGraph(m.toString());
             dot.setGraphLabel(m.toString());
             fillDotGraph("X", data.get(m), dot);
@@ -270,7 +270,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
         }
 
         if (drawUnanalysed) {
-            for (SootMethod m : unanalysed.keySet()) {
+            for (MethodModel m : unanalysed.keySet()) {
                 DotGraph dot = new DotGraph(m.toString());
                 dot.setGraphLabel(m + " (unanalysed)");
                 fillDotGraph("X", unanalysed.get(m), dot);
@@ -286,7 +286,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
      * @param m
      * @return
      */
-    public S getSummaryFor(SootMethod m) {
+    public S getSummaryFor(MethodModel m) {
         if (data.containsKey(m)) {
             return data.get(m);
         }
@@ -302,7 +302,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
      *
      * @return
      */
-    public Iterator<SootMethod> getAnalysedMethods() {
+    public Iterator<MethodModel> getAnalysedMethods() {
         return data.keySet().iterator();
     }
 
@@ -316,27 +316,27 @@ public abstract class AbstractInterproceduralAnalysis<S> {
      */
     protected void doAnalysis(boolean verbose) {
         // queue class
-        class IntComparator implements Comparator<SootMethod> {
+        class IntComparator implements Comparator<MethodModel> {
 
             @Override
-            public int compare(SootMethod o1, SootMethod o2) {
+            public int compare(MethodModel o1, MethodModel o2) {
                 return order.get(o1) - order.get(o2);
             }
         }
 
-        SortedSet<SootMethod> queue = new TreeSet<SootMethod>(new IntComparator());
+        SortedSet<MethodModel> queue = new TreeSet<MethodModel>(new IntComparator());
 
         // init
-        for (SootMethod o : order.keySet()) {
+        for (MethodModel o : order.keySet()) {
             data.put(o, newInitialSummary());
             queue.add(o);
         }
 
-        Map<SootMethod, Integer> nb = new HashMap<SootMethod, Integer>(); // only for debug pretty-printing
+        Map<MethodModel, Integer> nb = new HashMap<MethodModel, Integer>(); // only for debug pretty-printing
 
         // fixpoint iterations
         while (!queue.isEmpty()) {
-            SootMethod m = queue.first();
+            MethodModel m = queue.first();
             queue.remove(m);
             S newSummary = newInitialSummary();
             S oldSummary = data.get(m);
@@ -360,7 +360,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
 
         // fixpoint verification
         if (doCheck) {
-            for (SootMethod m : order.keySet()) {
+            for (MethodModel m : order.keySet()) {
                 S newSummary = newInitialSummary();
                 S oldSummary = data.get(m);
                 analyseMethod(m, newSummary);

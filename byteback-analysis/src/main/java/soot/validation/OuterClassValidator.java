@@ -22,7 +22,7 @@ package soot.validation;
  * #L%
  */
 
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 
 import java.util.HashSet;
 import java.util.List;

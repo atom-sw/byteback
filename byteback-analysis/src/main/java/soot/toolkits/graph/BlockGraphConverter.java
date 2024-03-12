@@ -22,6 +22,8 @@ package soot.toolkits.graph;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 
 import java.util.ArrayList;
@@ -118,7 +120,7 @@ public class BlockGraphConverter {
 
         Scene.v().loadClassAndSupport(args[0]);
         ClassModel sc = Scene.v().getSootClass(args[0]);
-        SootMethod sm = sc.getMethod(args[1]);
+        MethodModel sm = sc.getMethodModel(args[1]);
         Body b = sm.retrieveActiveBody();
         CompleteBlockGraph cfg = new CompleteBlockGraph(b);
         System.out.println(cfg);

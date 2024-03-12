@@ -23,41 +23,41 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import soot.MethodOrMethodContext;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 import java.util.*;
 
 public class TopologicalOrderer {
     private final CallGraph cg;
-    private final List<SootMethod> order;
-    private final Set<SootMethod> visited;
+    private final List<MethodModel> order;
+    private final Set<MethodModel> visited;
 
     public TopologicalOrderer(CallGraph cg) {
         this.cg = cg;
-        this.order = new ArrayList<SootMethod>();
-        this.visited = new HashSet<SootMethod>();
+        this.order = new ArrayList<MethodModel>();
+        this.visited = new HashSet<MethodModel>();
     }
 
     public void go() {
         for (Iterator<MethodOrMethodContext> methods = cg.sourceMethods(); methods.hasNext(); ) {
-            SootMethod m = (SootMethod) methods.next();
+            MethodModel m = (MethodModel) methods.next();
             dfsVisit(m);
         }
     }
 
-    private void dfsVisit(SootMethod m) {
+    private void dfsVisit(MethodModel m) {
         if (visited.contains(m)) {
             return;
         }
         visited.add(m);
         for (Iterator<MethodOrMethodContext> targets = new Targets(cg.edgesOutOf(m)); targets.hasNext(); ) {
-            SootMethod target = (SootMethod) targets.next();
+            MethodModel target = (MethodModel) targets.next();
             dfsVisit(target);
         }
         order.add(m);
     }
 
-    public List<SootMethod> order() {
+    public List<MethodModel> order() {
         return order;
     }
 }

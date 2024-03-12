@@ -22,6 +22,7 @@ package soot.jimple.toolkits.ide;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import heros.IFDSTabulationProblem;
 import heros.InterproceduralCFG;
 import soot.*;
@@ -40,11 +41,11 @@ public class Main {
         PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", new SceneTransformer() {
             protected void internalTransform(String phaseName, @SuppressWarnings("rawtypes") Map options) {
 
-                IFDSTabulationProblem<Unit, ?, SootMethod, InterproceduralCFG<Unit, SootMethod>> problem
+                IFDSTabulationProblem<Unit, ?, MethodModel, InterproceduralCFG<Unit, MethodModel>> problem
                         = new IFDSPossibleTypes(new JimpleBasedInterproceduralCFG());
 
                 @SuppressWarnings({"rawtypes", "unchecked"})
-                JimpleIFDSSolver<?, InterproceduralCFG<Unit, SootMethod>> solver = new JimpleIFDSSolver(problem);
+                JimpleIFDSSolver<?, InterproceduralCFG<Unit, MethodModel>> solver = new JimpleIFDSSolver(problem);
                 solver.solve();
             }
         }));

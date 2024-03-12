@@ -22,17 +22,17 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 
 class MethodReturn {
-    private final SootMethod m;
+    private final MethodModel m;
 
-    public MethodReturn(SootMethod m) {
+    public MethodReturn(MethodModel m) {
         this.m = m;
     }
 
-    public SootMethod getMethod() {
+    public MethodModel getMethod() {
         return m;
     }
 

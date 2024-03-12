@@ -22,6 +22,8 @@ package soot.jimple;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 
 import java.io.File;
@@ -72,7 +74,7 @@ public class ReachingTypeDumper {
     protected String output_dir;
 
     protected void handleClass(PrintWriter out, ClassModel c) {
-        for (SootMethod m : c.getMethods()) {
+        for (MethodModel m : c.getMethodModels()) {
             if (!m.isConcrete()) {
                 continue;
             }

@@ -22,8 +22,8 @@ package soot.toolkits.graph.pdg;
  * #L%
  */
 
-import soot.ClassModel;
-import soot.SootMethod;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.UnitGraph;
@@ -47,7 +47,7 @@ import java.util.List;
 public class Region implements IRegion {
 
     private ClassModel m_class = null;
-    private SootMethod m_method = null;
+    private MethodModel m_method = null;
     private List<Block> m_blocks = null;
     private List<Unit> m_units = null;
     private int m_id = -1;
@@ -58,12 +58,12 @@ public class Region implements IRegion {
     private IRegion m_parent = null;
     private final List<IRegion> m_children = new ArrayList<IRegion>();
 
-    public Region(int id, SootMethod m, ClassModel c, UnitGraph ug) {
+    public Region(int id, MethodModel m, ClassModel c, UnitGraph ug) {
         this(id, new ArrayList<Block>(), m, c, ug);
 
     }
 
-    public Region(int id, List<Block> blocks, SootMethod m, ClassModel c, UnitGraph ug) {
+    public Region(int id, List<Block> blocks, MethodModel m, ClassModel c, UnitGraph ug) {
 
         this.m_blocks = blocks;
         this.m_id = id;
@@ -83,7 +83,7 @@ public class Region implements IRegion {
 
     }
 
-    public SootMethod getSootMethod() {
+    public MethodModel getSootMethod() {
         return this.m_method;
     }
 

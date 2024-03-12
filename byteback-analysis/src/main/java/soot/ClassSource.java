@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+
 /**
  * A class source is responsible for resolving a single class from a particular source format (.class, .jimple, .java, etc.)
  */

@@ -22,6 +22,7 @@ package soot.jimple.toolkits.invoke;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import soot.*;
 import soot.jimple.*;
 import soot.shimple.ShimpleBody;

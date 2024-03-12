@@ -22,6 +22,8 @@ package soot.jimple;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -87,7 +89,7 @@ public class JasminClass extends AbstractJasminClass {
     }
 
     @Override
-    protected void emitMethodBody(SootMethod method) {
+    protected void emitMethodBody(MethodModel method) {
         if (Options.v().time()) {
             Timers.v().buildJasminTimer.end();
         }

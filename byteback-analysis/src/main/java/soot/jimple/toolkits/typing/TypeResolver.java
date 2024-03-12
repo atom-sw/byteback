@@ -22,6 +22,7 @@ package soot.jimple.toolkits.typing;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -132,7 +133,7 @@ public class TypeResolver {
      * Get type variable for the given soot class.
      **/
     public TypeVariable typeVariable(ClassModel classModel) {
-        return typeVariable(hierarchy.typeNode(classModel.getType()));
+        return typeVariable(hierarchy.typeNode(classModel.getClassType()));
     }
 
     /**

@@ -22,6 +22,9 @@ package soot.jimple.toolkits.infoflow;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -46,21 +49,21 @@ public class ClassInfoFlowAnalysis {
     ClassModel classModel;
     InfoFlowAnalysis dfa; // used to access the data flow analyses of other classes
 
-    Map<SootMethod, SmartMethodInfoFlowAnalysis> methodToInfoFlowAnalysis;
-    Map<SootMethod, HashMutableDirectedGraph<EquivalentValue>> methodToInfoFlowSummary;
+    Map<MethodModel, SmartMethodInfoFlowAnalysis> methodToInfoFlowAnalysis;
+    Map<MethodModel, HashMutableDirectedGraph<EquivalentValue>> methodToInfoFlowSummary;
 
     public static int methodCount = 0;
 
     public ClassInfoFlowAnalysis(ClassModel classModel, InfoFlowAnalysis dfa) {
         this.classModel = classModel;
         this.dfa = dfa;
-        methodToInfoFlowAnalysis = new HashMap<SootMethod, SmartMethodInfoFlowAnalysis>();
-        methodToInfoFlowSummary = new HashMap<SootMethod, HashMutableDirectedGraph<EquivalentValue>>();
+        methodToInfoFlowAnalysis = new HashMap<MethodModel, SmartMethodInfoFlowAnalysis>();
+        methodToInfoFlowSummary = new HashMap<MethodModel, HashMutableDirectedGraph<EquivalentValue>>();
 
         // doSimpleConservativeDataFlowAnalysis();
     }
 
-    public SmartMethodInfoFlowAnalysis getMethodInfoFlowAnalysis(SootMethod method) {
+    public SmartMethodInfoFlowAnalysis getMethodInfoFlowAnalysis(MethodModel method) {
         if (!methodToInfoFlowAnalysis.containsKey(method)) {
             methodCount++;
 
@@ -90,11 +93,11 @@ public class ClassInfoFlowAnalysis {
         return methodToInfoFlowAnalysis.get(method);
     }
 
-    public MutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(SootMethod method) {
+    public MutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(MethodModel method) {
         return getMethodInfoFlowSummary(method, true);
     }
 
-    public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(SootMethod method, boolean doFullAnalysis) {
+    public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(MethodModel method, boolean doFullAnalysis) {
         if (!methodToInfoFlowSummary.containsKey(method)) {
             methodCount++;
 
@@ -152,7 +155,7 @@ public class ClassInfoFlowAnalysis {
     /**
      * Does not require any fixed point calculation
      */
-    private HashMutableDirectedGraph<EquivalentValue> simpleConservativeInfoFlowAnalysis(SootMethod sm) {
+    private HashMutableDirectedGraph<EquivalentValue> simpleConservativeInfoFlowAnalysis(MethodModel sm) {
         // Constructs a graph representing the data flow between fields, parameters, and the
         // return value of this method. The graph nodes are EquivalentValue wrapped Refs.
         // This version is rather stupid... it just assumes all values flow to all others,
@@ -216,7 +219,7 @@ public class ClassInfoFlowAnalysis {
         }
 
         // Add every relevant field of this class (static methods don't get non-static fields)
-        for (SootField sf : sm.getDeclaringClass().getFields()) {
+        for (FieldModel sf : sm.getDeclaringClass().getFieldModels()) {
             if (sf.isStatic() || !sm.isStatic()) {
                 EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
                 if (!dataFlowGraph.containsNode(fieldRefEqVal)) {
@@ -228,11 +231,11 @@ public class ClassInfoFlowAnalysis {
         // Add every field of this class's superclasses
         ClassModel superclass = sm.getDeclaringClass();
         if (superclass.hasSuperclass()) {
-            superclass = sm.getDeclaringClass().getSuperclass();
+            superclass = sm.getDeclaringClass().getSuperType();
         }
         while (superclass.hasSuperclass()) // we don't want to process Object
         {
-            for (SootField scField : superclass.getFields()) {
+            for (FieldModel scField : superclass.getFieldModels()) {
                 if (scField.isStatic() || !sm.isStatic()) {
                     EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
                     if (!dataFlowGraph.containsNode(fieldRefEqVal)) {
@@ -240,7 +243,7 @@ public class ClassInfoFlowAnalysis {
                     }
                 }
             }
-            superclass = superclass.getSuperclass();
+            superclass = superclass.getSuperType();
         }
 
         // The return value also becomes a node in the graph
@@ -291,7 +294,7 @@ public class ClassInfoFlowAnalysis {
     /**
      * Does not require the method to have a body
      */
-    public HashMutableDirectedGraph<EquivalentValue> triviallyConservativeInfoFlowAnalysis(SootMethod sm) {
+    public HashMutableDirectedGraph<EquivalentValue> triviallyConservativeInfoFlowAnalysis(MethodModel sm) {
         HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<EquivalentValue>();
 
         // Add all of the nodes necessary to ensure that this is a complete data flow graph
@@ -302,8 +305,8 @@ public class ClassInfoFlowAnalysis {
         }
 
         // Add every relevant field of this class (static methods don't get non-static fields)
-        for (Iterator<SootField> it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); ) {
-            SootField sf = it.next();
+        for (Iterator<FieldModel> it = sm.getDeclaringClass().getFieldModels().iterator(); it.hasNext(); ) {
+            FieldModel sf = it.next();
             if (sf.isStatic() || !sm.isStatic()) {
                 EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
                 fieldsStaticsParamsAccessed.add(fieldRefEqVal);
@@ -313,19 +316,19 @@ public class ClassInfoFlowAnalysis {
         // Add every field of this class's superclasses
         ClassModel superclass = sm.getDeclaringClass();
         if (superclass.hasSuperclass()) {
-            superclass = sm.getDeclaringClass().getSuperclass();
+            superclass = sm.getDeclaringClass().getSuperType();
         }
         while (superclass.hasSuperclass()) // we don't want to process Object
         {
-            Iterator<SootField> scFieldsIt = superclass.getFields().iterator();
+            Iterator<FieldModel> scFieldsIt = superclass.getFieldModels().iterator();
             while (scFieldsIt.hasNext()) {
-                SootField scField = scFieldsIt.next();
+                FieldModel scField = scFieldsIt.next();
                 if (scField.isStatic() || !sm.isStatic()) {
                     EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
                     fieldsStaticsParamsAccessed.add(fieldRefEqVal);
                 }
             }
-            superclass = superclass.getSuperclass();
+            superclass = superclass.getSuperType();
         }
 
         // Don't add any static fields outside of the class... unsafe???

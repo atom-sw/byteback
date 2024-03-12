@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -35,7 +35,7 @@ public class JavaLangObjectNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
         String subSignature = method.getSubSignature();
 
@@ -58,7 +58,7 @@ public class JavaLangObjectNative extends NativeMethodClass {
      * <p>
      * public final native java.lang.Class getClass();
      */
-    public void java_lang_Object_getClass(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Object_getClass(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                           ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -85,7 +85,7 @@ public class JavaLangObjectNative extends NativeMethodClass {
      * <p>
      * protected native java.lang.Object clone() throws java.lang.CloneNotSupported
      */
-    public void java_lang_Object_clone(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_Object_clone(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                        ReferenceVariable[] params) {
         if (thisVar == null) {
             throw new RuntimeException("Need a 'this' variable to perform a clone()");

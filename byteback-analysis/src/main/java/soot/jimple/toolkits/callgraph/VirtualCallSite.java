@@ -24,7 +24,7 @@ package soot.jimple.toolkits.callgraph;
 
 import soot.Kind;
 import soot.MethodSubSignature;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 
@@ -39,7 +39,7 @@ public class VirtualCallSite extends AbstractCallSite {
     private final MethodSubSignature subSig;
     final Kind kind;
 
-    public VirtualCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, MethodSubSignature subSig, Kind kind) {
+    public VirtualCallSite(Stmt stmt, MethodModel container, InstanceInvokeExpr iie, MethodSubSignature subSig, Kind kind) {
         super(stmt, container);
         this.iie = iie;
         this.subSig = subSig;
@@ -58,7 +58,7 @@ public class VirtualCallSite extends AbstractCallSite {
      * @deprecated use {@link #getContainer()}
      */
     @Deprecated
-    public SootMethod container() {
+    public MethodModel container() {
         return container;
     }
 

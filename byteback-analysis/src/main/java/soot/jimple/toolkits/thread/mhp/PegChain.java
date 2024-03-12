@@ -22,6 +22,8 @@ package soot.jimple.toolkits.thread.mhp;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.internal.JIdentityStmt;
@@ -80,13 +82,13 @@ public class PegChain extends HashChain {
     Set methodsNeedingInlining;
     Set allocNodes;
     List<List> inlineSites;
-    Map<SootMethod, String> synchObj;
+    Map<MethodModel, String> synchObj;
     Set multiRunAllocNodes;
     Map<AllocNode, String> allocNodeToObj;
 
     PegChain(CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set threadAllocSites, Set methodsNeedingInlining,
-             Set allocNodes, List<List> inlineSites, Map<SootMethod, String> synchObj, Set multiRunAllocNodes,
-             Map<AllocNode, String> allocNodeToObj, Body unitBody, SootMethod sm, String threadName, boolean addBeginNode,
+             Set allocNodes, List<List> inlineSites, Map<MethodModel, String> synchObj, Set multiRunAllocNodes,
+             Map<AllocNode, String> allocNodeToObj, Body unitBody, MethodModel sm, String threadName, boolean addBeginNode,
              PegGraph pegGraph) {
         this.allocNodeToObj = allocNodeToObj;
         this.multiRunAllocNodes = multiRunAllocNodes;
@@ -161,7 +163,7 @@ public class PegChain extends HashChain {
 
     }
 
-    private void visit(Unit unit, UnitGraph graph, SootMethod sm, String threadName, boolean addBeginNode) {
+    private void visit(Unit unit, UnitGraph graph, MethodModel sm, String threadName, boolean addBeginNode) {
         /*
          * if (unit instanceof JIdentityStmt){ System.out.println("JIdentityStmt left: "+((JIdentityStmt)unit).getLeftOp());
          * System.out.println("JIdentityStmt right: "+((JIdentityStmt)unit).getRightOp()); }
@@ -200,7 +202,7 @@ public class PegChain extends HashChain {
 
             Value invokeExpr = ((Stmt) unit).getInvokeExpr();
 
-            SootMethod method = ((InvokeExpr) invokeExpr).getMethod();
+            MethodModel method = ((InvokeExpr) invokeExpr).getMethod();
 
             String name = method.getName();
             Value value = null;
@@ -304,7 +306,7 @@ public class PegChain extends HashChain {
                          * SootMethod meth=null; if (targetList.size()>1) { System.out.println("targetList: "+targetList); throw new
                          * RuntimeException("target of start >1!"); } else meth = (SootMethod)targetList.get(0);
                          */
-                        SootMethod meth
+                        MethodModel meth
                                 = hierarchy.resolveConcreteDispatch(mayClassModel, method.getDeclaringClass().getMethodByName("run"));
                         // System.out.println("==method is: "+meth);
 
@@ -420,8 +422,8 @@ public class PegChain extends HashChain {
                                 // System.out.println("isLibraryClass: "+method.getDeclaringClass().isLibraryClass());
                                 if (method.isConcrete() && !method.getDeclaringClass().isLibraryClass()) {
 
-                                    List<SootMethod> targetList = new LinkedList<SootMethod>();
-                                    SootMethod targetMethod = null;
+                                    List<MethodModel> targetList = new LinkedList<MethodModel>();
+                                    MethodModel targetMethod = null;
                                     if (invokeExpr instanceof StaticInvokeExpr) {
                                         targetMethod = method;
                                     } else {
@@ -482,7 +484,7 @@ public class PegChain extends HashChain {
     }
     // end buildPegChain()
 
-    private void transformWaitNode(String objName, String name, String threadName, Unit unit, UnitGraph graph, SootMethod sm) {
+    private void transformWaitNode(String objName, String name, String threadName, Unit unit, UnitGraph graph, MethodModel sm) {
         JPegStmt pegStmt = new WaitStmt(objName, threadName, unit, graph, sm);
 
         addAndPutNonCompacted(unit, pegStmt);
@@ -537,8 +539,8 @@ public class PegChain extends HashChain {
         return list;
     }
 
-    private void inlineMethod(SootMethod targetMethod, String objName, String name, String threadName, Unit unit,
-                              UnitGraph graph, SootMethod sm) {
+    private void inlineMethod(MethodModel targetMethod, String objName, String name, String threadName, Unit unit,
+                              UnitGraph graph, MethodModel sm) {
         // System.out.println("inside extendMethod "+ targetMethod);
 
         Body unitBody = targetMethod.getActiveBody();
@@ -581,7 +583,7 @@ public class PegChain extends HashChain {
 
     }
 
-    private String findSynchObj(SootMethod targetMethod) {
+    private String findSynchObj(MethodModel targetMethod) {
 
         if (synchObj.containsKey(targetMethod)) {
             return synchObj.get(targetMethod);
@@ -627,7 +629,7 @@ public class PegChain extends HashChain {
         addAndPut(unit, stmt);
     }
 
-    private void newAndAddElement(Unit unit, UnitGraph graph, String threadName, SootMethod sm) {
+    private void newAndAddElement(Unit unit, UnitGraph graph, String threadName, MethodModel sm) {
         JPegStmt pegStmt = new OtherStmt("*", unit.toString(), threadName, unit, graph, sm);
         addAndPut(unit, pegStmt);
     }

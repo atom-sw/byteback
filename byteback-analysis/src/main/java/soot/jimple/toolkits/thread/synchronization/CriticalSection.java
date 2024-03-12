@@ -22,6 +22,7 @@ package soot.jimple.toolkits.thread.synchronization;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 
@@ -46,7 +47,7 @@ class CriticalSection extends SynchronizedRegion {
     public boolean wholeMethod;
 
     // Information for analyzing conflicts with other transactions
-    public SootMethod method;
+    public MethodModel method;
     public int setNumber; // used for breaking the list of transactions into sets
     public CriticalSectionGroup group;
     public HashSet<CriticalSectionDataDependency> edges;
@@ -59,7 +60,7 @@ class CriticalSection extends SynchronizedRegion {
     public Value lockObjectArrayIndex;
     public List<EquivalentValue> lockset;
 
-    CriticalSection(boolean wholeMethod, SootMethod method, int nestLevel) {
+    CriticalSection(boolean wholeMethod, MethodModel method, int nestLevel) {
         super();
         this.IDNum = nextIDNum;
         nextIDNum++;

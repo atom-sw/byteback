@@ -22,6 +22,8 @@ package soot.jimple.spark;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -221,7 +223,7 @@ public class SparkTransformer extends SceneTransformer {
         final Tag unknown = new StringTag("Untagged Spark node");
         final Map<Node, Tag> nodeToTag = pag.getNodeTags();
         for (final ClassModel c : Scene.v().getClasses()) {
-            for (final SootMethod m : c.getMethods()) {
+            for (final MethodModel m : c.getMethodModels()) {
                 if (!m.isConcrete() || !m.hasActiveBody()) {
                     continue;
                 }

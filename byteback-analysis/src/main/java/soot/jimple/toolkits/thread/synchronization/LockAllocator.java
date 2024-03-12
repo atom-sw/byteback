@@ -22,6 +22,9 @@ package soot.jimple.toolkits.thread.synchronization;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -173,14 +176,14 @@ public class LockAllocator extends SceneTransformer {
         // For all methods, run the intraprocedural analysis (TransactionAnalysis)
         Date start = new Date();
         logger.debug("[wjtp.tn] *** Find and Name Transactions *** " + start);
-        Map<SootMethod, FlowSet> methodToFlowSet = new HashMap<SootMethod, FlowSet>();
-        Map<SootMethod, ExceptionalUnitGraph> methodToExcUnitGraph = new HashMap<SootMethod, ExceptionalUnitGraph>();
+        Map<MethodModel, FlowSet> methodToFlowSet = new HashMap<MethodModel, FlowSet>();
+        Map<MethodModel, ExceptionalUnitGraph> methodToExcUnitGraph = new HashMap<MethodModel, ExceptionalUnitGraph>();
         Iterator<ClassModel> runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
         while (runAnalysisClassesIt.hasNext()) {
             ClassModel appClass = runAnalysisClassesIt.next();
-            Iterator<SootMethod> methodsIt = appClass.getMethods().iterator();
+            Iterator<MethodModel> methodsIt = appClass.getMethodModels().iterator();
             while (methodsIt.hasNext()) {
-                SootMethod method = methodsIt.next();
+                MethodModel method = methodsIt.next();
                 if (method.isConcrete()) {
                     Body b = method.retrieveActiveBody();
                     ExceptionalUnitGraph eug = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
@@ -365,7 +368,7 @@ public class LockAllocator extends SceneTransformer {
             }
 
             for (ClassModel appClass : Scene.v().getApplicationClasses()) {
-                for (SootMethod method : appClass.getMethods()) {
+                for (MethodModel method : appClass.getMethodModels()) {
                     if (method.isConcrete()) {
                         FlowSet fs = methodToFlowSet.get(method);
                         if (fs != null) {
@@ -736,7 +739,7 @@ public class LockAllocator extends SceneTransformer {
                             // else if(lockObject[group] instanceof FieldRef)
                             else if (tn.group.lockObject instanceof FieldRef) {
                                 // SootField field = ((FieldRef) lockObject[group]).getField();
-                                SootField field = ((FieldRef) tn.group.lockObject).getField();
+                                FieldModel field = ((FieldRef) tn.group.lockObject).getField();
                                 objString = field.getDeclaringClass().getShortName() + "." + field.getName();
                             } else {
                                 objString = tn.group.lockObject.toString();

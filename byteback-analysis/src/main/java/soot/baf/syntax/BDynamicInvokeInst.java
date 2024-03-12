@@ -23,6 +23,7 @@ package soot.baf.syntax;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.Jimple;
 import soot.util.Switch;
@@ -87,7 +88,7 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
         buffer.append(methodRef.getName()); // quoted method name (can be any UTF8 string)
         buffer.append("\" <");
         buffer.append(
-                SootMethod.getSubSignature(""/* no method name here */, methodRef.getParameterTypes(), methodRef.getReturnType()));
+                MethodModel.getSubSignature(""/* no method name here */, methodRef.getParameterTypes(), methodRef.getReturnType()));
         buffer.append('>');
         buffer.append(bsmRef.getSignature());
         buffer.append('(');
@@ -110,7 +111,7 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
         up.literal(methodRef.getName());
         up.literal("\" <");
         up.literal(
-                SootMethod.getSubSignature(""/* no method name here */, methodRef.getParameterTypes(), methodRef.getReturnType()));
+                MethodModel.getSubSignature(""/* no method name here */, methodRef.getParameterTypes(), methodRef.getReturnType()));
         up.literal("> ");
         up.methodRef(bsmRef);
         up.literal("(");

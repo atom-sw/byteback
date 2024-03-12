@@ -29,7 +29,7 @@ import heros.solver.IDESolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.PatchingChain;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 
 import java.io.FileNotFoundException;
@@ -39,17 +39,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit, SootMethod>>
-        extends IDESolver<Unit, D, SootMethod, V, I> {
+public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit, MethodModel>>
+        extends IDESolver<Unit, D, MethodModel, V, I> {
     private static final Logger logger = LoggerFactory.getLogger(JimpleIDESolver.class);
 
     private final boolean DUMP_RESULTS;
 
-    public JimpleIDESolver(IDETabulationProblem<Unit, D, SootMethod, V, I> problem) {
+    public JimpleIDESolver(IDETabulationProblem<Unit, D, MethodModel, V, I> problem) {
         this(problem, false);
     }
 
-    public JimpleIDESolver(IDETabulationProblem<Unit, D, SootMethod, V, I> problem, boolean dumpResults) {
+    public JimpleIDESolver(IDETabulationProblem<Unit, D, MethodModel, V, I> problem, boolean dumpResults) {
         super(problem);
         this.DUMP_RESULTS = dumpResults;
     }
@@ -67,7 +67,7 @@ public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit, SootMethod
             PrintWriter out = new PrintWriter(new FileOutputStream("ideSolverDump" + System.currentTimeMillis() + ".csv"));
             List<String> res = new ArrayList<String>();
             for (Cell<Unit, D, V> entry : val.cellSet()) {
-                SootMethod methodOf = icfg.getMethodOf(entry.getRowKey());
+                MethodModel methodOf = icfg.getMethodOf(entry.getRowKey());
                 PatchingChain<Unit> units = methodOf.getActiveBody().getUnits();
                 int i = 0;
                 for (Unit unit : units) {

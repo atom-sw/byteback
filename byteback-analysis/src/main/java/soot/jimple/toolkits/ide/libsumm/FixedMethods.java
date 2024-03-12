@@ -22,9 +22,9 @@ package soot.jimple.toolkits.ide.libsumm;
  * #L%
  */
 
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.Scene;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.InvokeExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
@@ -42,7 +42,7 @@ public class FixedMethods {
      * code cannot possible overwrite the called method. This is trivially true for InvokeStatic and InvokeSpecial, but can
      * also hold for virtual invokes if all possible call targets in the library cannot be overwritten.
      *
-     * @see #clientOverwriteableOverwrites(SootMethod)
+     * @see #clientOverwriteableOverwrites(MethodModel)
      */
     public static boolean isFixed(InvokeExpr ie) {
         return ie instanceof StaticInvokeExpr || ie instanceof SpecialInvokeExpr
@@ -53,9 +53,9 @@ public class FixedMethods {
      * Returns true if this method itself is visible to the client and overwriteable or if the same holds for any of the
      * methods in the library that overwrite the argument method.
      *
-     * @see #clientOverwriteable(SootMethod)
+     * @see #clientOverwriteable(MethodModel)
      */
-    private static boolean clientOverwriteableOverwrites(SootMethod m) {
+    private static boolean clientOverwriteableOverwrites(MethodModel m) {
         if (clientOverwriteable(m)) {
             return true;
         }
@@ -63,7 +63,7 @@ public class FixedMethods {
         ClassModel c = m.getDeclaringClass();
         // TODO could use PTA and call graph to filter subclasses further
         for (ClassModel cPrime : Scene.v().getFastHierarchy().getSubclassesOf(c)) {
-            SootMethod mPrime = cPrime.getMethodUnsafe(m.getSubSignature());
+            MethodModel mPrime = cPrime.getMethodUnsafe(m.getSubSignature());
             if (mPrime != null) {
                 if (clientOverwriteable(mPrime)) {
                     return true;
@@ -77,10 +77,10 @@ public class FixedMethods {
      * Returns true if the given method itself is visible to the client and overwriteable. This is true if neither the method
      * nor its declaring class are final, if the method is visible and if the declaring class can be instantiated.
      *
-     * @see #visible(SootMethod)
+     * @see #visible(MethodModel)
      * @see #clientCanInstantiate(ClassModel)
      */
-    private static boolean clientOverwriteable(SootMethod m) {
+    private static boolean clientOverwriteable(MethodModel m) {
         ClassModel c = m.getDeclaringClass();
         return !c.isFinal() && !m.isFinal() && visible(m) && clientCanInstantiate(c);
     }
@@ -96,8 +96,8 @@ public class FixedMethods {
             return true;
         }
 
-        for (SootMethod m : cPrime.getMethods()) {
-            if (m.getName().equals(SootMethod.constructorName)) {
+        for (MethodModel m : cPrime.getMethodModels()) {
+            if (m.getName().equals(MethodModel.constructorName)) {
                 if (visible(m)) {
                     return true;
                 }
@@ -109,7 +109,7 @@ public class FixedMethods {
     /**
      * Returns true if the given method is visible to client code.
      */
-    private static boolean visible(SootMethod mPrime) {
+    private static boolean visible(MethodModel mPrime) {
         ClassModel cPrime = mPrime.getDeclaringClass();
         return (cPrime.isPublic() || cPrime.isProtected() || (!cPrime.isPrivate() && !ASSUME_PACKAGES_SEALED))
                 && (mPrime.isPublic() || mPrime.isProtected() || (!mPrime.isPrivate() && !ASSUME_PACKAGES_SEALED));

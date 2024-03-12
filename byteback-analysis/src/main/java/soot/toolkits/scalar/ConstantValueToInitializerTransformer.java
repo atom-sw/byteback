@@ -22,6 +22,9 @@ package soot.toolkits.scalar;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.tag.*;
@@ -49,10 +52,10 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
     public void transformClass(ClassModel sc) {
         final Jimple jimp = Jimple.v();
 
-        SootMethod smInit = null;
-        Set<SootField> alreadyInitialized = new HashSet<SootField>();
+        MethodModel smInit = null;
+        Set<FieldModel> alreadyInitialized = new HashSet<FieldModel>();
 
-        for (SootField sf : sc.getFields()) {
+        for (FieldModel sf : sc.getFieldModels()) {
             // We can only create an initializer for all fields that have the
             // constant value tag. In case of non-static fields, this provides
             // a default value
@@ -101,7 +104,7 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
                         // without the default value taking precedence.
                         // If the constructor body already has the constant assignment,
                         // e.g. for final instance fields, we do not add another assignment.
-                        for (SootMethod m : sc.getMethods()) {
+                        for (MethodModel m : sc.getMethodModels()) {
                             if (m.isConstructor()) {
                                 final Body body = m.retrieveActiveBody();
                                 final UnitPatchingChain units = body.getUnits();
@@ -143,7 +146,7 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
         }
     }
 
-    private boolean isInstanceFieldAssignedConstantInBody(SootField sf, Constant constant, Body body) {
+    private boolean isInstanceFieldAssignedConstantInBody(FieldModel sf, Constant constant, Body body) {
         for (Unit u : body.getUnits()) {
             if (u instanceof AssignStmt as) {
               if (as.containsFieldRef() && as.getFieldRef() instanceof InstanceFieldRef ifr
@@ -157,11 +160,11 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
         return false;
     }
 
-    private SootMethod getOrCreateInitializer(ClassModel sc, Set<SootField> alreadyInitialized) {
+    private MethodModel getOrCreateInitializer(ClassModel sc, Set<FieldModel> alreadyInitialized) {
         // Create a static initializer if we don't already have one
-        SootMethod smInit = sc.getMethodByNameUnsafe(SootMethod.staticInitializerName);
+        MethodModel smInit = sc.getMethodByNameUnsafe(MethodModel.staticInitializerName);
         if (smInit == null) {
-            smInit = Scene.v().makeSootMethod(SootMethod.staticInitializerName, Collections.emptyList(), VoidType.v());
+            smInit = Scene.v().makeSootMethod(MethodModel.staticInitializerName, Collections.emptyList(), VoidType.v());
             smInit.setActiveBody(Jimple.v().newBody(smInit));
             sc.addMethod(smInit);
             smInit.setModifiers(Modifier.PUBLIC | Modifier.STATIC);

@@ -22,6 +22,9 @@ package soot.jimple.spark.ondemand.pautil;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -95,7 +98,7 @@ public class SootUtil {
 
     public static boolean isParamNode(VarNode node) {
         if (node.getVariable() instanceof Pair pair) {
-          return (pair.getO1() instanceof SootMethod
+          return (pair.getO1() instanceof MethodModel
                     && (pair.getO2() instanceof Integer || pair.getO2() == PointsToAnalysis.THIS_NODE));
         }
         return false;
@@ -107,7 +110,7 @@ public class SootUtil {
      */
     public static boolean isThisNode(VarNode node) {
         if (node.getVariable() instanceof Pair pair) {
-          return (pair.getO1() instanceof SootMethod) && (pair.getO2() == PointsToAnalysis.THIS_NODE);
+          return (pair.getO1() instanceof MethodModel) && (pair.getO2() == PointsToAnalysis.THIS_NODE);
         }
         return false;
     }
@@ -302,15 +305,15 @@ public class SootUtil {
     // Scene.v().getSubSigNumberer().
     // findOrAdd( "void start()" );
 
-    public static boolean isThreadStartMethod(SootMethod method) {
+    public static boolean isThreadStartMethod(MethodModel method) {
         return method.toString().equals("<java.lang.Thread: void start()>");
     }
 
     public static boolean hasRecursiveField(ClassModel classModel) {
-        Chain fields = classModel.getFields();
+        Chain fields = classModel.getFieldModels();
         for (Iterator iter = fields.iterator(); iter.hasNext(); ) {
-            SootField sootField = (SootField) iter.next();
-            Type type = sootField.getType();
+            FieldModel fieldModel = (FieldModel) iter.next();
+            Type type = fieldModel.getType();
             if (type instanceof RefType refType) {
               ClassModel otherClassModel = refType.getSootClass();
                 if (classModel == otherClassModel) {
@@ -339,7 +342,7 @@ public class SootUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static boolean noRefTypeParameters(SootMethod method) {
+    public static boolean noRefTypeParameters(MethodModel method) {
         if (!method.isStatic()) {
             return false;
         }
@@ -355,28 +358,28 @@ public class SootUtil {
                 && soot.jimple.spark.ondemand.genericutil.Util.forAll(method.getParameterTypes(), notRefTypePred);
     }
 
-    public static boolean isResolvableCall(SootMethod invokedMethod) {
+    public static boolean isResolvableCall(MethodModel invokedMethod) {
         // TODO make calls through invokespecial resolvable
         return invokedMethod.isStatic() || isConstructor(invokedMethod);
     }
 
-    public static Collection<? extends SootMethod> getCallTargets(Type type, SootMethod invokedMethod) {
+    public static Collection<? extends MethodModel> getCallTargets(Type type, MethodModel invokedMethod) {
         if (isConstructor(invokedMethod)) {
             return Collections.singleton(invokedMethod);
         }
-        Type receiverType = invokedMethod.getDeclaringClass().getType();
+        Type receiverType = invokedMethod.getDeclaringClass().getClassType();
         ChunkedQueue chunkedQueue = new ChunkedQueue();
         Iterator iter = chunkedQueue.reader();
         VirtualCalls.v().resolve(type, receiverType, invokedMethod.makeRef(), null, chunkedQueue);
-        Set<SootMethod> ret = new ArraySet<SootMethod>();
+        Set<MethodModel> ret = new ArraySet<MethodModel>();
         while (iter.hasNext()) {
-            SootMethod target = (SootMethod) iter.next();
+            MethodModel target = (MethodModel) iter.next();
             ret.add(target);
         }
         return ret;
     }
 
-    private static boolean isConstructor(SootMethod invokedMethod) {
+    private static boolean isConstructor(MethodModel invokedMethod) {
         return invokedMethod.getName().equals("<init>");
     }
 
@@ -420,9 +423,9 @@ public class SootUtil {
 
     }
 
-    public static SootMethod getAmbiguousMethodByName(String methodName) {
+    public static MethodModel getAmbiguousMethodByName(String methodName) {
         ClassModel sc = Scene.v().tryLoadClass(getClassName(methodName), ClassModel.SIGNATURES);
-        SootMethod sm = sc.getMethodByName(getMethodName(methodName));
+        MethodModel sm = sc.getMethodByName(getMethodName(methodName));
 
         return sm;
     }
@@ -447,7 +450,7 @@ public class SootUtil {
         return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
     }
 
-    public static boolean isNewInstanceMethod(SootMethod method) {
+    public static boolean isNewInstanceMethod(MethodModel method) {
         return method.toString().equals("<java.lang.Class: java.lang.Object newInstance()>");
     }
 }

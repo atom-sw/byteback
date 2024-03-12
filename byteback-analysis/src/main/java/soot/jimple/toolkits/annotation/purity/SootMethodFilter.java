@@ -22,7 +22,7 @@ package soot.jimple.toolkits.annotation.purity;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 /**
  * Allows specifying which SootMethod you want to analyse in a AbstractInterproceduralAnalysis.
@@ -31,6 +31,6 @@ import soot.SootMethod;
  */
 public interface SootMethodFilter {
 
-    boolean want(SootMethod m);
+    boolean want(MethodModel m);
 
 }

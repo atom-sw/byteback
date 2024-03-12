@@ -22,6 +22,7 @@ package soot.jimple.spark.builder;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import soot.*;
 import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.Pair;
@@ -117,7 +118,7 @@ public class GlobalNodeFactory {
         }
         VarNode local = pag.makeGlobalVarNode(cls, rtObject);
         for (ClassModel cl : Scene.v().dynamicClasses()) {
-            AllocNode site = pag.makeAllocNode(new Pair<VarNode, ClassModel>(cls, cl), cl.getType(), null);
+            AllocNode site = pag.makeAllocNode(new Pair<VarNode, ClassModel>(cls, cl), cl.getClassType(), null);
             pag.addEdge(site, local);
         }
         return local;

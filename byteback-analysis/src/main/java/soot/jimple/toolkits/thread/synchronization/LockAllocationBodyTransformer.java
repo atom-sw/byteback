@@ -22,6 +22,9 @@ package soot.jimple.toolkits.thread.synchronization;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -55,7 +58,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
     protected void internalTransform(Body b, FlowSet fs, List<CriticalSectionGroup> groups, boolean[] insertedGlobalLock) {
         //
         JimpleBody j = (JimpleBody) b;
-        SootMethod thisMethod = b.getMethod();
+        MethodModel thisMethod = b.getMethod();
         PatchingChain<Unit> units = b.getUnits();
         Iterator<Unit> unitIt = units.iterator();
         Unit firstUnit = j.getFirstNonIdentityStmt();
@@ -64,7 +67,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
         // Objects of synchronization, plus book keeping
         Local[] lockObj = new Local[groups.size()];
         boolean[] addedLocalLockObj = new boolean[groups.size()];
-        SootField[] globalLockObj = new SootField[groups.size()];
+        FieldModel[] globalLockObj = new FieldModel[groups.size()];
         for (int i = 1; i < groups.size(); i++) {
             lockObj[i] = Jimple.v().newLocal("lockObj" + i, RefType.v("java.lang.Object"));
             addedLocalLockObj[i] = false;
@@ -89,7 +92,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
                         // error, there is more than one field by this name)
                         globalLockObj[i] = Scene.v().makeSootField("globalLockObj" + i, RefType.v("java.lang.Object"),
                                 Modifier.STATIC | Modifier.PUBLIC);
-                        Scene.v().getMainClass().addField(globalLockObj[i]);
+                        Scene.v().getMainClass().addFieldModel(globalLockObj[i]);
                     }
 
                     insertedGlobalLock[i] = true;
@@ -110,7 +113,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
         {
             // Either get or add the <clinit> method to the main class
             ClassModel mainClass = Scene.v().getMainClass();
-            SootMethod clinitMethod = null;
+            MethodModel clinitMethod = null;
             JimpleBody clinitBody = null;
             Stmt firstStmt = null;
             boolean addingNewClinit = !mainClass.declaresMethod("void <clinit>()");
@@ -121,7 +124,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
                 clinitMethod.setActiveBody(clinitBody);
                 mainClass.addMethod(clinitMethod);
             } else {
-                clinitMethod = mainClass.getMethod("void <clinit>()");
+                clinitMethod = mainClass.getMethodModel("void <clinit>()");
                 clinitBody = (JimpleBody) clinitMethod.getActiveBody();
                 firstStmt = clinitBody.getFirstNonIdentityStmt();
             }
@@ -148,7 +151,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
                     // initialize new object
                     ClassModel objectClass = Scene.v().loadClassAndSupport("java.lang.Object");
                     RefType type = RefType.v(objectClass);
-                    SootMethod initMethod = objectClass.getMethod("void <init>()");
+                    MethodModel initMethod = objectClass.getMethodModel("void <init>()");
                     Stmt initStmt = Jimple.v()
                             .newInvokeStmt(Jimple.v().newSpecialInvokeExpr(lockObj[i], initMethod.makeRef(), Collections.EMPTY_LIST));
                     if (addingNewClinit) {
@@ -481,7 +484,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
                     Stmt sNotify = (Stmt) uNotify;
                     Stmt newNotify = Jimple.v()
                             .newInvokeStmt(Jimple.v().newVirtualInvokeExpr(clo,
-                                    sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(),
+                                    sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethodModel("void notifyAll()").makeRef(),
                                     Collections.EMPTY_LIST));
                     if (newPrep != null) {
                         Stmt tmp = (Stmt) newPrep.clone();
@@ -595,7 +598,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
                 DeadlockAvoidanceEdge dae = (DeadlockAvoidanceEdge) lock;
                 lockClass = dae.getLockClass();
             }
-            SootMethod clinitMethod = null;
+            MethodModel clinitMethod = null;
             JimpleBody clinitBody = null;
             Stmt firstStmt = null;
             boolean addingNewClinit = !lockClass.declaresMethod("void <clinit>()");
@@ -606,7 +609,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
                 clinitMethod.setActiveBody(clinitBody);
                 lockClass.addMethod(clinitMethod);
             } else {
-                clinitMethod = lockClass.getMethod("void <clinit>()");
+                clinitMethod = lockClass.getMethodModel("void <clinit>()");
                 clinitBody = (JimpleBody) clinitMethod.getActiveBody();
                 firstStmt = clinitBody.getFirstNonIdentityStmt();
             }
@@ -628,7 +631,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
             // initialize new object
             ClassModel objectClass = Scene.v().loadClassAndSupport("java.lang.Object");
             RefType type = RefType.v(objectClass);
-            SootMethod initMethod = objectClass.getMethod("void <init>()");
+            MethodModel initMethod = objectClass.getMethodModel("void <init>()");
             Stmt initStmt = Jimple.v()
                     .newInvokeStmt(Jimple.v().newSpecialInvokeExpr(lockLocal, initMethod.makeRef(), Collections.EMPTY_LIST));
             if (addingNewClinit) {
@@ -639,10 +642,10 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
 
             // copy new object to global static lock object (for use by other
             // fns)
-            SootField actualLockObject = Scene.v().makeSootField("objectLockGlobal" + lockNumber, RefType.v("java.lang.Object"),
+            FieldModel actualLockObject = Scene.v().makeSootField("objectLockGlobal" + lockNumber, RefType.v("java.lang.Object"),
                     Modifier.STATIC | Modifier.PUBLIC);
             lockNumber++;
-            lockClass.addField(actualLockObject);
+            lockClass.addFieldModel(actualLockObject);
 
             StaticFieldRef actualLockSfr = Jimple.v().newStaticFieldRef(actualLockObject.makeRef());
             Stmt assignStmt = Jimple.v().newAssignStmt(actualLockSfr, lockLocal);

@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 
@@ -34,7 +34,7 @@ public class JavaLangReflectFieldNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -58,7 +58,7 @@ public class JavaLangReflectFieldNative extends NativeMethodClass {
      * public native void set(java.lang.Object, java.lang.Object) throws java.lang.IllegalArgumentException,
      * java.lang.IllegalAccessException;
      */
-    public void java_lang_reflect_Field_set(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_reflect_Field_set(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                             ReferenceVariable[] params) {
         /* Warn the user that reflection may not be handle correctly. */
         throw new NativeMethodNotSupportedException(method);
@@ -74,7 +74,7 @@ public class JavaLangReflectFieldNative extends NativeMethodClass {
      * public native java.lang.Object get(java.lang.Object) throws java.lang.IllegalArgumentException,
      * java.lang.IllegalAccessException;
      */
-    public void java_lang_reflect_Field_get(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_reflect_Field_get(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                             ReferenceVariable[] params) {
         throw new NativeMethodNotSupportedException(method);
     }

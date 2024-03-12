@@ -22,6 +22,7 @@ package soot.tag;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import soot.*;
 
 import java.util.ArrayList;

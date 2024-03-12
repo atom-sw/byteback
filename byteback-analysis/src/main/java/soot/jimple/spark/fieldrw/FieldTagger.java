@@ -22,6 +22,7 @@ package soot.jimple.spark.fieldrw;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.FieldRef;
@@ -42,11 +43,11 @@ public class FieldTagger extends BodyTransformer {
         return G.v().soot_jimple_spark_fieldrw_FieldTagger();
     }
 
-    private final HashSet<SootMethod> processedMethods = new HashSet<SootMethod>();
+    private final HashSet<MethodModel> processedMethods = new HashSet<MethodModel>();
     private final HashMultiMap methodToWrite = new HashMultiMap();
     private final HashMultiMap methodToRead = new HashMultiMap();
 
-    protected void ensureProcessed(SootMethod m) {
+    protected void ensureProcessed(MethodModel m) {
         if (processedMethods.contains(m)) {
             return;
         }
@@ -83,7 +84,7 @@ public class FieldTagger extends BodyTransformer {
             HashSet write = new HashSet();
             Iterator<MethodOrMethodContext> it = tt.iterator(s);
             while (it.hasNext()) {
-                SootMethod target = (SootMethod) it.next();
+                MethodModel target = (MethodModel) it.next();
                 ensureProcessed(target);
                 if (target.isNative() || target.isPhantom()) {
                     continue statement;

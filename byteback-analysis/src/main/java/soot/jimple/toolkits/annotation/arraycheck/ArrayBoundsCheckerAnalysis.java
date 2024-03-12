@@ -22,6 +22,9 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -73,7 +76,7 @@ class ArrayBoundsCheckerAnalysis {
         csin = takeCSE;
         rectarray = takeRectArray;
 
-        SootMethod thismethod = body.getMethod();
+        MethodModel thismethod = body.getMethod();
 
         if (Options.v().debug()) {
             logger.debug("ArrayBoundsCheckerAnalysis started on  " + thismethod.getName());
@@ -653,7 +656,7 @@ class ArrayBoundsCheckerAnalysis {
                     }
                 }
             } else if (leftOp instanceof InstanceFieldRef) {
-                SootField field = ((InstanceFieldRef) leftOp).getField();
+                FieldModel field = ((InstanceFieldRef) leftOp).getField();
 
                 HashSet fieldrefs = fieldToFieldRef.get(field);
 
@@ -798,7 +801,7 @@ class ArrayBoundsCheckerAnalysis {
             }
 
             if (classfieldin) {
-                SootField field = ((FieldRef) rightOp).getField();
+                FieldModel field = ((FieldRef) rightOp).getField();
                 IntValueContainer flength = (IntValueContainer) cfield.getFieldInfo(field);
 
                 if (flength != null) {

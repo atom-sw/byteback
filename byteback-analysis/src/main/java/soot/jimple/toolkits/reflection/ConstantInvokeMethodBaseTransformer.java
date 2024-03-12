@@ -22,6 +22,8 @@ package soot.jimple.toolkits.reflection;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -63,11 +65,11 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
             // In some rare cases we will have application classes that are not resolved due to being located in excluded packages
             // (e.g., the ServiceConnection class constructed by FlowDroid:
             // soot.jimple.infoflow.cfg.LibraryClassPatcher#patchServiceConnection)
-            if (classModel.resolvingLevel() < ClassModel.BODIES) {
+            if (classModel.getResolvingLevel() < ClassModel.BODIES) {
                 continue;
             }
-            for (SootMethod sootMethod : classModel.getMethods()) {
-                Body body = sootMethod.retrieveActiveBody();
+            for (MethodModel methodModel : classModel.getMethodModels()) {
+                Body body = methodModel.retrieveActiveBody();
                 final Chain<Local> locals = body.getLocals();
                 final Chain<Unit> units = body.getUnits();
                 for (Iterator<Unit> iterator = units.snapshotIterator(); iterator.hasNext(); ) {
@@ -84,7 +86,7 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
                                 invokeExpr.setArg(0, newLocal);
 
                                 if (verbose) {
-                                    logger.debug("Replaced constant base object of Method.invoke() by local in: " + sootMethod);
+                                    logger.debug("Replaced constant base object of Method.invoke() by local in: " + methodModel);
                                 }
                             }
                         }

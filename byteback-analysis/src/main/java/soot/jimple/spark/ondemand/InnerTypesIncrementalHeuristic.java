@@ -24,7 +24,7 @@ package soot.jimple.spark.ondemand;
 
 import soot.RefType;
 import soot.Scene;
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.ondemand.genericutil.Util;
 import soot.jimple.spark.ondemand.pautil.SootUtil;
@@ -95,8 +95,8 @@ public class InnerTypesIncrementalHeuristic implements FieldCheckHeuristic {
         if (field instanceof ArrayElement) {
             return true;
         }
-        SootField sootField = (SootField) field;
-        RefType declaringType = sootField.getDeclaringClass().getType();
+        FieldModel fieldModel = (FieldModel) field;
+        RefType declaringType = fieldModel.getDeclaringClass().getClassType();
         String declaringTypeStr = declaringType.toString();
         String topLevel = Util.topLevelTypeString(declaringTypeStr);
         RefType refType;
@@ -124,8 +124,8 @@ public class InnerTypesIncrementalHeuristic implements FieldCheckHeuristic {
         if (field instanceof ArrayElement) {
             return true;
         }
-        SootField sootField = (SootField) field;
-        RefType declaringType = sootField.getDeclaringClass().getType();
+        FieldModel fieldModel = (FieldModel) field;
+        RefType declaringType = fieldModel.getDeclaringClass().getClassType();
         if (bothEndsTypes.contains(declaringType)) {
             return true;
         } else if (notBothEndsTypes.contains(declaringType)) {

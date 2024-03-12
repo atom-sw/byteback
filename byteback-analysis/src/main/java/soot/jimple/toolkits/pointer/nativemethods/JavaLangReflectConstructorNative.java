@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 
@@ -34,7 +34,7 @@ public class JavaLangReflectConstructorNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -60,7 +60,7 @@ public class JavaLangReflectConstructorNative extends NativeMethodClass {
      * public native java.lang.Object newInstance(java.lang.Object[]) throws java.lang.InstantiationException,
      * java.lang.IllegalAccessException, java.lang.IllegalArgumentException, java.lang.reflect.InvocationTargetException;
      */
-    public void java_lang_reflect_Constructor_newInstance(SootMethod method, ReferenceVariable thisVar,
+    public void java_lang_reflect_Constructor_newInstance(MethodModel method, ReferenceVariable thisVar,
                                                           ReferenceVariable returnVar, ReferenceVariable[] params) {
         throw new NativeMethodNotSupportedException(method);
     }

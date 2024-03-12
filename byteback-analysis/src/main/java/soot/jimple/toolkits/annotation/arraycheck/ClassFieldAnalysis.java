@@ -22,6 +22,9 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -50,8 +53,8 @@ public class ClassFieldAnalysis {
      * SootClass --> FieldInfoTable
      */
 
-    private final Map<ClassModel, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap
-            = new HashMap<ClassModel, Hashtable<SootField, IntValueContainer>>();
+    private final Map<ClassModel, Hashtable<FieldModel, IntValueContainer>> classToFieldInfoMap
+            = new HashMap<ClassModel, Hashtable<FieldModel, IntValueContainer>>();
 
     protected void internalTransform(ClassModel c) {
         if (classToFieldInfoMap.containsKey(c)) {
@@ -64,19 +67,19 @@ public class ClassFieldAnalysis {
             logger.debug("[] ClassFieldAnalysis started on : " + start + " for " + c.getPackageName() + c.getName());
         }
 
-        Hashtable<SootField, IntValueContainer> fieldInfoTable = new Hashtable<SootField, IntValueContainer>();
+        Hashtable<FieldModel, IntValueContainer> fieldInfoTable = new Hashtable<FieldModel, IntValueContainer>();
         classToFieldInfoMap.put(c, fieldInfoTable);
 
         /*
          * Who is the candidate for analysis? Int, Array, field. Also it should be PRIVATE now.
          */
-        HashSet<SootField> candidSet = new HashSet<SootField>();
+        HashSet<FieldModel> candidSet = new HashSet<FieldModel>();
 
         int arrayTypeFieldNum = 0;
 
-        Iterator<SootField> fieldIt = c.getFields().iterator();
+        Iterator<FieldModel> fieldIt = c.getFieldModels().iterator();
         while (fieldIt.hasNext()) {
-            SootField field = fieldIt.next();
+            FieldModel field = fieldIt.next();
             int modifiers = field.getModifiers();
 
             Type type = field.getType();
@@ -108,7 +111,7 @@ public class ClassFieldAnalysis {
          * array exception
          */
 
-        Iterator<SootMethod> methodIt = c.methodIterator();
+        Iterator<MethodModel> methodIt = c.methodIterator();
         while (methodIt.hasNext()) {
             ScanMethod(methodIt.next(), candidSet, fieldInfoTable);
         }
@@ -122,10 +125,10 @@ public class ClassFieldAnalysis {
         }
     }
 
-    public Object getFieldInfo(SootField field) {
+    public Object getFieldInfo(FieldModel field) {
         ClassModel c = field.getDeclaringClass();
 
-        Map<SootField, IntValueContainer> fieldInfoTable = classToFieldInfoMap.get(c);
+        Map<FieldModel, IntValueContainer> fieldInfoTable = classToFieldInfoMap.get(c);
 
         if (fieldInfoTable == null) {
             internalTransform(c);
@@ -140,7 +143,7 @@ public class ClassFieldAnalysis {
      * fieldinfo, keep the field -> value.
      */
 
-    public void ScanMethod(SootMethod method, Set<SootField> candidates, Hashtable<SootField, IntValueContainer> fieldinfo) {
+    public void ScanMethod(MethodModel method, Set<FieldModel> candidates, Hashtable<FieldModel, IntValueContainer> fieldinfo) {
         if (!method.isConcrete()) {
             return;
         }
@@ -182,7 +185,7 @@ public class ClassFieldAnalysis {
          * field.
          */
 
-        HashMap<Stmt, SootField> stmtfield = new HashMap<Stmt, SootField>();
+        HashMap<Stmt, FieldModel> stmtfield = new HashMap<Stmt, FieldModel>();
 
         {
             Iterator<Unit> unitIt = body.getUnits().iterator();
@@ -191,7 +194,7 @@ public class ClassFieldAnalysis {
                 if (stmt.containsFieldRef()) {
                     Value leftOp = ((AssignStmt) stmt).getLeftOp();
                     if (leftOp instanceof FieldRef fref) {
-                      SootField field = fref.getField();
+                      FieldModel field = fref.getField();
 
                         if (candidates.contains(field)) {
                             stmtfield.put(stmt, field);
@@ -213,13 +216,13 @@ public class ClassFieldAnalysis {
         {
             LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(body);
 
-            Set<Map.Entry<Stmt, SootField>> entries = stmtfield.entrySet();
+            Set<Map.Entry<Stmt, FieldModel>> entries = stmtfield.entrySet();
 
-            Iterator<Map.Entry<Stmt, SootField>> entryIt = entries.iterator();
+            Iterator<Map.Entry<Stmt, FieldModel>> entryIt = entries.iterator();
             while (entryIt.hasNext()) {
-                Map.Entry<Stmt, SootField> entry = entryIt.next();
+                Map.Entry<Stmt, FieldModel> entry = entryIt.next();
                 Stmt where = entry.getKey();
-                SootField which = entry.getValue();
+                FieldModel which = entry.getValue();
 
                 IntValueContainer length = new IntValueContainer();
 

@@ -22,6 +22,7 @@ package soot.jimple;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 
 import java.util.Iterator;
@@ -45,7 +46,7 @@ import java.util.Iterator;
 // StaticFieldRef
 
 public class NaiveSideEffectTester implements SideEffectTester {
-    public void newMethod(SootMethod m) {
+    public void newMethod(MethodModel m) {
     }
 
     /**

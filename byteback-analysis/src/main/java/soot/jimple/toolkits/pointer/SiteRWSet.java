@@ -24,7 +24,7 @@ package soot.jimple.toolkits.pointer;
 
 import soot.G;
 import soot.PointsToSet;
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -151,7 +151,7 @@ public class SiteRWSet extends RWSet {
     }
 
     @Override
-    public boolean addGlobal(SootField global) {
+    public boolean addGlobal(FieldModel global) {
         throw new RuntimeException("Not implemented; try MethodRWSet");
     }
 

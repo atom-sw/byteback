@@ -22,14 +22,14 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 
 class MethodParameter {
-    private final SootMethod m;
+    private final MethodModel m;
     private final int param;
 
-    public MethodParameter(SootMethod m, int i) {
+    public MethodParameter(MethodModel m, int i) {
         this.m = m;
         this.param = i;
     }
@@ -42,7 +42,7 @@ class MethodParameter {
         return m.hashCode() + param;
     }
 
-    public SootMethod getMethod() {
+    public MethodModel getMethod() {
         return m;
     }
 

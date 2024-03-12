@@ -22,6 +22,9 @@ package soot.jimple.toolkits.infoflow;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -105,7 +108,7 @@ public class InfoFlowAnalysis {
         return classToClassInfoFlowAnalysis.get(sc);
     }
 
-    public SmartMethodInfoFlowAnalysis getMethodInfoFlowAnalysis(SootMethod sm) {
+    public SmartMethodInfoFlowAnalysis getMethodInfoFlowAnalysis(MethodModel sm) {
         ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
         return cdfa.getMethodInfoFlowAnalysis(sm);
     }
@@ -114,11 +117,11 @@ public class InfoFlowAnalysis {
      * Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue wrapped Refs. It's perfectly safe to modify this
      * graph, just so long as new nodes are EquivalentValue wrapped Refs.
      */
-    public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(SootMethod sm) {
+    public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(MethodModel sm) {
         return getMethodInfoFlowSummary(sm, true);
     }
 
-    public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(SootMethod sm, boolean doFullAnalysis) {
+    public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(MethodModel sm, boolean doFullAnalysis) {
         ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
         return cdfa.getMethodInfoFlowSummary(sm, doFullAnalysis);
     }
@@ -142,24 +145,24 @@ public class InfoFlowAnalysis {
      */
     // Returns an EquivalentValue wrapped Ref based on sfr
     // that is suitable for comparison to the nodes of a Data Flow Graph
-    public static EquivalentValue getNodeForFieldRef(SootMethod sm, SootField sf) {
+    public static EquivalentValue getNodeForFieldRef(MethodModel sm, FieldModel sf) {
         return getNodeForFieldRef(sm, sf, null);
     }
 
-    public static EquivalentValue getNodeForFieldRef(SootMethod sm, SootField sf, Local realLocal) {
+    public static EquivalentValue getNodeForFieldRef(MethodModel sm, FieldModel sf, Local realLocal) {
         if (sf.isStatic()) {
             return new CachedEquivalentValue(Jimple.v().newStaticFieldRef(sf.makeRef()));
         } else {
             // Jimple.v().newThisRef(sf.getDeclaringClass().getType())
             if (sm.isConcrete() && !sm.isStatic() && sm.getDeclaringClass() == sf.getDeclaringClass() && realLocal == null) {
                 JimpleLocal fakethis
-                        = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType(), sm.retrieveActiveBody().getThisLocal());
+                        = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getClassType(), sm.retrieveActiveBody().getThisLocal());
 
                 return new CachedEquivalentValue(Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef())); // fake thisLocal
             } else {
                 // Pretends to be a this.<somefield> ref for a method without a body,
                 // for a static method, or for an inner field
-                JimpleLocal fakethis = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType(), realLocal);
+                JimpleLocal fakethis = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getClassType(), realLocal);
 
                 return new CachedEquivalentValue(Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef())); // fake thisLocal
             }
@@ -168,23 +171,23 @@ public class InfoFlowAnalysis {
 
     // Returns an EquivalentValue wrapped Ref for @parameter i
     // that is suitable for comparison to the nodes of a Data Flow Graph
-    public static EquivalentValue getNodeForParameterRef(SootMethod sm, int i) {
+    public static EquivalentValue getNodeForParameterRef(MethodModel sm, int i) {
         return new CachedEquivalentValue(new ParameterRef(sm.getParameterType(i), i));
     }
 
     // Returns an EquivalentValue wrapped Ref for the return value
     // that is suitable for comparison to the nodes of a Data Flow Graph
-    public static EquivalentValue getNodeForReturnRef(SootMethod sm) {
+    public static EquivalentValue getNodeForReturnRef(MethodModel sm) {
         return new CachedEquivalentValue(new ParameterRef(sm.getReturnType(), -1));
     }
 
     // Returns an EquivalentValue wrapped ThisRef
     // that is suitable for comparison to the nodes of a Data Flow Graph
-    public static EquivalentValue getNodeForThisRef(SootMethod sm) {
-        return new CachedEquivalentValue(new ThisRef(sm.getDeclaringClass().getType()));
+    public static EquivalentValue getNodeForThisRef(MethodModel sm) {
+        return new CachedEquivalentValue(new ThisRef(sm.getDeclaringClass().getClassType()));
     }
 
-    protected HashMutableDirectedGraph<EquivalentValue> getInvokeInfoFlowSummary(InvokeExpr ie, Stmt is, SootMethod context) {
+    protected HashMutableDirectedGraph<EquivalentValue> getInvokeInfoFlowSummary(InvokeExpr ie, Stmt is, MethodModel context) {
         // get the data flow graph for each possible target of ie,
         // then combine them conservatively and return the result.
         HashMutableDirectedGraph<EquivalentValue> ret = null;
@@ -194,7 +197,7 @@ public class InfoFlowAnalysis {
         CallGraph cg = Scene.v().getCallGraph();
         for (Iterator<Edge> edges = cg.edgesOutOf(is); edges.hasNext(); ) {
             Edge e = edges.next();
-            SootMethod target = e.getTgt().method();
+            MethodModel target = e.getTgt().method();
             // Verify that this target is an implementation of the method we intend to call,
             // and not just a class initializer or other unintended control flow.
             if (target.getSubSignature().equals(subSig)) {
@@ -219,7 +222,7 @@ public class InfoFlowAnalysis {
         // return getMethodInfoFlowSummary(methodRef.resolve(), context.getDeclaringClass().isApplicationClass());
     }
 
-    protected MutableDirectedGraph<EquivalentValue> getInvokeAbbreviatedInfoFlowGraph(InvokeExpr ie, SootMethod context) {
+    protected MutableDirectedGraph<EquivalentValue> getInvokeAbbreviatedInfoFlowGraph(InvokeExpr ie, MethodModel context) {
         // get the data flow graph for each possible target of ie,
         // then combine them conservatively and return the result.
         SootMethodRef methodRef = ie.getMethodRef();

@@ -22,8 +22,8 @@ package soot.jimple.spark.internal;
  * #L%
  */
 
-import soot.SootField;
-import soot.SootMethod;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 
 /**
  * The decision whether a libraries field or method is accessible for a client can be different for different analyses.
@@ -37,11 +37,11 @@ public interface ClientAccessibilityOracle {
     /**
      * Determines whether the method is accessible for a potential library user.
      */
-    boolean isAccessible(SootMethod method);
+    boolean isAccessible(MethodModel method);
 
     /**
      * Determines whether the field is accessible for a potential library user.
      */
-    boolean isAccessible(SootField field);
+    boolean isAccessible(FieldModel field);
 
 }

@@ -22,6 +22,9 @@ package soot.jimple.spark.geom.geomPA;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -130,8 +133,8 @@ public class GeomPointsTo extends PAG {
 
     // The mappings between Soot functions and call edges to our internal
     // representations
-    protected Map<SootMethod, Integer> func2int = null;
-    protected Map<Integer, SootMethod> int2func = null;
+    protected Map<MethodModel, Integer> func2int = null;
+    protected Map<Integer, MethodModel> int2func = null;
     protected Map<Edge, CgEdge> edgeMapping = null;
 
     // Others
@@ -181,8 +184,8 @@ public class GeomPointsTo extends PAG {
         queue_cg = new LinkedList<Integer>();
 
         // Containers for functions and call graph edges
-        func2int = new HashMap<SootMethod, Integer>(5011);
-        int2func = new HashMap<Integer, SootMethod>(5011);
+        func2int = new HashMap<MethodModel, Integer>(5011);
+        int2func = new HashMap<Integer, MethodModel>(5011);
         edgeMapping = new HashMap<Edge, CgEdge>(19763);
 
         consG.clear();
@@ -327,7 +330,7 @@ public class GeomPointsTo extends PAG {
             if (n == null) {
                 continue;
             }
-            final SootMethod func = n.method();
+            final MethodModel func = n.method();
             func2int.put(func, id);
             int2func.put(id, func);
 
@@ -357,8 +360,8 @@ public class GeomPointsTo extends PAG {
                 continue;
             }
 
-            SootMethod src_func = edge.src();
-            SootMethod tgt_func = edge.tgt();
+            MethodModel src_func = edge.src();
+            MethodModel tgt_func = edge.tgt();
             s = func2int.get(src_func);
             t = func2int.get(tgt_func);
 
@@ -403,9 +406,9 @@ public class GeomPointsTo extends PAG {
 
             // Some allocdotfield is invalid, we check and remove them
             SparkField field = adf.getField();
-            if (field instanceof SootField) {
+            if (field instanceof FieldModel) {
                 // This is an instance field of a class
-                Type decType = ((SootField) field).getDeclaringClass().getType();
+                Type decType = ((FieldModel) field).getDeclaringClass().getClassType();
                 Type baseType = adf.getBase().getType();
                 // baseType must be a sub type of decType
                 if (!castNeverFails(baseType, decType)) {
@@ -541,8 +544,8 @@ public class GeomPointsTo extends PAG {
                 rhs = my_rhs.getWrappedNode();
 
                 if ((lhs instanceof LocalVarNode) && (rhs instanceof LocalVarNode)) {
-                    SootMethod sm1 = ((LocalVarNode) lhs).getMethod();
-                    SootMethod sm2 = ((LocalVarNode) rhs).getMethod();
+                    MethodModel sm1 = ((LocalVarNode) lhs).getMethod();
+                    MethodModel sm2 = ((LocalVarNode) rhs).getMethod();
 
                     if (sm1 == sm2 && count[my_rhs.id] == 1 && lhs.getType() == rhs.getType()) {
 
@@ -862,7 +865,7 @@ public class GeomPointsTo extends PAG {
     /**
      * Obtain the set of possible call targets at given @param callsite.
      */
-    private void getCallTargets(IVarAbstraction pn, SootMethod src, Stmt callsite, ChunkedQueue<SootMethod> targetsQueue) {
+    private void getCallTargets(IVarAbstraction pn, MethodModel src, Stmt callsite, ChunkedQueue<MethodModel> targetsQueue) {
         InstanceInvokeExpr iie = (InstanceInvokeExpr) callsite.getInvokeExpr();
         Local receiver = (Local) iie.getBase();
 
@@ -884,9 +887,9 @@ public class GeomPointsTo extends PAG {
         int all_virtual_edges = 0, n_obsoleted = 0;
 
         CallGraph cg = Scene.v().getCallGraph();
-        ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
-        QueueReader<SootMethod> targets = targetsQueue.reader();
-        Set<SootMethod> resolvedMethods = new HashSet<SootMethod>();
+        ChunkedQueue<MethodModel> targetsQueue = new ChunkedQueue<MethodModel>();
+        QueueReader<MethodModel> targets = targetsQueue.reader();
+        Set<MethodModel> resolvedMethods = new HashSet<MethodModel>();
         // obsoletedEdges.clear();
 
         // We first update the virtual callsites
@@ -900,7 +903,7 @@ public class GeomPointsTo extends PAG {
 
             Edge anyEdge = edges.next();
             CgEdge p = edgeMapping.get(anyEdge);
-            SootMethod src = anyEdge.src();
+            MethodModel src = anyEdge.src();
 
             if (!isReachableMethod(src)) {
                 // The source method is no longer reachable
@@ -927,7 +930,7 @@ public class GeomPointsTo extends PAG {
 
                 // We delete the edges that are proven to be spurious
                 while (true) {
-                    SootMethod tgt = anyEdge.tgt();
+                    MethodModel tgt = anyEdge.tgt();
                     if (!resolvedMethods.contains(tgt) && !anyEdge.kind().isFake()) {
                         p = edgeMapping.get(anyEdge);
                         p.is_obsoleted = true;
@@ -1033,7 +1036,7 @@ public class GeomPointsTo extends PAG {
         // Scan again to remove unreachable methods
         ans = 0;
         for (int i = 1; i < n_func; ++i) {
-            SootMethod sm = int2func.get(i);
+            MethodModel sm = int2func.get(i);
 
             if (vis_cg[i] == 0) {
                 func2int.remove(sm);
@@ -1081,7 +1084,7 @@ public class GeomPointsTo extends PAG {
         for (Iterator<IVarAbstraction> it = allocations.iterator(); it.hasNext(); ) {
             IVarAbstraction po = it.next();
             AllocNode obj = (AllocNode) po.getWrappedNode();
-            SootMethod sm = obj.getMethod();
+            MethodModel sm = obj.getMethod();
             if (sm != null && !func2int.containsKey(sm)) {
                 it.remove();
             }
@@ -1095,7 +1098,7 @@ public class GeomPointsTo extends PAG {
 
             // Is this pointer obsoleted?
             Node vn = pn.getWrappedNode();
-            SootMethod sm = null;
+            MethodModel sm = null;
 
             if (vn instanceof LocalVarNode) {
                 sm = ((LocalVarNode) vn).getMethod();
@@ -1450,7 +1453,7 @@ public class GeomPointsTo extends PAG {
      *
      * @return -1 if the given method is unreachable
      */
-    public int getIDFromSootMethod(SootMethod sm) {
+    public int getIDFromSootMethod(MethodModel sm) {
         Integer ans = func2int.get(sm);
         return ans == null ? Constants.UNKNOWN_FUNCTION : ans.intValue();
     }
@@ -1460,7 +1463,7 @@ public class GeomPointsTo extends PAG {
      *
      * @return null if such ID is illegal.
      */
-    public SootMethod getSootMethodFromID(int fid) {
+    public MethodModel getSootMethodFromID(int fid) {
         return int2func.get(fid);
     }
 
@@ -1474,7 +1477,7 @@ public class GeomPointsTo extends PAG {
     /**
      * Deciding if the given method represented by @param sm is reachable.
      */
-    public boolean isReachableMethod(SootMethod sm) {
+    public boolean isReachableMethod(MethodModel sm) {
         int id = getIDFromSootMethod(sm);
         return isReachableMethod(id);
     }
@@ -1482,7 +1485,7 @@ public class GeomPointsTo extends PAG {
     /**
      * Telling if the given method is in the file given by the option "cg.spark geom-verify-name".
      */
-    public boolean isValidMethod(SootMethod sm) {
+    public boolean isValidMethod(MethodModel sm) {
         if (validMethods != null) {
             String sig = sm.toString();
             if (!validMethods.containsKey(sig)) {
@@ -1513,7 +1516,7 @@ public class GeomPointsTo extends PAG {
      *
      * @return
      */
-    public Set<SootMethod> getAllReachableMethods() {
+    public Set<MethodModel> getAllReachableMethods() {
         return func2int.keySet();
     }
 
@@ -1540,7 +1543,7 @@ public class GeomPointsTo extends PAG {
      * Get the index of the enclosing function of the specified node.
      */
     public int getMethodIDFromPtr(IVarAbstraction pn) {
-        SootMethod sm = null;
+        MethodModel sm = null;
         int ret = Constants.SUPER_MAIN;
 
         Node node = pn.getWrappedNode();
@@ -1645,7 +1648,7 @@ public class GeomPointsTo extends PAG {
 
         if (af == null) {
             // We create a new instance field node w.r.t type compatiblity
-            Type decType = ((SootField) field).getDeclaringClass().getType();
+            Type decType = ((FieldModel) field).getDeclaringClass().getClassType();
             Type baseType = obj.getType();
             // baseType must be a sub type of decType
             if (typeManager.castNeverFails(baseType, decType)) {
@@ -1799,7 +1802,7 @@ public class GeomPointsTo extends PAG {
         pn = pn.getRepresentative();
 
         // Obtain the context sensitive points-to result
-        SootMethod callee = vn.getMethod();
+        MethodModel callee = vn.getMethod();
         Edge e = Scene.v().getCallGraph().findEdge((Unit) c, callee);
         if (e == null) {
             return vn.getP2Set();
@@ -1839,7 +1842,7 @@ public class GeomPointsTo extends PAG {
     }
 
     @Override
-    public PointsToSet reachingObjects(SootField f) {
+    public PointsToSet reachingObjects(FieldModel f) {
         if (!hasExecuted) {
             return super.reachingObjects(f);
         }
@@ -1870,7 +1873,7 @@ public class GeomPointsTo extends PAG {
     }
 
     @Override
-    public PointsToSet reachingObjects(PointsToSet s, final SootField f) {
+    public PointsToSet reachingObjects(PointsToSet s, final FieldModel f) {
         if (!hasExecuted) {
             return super.reachingObjects(s, f);
         }
@@ -1878,7 +1881,7 @@ public class GeomPointsTo extends PAG {
     }
 
     @Override
-    public PointsToSet reachingObjects(Local l, SootField f) {
+    public PointsToSet reachingObjects(Local l, FieldModel f) {
         if (!hasExecuted) {
             return super.reachingObjects(l, f);
         }
@@ -1886,7 +1889,7 @@ public class GeomPointsTo extends PAG {
     }
 
     @Override
-    public PointsToSet reachingObjects(Context c, Local l, SootField f) {
+    public PointsToSet reachingObjects(Context c, Local l, FieldModel f) {
         if (!hasExecuted) {
             return super.reachingObjects(c, l, f);
         }
@@ -1902,7 +1905,7 @@ public class GeomPointsTo extends PAG {
     }
 
     // An extra query interfaces not provided by SPARK
-    public PointsToSet reachingObjects(AllocNode an, SootField f) {
+    public PointsToSet reachingObjects(AllocNode an, FieldModel f) {
         AllocDotField adf = an.dot(f);
         IVarAbstraction pn = consG.get(adf);
 

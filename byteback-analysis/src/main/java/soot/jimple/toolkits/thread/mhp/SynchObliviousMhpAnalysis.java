@@ -22,6 +22,8 @@ package soot.jimple.toolkits.thread.mhp;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import heros.util.SootThreadGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +90,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
     }
 
     public void run() {
-        SootMethod mainMethod = Scene.v().getMainClass().getMethodByName("main");
+        MethodModel mainMethod = Scene.v().getMainClass().getMethodByName("main");
 
         PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
         if (pta instanceof DemandCSPointsTo demandCSPointsTo) {
@@ -113,14 +115,14 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
         // logger.debug(" MHP: AllocNodesFinder");
         AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph, (PAG) pta);
         Set<AllocNode> multiRunAllocNodes = anf.getMultiRunAllocNodes();
-        Set<SootMethod> multiCalledMethods = anf.getMultiCalledMethods();
+        Set<MethodModel> multiCalledMethods = anf.getMultiCalledMethods();
 
         // Find Thread.start() and Thread.join() statements (in live code)
         // logger.debug(" MHP: StartJoinFinder");
         StartJoinFinder sjf = new StartJoinFinder(callGraph, (PAG) pta); // does analysis
         Map<Stmt, List<AllocNode>> startToAllocNodes = sjf.getStartToAllocNodes();
-        Map<Stmt, List<SootMethod>> startToRunMethods = sjf.getStartToRunMethods();
-        Map<Stmt, SootMethod> startToContainingMethod = sjf.getStartToContainingMethod();
+        Map<Stmt, List<MethodModel>> startToRunMethods = sjf.getStartToRunMethods();
+        Map<Stmt, MethodModel> startToContainingMethod = sjf.getStartToContainingMethod();
         Map<Stmt, Stmt> startToJoin = sjf.getStartToJoin();
 
         // Build MHP Lists
@@ -144,7 +146,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
             // List threadMethods = new ArrayList();
             Iterator runMethodsIt = runMethods.iterator();
             while (runMethodsIt.hasNext()) {
-                SootMethod method = (SootMethod) runMethodsIt.next();
+                MethodModel method = (MethodModel) runMethodsIt.next();
                 if (!thread.containsMethod(method)) {
                     thread.addMethod(method);
                     thread.addRunMethod(method);
@@ -160,7 +162,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
             {
                 Iterator succMethodsIt = pecg.getSuccsOf(thread.getMethod(methodNum)).iterator();
                 while (succMethodsIt.hasNext()) {
-                    SootMethod method = (SootMethod) succMethodsIt.next();
+                    MethodModel method = (MethodModel) succMethodsIt.next();
                     // if all edges into this method are of Kind THREAD, ignore it
                     // (because it's a run method that won't be called as part of THIS thread) THIS IS NOT OPTIMAL
                     boolean ignoremethod = true;
@@ -200,7 +202,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
             }
 
             // Find out if the "thread.start()" statement may be run more than once
-            SootMethod startStmtMethod = startToContainingMethod.get(startStmt);
+            MethodModel startStmtMethod = startToContainingMethod.get(startStmt);
             thread.setStartStmtMethod(startStmtMethod);
             boolean mayBeRunMultipleTimes = multiCalledMethods.contains(startStmtMethod); // if method is called more than once...
             if (!mayBeRunMultipleTimes) {
@@ -225,14 +227,14 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
                 thread.setJoinStmt(startToJoin.get(startStmt));
                 mayBeRunMultipleTimes = false; // well, actually, we don't know yet
                 methodNum = 0;
-                List<SootMethod> containingMethodCalls = new ArrayList<SootMethod>();
+                List<MethodModel> containingMethodCalls = new ArrayList<MethodModel>();
                 containingMethodCalls.add(startStmtMethod);
                 while (methodNum < containingMethodCalls.size()) // iterate over all methods in threadMethods, even as new methods
                 // are being added to it
                 {
                     Iterator succMethodsIt = pecg.getSuccsOf(containingMethodCalls.get(methodNum)).iterator();
                     while (succMethodsIt.hasNext()) {
-                        SootMethod method = (SootMethod) succMethodsIt.next();
+                        MethodModel method = (MethodModel) succMethodsIt.next();
                         if (method == startStmtMethod) { // this method is reentrant
                             mayBeRunMultipleTimes = true; // this time it's for sure
                             thread.setStartMethodIsReentrant();
@@ -285,7 +287,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
         while (methodNum < mainThread.methodCount()) {
             Iterator succMethodsIt = pecg.getSuccsOf(mainThread.getMethod(methodNum)).iterator();
             while (succMethodsIt.hasNext()) {
-                SootMethod method = (SootMethod) succMethodsIt.next();
+                MethodModel method = (MethodModel) succMethodsIt.next();
                 // if all edges into this are of Kind THREAD, ignore it
                 boolean ignoremethod = true;
                 Iterator edgeInIt = callGraph.edgesInto(method);
@@ -311,7 +313,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
             ListIterator<AbstractRuntimeThread> it = runAtOnceCandidates.listIterator();
             while (it.hasNext()) {
                 AbstractRuntimeThread someThread = it.next();
-                SootMethod someStartMethod = someThread.getStartStmtMethod();
+                MethodModel someStartMethod = someThread.getStartStmtMethod();
                 if (mayHappenInParallelInternal(someStartMethod, someStartMethod)) {
                     threadList.add(someThread); // add a second copy of it
                     someThread.setStartMethodMayHappenInParallel();
@@ -333,7 +335,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
         }
     }
 
-    public boolean mayHappenInParallel(SootMethod m1, Unit u1, SootMethod m2, Unit u2) {
+    public boolean mayHappenInParallel(MethodModel m1, Unit u1, MethodModel m2, Unit u2) {
         if (optionThreaded) {
             if (self == null) {
                 return true; // not started...
@@ -351,7 +353,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
         return mayHappenInParallelInternal(m1, m2);
     }
 
-    public boolean mayHappenInParallel(SootMethod m1, SootMethod m2) {
+    public boolean mayHappenInParallel(MethodModel m1, MethodModel m2) {
         if (optionThreaded) {
             if (self == null) {
                 return true; // not started...
@@ -369,7 +371,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
         return mayHappenInParallelInternal(m1, m2);
     }
 
-    private boolean mayHappenInParallelInternal(SootMethod m1, SootMethod m2) {
+    private boolean mayHappenInParallelInternal(MethodModel m1, MethodModel m2) {
         if (threadList == null) // not run
         {
             return true;
@@ -440,7 +442,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
             AbstractRuntimeThread thread = threadList.get(i);
             Iterator<Object> threadRunMethodIt = thread.getRunMethods().iterator();
             while (threadRunMethodIt.hasNext()) {
-                ClassModel threadClass = ((SootMethod) threadRunMethodIt.next()).getDeclaringClass(); // what about subclasses???
+                ClassModel threadClass = ((MethodModel) threadRunMethodIt.next()).getDeclaringClass(); // what about subclasses???
                 if (!threadClasses.contains(threadClass) && threadClass.isApplicationClass()) {
                     threadClasses.add(threadClass);
                 }

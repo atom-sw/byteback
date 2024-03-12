@@ -22,6 +22,8 @@ package soot.jimple.spark.geom.ptinsE;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
 import soot.jimple.spark.geom.dataRep.PlainConstraint;
@@ -97,7 +99,7 @@ public class PtInsNode extends IVarAbstraction {
         // This pointer filter, please read the comments at this line in file FullSensitiveNode.java
         Node wrappedNode = getWrappedNode();
         if (wrappedNode instanceof LocalVarNode && ((LocalVarNode) wrappedNode).isThisPtr()) {
-            SootMethod func = ((LocalVarNode) wrappedNode).getMethod();
+            MethodModel func = ((LocalVarNode) wrappedNode).getMethod();
             if (!func.isConstructor()) {
                 // We don't process the specialinvoke call edge
                 ClassModel defClass = func.getDeclaringClass();
@@ -109,7 +111,7 @@ public class PtInsNode extends IVarAbstraction {
                         ClassModel sc = ((RefType) obj.getType()).getSootClass();
                         if (defClass != sc) {
                             try {
-                                SootMethod rt_func = typeHierarchy.resolveConcreteDispatch(sc, func);
+                                MethodModel rt_func = typeHierarchy.resolveConcreteDispatch(sc, func);
                                 if (rt_func != func) {
                                     it.remove();
                                     // Also preclude it from propagation again
@@ -531,7 +533,7 @@ public class PtInsNode extends IVarAbstraction {
             SegmentNode[] int_entry = im.getFigures();
 
             // We first get the 1-CFA contexts for the object
-            SootMethod sm = obj.getMethod();
+            MethodModel sm = obj.getMethod();
             int sm_int = 0;
             long n_contexts = 1;
             if (sm != null) {

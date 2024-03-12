@@ -22,7 +22,7 @@ package soot.jimple.toolkits.ide.icfg;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
@@ -35,11 +35,11 @@ import java.util.Set;
  * Same as {@link JimpleBasedInterproceduralCFG} but based on inverted unit graphs. This should be used for backward
  * analyses.
  */
-public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit, SootMethod> {
+public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit, MethodModel> {
 
-    protected final BiDiInterproceduralCFG<Unit, SootMethod> delegate;
+    protected final BiDiInterproceduralCFG<Unit, MethodModel> delegate;
 
-    public BackwardsInterproceduralCFG(BiDiInterproceduralCFG<Unit, SootMethod> fwICFG) {
+    public BackwardsInterproceduralCFG(BiDiInterproceduralCFG<Unit, MethodModel> fwICFG) {
         delegate = fwICFG;
     }
 
@@ -51,7 +51,7 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 
     // swapped
     @Override
-    public Collection<Unit> getStartPointsOf(SootMethod m) {
+    public Collection<Unit> getStartPointsOf(MethodModel m) {
         return delegate.getEndPointsOf(m);
     }
 
@@ -87,7 +87,7 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 
     // swapped
     @Override
-    public Collection<Unit> getEndPointsOf(SootMethod m) {
+    public Collection<Unit> getEndPointsOf(MethodModel m) {
         return delegate.getStartPointsOf(m);
     }
 
@@ -105,25 +105,25 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 
     // same
     @Override
-    public SootMethod getMethodOf(Unit n) {
+    public MethodModel getMethodOf(Unit n) {
         return delegate.getMethodOf(n);
     }
 
     // same
     @Override
-    public Collection<SootMethod> getCalleesOfCallAt(Unit n) {
+    public Collection<MethodModel> getCalleesOfCallAt(Unit n) {
         return delegate.getCalleesOfCallAt(n);
     }
 
     // same
     @Override
-    public Collection<Unit> getCallersOf(SootMethod m) {
+    public Collection<Unit> getCallersOf(MethodModel m) {
         return delegate.getCallersOf(m);
     }
 
     // same
     @Override
-    public Set<Unit> getCallsFromWithin(SootMethod m) {
+    public Set<Unit> getCallsFromWithin(MethodModel m) {
         return delegate.getCallsFromWithin(m);
     }
 
@@ -135,13 +135,13 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 
     // same
     @Override
-    public DirectedGraph<Unit> getOrCreateUnitGraph(SootMethod m) {
+    public DirectedGraph<Unit> getOrCreateUnitGraph(MethodModel m) {
         return delegate.getOrCreateUnitGraph(m);
     }
 
     // same
     @Override
-    public List<Value> getParameterRefs(SootMethod m) {
+    public List<Value> getParameterRefs(MethodModel m) {
         return delegate.getParameterRefs(m);
     }
 

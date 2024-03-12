@@ -22,6 +22,7 @@ package soot.jimple.toolkits.ide.exampleproblems;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -36,14 +37,14 @@ import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 
 import java.util.*;
 
-public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value, InterproceduralCFG<Unit, SootMethod>> {
-    public IFDSLiveVariables(InterproceduralCFG<Unit, SootMethod> icfg) {
+public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value, InterproceduralCFG<Unit, MethodModel>> {
+    public IFDSLiveVariables(InterproceduralCFG<Unit, MethodModel> icfg) {
         super(icfg);
     }
 
     @Override
-    public FlowFunctions<Unit, Value, SootMethod> createFlowFunctionsFactory() {
-        return new FlowFunctions<Unit, Value, SootMethod>() {
+    public FlowFunctions<Unit, Value, MethodModel> createFlowFunctionsFactory() {
+        return new FlowFunctions<Unit, Value, MethodModel>() {
 
             @Override
             public FlowFunction<Value> getNormalFlowFunction(Unit curr, Unit succ) {
@@ -82,7 +83,7 @@ public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value,
             }
 
             @Override
-            public FlowFunction<Value> getCallFlowFunction(Unit callStmt, final SootMethod destinationMethod) {
+            public FlowFunction<Value> getCallFlowFunction(Unit callStmt, final MethodModel destinationMethod) {
                 final Stmt s = (Stmt) callStmt;
                 return new FlowFunction<Value>() {
                     public Set<Value> computeTargets(Value source) {
@@ -106,7 +107,7 @@ public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value,
             }
 
             @Override
-            public FlowFunction<Value> getReturnFlowFunction(final Unit callSite, SootMethod calleeMethod, final Unit exitStmt,
+            public FlowFunction<Value> getReturnFlowFunction(final Unit callSite, MethodModel calleeMethod, final Unit exitStmt,
                                                              Unit returnSite) {
                 Stmt s = (Stmt) callSite;
                 InvokeExpr ie = s.getInvokeExpr();

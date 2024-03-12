@@ -22,6 +22,8 @@ package soot.baf.syntax;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -76,7 +78,7 @@ public class BafASMBackend extends AbstractASMBackend {
      * @see soot.AbstractASMBackend#getMinJavaVersion(soot.SootMethod)
      */
     @Override
-    protected int getMinJavaVersion(SootMethod method) {
+    protected int getMinJavaVersion(MethodModel method) {
         final BafBody body = getBafBody(method);
         int minVersion = Options.java_version_1_1;
 
@@ -118,7 +120,7 @@ public class BafASMBackend extends AbstractASMBackend {
      * @see soot.AbstractASMBackend#generateMethodBody(org.objectweb.asm. MethodVisitor, soot.SootMethod)
      */
     @Override
-    protected void generateMethodBody(MethodVisitor mv, SootMethod method) {
+    protected void generateMethodBody(MethodVisitor mv, MethodModel method) {
         final BafBody body = getBafBody(method);
 
         /*

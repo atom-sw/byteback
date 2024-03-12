@@ -23,9 +23,9 @@ package soot.jimple.toolkits.thread.mhp;
  */
 
 import soot.Body;
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.Scene;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.Stmt;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.PAG;
@@ -43,32 +43,32 @@ public class StartJoinFinder {
     Set<Stmt> startStatements;
     Set<Stmt> joinStatements;
 
-    Map<Stmt, List<SootMethod>> startToRunMethods;
+    Map<Stmt, List<MethodModel>> startToRunMethods;
     Map<Stmt, List<AllocNode>> startToAllocNodes;
     Map<Stmt, Stmt> startToJoin;
-    Map<Stmt, SootMethod> startToContainingMethod;
+    Map<Stmt, MethodModel> startToContainingMethod;
 
     public StartJoinFinder(CallGraph callGraph, PAG pag) {
         startStatements = new HashSet<Stmt>();
         joinStatements = new HashSet<Stmt>();
 
-        startToRunMethods = new HashMap<Stmt, List<SootMethod>>();
+        startToRunMethods = new HashMap<Stmt, List<MethodModel>>();
         startToAllocNodes = new HashMap<Stmt, List<AllocNode>>();
         startToJoin = new HashMap<Stmt, Stmt>();
-        startToContainingMethod = new HashMap<Stmt, SootMethod>();
+        startToContainingMethod = new HashMap<Stmt, MethodModel>();
 
         Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
         while (runAnalysisClassesIt.hasNext()) {
             ClassModel appClass = (ClassModel) runAnalysisClassesIt.next();
-            Iterator methodsIt = appClass.getMethods().iterator();
+            Iterator methodsIt = appClass.getMethodModels().iterator();
             while (methodsIt.hasNext()) {
-                SootMethod method = (SootMethod) methodsIt.next();
+                MethodModel method = (MethodModel) methodsIt.next();
 
                 // If this method may have a start or run method as a target, then do a start/join analysis
                 boolean mayHaveStartStmt = false;
                 Iterator edgesIt = callGraph.edgesOutOf(method);
                 while (edgesIt.hasNext()) {
-                    SootMethod target = ((Edge) edgesIt.next()).tgt();
+                    MethodModel target = ((Edge) edgesIt.next()).tgt();
                     if (target.getName().equals("start") || target.getName().equals("run")) {
                         mayHaveStartStmt = true;
                     }
@@ -105,7 +105,7 @@ public class StartJoinFinder {
         return joinStatements;
     }
 
-    public Map<Stmt, List<SootMethod>> getStartToRunMethods() {
+    public Map<Stmt, List<MethodModel>> getStartToRunMethods() {
         return startToRunMethods;
     }
 
@@ -117,7 +117,7 @@ public class StartJoinFinder {
         return startToJoin;
     }
 
-    public Map<Stmt, SootMethod> getStartToContainingMethod() {
+    public Map<Stmt, MethodModel> getStartToContainingMethod() {
         return startToContainingMethod;
     }
 }

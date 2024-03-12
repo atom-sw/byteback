@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -35,7 +35,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -68,7 +68,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
      * <p>
      * private native java.lang.Class defineClass0(java.lang.String, byte[], int, int, java.security.ProtectionDomain);
      */
-    public void java_lang_ClassLoader_defineClass0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_ClassLoader_defineClass0(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                                    ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -80,7 +80,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
      * <p>
      * private native java.lang.Class findBootstrapClass(java.lang.String) throws java.lang.ClassNotFoundException;
      */
-    public void java_lang_ClassLoader_findBootstrapClass(SootMethod method, ReferenceVariable thisVar,
+    public void java_lang_ClassLoader_findBootstrapClass(MethodModel method, ReferenceVariable thisVar,
                                                          ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -92,7 +92,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
      * <p>
      * protected final native java.lang.Class findLoadedClass(java.lang.String);
      */
-    public void java_lang_ClassLoader_findLoadedClass(SootMethod method, ReferenceVariable thisVar,
+    public void java_lang_ClassLoader_findLoadedClass(MethodModel method, ReferenceVariable thisVar,
                                                       ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassObject());
     }
@@ -102,7 +102,7 @@ public class JavaLangClassLoaderNative extends NativeMethodClass {
      * <p>
      * static native java.lang.ClassLoader getCallerClassLoader();
      */
-    public void java_lang_ClassLoader_getCallerClassLoader(SootMethod method, ReferenceVariable thisVar,
+    public void java_lang_ClassLoader_getCallerClassLoader(MethodModel method, ReferenceVariable thisVar,
                                                            ReferenceVariable returnVar, ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
     }

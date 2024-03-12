@@ -1,4 +1,4 @@
-package soot;
+package byteback.analysis.model;
 
 /*-
  * #%L
@@ -23,31 +23,32 @@ package soot;
  * #L%
  */
 
-import soot.jimple.paddle.PaddleField;
-import soot.jimple.spark.pag.SparkField;
+import soot.*;
 import soot.options.Options;
 import soot.tag.AbstractHost;
 
 /**
  * Soot representation of a Java field. Can be declared to belong to a SootClass.
  */
-public class SootField extends AbstractHost implements ClassMember, SparkField, PaddleField {
-    protected String name;
-    protected Type type;
-    protected int modifiers;
+public class FieldModel extends AbstractHost implements ClassMemberModel {
+    private String name;
+
+    private Type type;
+
+    private int modifiers;
+
     protected boolean isDeclared = false;
+
     protected ClassModel declaringClass;
-    protected boolean isPhantom = false;
+
     protected volatile String sig;
+
     protected volatile String subSig;
 
     /**
      * Constructs a Soot field with the given name, type and modifiers.
      */
-    public SootField(String name, Type type, int modifiers) {
-        if (name == null || type == null) {
-            throw new RuntimeException("A SootField cannot have a null name or type.");
-        }
+    public FieldModel(String name, Type type, int modifiers) {
         this.name = name;
         this.type = type;
         this.modifiers = modifiers;
@@ -56,7 +57,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     /**
      * Constructs a Soot field with the given name, type and no modifiers.
      */
-    public SootField(String name, Type type) {
+    public FieldModel(String name, Type type) {
         this(name, type, 0);
     }
 
@@ -112,24 +113,6 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     public synchronized void setDeclaringClass(ClassModel sc) {
         this.declaringClass = sc;
         this.sig = null;
-    }
-
-    @Override
-    public boolean isPhantom() {
-        return isPhantom;
-    }
-
-    @Override
-    public void setPhantom(boolean value) {
-        if (value) {
-            if (!Scene.v().allowsPhantomRefs()) {
-                throw new RuntimeException("Phantom refs not allowed");
-            }
-            if (!Options.v().allow_phantom_elms() && declaringClass != null && !declaringClass.isPhantom()) {
-                throw new RuntimeException("Declaring class would have to be phantom");
-            }
-        }
-        isPhantom = value;
     }
 
     @Override

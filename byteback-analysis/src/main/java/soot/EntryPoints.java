@@ -1,5 +1,7 @@
 package soot;
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.util.NumberedString;
 import soot.util.StringNumberer;
 
@@ -40,14 +42,14 @@ public class EntryPoints {
         return G.v().soot_EntryPoints();
     }
 
-    protected void addMethod(List<SootMethod> set, ClassModel cls, NumberedString methodSubSig) {
-        SootMethod sm = cls.getMethodUnsafe(methodSubSig);
+    protected void addMethod(List<MethodModel> set, ClassModel cls, NumberedString methodSubSig) {
+        MethodModel sm = cls.getMethodUnsafe(methodSubSig);
         if (sm != null) {
             set.add(sm);
         }
     }
 
-    protected void addMethod(List<SootMethod> set, String methodSig) {
+    protected void addMethod(List<MethodModel> set, String methodSig) {
         final Scene sc = Scene.v();
         if (sc.containsMethod(methodSig)) {
             set.add(sc.getMethod(methodSig));
@@ -57,13 +59,13 @@ public class EntryPoints {
     /**
      * Returns only the application entry points, not including entry points invoked implicitly by the VM.
      */
-    public List<SootMethod> application() {
-        List<SootMethod> ret = new ArrayList<SootMethod>();
+    public List<MethodModel> application() {
+        List<MethodModel> ret = new ArrayList<MethodModel>();
         final Scene sc = Scene.v();
         if (sc.hasMainClass()) {
             ClassModel mainClass = sc.getMainClass();
             addMethod(ret, mainClass, sigMain);
-            for (SootMethod clinit : clinitsOf(mainClass)) {
+            for (MethodModel clinit : clinitsOf(mainClass)) {
                 ret.add(clinit);
             }
         }
@@ -73,8 +75,8 @@ public class EntryPoints {
     /**
      * Returns only the entry points invoked implicitly by the VM.
      */
-    public List<SootMethod> implicit() {
-        List<SootMethod> ret = new ArrayList<SootMethod>();
+    public List<MethodModel> implicit() {
+        List<MethodModel> ret = new ArrayList<MethodModel>();
 
         addMethod(ret, JavaMethods.INITIALIZE_SYSTEM_CLASS);
         addMethod(ret, JavaMethods.THREAD_GROUP_INIT);
@@ -101,8 +103,8 @@ public class EntryPoints {
     /**
      * Returns all the entry points.
      */
-    public List<SootMethod> all() {
-        List<SootMethod> ret = new ArrayList<SootMethod>();
+    public List<MethodModel> all() {
+        List<MethodModel> ret = new ArrayList<MethodModel>();
         ret.addAll(application());
         ret.addAll(implicit());
         return ret;
@@ -111,8 +113,8 @@ public class EntryPoints {
     /**
      * Returns a list of all static initializers.
      */
-    public List<SootMethod> clinits() {
-        List<SootMethod> ret = new ArrayList<SootMethod>();
+    public List<MethodModel> clinits() {
+        List<MethodModel> ret = new ArrayList<MethodModel>();
         for (ClassModel cl : Scene.v().getClasses()) {
             addMethod(ret, cl, sigClinit);
         }
@@ -122,8 +124,8 @@ public class EntryPoints {
     /**
      * Returns a list of all constructors taking no arguments.
      */
-    public List<SootMethod> inits() {
-        List<SootMethod> ret = new ArrayList<SootMethod>();
+    public List<MethodModel> inits() {
+        List<MethodModel> ret = new ArrayList<MethodModel>();
         for (ClassModel cl : Scene.v().getClasses()) {
             addMethod(ret, cl, sigInit);
         }
@@ -133,10 +135,10 @@ public class EntryPoints {
     /**
      * Returns a list of all constructors.
      */
-    public List<SootMethod> allInits() {
-        List<SootMethod> ret = new ArrayList<SootMethod>();
+    public List<MethodModel> allInits() {
+        List<MethodModel> ret = new ArrayList<MethodModel>();
         for (ClassModel cl : Scene.v().getClasses()) {
-            for (SootMethod m : cl.getMethods()) {
+            for (MethodModel m : cl.getMethodModels()) {
                 if ("<init>".equals(m.getName())) {
                     ret.add(m);
                 }
@@ -148,10 +150,10 @@ public class EntryPoints {
     /**
      * Returns a list of all concrete methods of all application classes.
      */
-    public List<SootMethod> methodsOfApplicationClasses() {
-        List<SootMethod> ret = new ArrayList<SootMethod>();
+    public List<MethodModel> methodsOfApplicationClasses() {
+        List<MethodModel> ret = new ArrayList<MethodModel>();
         for (ClassModel cl : Scene.v().getApplicationClasses()) {
-            for (SootMethod m : cl.getMethods()) {
+            for (MethodModel m : cl.getMethodModels()) {
                 if (m.isConcrete()) {
                     ret.add(m);
                 }
@@ -163,10 +165,10 @@ public class EntryPoints {
     /**
      * Returns a list of all concrete main(String[]) methods of all application classes.
      */
-    public List<SootMethod> mainsOfApplicationClasses() {
-        List<SootMethod> ret = new ArrayList<SootMethod>();
+    public List<MethodModel> mainsOfApplicationClasses() {
+        List<MethodModel> ret = new ArrayList<MethodModel>();
         for (ClassModel cl : Scene.v().getApplicationClasses()) {
-            SootMethod m = cl.getMethodUnsafe("void main(java.lang.String[])");
+            MethodModel m = cl.getMethodUnsafe("void main(java.lang.String[])");
             if (m != null && m.isConcrete()) {
                 ret.add(m);
             }
@@ -177,10 +179,10 @@ public class EntryPoints {
     /**
      * Returns a list of all clinits of class cl and its superclasses.
      */
-    public Iterable<SootMethod> clinitsOf(ClassModel cl) {
+    public Iterable<MethodModel> clinitsOf(ClassModel cl) {
         // Do not create an actual list, since this method gets called quite often
         // Instead, callers usually just want to iterate over the result.
-        SootMethod init = cl.getMethodUnsafe(sigClinit);
+        MethodModel init = cl.getMethodUnsafe(sigClinit);
         ClassModel superClass = cl.getSuperclassUnsafe();
         // check super classes until finds a constructor or no super class there anymore.
         while (init == null && superClass != null) {
@@ -190,20 +192,20 @@ public class EntryPoints {
         if (init == null) {
             return Collections.emptyList();
         }
-        SootMethod initStart = init;
-        return new Iterable<SootMethod>() {
+        MethodModel initStart = init;
+        return new Iterable<MethodModel>() {
 
             @Override
-            public Iterator<SootMethod> iterator() {
-                return new Iterator<SootMethod>() {
-                    SootMethod current = initStart;
+            public Iterator<MethodModel> iterator() {
+                return new Iterator<MethodModel>() {
+                    MethodModel current = initStart;
 
                     @Override
-                    public SootMethod next() {
+                    public MethodModel next() {
                         if (!hasNext()) {
                             throw new NoSuchElementException();
                         }
-                        SootMethod n = current;
+                        MethodModel n = current;
 
                         // Pre-fetch the next element
                         current = null;
@@ -214,7 +216,7 @@ public class EntryPoints {
                                 break;
                             }
 
-                            SootMethod m = superClass.getMethodUnsafe(sigClinit);
+                            MethodModel m = superClass.getMethodUnsafe(sigClinit);
                             if (m != null) {
                                 current = m;
                                 break;

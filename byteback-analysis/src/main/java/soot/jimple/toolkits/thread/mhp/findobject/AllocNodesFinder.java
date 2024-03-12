@@ -22,6 +22,7 @@ package soot.jimple.toolkits.thread.mhp.findobject;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.DefinitionStmt;
@@ -53,7 +54,7 @@ public class AllocNodesFinder {
 
     private final Set<AllocNode> allocNodes;
     private final Set<AllocNode> multiRunAllocNodes;
-    private final Set<SootMethod> multiCalledMethods;
+    private final Set<MethodModel> multiCalledMethods;
     PAG pag;
 
     public AllocNodesFinder(PegCallGraph pcg, CallGraph cg, PAG pag) {
@@ -61,17 +62,17 @@ public class AllocNodesFinder {
         this.pag = pag;
         allocNodes = new HashSet<AllocNode>();
         multiRunAllocNodes = new HashSet<AllocNode>();
-        multiCalledMethods = new HashSet<SootMethod>();
+        multiCalledMethods = new HashSet<MethodModel>();
         MultiCalledMethods mcm = new MultiCalledMethods(pcg, multiCalledMethods);
 
         find(mcm.getMultiCalledMethods(), pcg, cg);
     }
 
-    private void find(Set<SootMethod> multiCalledMethods, PegCallGraph pcg, CallGraph callGraph) {
+    private void find(Set<MethodModel> multiCalledMethods, PegCallGraph pcg, CallGraph callGraph) {
         Set clinitMethods = pcg.getClinitMethods();
         Iterator it = pcg.iterator();
         while (it.hasNext()) {
-            SootMethod sm = (SootMethod) it.next();
+            MethodModel sm = (MethodModel) it.next();
             UnitGraph graph = new CompleteUnitGraph(sm.getActiveBody());
             Iterator iterator = graph.iterator();
             if (multiCalledMethods.contains(sm)) {
@@ -145,7 +146,7 @@ public class AllocNodesFinder {
         return multiRunAllocNodes;
     }
 
-    public Set<SootMethod> getMultiCalledMethods() {
+    public Set<MethodModel> getMultiCalledMethods() {
         return multiCalledMethods;
     }
 }

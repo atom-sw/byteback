@@ -22,6 +22,7 @@ package soot.jimple.toolkits.base;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -73,7 +74,7 @@ public class JimpleConstructorFolder extends BodyTransformer {
         if (s instanceof InvokeStmt) {
             InvokeExpr expr = s.getInvokeExpr();
             if (expr instanceof SpecialInvokeExpr sie) {
-                return SootMethod.constructorName.equals(sie.getMethodRef().getName());
+                return MethodModel.constructorName.equals(sie.getMethodRef().getName());
             }
         }
         return false;

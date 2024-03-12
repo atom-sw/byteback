@@ -84,7 +84,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
             InterfaceInvokeExpr invoke = (InterfaceInvokeExpr) ie;
             Value base = invoke.getBase();
             if (base instanceof Local local) {
-                RefType classType = method.getDeclaringClass().getType();
+                RefType classType = method.getDeclaringClass().getClassType();
                 if (!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(classType))) {
                     if (fix) {
                         invoke.setBase(insertCast(local, classType, invokestmt));
@@ -97,7 +97,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
             SpecialInvokeExpr invoke = (SpecialInvokeExpr) ie;
             Value base = invoke.getBase();
             if (base instanceof Local local) {
-                RefType classType = method.getDeclaringClass().getType();
+                RefType classType = method.getDeclaringClass().getClassType();
                 if (!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(classType))) {
                     if (fix) {
                         invoke.setBase(insertCast(local, classType, invokestmt));
@@ -110,7 +110,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
             VirtualInvokeExpr invoke = (VirtualInvokeExpr) ie;
             Value base = invoke.getBase();
             if (base instanceof Local local) {
-                RefType classType = method.getDeclaringClass().getType();
+                RefType classType = method.getDeclaringClass().getClassType();
                 if (!hierarchy.typeNode(local.getType()).hasAncestorOrSelf(hierarchy.typeNode(classType))) {
                     if (fix) {
                         invoke.setBase(insertCast(local, classType, invokestmt));
@@ -185,7 +185,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
         } else if (l instanceof InstanceFieldRef) {
             InstanceFieldRef ref = (InstanceFieldRef) l;
             Local base = (Local) ref.getBase();
-            RefType classTy = ref.getField().getDeclaringClass().getType();
+            RefType classTy = ref.getField().getDeclaringClass().getClassType();
             if (!hierarchy.typeNode(base.getType()).hasAncestorOrSelf(hierarchy.typeNode(classTy))) {
                 if (fix) {
                     ref.setBase(insertCast(base, classTy, stmt));
@@ -464,7 +464,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
         } else if (r instanceof InstanceFieldRef) {
             InstanceFieldRef ref = (InstanceFieldRef) r;
             Local base = (Local) ref.getBase();
-            RefType classTy = ref.getField().getDeclaringClass().getType();
+            RefType classTy = ref.getField().getDeclaringClass().getClassType();
             if (!hierarchy.typeNode(base.getType()).hasAncestorOrSelf(hierarchy.typeNode(classTy))) {
                 if (fix) {
                     ref.setBase(insertCast(base, classTy, stmt));

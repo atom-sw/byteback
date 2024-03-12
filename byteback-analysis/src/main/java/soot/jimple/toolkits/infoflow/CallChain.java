@@ -22,7 +22,7 @@ package soot.jimple.toolkits.infoflow;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.callgraph.Edge;
 
 import java.util.Iterator;
@@ -74,7 +74,7 @@ public class CallChain {
         return (edge == e) || (next != null && next.contains(e));
     }
 
-    public boolean containsMethod(SootMethod sm) {
+    public boolean containsMethod(MethodModel sm) {
         return (edge != null && edge.tgt() == sm) || (next != null && next.containsMethod(sm));
     }
 

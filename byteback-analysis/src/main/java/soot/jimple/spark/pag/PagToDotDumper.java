@@ -24,8 +24,8 @@ package soot.jimple.spark.pag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.SootField;
-import soot.SootMethod;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.spark.ondemand.genericutil.Predicate;
 import soot.jimple.spark.sets.P2SetVisitor;
 
@@ -512,7 +512,7 @@ public class PagToDotDumper {
     }
 
     public static String makeLabel(LocalVarNode n) {
-        SootMethod sm = n.getMethod();
+        MethodModel sm = n.getMethod();
         return "LV " + n.getVariable().toString() + " " + n.getNumber() + "\\n" + sm.getDeclaringClass() + "\\n" + sm.getName();
     }
 
@@ -521,7 +521,7 @@ public class PagToDotDumper {
      * @return
      */
     public static String makeLabel(FieldRefNode node) {
-        if (node.getField() instanceof SootField sf) {
+        if (node.getField() instanceof FieldModel sf) {
             return "FNR " + makeLabel(node.getBase()) + "." + sf.getName();
         } else {
             return "FNR " + makeLabel(node.getBase()) + "." + node.getField();

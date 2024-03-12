@@ -22,6 +22,8 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -66,8 +68,8 @@ public class RectangularArrayFinder extends SceneTransformer {
         }
 
         for (ClassModel c : sc.getApplicationClasses()) {
-            for (Iterator<SootMethod> methodIt = c.methodIterator(); methodIt.hasNext(); ) {
-                SootMethod method = methodIt.next();
+            for (Iterator<MethodModel> methodIt = c.methodIterator(); methodIt.hasNext(); ) {
+                MethodModel method = methodIt.next();
                 if (!method.isConcrete() || !sc.getReachableMethods().contains(method)) {
                     continue;
                 }
@@ -157,7 +159,7 @@ public class RectangularArrayFinder extends SceneTransformer {
         }
     }
 
-    private void addInfoFromMethod(SootMethod method) {
+    private void addInfoFromMethod(MethodModel method) {
         if (Options.v().verbose()) {
             logger.debug("[ra] Operating " + method.getSignature());
         }
@@ -208,7 +210,7 @@ public class RectangularArrayFinder extends SceneTransformer {
                         /* from node, it is a local */
                         MethodLocal ml = new MethodLocal(method, (Local) arg);
                         for (Targets targetIt = new Targets(cg.edgesOutOf(s)); targetIt.hasNext(); ) {
-                            SootMethod target = (SootMethod) targetIt.next();
+                            MethodModel target = (MethodModel) targetIt.next();
                             MethodParameter mp = new MethodParameter(target, i);
 
                             /* add edge to the graph. */
@@ -309,7 +311,7 @@ public class RectangularArrayFinder extends SceneTransformer {
                         Object to = new MethodLocal(method, (Local) leftOp);
 
                         for (Targets targetIt = new Targets(cg.edgesOutOf(s)); targetIt.hasNext(); ) {
-                            SootMethod target = (SootMethod) targetIt.next();
+                            MethodModel target = (MethodModel) targetIt.next();
                             ehmdg.addMutualEdge(new MethodReturn(target), to);
                         }
                     }
@@ -385,7 +387,7 @@ public class RectangularArrayFinder extends SceneTransformer {
         }
     }
 
-    private void recoverRectArray(final SootMethod method) {
+    private void recoverRectArray(final MethodModel method) {
         final Body body = method.getActiveBody();
         HashSet<Value> malocal = new HashSet<Value>();
         for (Local local : body.getLocals()) {

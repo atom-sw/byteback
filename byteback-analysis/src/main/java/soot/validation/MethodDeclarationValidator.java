@@ -22,8 +22,8 @@ package soot.validation;
  * #L%
  */
 
-import soot.ClassModel;
-import soot.SootMethod;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 import soot.VoidType;
 
@@ -44,7 +44,7 @@ public enum MethodDeclarationValidator implements ClassValidator {
     @Override
     public void validate(ClassModel sc, List<ValidationException> exceptions) {
         if (sc.isConcrete()) {
-            for (SootMethod sm : sc.getMethods()) {
+            for (MethodModel sm : sc.getMethodModels()) {
                 for (Type tp : sm.getParameterTypes()) {
                     if (tp == null) {
                         exceptions.add(new ValidationException(sm, "Null parameter types are invalid"));

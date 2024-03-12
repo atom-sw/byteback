@@ -23,6 +23,9 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.baf.syntax.DoubleWordType;
@@ -421,7 +424,7 @@ public abstract class AbstractJasminClass {
             }
 
             if (classModel.hasSuperclass()) {
-                emit(".super " + slashify(classModel.getSuperclass().getName()));
+                emit(".super " + slashify(classModel.getSuperType().getName()));
             } else {
                 emit(".no_super");
             }
@@ -430,7 +433,7 @@ public abstract class AbstractJasminClass {
         }
 
         // Emit the interfaces
-        for (ClassModel inter : classModel.getInterfaces()) {
+        for (ClassModel inter : classModel.getInterfaceTypes()) {
             emit(".implements " + slashify(inter.getName()));
         }
         /*
@@ -499,7 +502,7 @@ public abstract class AbstractJasminClass {
 
         // Emit the fields
         {
-            for (SootField field : classModel.getFields()) {
+            for (FieldModel field : classModel.getFieldModels()) {
                 StringBuilder fieldString = new StringBuilder();
                 fieldString.append(".field ").append(Modifier.toString(field.getModifiers()));
                 fieldString.append(" \"").append(field.getName()).append("\" ");
@@ -568,8 +571,8 @@ public abstract class AbstractJasminClass {
         }
 
         // Emit the methods
-        for (Iterator<SootMethod> methodIt = classModel.methodIterator(); methodIt.hasNext(); ) {
-            SootMethod next = methodIt.next();
+        for (Iterator<MethodModel> methodIt = classModel.methodIterator(); methodIt.hasNext(); ) {
+            MethodModel next = methodIt.next();
             emitMethod(next);
             emit("");
         }
@@ -616,7 +619,7 @@ public abstract class AbstractJasminClass {
         }
     }
 
-    protected void emitMethod(SootMethod method) {
+    protected void emitMethod(MethodModel method) {
         if (method.isPhantom()) {
             return;
         }
@@ -674,7 +677,7 @@ public abstract class AbstractJasminClass {
         }
     }
 
-    protected abstract void emitMethodBody(SootMethod method);
+    protected abstract void emitMethodBody(MethodModel method);
 
     public void print(PrintWriter out) {
         for (String s : code) {

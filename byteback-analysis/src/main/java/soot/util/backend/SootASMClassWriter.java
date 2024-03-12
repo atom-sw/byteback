@@ -23,7 +23,7 @@ package soot.util.backend;
  */
 
 import org.objectweb.asm.ClassWriter;
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.RefType;
 import soot.Scene;
 import soot.Type;
@@ -67,12 +67,12 @@ public class SootASMClassWriter extends ClassWriter {
         // If these two classes haven't been loaded yet or are phantom, we take
         // java.lang.Object as the common superclass
         final Type mergedType;
-        if (s1.isPhantom() || s2.isPhantom() || s1.resolvingLevel() == ClassModel.DANGLING
-                || s2.resolvingLevel() == ClassModel.DANGLING) {
+        if (s1.isPhantom() || s2.isPhantom() || s1.getResolvingLevel() == ClassModel.DANGLING
+                || s2.getResolvingLevel() == ClassModel.DANGLING) {
             mergedType = Scene.v().getObjectType();
         } else {
-            Type t1 = s1.getType();
-            Type t2 = s2.getType();
+            Type t1 = s1.getClassType();
+            Type t2 = s2.getClassType();
 
             mergedType = t1.merge(t2, Scene.v());
         }

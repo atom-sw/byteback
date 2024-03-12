@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
+
 import java.util.*;
 
 /**
@@ -30,10 +32,10 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public final class MethodToContexts {
-    private final Map<SootMethod, List<MethodOrMethodContext>> map = new HashMap<SootMethod, List<MethodOrMethodContext>>();
+    private final Map<MethodModel, List<MethodOrMethodContext>> map = new HashMap<MethodModel, List<MethodOrMethodContext>>();
 
     public void add(MethodOrMethodContext momc) {
-        SootMethod m = momc.method();
+        MethodModel m = momc.method();
         List<MethodOrMethodContext> l = map.get(m);
         if (l == null) {
             map.put(m, l = new ArrayList<MethodOrMethodContext>());
@@ -57,7 +59,7 @@ public final class MethodToContexts {
         }
     }
 
-    public List<MethodOrMethodContext> get(SootMethod m) {
+    public List<MethodOrMethodContext> get(MethodModel m) {
         List<MethodOrMethodContext> ret = map.get(m);
         if (ret == null) {
             ret = new ArrayList<MethodOrMethodContext>();

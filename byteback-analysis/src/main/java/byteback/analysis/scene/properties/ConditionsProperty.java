@@ -1,8 +1,8 @@
 package byteback.analysis.scene.properties;
 
 import byteback.analysis.common.property.Properties;
-import soot.ClassModel;
-import soot.SootMethod;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.Value;
 import soot.util.Chain;
 
@@ -11,12 +11,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public abstract class ConditionsProperty extends Properties<SootMethod, Set<Value>> {
+public abstract class ConditionsProperty extends Properties<MethodModel, Set<Value>> {
 
-    public abstract void collect(final SootMethod traceMethod, final Set<Value> upperConditions);
+    public abstract void collect(final MethodModel traceMethod, final Set<Value> upperConditions);
 
     @Override
-    protected Set<Value> compute(final SootMethod instance) {
+    protected Set<Value> compute(final MethodModel instance) {
         final ClassModel declaringClass = instance.getDeclaringClass();
         final var nextClasses = new ArrayDeque<ClassModel>();
         final var currentTrace = new ArrayDeque<ClassModel>();
@@ -30,7 +30,7 @@ public abstract class ConditionsProperty extends Properties<SootMethod, Set<Valu
             currentTrace.add(currentClass);
 
             final ClassModel superClass = currentClass.getSuperclassUnsafe();
-            final Chain<ClassModel> directSuperInterfaces = currentClass.getInterfaces();
+            final Chain<ClassModel> directSuperInterfaces = currentClass.getInterfaceTypes();
             boolean hasUnvisitedParents = false;
 
             if (superClass != null && !visitedClasses.contains(superClass)) {
@@ -51,7 +51,7 @@ public abstract class ConditionsProperty extends Properties<SootMethod, Set<Valu
 
                 while (traceIterator.hasNext()) {
                     final ClassModel traceClass = traceIterator.next();
-                    final SootMethod traceMethod = traceClass.getMethodUnsafe(instance.getSubSignature());
+                    final MethodModel traceMethod = traceClass.getMethodUnsafe(instance.getSubSignature());
                     collect(traceMethod, conditionsSet);
                     final Set<Value> traceConditionSet = get(traceMethod).orElseGet(HashSet::new);
                     traceConditionSet.addAll(conditionsSet);

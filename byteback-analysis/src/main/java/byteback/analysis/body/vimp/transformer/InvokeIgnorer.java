@@ -5,7 +5,7 @@ import byteback.analysis.common.Hosts;
 import byteback.analysis.common.namespace.BBLibNames;
 import byteback.common.function.Lazy;
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.InvokeStmt;
 
@@ -27,7 +27,7 @@ public class InvokeIgnorer extends BodyTransformer {
             final Unit unit = unitsIterator.next();
 
             if (unit instanceof InvokeStmt invokeStmt) {
-                final SootMethod method = invokeStmt.getInvokeExpr().getMethod();
+                final MethodModel method = invokeStmt.getInvokeExpr().getMethod();
 
                 if (Hosts.v().hasAnnotation(method, BBLibNames.IGNORE_ANNOTATION)) {
                     body.getUnits().remove(unit);

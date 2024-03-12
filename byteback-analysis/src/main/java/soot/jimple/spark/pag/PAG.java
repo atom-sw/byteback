@@ -22,6 +22,9 @@ package soot.jimple.spark.pag;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.slf4j.Logger;
@@ -80,7 +83,7 @@ public class PAG implements PointsToAnalysis {
         }
         if (opts.cs_demand()) {
             virtualCallsToReceivers = new HashMap<InvokeExpr, Node>();
-            callToMethod = new HashMap<InvokeExpr, SootMethod>();
+            callToMethod = new HashMap<InvokeExpr, MethodModel>();
             callAssigns = new HashMultiMap<InvokeExpr, Pair<Node, Node>>();
         }
         switch (opts.set_impl()) {
@@ -182,7 +185,7 @@ public class PAG implements PointsToAnalysis {
     /**
      * Returns the set of objects pointed to by static field f.
      */
-    public PointsToSet reachingObjects(SootField f) {
+    public PointsToSet reachingObjects(FieldModel f) {
         if (!f.isStatic()) {
             throw new RuntimeException("The parameter f must be a *static* field.");
         }
@@ -196,7 +199,7 @@ public class PAG implements PointsToAnalysis {
     /**
      * Returns the set of objects pointed to by instance field f of the objects in the PointsToSet s.
      */
-    public PointsToSet reachingObjects(PointsToSet s, final SootField f) {
+    public PointsToSet reachingObjects(PointsToSet s, final FieldModel f) {
         if (f.isStatic()) {
             throw new RuntimeException("The parameter f must be an *instance* field.");
         }
@@ -224,7 +227,7 @@ public class PAG implements PointsToAnalysis {
                     + "Use a different propagator.");
         }
         PointsToSetInternal bases = (PointsToSetInternal) s;
-        final PointsToSetInternal ret = setFactory.newSet((f instanceof SootField) ? f.getType() : null, this);
+        final PointsToSetInternal ret = setFactory.newSet((f instanceof FieldModel) ? f.getType() : null, this);
         bases.forall(new P2SetVisitor() {
             public void visit(Node n) {
                 Node nDotF = ((AllocNode) n).dot(f);
@@ -558,18 +561,18 @@ public class PAG implements PointsToAnalysis {
     /**
      * Returns the set of objects pointed to by instance field f of the objects pointed to by l.
      */
-    public PointsToSet reachingObjects(Local l, SootField f) {
+    public PointsToSet reachingObjects(Local l, FieldModel f) {
         return reachingObjects(reachingObjects(l), f);
     }
 
     /**
      * Returns the set of objects pointed to by instance field f of the objects pointed to by l in context c.
      */
-    public PointsToSet reachingObjects(Context c, Local l, SootField f) {
+    public PointsToSet reachingObjects(Context c, Local l, FieldModel f) {
         return reachingObjects(reachingObjects(c, l), f);
     }
 
-    private void addNodeTag(Node node, SootMethod m) {
+    private void addNodeTag(Node node, MethodModel m) {
         if (nodeToTag != null) {
             Tag tag;
             if (m == null) {
@@ -581,7 +584,7 @@ public class PAG implements PointsToAnalysis {
         }
     }
 
-    public AllocNode makeAllocNode(Object newExpr, Type type, SootMethod m) {
+    public AllocNode makeAllocNode(Object newExpr, Type type, MethodModel m) {
         if (opts.types_for_sites() || opts.vta()) {
             newExpr = type;
         }
@@ -680,7 +683,7 @@ public class PAG implements PointsToAnalysis {
             // if library mode is activated, add allocation of every possible
             // type to accessible fields
             if (cgOpts.library() != CGOptions.library_disabled) {
-                if (value instanceof SootField sf) {
+                if (value instanceof FieldModel sf) {
 
                   if (accessibilityOracle.isAccessible(sf)) {
                         type.apply(new SparkLibraryHelper(this, ret, null));
@@ -697,7 +700,7 @@ public class PAG implements PointsToAnalysis {
     /**
      * Finds or creates the LocalVarNode for the variable value, of type type.
      */
-    public LocalVarNode makeLocalVarNode(Object value, Type type, SootMethod method) {
+    public LocalVarNode makeLocalVarNode(Object value, Type type, MethodModel method) {
         if (opts.rta()) {
             value = null;
             type = Scene.v().getObjectType();
@@ -722,7 +725,7 @@ public class PAG implements PointsToAnalysis {
         return ret;
     }
 
-    public NewInstanceNode makeNewInstanceNode(Value value, Type type, SootMethod method) {
+    public NewInstanceNode makeNewInstanceNode(Value value, Type type, MethodModel method) {
         NewInstanceNode node = newInstToNodeMap.get(value);
         if (node == null) {
             node = new NewInstanceNode(this, value, type);
@@ -746,7 +749,7 @@ public class PAG implements PointsToAnalysis {
     /**
      * Finds or creates the ContextVarNode for base variable baseValue and context context, of type type.
      */
-    public ContextVarNode makeContextVarNode(Object baseValue, Type baseType, Context context, SootMethod method) {
+    public ContextVarNode makeContextVarNode(Object baseValue, Type baseType, Context context, MethodModel method) {
         LocalVarNode base = makeLocalVarNode(baseValue, baseType, method);
         return makeContextVarNode(base, context);
     }
@@ -788,14 +791,14 @@ public class PAG implements PointsToAnalysis {
     /**
      * Finds or creates the FieldRefNode for base variable baseValue and field field, of type type.
      */
-    public FieldRefNode makeLocalFieldRefNode(Object baseValue, Type baseType, SparkField field, SootMethod method) {
+    public FieldRefNode makeLocalFieldRefNode(Object baseValue, Type baseType, SparkField field, MethodModel method) {
         VarNode base = makeLocalVarNode(baseValue, baseType, method);
         FieldRefNode ret = makeFieldRefNode(base, field);
 
         // if library mode is activated, add allocation of every possible type
         // to accessible fields
         if (cgOpts.library() != CGOptions.library_disabled) {
-            if (field instanceof SootField sf) {
+            if (field instanceof FieldModel sf) {
               Type type = sf.getType();
                 if (accessibilityOracle.isAccessible(sf)) {
                     type.apply(new SparkLibraryHelper(this, ret, method));
@@ -1233,7 +1236,7 @@ public class PAG implements PointsToAnalysis {
 
             // (2)
             Value arg1 = ie.getArg(1);
-            SootMethod tgt = e.getTgt().method();
+            MethodModel tgt = e.getTgt().method();
             // if "null" is passed in, or target has no parameters, omit the
             // edge
             if (arg1 != NullConstant.v() && tgt.getParameterCount() > 0) {
@@ -1305,7 +1308,7 @@ public class PAG implements PointsToAnalysis {
 
             VarNode newObject = makeGlobalVarNode(cls, Scene.v().getObjectType());
             ClassModel tgtClass = e.getTgt().method().getDeclaringClass();
-            RefType tgtType = tgtClass.getType();
+            RefType tgtType = tgtClass.getClassType();
             AllocNode site = makeAllocNode(new Pair<Node, ClassModel>(cls, tgtClass), tgtType, null);
             addEdge(site, newObject);
 
@@ -1319,7 +1322,7 @@ public class PAG implements PointsToAnalysis {
             // (3)
             if (e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
                 Value arg = iie.getArg(0);
-                SootMethod tgt = e.getTgt().method();
+                MethodModel tgt = e.getTgt().method();
                 // if "null" is passed in, or target has no parameters, omit the
                 // edge
                 if (arg != NullConstant.v() && tgt.getParameterCount() > 0) {
@@ -1522,7 +1525,7 @@ public class PAG implements PointsToAnalysis {
     public NativeMethodDriver nativeMethodDriver;
 
     public HashMultiMap<InvokeExpr, Pair<Node, Node>> callAssigns;
-    public Map<InvokeExpr, SootMethod> callToMethod;
+    public Map<InvokeExpr, MethodModel> callToMethod;
     public Map<InvokeExpr, Node> virtualCallsToReceivers;
 
 }

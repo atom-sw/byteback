@@ -22,7 +22,7 @@ package soot.jimple.spark.pag;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
@@ -51,7 +51,7 @@ public class PAG2HTML {
             final VarNode v = (VarNode) vIt.next();
             mergedNodes.put(v.getReplacement(), v);
             if (v instanceof LocalVarNode) {
-                SootMethod m = ((LocalVarNode) v).getMethod();
+                MethodModel m = ((LocalVarNode) v).getMethod();
                 if (m != null) {
                     methodToNodes.put(m, v);
                 }
@@ -64,7 +64,7 @@ public class PAG2HTML {
                 dumpVarNode(v, jarOut);
             }
             for (Iterator mIt = methodToNodes.keySet().iterator(); mIt.hasNext(); ) {
-                final SootMethod m = (SootMethod) mIt.next();
+                final MethodModel m = (MethodModel) mIt.next();
                 dumpMethod(m, jarOut);
             }
             addSymLinks(pag.getVarNodeNumberer().iterator(), jarOut);
@@ -142,7 +142,7 @@ public class PAG2HTML {
         ret.append(vv.context() == null ? "null" : htmlify(vv.context().toString()));
         ret.append("</a><br>");
         if (vv instanceof LocalVarNode lvn) {
-            SootMethod m = lvn.getMethod();
+            MethodModel m = lvn.getMethod();
             if (m != null) {
                 ret.append("<a href=\"../" + toFileName(m.toString()) + ".html\">");
                 ret.append(htmlify(m.toString()) + "</a><br>");
@@ -165,7 +165,7 @@ public class PAG2HTML {
         return b.toString();
     }
 
-    protected void dumpMethod(SootMethod m, JarOutputStream jarOut) throws IOException {
+    protected void dumpMethod(MethodModel m, JarOutputStream jarOut) throws IOException {
         jarOut.putNextEntry(new ZipEntry(toFileName(m.toString()) + ".html"));
         final PrintWriter out = new PrintWriter(jarOut);
         out.println("<html>");

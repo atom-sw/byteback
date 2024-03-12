@@ -226,7 +226,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 
         // Record the caught exceptions.
         for (Trap trap : body.getTraps()) {
-            RefType catcher = trap.getException().getType();
+            RefType catcher = trap.getException().getClassType();
             for (Iterator<Unit> unitIt = units.iterator(trap.getBeginUnit(), units.getPredOf(trap.getEndUnit())); unitIt
                     .hasNext(); ) {
                 Unit unit = unitIt.next();
@@ -369,7 +369,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
             for (ExceptionDest dest : dests) {
                 if (dest.getTrap() != null) {
                     Unit catcher = dest.getTrap().getHandlerUnit();
-                    RefType trapsType = dest.getTrap().getException().getType();
+                    RefType trapsType = dest.getTrap().getException().getClassType();
                     if (predThrowables == null || predThrowables.catchableAs(trapsType)) {
                         // Add edges from the thrower's predecessors to the
                         // catcher.

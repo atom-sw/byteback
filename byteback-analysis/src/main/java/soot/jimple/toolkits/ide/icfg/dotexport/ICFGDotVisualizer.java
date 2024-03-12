@@ -25,7 +25,7 @@ package soot.jimple.toolkits.ide.icfg.dotexport;
 import heros.InterproceduralCFG;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.util.dot.DotGraph;
 
@@ -38,7 +38,7 @@ public class ICFGDotVisualizer {
     private final ArrayList<Unit> visited = new ArrayList<Unit>();
     String fileName;
     Unit startPoint;
-    InterproceduralCFG<Unit, SootMethod> icfg;
+    InterproceduralCFG<Unit, MethodModel> icfg;
 
     /**
      * This class will save your ICFG in DOT format by traversing the ICFG Depth-first!
@@ -47,7 +47,7 @@ public class ICFGDotVisualizer {
      * @param startPoint:              This is of type Unit and is the starting point of the graph (eg. main method)
      * @param InterproceduralCFG<Unit, SootMethod>: Object of InterproceduralCFG which represents the entire ICFG
      */
-    public ICFGDotVisualizer(String fileName, Unit startPoint, InterproceduralCFG<Unit, SootMethod> icfg) {
+    public ICFGDotVisualizer(String fileName, Unit startPoint, InterproceduralCFG<Unit, MethodModel> icfg) {
 
         this.fileName = fileName;
         this.startPoint = startPoint;
@@ -79,7 +79,7 @@ public class ICFGDotVisualizer {
 
     }
 
-    private void graphTraverse(Unit startPoint, InterproceduralCFG<Unit, SootMethod> icfg) {
+    private void graphTraverse(Unit startPoint, InterproceduralCFG<Unit, MethodModel> icfg) {
         List<Unit> currentSuccessors = icfg.getSuccsOf(startPoint);
 
         if (currentSuccessors.size() == 0) {

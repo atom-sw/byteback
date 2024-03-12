@@ -22,6 +22,9 @@ package soot.jimple.toolkits.infoflow;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -51,7 +54,7 @@ public class LocalObjectsAnalysis {
 
     Map<ClassModel, ClassLocalObjectsAnalysis> classToClassLocalObjectsAnalysis;
 
-    Map<SootMethod, SmartMethodLocalObjectsAnalysis> mloaCache;
+    Map<MethodModel, SmartMethodLocalObjectsAnalysis> mloaCache;
 
     public LocalObjectsAnalysis(InfoFlowAnalysis dfa) {
         this.dfa = dfa;
@@ -59,7 +62,7 @@ public class LocalObjectsAnalysis {
         this.cg = Scene.v().getCallGraph();
 
         classToClassLocalObjectsAnalysis = new HashMap<ClassModel, ClassLocalObjectsAnalysis>();
-        mloaCache = new HashMap<SootMethod, SmartMethodLocalObjectsAnalysis>();
+        mloaCache = new HashMap<MethodModel, SmartMethodLocalObjectsAnalysis>();
     }
 
     public ClassLocalObjectsAnalysis getClassLocalObjectsAnalysis(ClassModel sc) {
@@ -76,7 +79,7 @@ public class LocalObjectsAnalysis {
         return new ClassLocalObjectsAnalysis(loa, dfa, uf, sc);
     }
 
-    public boolean isObjectLocalToParent(Value localOrRef, SootMethod sm) {
+    public boolean isObjectLocalToParent(Value localOrRef, MethodModel sm) {
         // Handle obvious case
         if (localOrRef instanceof StaticFieldRef) {
             return false;
@@ -86,7 +89,7 @@ public class LocalObjectsAnalysis {
         return cloa.isObjectLocal(localOrRef, sm);
     }
 
-    public boolean isFieldLocalToParent(SootField sf) // To parent class!
+    public boolean isFieldLocalToParent(FieldModel sf) // To parent class!
     {
         // Handle obvious case
         if (sf.isStatic()) {
@@ -97,7 +100,7 @@ public class LocalObjectsAnalysis {
         return cloa.isFieldLocal(sf);
     }
 
-    public boolean isObjectLocalToContext(Value localOrRef, SootMethod sm, SootMethod context) {
+    public boolean isObjectLocalToContext(Value localOrRef, MethodModel sm, MethodModel context) {
         // Handle special case
         if (sm == context) {
             // logger.debug(" Directly Reachable: ");
@@ -237,9 +240,9 @@ public class LocalObjectsAnalysis {
      * if(!isFieldLocalToContextViaCallChain(sf, sm, context, (SootMethod) startingMethods.get(i), callChain)) {
      * logger.debug("      SHARED"); return false; } } logger.debug("      LOCAL"); return true; }
      */
-    Map<SootMethod, ReachableMethods> rmCache = new HashMap<SootMethod, ReachableMethods>();
+    Map<MethodModel, ReachableMethods> rmCache = new HashMap<MethodModel, ReachableMethods>();
 
-    public CallChain getNextCallChainBetween(SootMethod start, SootMethod goal, List previouslyFound) {
+    public CallChain getNextCallChainBetween(MethodModel start, MethodModel goal, List previouslyFound) {
         // callChains.add(new LinkedList()); // Represents the one way to get from goal to goal (which is to already be there)
 
         // Is this worthwhile? Fast? Slow? Broken? Applicable inside the recursive method?
@@ -267,7 +270,7 @@ public class LocalObjectsAnalysis {
 
     Map callChainsCache = new HashMap();
 
-    public CallChain getNextCallChainBetween(ReachableMethods rm, SootMethod start, SootMethod end, Edge endToPath,
+    public CallChain getNextCallChainBetween(ReachableMethods rm, MethodModel start, MethodModel end, Edge endToPath,
                                              CallChain path, List previouslyFound) {
         Pair cacheKey = new Pair(start, end);
         if (callChainsCache.containsKey(cacheKey)) {
@@ -302,7 +305,7 @@ public class LocalObjectsAnalysis {
         Iterator edgeIt = cg.edgesInto(end);
         while (edgeIt.hasNext()) {
             Edge e = (Edge) edgeIt.next();
-            SootMethod node = e.src();
+            MethodModel node = e.src();
             if (!path.containsMethod(node) && e.isExplicit() && e.srcStmt().containsInvokeExpr()) {
                 // logger.debug("R");
                 CallChain newpath = getNextCallChainBetween(rm, start, node, e, path, previouslyFound); // node is supposed to be a
@@ -400,16 +403,16 @@ public class LocalObjectsAnalysis {
      */
 
     // returns a list of all methods that can be invoked on an object of type sc
-    public List<SootMethod> getAllMethodsForClass(ClassModel classModel) {
+    public List<MethodModel> getAllMethodsForClass(ClassModel classModel) {
         // Determine which methods are reachable in this program
         ReachableMethods rm = Scene.v().getReachableMethods();
 
         // Get list of reachable methods declared in this class
         // Also get list of fields declared in this class
-        List<SootMethod> scopeMethods = new ArrayList<SootMethod>();
+        List<MethodModel> scopeMethods = new ArrayList<MethodModel>();
         Iterator scopeMethodsIt = classModel.methodIterator();
         while (scopeMethodsIt.hasNext()) {
-            SootMethod scopeMethod = (SootMethod) scopeMethodsIt.next();
+            MethodModel scopeMethod = (MethodModel) scopeMethodsIt.next();
             if (rm.contains(scopeMethod)) {
                 scopeMethods.add(scopeMethod);
             }
@@ -418,24 +421,24 @@ public class LocalObjectsAnalysis {
         // Add reachable methods and fields declared in superclasses
         ClassModel superclass = classModel;
         if (superclass.hasSuperclass()) {
-            superclass = classModel.getSuperclass();
+            superclass = classModel.getSuperType();
         }
         while (superclass.hasSuperclass()) // we don't want to process Object
         {
             Iterator scMethodsIt = superclass.methodIterator();
             while (scMethodsIt.hasNext()) {
-                SootMethod scMethod = (SootMethod) scMethodsIt.next();
+                MethodModel scMethod = (MethodModel) scMethodsIt.next();
                 if (rm.contains(scMethod)) {
                     scopeMethods.add(scMethod);
                 }
             }
-            superclass = superclass.getSuperclass();
+            superclass = superclass.getSuperType();
         }
         return scopeMethods;
     }
 
-    public boolean hasNonLocalEffects(SootMethod containingMethod, InvokeExpr ie, SootMethod context) {
-        SootMethod target = ie.getMethodRef().resolve();
+    public boolean hasNonLocalEffects(MethodModel containingMethod, InvokeExpr ie, MethodModel context) {
+        MethodModel target = ie.getMethodRef().resolve();
         MutableDirectedGraph dataFlowGraph = dfa.getMethodInfoFlowSummary(target); // TODO actually we want a graph that is
         // sensitive to scalar data, too
 

@@ -22,6 +22,7 @@ package soot.jimple.spark.ondemand.pautil;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -35,7 +36,7 @@ public class DumpNumAppReachableMethods extends SceneTransformer {
     protected void internalTransform(String phaseName, Map options) {
         int numAppMethods = 0;
         for (Iterator mIt = Scene.v().getReachableMethods().listener(); mIt.hasNext(); ) {
-            final SootMethod m = (SootMethod) mIt.next();
+            final MethodModel m = (MethodModel) mIt.next();
 
             if (isAppMethod(m)) {
                 // System.out.println(m);
@@ -47,7 +48,7 @@ public class DumpNumAppReachableMethods extends SceneTransformer {
         logger.debug("Number of reachable methods in application: " + numAppMethods);
     }
 
-    private boolean isAppMethod(final SootMethod m) {
+    private boolean isAppMethod(final MethodModel m) {
         return !SootUtil.inLibrary(m.getDeclaringClass().getName());
     }
 

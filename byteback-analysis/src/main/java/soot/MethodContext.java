@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
+
 import java.util.Map;
 
 /**
@@ -30,9 +32,9 @@ import java.util.Map;
  * @author Ondrej Lhotak
  */
 public final class MethodContext implements MethodOrMethodContext {
-    private final SootMethod method;
+    private final MethodModel method;
 
-    public SootMethod method() {
+    public MethodModel method() {
         return method;
     }
 
@@ -42,7 +44,7 @@ public final class MethodContext implements MethodOrMethodContext {
         return context;
     }
 
-    private MethodContext(SootMethod method, Context context) {
+    private MethodContext(MethodModel method, Context context) {
         this.method = method;
         this.context = context;
     }
@@ -58,7 +60,7 @@ public final class MethodContext implements MethodOrMethodContext {
         return false;
     }
 
-    public static MethodOrMethodContext v(SootMethod method, Context context) {
+    public static MethodOrMethodContext v(MethodModel method, Context context) {
         if (context == null) {
             return method;
         }

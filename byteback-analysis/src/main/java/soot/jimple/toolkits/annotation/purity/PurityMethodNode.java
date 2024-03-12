@@ -22,7 +22,7 @@ package soot.jimple.toolkits.annotation.purity;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,15 +36,15 @@ public class PurityMethodNode implements PurityNode {
     /**
      * gives a unique id, for pretty-printing purposes
      */
-    private static final Map<SootMethod, Integer> nMap = new HashMap<SootMethod, Integer>();
+    private static final Map<MethodModel, Integer> nMap = new HashMap<MethodModel, Integer>();
     private static int n = 0;
 
     /**
      * Method that created the node
      */
-    private final SootMethod id;
+    private final MethodModel id;
 
-    PurityMethodNode(SootMethod id) {
+    PurityMethodNode(MethodModel id) {
         this.id = id;
         if (!nMap.containsKey(id)) {
             nMap.put(id, n);

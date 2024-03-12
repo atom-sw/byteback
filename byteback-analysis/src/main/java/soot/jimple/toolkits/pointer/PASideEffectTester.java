@@ -22,6 +22,7 @@ package soot.jimple.toolkits.pointer;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 
@@ -44,7 +45,7 @@ public class PASideEffectTester implements SideEffectTester {
     private HashMap<Unit, RWSet> unitToRead;
     private HashMap<Unit, RWSet> unitToWrite;
     private HashMap<Local, PointsToSet> localToReachingObjects;
-    private SootMethod currentMethod;
+    private MethodModel currentMethod;
 
     public PASideEffectTester() {
         if (G.v().Union_factory == null) {
@@ -61,7 +62,7 @@ public class PASideEffectTester implements SideEffectTester {
      * Call this when starting to analyze a new method to setup the cache.
      */
     @Override
-    public void newMethod(SootMethod m) {
+    public void newMethod(MethodModel m) {
         this.unitToRead = new HashMap<Unit, RWSet>();
         this.unitToWrite = new HashMap<Unit, RWSet>();
         this.localToReachingObjects = new HashMap<Local, PointsToSet>();

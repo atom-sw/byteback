@@ -21,6 +21,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.tag.AnnotationTag;
 import soot.tag.Tag;
 import soot.tag.VisibilityAnnotationTag;
@@ -77,8 +79,8 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
     }
 
     @Override
-    public SootMethod resolve() {
-        SootMethod method = getDeclaringClass().getMethodUnsafe(getName(), getParameterTypes(), getReturnType());
+    public MethodModel resolve() {
+        MethodModel method = getDeclaringClass().getMethodUnsafe(getName(), getParameterTypes(), getReturnType());
         if (method != null) {
             return method;
         }
@@ -89,7 +91,7 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
 
         // Note(MB): We cannot use getMethodByName here since the method name is ambiguous after
         // adding the first method with same name and refined signature.
-        for (SootMethod candidateMethod : getDeclaringClass().getMethods()) {
+        for (MethodModel candidateMethod : getDeclaringClass().getMethodModels()) {
             if (candidateMethod.getName().equals(getName())) {
                 Tag annotationsTag = candidateMethod.getTag(VisibilityAnnotationTag.NAME);
                 if (annotationsTag != null) {
@@ -108,9 +110,9 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
         return super.resolve();
     }
 
-    private SootMethod addPolyMorphicMethod(SootMethod originalPolyMorphicMethod) {
-        SootMethod newMethod
-                = new SootMethod(getName(), getParameterTypes(), getReturnType(), originalPolyMorphicMethod.modifiers);
+    private MethodModel addPolyMorphicMethod(MethodModel originalPolyMorphicMethod) {
+        MethodModel newMethod
+                = new MethodModel(getName(), getParameterTypes(), getReturnType(), originalPolyMorphicMethod.modifiers);
         getDeclaringClass().addMethod(newMethod);
         return newMethod;
     }

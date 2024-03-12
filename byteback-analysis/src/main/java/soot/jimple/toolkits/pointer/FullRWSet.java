@@ -23,7 +23,7 @@ package soot.jimple.toolkits.pointer;
  */
 
 import soot.PointsToSet;
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 
 import java.util.Set;
 
@@ -76,7 +76,7 @@ public class FullRWSet extends RWSet {
     }
 
     @Override
-    public boolean addGlobal(SootField global) {
+    public boolean addGlobal(FieldModel global) {
         throw new RuntimeException("Unsupported");
     }
 

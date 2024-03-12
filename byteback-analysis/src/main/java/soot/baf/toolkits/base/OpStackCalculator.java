@@ -22,6 +22,7 @@ package soot.baf.toolkits.base;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -224,13 +225,13 @@ public class OpStackCalculator {
 
         @Override
         public void caseFieldGetInst(FieldGetInst i) {
-            remove_types = new Type[]{i.getField().getDeclaringClass().getType()};
+            remove_types = new Type[]{i.getField().getDeclaringClass().getClassType()};
             add_types = new Type[]{i.getField().getType()};
         }
 
         @Override
         public void caseFieldPutInst(FieldPutInst i) {
-            remove_types = new Type[]{i.getField().getDeclaringClass().getType(), i.getField().getType()};
+            remove_types = new Type[]{i.getField().getDeclaringClass().getClassType(), i.getField().getType()};
             add_types = null;
         }
 
@@ -253,7 +254,7 @@ public class OpStackCalculator {
         }
 
         private void staticinvoke(MethodArgInst i) {
-            SootMethod m = i.getMethod();
+            MethodModel m = i.getMethod();
 
             final int len = m.getParameterCount();
             remove_types = new Type[len];
@@ -264,7 +265,7 @@ public class OpStackCalculator {
         }
 
         private void instanceinvoke(MethodArgInst i) {
-            SootMethod m = i.getMethod();
+            MethodModel m = i.getMethod();
 
             final int len = m.getParameterCount();
             remove_types = new Type[len + 1];
@@ -648,7 +649,7 @@ public class OpStackCalculator {
     private static RefType isHandlerUnit(Chain<Trap> traps, Unit h) {
         for (Trap t : traps) {
             if (t.getHandlerUnit() == h) {
-                return t.getException().getType();
+                return t.getException().getClassType();
             }
         }
         return null;

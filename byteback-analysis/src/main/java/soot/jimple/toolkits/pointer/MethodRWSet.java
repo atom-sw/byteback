@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.G;
 import soot.PointsToSet;
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 
 import java.util.*;
 
@@ -38,7 +38,7 @@ public class MethodRWSet extends RWSet {
 
     public static final int MAX_SIZE = Integer.MAX_VALUE;
 
-    public Set<SootField> globals;
+    public Set<FieldModel> globals;
     public Map<Object, PointsToSet> fields;
     protected boolean callsNative = false;
     protected boolean isFull = false;
@@ -61,7 +61,7 @@ public class MethodRWSet extends RWSet {
             }
         }
         if (globals != null) {
-            for (SootField global : globals) {
+            for (FieldModel global : globals) {
                 ret.append("[Global: ").append(global).append("]\n");
                 empty = false;
             }
@@ -99,7 +99,7 @@ public class MethodRWSet extends RWSet {
      * Returns an iterator over any globals read/written.
      */
     @Override
-    public Set<SootField> getGlobals() {
+    public Set<FieldModel> getGlobals() {
         if (isFull) {
             return G.v().MethodRWSet_allGlobals;
         }
@@ -137,7 +137,7 @@ public class MethodRWSet extends RWSet {
             return oth.hasNonEmptyIntersection(this);
         }
         if (globals != null && other.globals != null && !globals.isEmpty() && !other.globals.isEmpty()) {
-            for (SootField next : other.globals) {
+            for (FieldModel next : other.globals) {
                 if (globals.contains(next)) {
                     return true;
                 }
@@ -181,7 +181,7 @@ public class MethodRWSet extends RWSet {
             }
             if (o.globals != null) {
                 if (globals == null) {
-                    globals = new HashSet<SootField>();
+                    globals = new HashSet<FieldModel>();
                 }
                 ret = globals.addAll(o.globals) | ret;
                 if (globals.size() > MAX_SIZE) {
@@ -200,7 +200,7 @@ public class MethodRWSet extends RWSet {
             if (oth.base != null) {
                 ret = addFieldRef(oth.base, oth.field) | ret;
             } else if (oth.field != null) {
-                ret = addGlobal((SootField) oth.field) | ret;
+                ret = addGlobal((FieldModel) oth.field) | ret;
             }
         }
         if (!getCallsNative() && other.getCallsNative()) {
@@ -211,9 +211,9 @@ public class MethodRWSet extends RWSet {
     }
 
     @Override
-    public boolean addGlobal(SootField global) {
+    public boolean addGlobal(FieldModel global) {
         if (globals == null) {
-            globals = new HashSet<SootField>();
+            globals = new HashSet<FieldModel>();
         }
         boolean ret = globals.add(global);
         if (globals.size() > MAX_SIZE) {

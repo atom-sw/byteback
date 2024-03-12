@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread.mhp.stmt;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.tag.AbstractHost;
 import soot.toolkits.graph.UnitGraph;
@@ -52,7 +52,7 @@ public abstract class JPegStmt extends AbstractHost
     protected Unit unit = null;
     protected UnitGraph unitGraph = null;
     // add for build dot file
-    protected SootMethod sootMethod = null;
+    protected MethodModel methodModel = null;
 
     // end add for build dot file
     protected JPegStmt() {
@@ -65,28 +65,28 @@ public abstract class JPegStmt extends AbstractHost
         this.caller = ca;
     }
 
-    protected JPegStmt(String obj, String na, String ca, SootMethod sm) {
+    protected JPegStmt(String obj, String na, String ca, MethodModel sm) {
         this.object = obj;
         this.name = na;
         this.caller = ca;
-        this.sootMethod = sm;
+        this.methodModel = sm;
     }
 
-    protected JPegStmt(String obj, String na, String ca, UnitGraph ug, SootMethod sm) {
+    protected JPegStmt(String obj, String na, String ca, UnitGraph ug, MethodModel sm) {
         this.object = obj;
         this.name = na;
         this.caller = ca;
         this.unitGraph = ug;
-        this.sootMethod = sm;
+        this.methodModel = sm;
     }
 
-    protected JPegStmt(String obj, String na, String ca, Unit un, UnitGraph ug, SootMethod sm) {
+    protected JPegStmt(String obj, String na, String ca, Unit un, UnitGraph ug, MethodModel sm) {
         this.object = obj;
         this.name = na;
         this.caller = ca;
         this.unit = un;
         this.unitGraph = ug;
-        this.sootMethod = sm;
+        this.methodModel = sm;
     }
 
     protected void setUnit(Unit un) {
@@ -145,8 +145,8 @@ public abstract class JPegStmt extends AbstractHost
         caller = ca;
     }
 
-    public SootMethod getMethod() {
-        return sootMethod;
+    public MethodModel getMethod() {
+        return methodModel;
     }
 
     /*
@@ -159,8 +159,8 @@ public abstract class JPegStmt extends AbstractHost
 
     public String toString() {
 
-        if (sootMethod != null) {
-            return "(" + getObject() + ", " + getName() + ", " + getCaller() + "," + sootMethod + ")";
+        if (methodModel != null) {
+            return "(" + getObject() + ", " + getName() + ", " + getCaller() + "," + methodModel + ")";
         } else {
             return "(" + getObject() + ", " + getName() + ", " + getCaller() + ")";
         }
@@ -169,8 +169,8 @@ public abstract class JPegStmt extends AbstractHost
 
     public String testToString() {
         if (containUnit()) {
-            if (sootMethod != null) {
-                return "(" + getObject() + ", " + getName() + ", " + getCaller() + ", " + getUnit() + "," + sootMethod + ")";
+            if (methodModel != null) {
+                return "(" + getObject() + ", " + getName() + ", " + getCaller() + ", " + getUnit() + "," + methodModel + ")";
             } else {
                 return "(" + getObject() + ", " + getName() + ", " + getCaller() + ", " + getUnit() + ")";
             }

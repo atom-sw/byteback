@@ -25,8 +25,8 @@ package soot.jimple.toolkits.infoflow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.EquivalentValue;
-import soot.SootField;
-import soot.SootMethod;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.Value;
 import soot.toolkits.graph.UnitGraph;
 
@@ -50,7 +50,7 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
 
         printMessages = false;
 
-        SootMethod method = g.getBody().getMethod();
+        MethodModel method = g.getBody().getMethod();
 
         AbstractDataSource sharedDataSource = new AbstractDataSource("SHARED");
 
@@ -64,7 +64,7 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
             }
         }
 
-        for (SootField sf : cloa.getSharedFields()) {
+        for (FieldModel sf : cloa.getSharedFields()) {
             EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(method, sf);
             addToEntryInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
             addToNewInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
@@ -86,7 +86,7 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
 
         printMessages = false;
 
-        SootMethod method = g.getBody().getMethod();
+        MethodModel method = g.getBody().getMethod();
 
         AbstractDataSource sharedDataSource = new AbstractDataSource("SHARED");
 

@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.util;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.AbstractObject;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 
@@ -111,7 +111,7 @@ public abstract class NativeHelper {
         return tempVariableImpl();
     }
 
-    public ReferenceVariable tempLocalVariable(SootMethod method) {
+    public ReferenceVariable tempLocalVariable(MethodModel method) {
         return tempLocalVariableImpl(method);
     }
 
@@ -136,5 +136,5 @@ public abstract class NativeHelper {
 
     protected abstract ReferenceVariable tempVariableImpl();
 
-    protected abstract ReferenceVariable tempLocalVariableImpl(SootMethod method);
+    protected abstract ReferenceVariable tempLocalVariableImpl(MethodModel method);
 }

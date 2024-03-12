@@ -22,7 +22,7 @@ package soot.jimple.spark.ondemand;
  * #L%
  */
 
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 import soot.jimple.spark.pag.ArrayElement;
 import soot.jimple.spark.pag.SparkField;
 
@@ -61,8 +61,8 @@ public class ManualFieldCheckHeuristic implements FieldCheckHeuristic {
         if (field instanceof ArrayElement) {
             return true;
         }
-        SootField sootField = (SootField) field;
-        String fieldTypeStr = sootField.getDeclaringClass().getType().toString();
+        FieldModel fieldModel = (FieldModel) field;
+        String fieldTypeStr = fieldModel.getDeclaringClass().getClassType().toString();
         for (String typeName : importantTypes) {
             if (fieldTypeStr.equals(typeName)) {
                 return true;
@@ -75,8 +75,8 @@ public class ManualFieldCheckHeuristic implements FieldCheckHeuristic {
         if (allNotBothEnds) {
             return false;
         }
-        if (field instanceof SootField sootField) {
-            String fieldTypeStr = sootField.getDeclaringClass().getType().toString();
+        if (field instanceof FieldModel fieldModel) {
+            String fieldTypeStr = fieldModel.getDeclaringClass().getClassType().toString();
             for (String typeName : notBothEndsTypes) {
                 if (fieldTypeStr.equals(typeName)) {
                     return false;

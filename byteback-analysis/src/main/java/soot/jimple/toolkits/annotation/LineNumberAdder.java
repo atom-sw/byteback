@@ -1,5 +1,7 @@
 package soot.jimple.toolkits.annotation;
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.IdentityStmt;
 import soot.tag.LineNumberTag;
@@ -26,8 +28,8 @@ public class LineNumberAdder extends SceneTransformer {
         for (Iterator<ClassModel> it = Scene.v().getApplicationClasses().snapshotIterator(); it.hasNext(); ) {
             ClassModel sc = it.next();
             // make map of first line to each method
-            HashMap<Integer, SootMethod> lineToMeth = new HashMap<Integer, SootMethod>();
-            for (SootMethod meth : new ArrayList<>(sc.getMethods())) {
+            HashMap<Integer, MethodModel> lineToMeth = new HashMap<Integer, MethodModel>();
+            for (MethodModel meth : new ArrayList<>(sc.getMethodModels())) {
                 if (!meth.isConcrete()) {
                     continue;
                 }
@@ -41,7 +43,7 @@ public class LineNumberAdder extends SceneTransformer {
                     lineToMeth.put(tag.getLineNumber(), meth);
                 }
             }
-            for (SootMethod meth : sc.getMethods()) {
+            for (MethodModel meth : sc.getMethodModels()) {
                 if (!meth.isConcrete()) {
                     continue;
                 }

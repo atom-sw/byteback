@@ -22,7 +22,7 @@ package soot.jimple.toolkits.pointer.nativemethods;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.representations.Environment;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
@@ -35,7 +35,7 @@ public class JavaLangStringNative extends NativeMethodClass {
     /**
      * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
      */
-    public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void simulateMethod(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                ReferenceVariable[] params) {
 
         String subSignature = method.getSubSignature();
@@ -73,7 +73,7 @@ public class JavaLangStringNative extends NativeMethodClass {
      * <p>
      * public native java.lang.String intern();
      */
-    public void java_lang_String_intern(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public void java_lang_String_intern(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                                         ReferenceVariable[] params) {
         helper.assignObjectTo(returnVar, Environment.v().getStringObject());
     }

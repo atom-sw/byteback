@@ -25,7 +25,7 @@ package soot.toolkits.graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.baf.syntax.BafBody;
 import soot.util.Chain;
@@ -59,7 +59,7 @@ public class Block implements Iterable<Unit> {
      * @see Chain
      * @see BlockGraph
      * @see Unit
-     * @see SootMethod
+     * @see MethodModel
      */
     public Block(Unit aHead, Unit aTail, Body aBody, int aIndexInMethod, int aBlockLength, BlockGraph aBlockGraph) {
         mHead = aHead;

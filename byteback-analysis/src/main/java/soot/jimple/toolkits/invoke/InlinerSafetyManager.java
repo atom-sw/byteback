@@ -22,6 +22,8 @@ package soot.jimple.toolkits.invoke;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 
@@ -33,7 +35,7 @@ public class InlinerSafetyManager {
     private static final boolean PRINT_FAILURE_REASONS = true;
 
     // true if safe to inline
-    public static boolean checkSpecialInlineRestrictions(SootMethod container, SootMethod target, String options) {
+    public static boolean checkSpecialInlineRestrictions(MethodModel container, MethodModel target, String options) {
         // Check the body of the method to inline for specialinvokes
         final boolean accessors = "accessors".equals(options);
         for (Unit u : target.getActiveBody().getUnits()) {
@@ -47,7 +49,7 @@ public class InlinerSafetyManager {
                         return false;
                     }
 
-                    SootMethod specialTarget = ie1.getMethod();
+                    MethodModel specialTarget = ie1.getMethod();
                     if (specialTarget.isPrivate() && specialTarget.getDeclaringClass() != containerDeclaringClass) {
                         // Do not inline a call which contains a specialinvoke call to a private method outside
                         // the current class. This avoids a verifier error and we assume will not have a big
@@ -63,7 +65,7 @@ public class InlinerSafetyManager {
         return true;
     }
 
-    public static boolean checkAccessRestrictions(SootMethod container, SootMethod target, String modifierOptions) {
+    public static boolean checkAccessRestrictions(MethodModel container, MethodModel target, String modifierOptions) {
         // Check the body of the method to inline for method or field access restrictions
         for (Unit u : target.getActiveBody().getUnits()) {
             Stmt st = (Stmt) u;
@@ -93,7 +95,7 @@ public class InlinerSafetyManager {
      * <p>
      * Returns false otherwise.
      */
-    public static boolean ensureInlinability(SootMethod target, Stmt toInline, SootMethod container, String modifierOptions) {
+    public static boolean ensureInlinability(MethodModel target, Stmt toInline, MethodModel container, String modifierOptions) {
         if (!canSafelyInlineInto(target, toInline, container)) {
             if (PRINT_FAILURE_REASONS) {
                 System.out.println("[InlinerSafetyManager] failed canSafelyInlineInto checks");
@@ -122,7 +124,7 @@ public class InlinerSafetyManager {
     /**
      * Checks the safety criteria enumerated in section 3.1.4 (Safety Criteria for Method Inlining) of Vijay's thesis.
      */
-    private static boolean canSafelyInlineInto(SootMethod inlinee, Stmt toInline, SootMethod container) {
+    private static boolean canSafelyInlineInto(MethodModel inlinee, Stmt toInline, MethodModel container) {
         /* first, check the simple (one-line) safety criteria. */
 
         // Rule 0: Don't inline constructors.
@@ -201,7 +203,7 @@ public class InlinerSafetyManager {
      * b. the class of the base is not a (non-strict) subclass of container's declaringClass. The base class may be null, in
      * which case 3b is omitted. (for instance, for a static method invocation.)
      */
-    private static boolean invokeThrowsAccessErrorIn(ClassModel base, SootMethod inlinee, SootMethod container) {
+    private static boolean invokeThrowsAccessErrorIn(ClassModel base, MethodModel inlinee, MethodModel container) {
         ClassModel inlineeClass = inlinee.getDeclaringClass();
         ClassModel containerClass = container.getDeclaringClass();
 
@@ -234,7 +236,7 @@ public class InlinerSafetyManager {
         assert (ie instanceof SpecialInvokeExpr);
 
         // If all of the conditions are true, a lookup is performed.
-        SootMethod m = ie.getMethod();
+        MethodModel m = ie.getMethod();
         if ("<init>".equals(m.getName()) || m.isPrivate()) {
             return false;
         }

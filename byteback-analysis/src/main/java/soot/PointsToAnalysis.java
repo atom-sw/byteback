@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.FieldModel;
+
 /**
  * A generic interface to any type of pointer analysis.
  *
@@ -42,22 +44,22 @@ public interface PointsToAnalysis {
     /**
      * Returns the set of objects pointed to by static field f.
      */
-    PointsToSet reachingObjects(SootField f);
+    PointsToSet reachingObjects(FieldModel f);
 
     /**
      * Returns the set of objects pointed to by instance field f of the objects in the PointsToSet s.
      */
-    PointsToSet reachingObjects(PointsToSet s, SootField f);
+    PointsToSet reachingObjects(PointsToSet s, FieldModel f);
 
     /**
      * Returns the set of objects pointed to by instance field f of the objects pointed to by l.
      */
-    PointsToSet reachingObjects(Local l, SootField f);
+    PointsToSet reachingObjects(Local l, FieldModel f);
 
     /**
      * Returns the set of objects pointed to by instance field f of the objects pointed to by l in context c.
      */
-    PointsToSet reachingObjects(Context c, Local l, SootField f);
+    PointsToSet reachingObjects(Context c, Local l, FieldModel f);
 
     /**
      * Returns the set of objects pointed to by elements of the arrays in the PointsToSet s.

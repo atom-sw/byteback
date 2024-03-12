@@ -22,6 +22,8 @@ package soot.jimple.toolkits.invoke;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -48,21 +50,21 @@ public class StaticMethodBinder extends SceneTransformer {
         final Filter instanceInvokesFilter = new Filter(new InstanceInvokeEdgesPred());
         final SMBOptions options = new SMBOptions(opts);
         final String modifierOptions = PhaseOptions.getString(opts, "allowed-modifier-changes");
-        final HashMap<SootMethod, SootMethod> instanceToStaticMap = new HashMap<SootMethod, SootMethod>();
+        final HashMap<MethodModel, MethodModel> instanceToStaticMap = new HashMap<MethodModel, MethodModel>();
 
         final Scene scene = Scene.v();
         final CallGraph cg = scene.getCallGraph();
         final Hierarchy hierarchy = scene.getActiveHierarchy();
 
         for (ClassModel c : scene.getApplicationClasses()) {
-            LinkedList<SootMethod> methodsList = new LinkedList<SootMethod>();
-            for (Iterator<SootMethod> it = c.methodIterator(); it.hasNext(); ) {
-                SootMethod next = it.next();
+            LinkedList<MethodModel> methodsList = new LinkedList<MethodModel>();
+            for (Iterator<MethodModel> it = c.methodIterator(); it.hasNext(); ) {
+                MethodModel next = it.next();
                 methodsList.add(next);
             }
 
             while (!methodsList.isEmpty()) {
-                SootMethod container = methodsList.removeFirst();
+                MethodModel container = methodsList.removeFirst();
                 if (!container.isConcrete() || !instanceInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
                     continue;
                 }
@@ -84,7 +86,7 @@ public class StaticMethodBinder extends SceneTransformer {
                     if (!targets.hasNext()) {
                         continue;
                     }
-                    final SootMethod target = (SootMethod) targets.next();
+                    final MethodModel target = (MethodModel) targets.next();
                     // Ok, we have an Interface or VirtualInvoke going to 1.
                     if (targets.hasNext() || !AccessManager.ensureAccess(container, target, modifierOptions)) {
                         continue;
@@ -110,7 +112,7 @@ public class StaticMethodBinder extends SceneTransformer {
                             newName = newName + "_static";
                         } while (targetDeclClass.declaresMethod(newName, newParameterTypes, target.getReturnType()));
 
-                        SootMethod ct = scene.makeSootMethod(newName, newParameterTypes, target.getReturnType(),
+                        MethodModel ct = scene.makeSootMethod(newName, newParameterTypes, target.getReturnType(),
                                 target.getModifiers() | Modifier.STATIC, target.getExceptions());
                         targetDeclClass.addMethod(ct);
 
@@ -170,7 +172,7 @@ public class StaticMethodBinder extends SceneTransformer {
                         ClassModel localType = ((RefType) invokeBase.getType()).getSootClass();
                         if (localType.isInterface() || hierarchy.isClassSuperclassOf(localType, targetDeclClass)) {
                             final Jimple jimp = Jimple.v();
-                            RefType targetDeclClassType = targetDeclClass.getType();
+                            RefType targetDeclClassType = targetDeclClass.getClassType();
                             Local castee = jimp.newLocal("__castee", targetDeclClassType);
                             b.getLocals().add(castee);
                             bUnits.insertBefore(jimp.newAssignStmt(castee, jimp.newCastExpr(invokeBase, targetDeclClassType)), s);
@@ -178,7 +180,7 @@ public class StaticMethodBinder extends SceneTransformer {
                         }
                     }
 
-                    final SootMethod clonedTarget = instanceToStaticMap.get(target);
+                    final MethodModel clonedTarget = instanceToStaticMap.get(target);
 
                     // Now rebind the method call & fix the invoke graph.
                     {

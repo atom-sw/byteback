@@ -24,8 +24,8 @@ package soot.toolkits.graph.pdg;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.ClassModel;
-import soot.SootMethod;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.options.Options;
 import soot.toolkits.graph.Block;
@@ -45,7 +45,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     private static final Logger logger = LoggerFactory.getLogger(PDGRegion.class);
 
     private ClassModel m_class = null;
-    private SootMethod m_method = null;
+    private MethodModel m_method = null;
     private List<PDGNode> m_nodes = null;
     private List<Unit> m_units = null;
     private LinkedHashMap<Unit, PDGNode> m_unit2pdgnode = null;
@@ -58,12 +58,12 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     // The following keeps the child regions
     private final List<IRegion> m_children = new ArrayList<IRegion>();
 
-    public PDGRegion(int id, SootMethod m, ClassModel c, UnitGraph ug, PDGNode node) {
+    public PDGRegion(int id, MethodModel m, ClassModel c, UnitGraph ug, PDGNode node) {
         this(id, new ArrayList<PDGNode>(), m, c, ug, node);
 
     }
 
-    public PDGRegion(int id, List<PDGNode> nodes, SootMethod m, ClassModel c, UnitGraph ug, PDGNode node) {
+    public PDGRegion(int id, List<PDGNode> nodes, MethodModel m, ClassModel c, UnitGraph ug, PDGNode node) {
 
         this.m_nodes = nodes;
         this.m_id = id;
@@ -99,7 +99,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
 
     }
 
-    public SootMethod getSootMethod() {
+    public MethodModel getSootMethod() {
         return this.m_method;
     }
 

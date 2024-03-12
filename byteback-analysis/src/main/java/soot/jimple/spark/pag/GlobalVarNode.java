@@ -22,8 +22,8 @@ package soot.jimple.spark.pag;
  * #L%
  */
 
-import soot.ClassModel;
-import soot.SootField;
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
 import soot.Type;
 
 /**
@@ -42,8 +42,8 @@ public class GlobalVarNode extends VarNode {
     }
 
     public ClassModel getDeclaringClass() {
-        if (variable instanceof SootField) {
-            return ((SootField) variable).getDeclaringClass();
+        if (variable instanceof FieldModel) {
+            return ((FieldModel) variable).getDeclaringClass();
         }
 
         return null;

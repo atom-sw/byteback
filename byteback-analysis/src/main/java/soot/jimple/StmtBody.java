@@ -23,7 +23,7 @@ package soot.jimple;
  */
 
 import soot.Body;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 
 /**
  * Abstract base class for Body's on Stmts (Jimple and Grimp).
@@ -33,7 +33,7 @@ abstract public class StmtBody extends Body {
     /**
      * Creates a StmtBody associated with the given method.
      */
-    protected StmtBody(SootMethod m) {
+    protected StmtBody(MethodModel m) {
         super(m);
     }
 

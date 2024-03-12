@@ -22,6 +22,7 @@ package soot.jimple.toolkits.ide.exampleproblems;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -37,19 +38,19 @@ import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 import java.util.*;
 
 public class IFDSUninitializedVariables
-        extends DefaultJimpleIFDSTabulationProblem<Local, InterproceduralCFG<Unit, SootMethod>> {
+        extends DefaultJimpleIFDSTabulationProblem<Local, InterproceduralCFG<Unit, MethodModel>> {
 
-    public IFDSUninitializedVariables(InterproceduralCFG<Unit, SootMethod> icfg) {
+    public IFDSUninitializedVariables(InterproceduralCFG<Unit, MethodModel> icfg) {
         super(icfg);
     }
 
     @Override
-    public FlowFunctions<Unit, Local, SootMethod> createFlowFunctionsFactory() {
-        return new FlowFunctions<Unit, Local, SootMethod>() {
+    public FlowFunctions<Unit, Local, MethodModel> createFlowFunctionsFactory() {
+        return new FlowFunctions<Unit, Local, MethodModel>() {
 
             @Override
             public FlowFunction<Local> getNormalFlowFunction(Unit curr, Unit succ) {
-                final SootMethod m = interproceduralCFG().getMethodOf(curr);
+                final MethodModel m = interproceduralCFG().getMethodOf(curr);
                 if (Scene.v().getEntryPoints().contains(m) && interproceduralCFG().isStartPoint(curr)) {
                     return new FlowFunction<Local>() {
 
@@ -100,7 +101,7 @@ public class IFDSUninitializedVariables
             }
 
             @Override
-            public FlowFunction<Local> getCallFlowFunction(Unit callStmt, final SootMethod destinationMethod) {
+            public FlowFunction<Local> getCallFlowFunction(Unit callStmt, final MethodModel destinationMethod) {
                 Stmt stmt = (Stmt) callStmt;
                 InvokeExpr invokeExpr = stmt.getInvokeExpr();
                 final List<Value> args = invokeExpr.getArgs();
@@ -145,7 +146,7 @@ public class IFDSUninitializedVariables
             }
 
             @Override
-            public FlowFunction<Local> getReturnFlowFunction(final Unit callSite, SootMethod calleeMethod, final Unit exitStmt,
+            public FlowFunction<Local> getReturnFlowFunction(final Unit callSite, MethodModel calleeMethod, final Unit exitStmt,
                                                              Unit returnSite) {
                 if (callSite instanceof DefinitionStmt definition) {
                     if (definition.getLeftOp() instanceof Local leftOpLocal) {

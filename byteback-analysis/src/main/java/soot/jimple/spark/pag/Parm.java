@@ -24,7 +24,7 @@ package soot.jimple.spark.pag;
 
 import soot.G;
 import soot.PointsToAnalysis;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Type;
 import soot.toolkits.scalar.Pair;
 
@@ -35,15 +35,15 @@ import soot.toolkits.scalar.Pair;
  */
 public class Parm implements SparkField {
     private final int index;
-    private final SootMethod method;
+    private final MethodModel method;
 
-    private Parm(SootMethod m, int i) {
+    private Parm(MethodModel m, int i) {
         index = i;
         method = m;
     }
 
-    public static Parm v(SootMethod m, int index) {
-        Pair<SootMethod, Integer> p = new Pair<SootMethod, Integer>(m, Integer.valueOf(index));
+    public static Parm v(MethodModel m, int index) {
+        Pair<MethodModel, Integer> p = new Pair<MethodModel, Integer>(m, Integer.valueOf(index));
         Parm ret = G.v().Parm_pairToElement.get(p);
         if (ret == null) {
             G.v().Parm_pairToElement.put(p, ret = new Parm(m, index));

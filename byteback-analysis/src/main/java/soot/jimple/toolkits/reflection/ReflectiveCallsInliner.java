@@ -22,6 +22,9 @@ package soot.jimple.toolkits.reflection;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo.Kind;
@@ -84,7 +87,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         }
 
         final boolean validate = Options.v().validate();
-        for (SootMethod m : RTI.methodsContainingReflectiveCalls()) {
+        for (MethodModel m : RTI.methodsContainingReflectiveCalls()) {
             Body b = m.retrieveActiveBody();
             {
                 Set<String> classForNameClassNames = RTI.classForNameClassNames(m);
@@ -156,15 +159,15 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         final Jimple jimp = Jimple.v();
         final Scene scene = Scene.v();
         final ClassModel reflCallsClass = scene.getSootClass("soot.rtlib.tamiflex.ReflectiveCalls");
-        final Body body = reflCallsClass.getMethodByName(SootMethod.staticInitializerName).retrieveActiveBody();
+        final Body body = reflCallsClass.getMethodByName(MethodModel.staticInitializerName).retrieveActiveBody();
         final LocalGenerator localGen = scene.createLocalGenerator(body);
         final Chain<Unit> newUnits = new HashChain<>();
         final ClassModel setClassModel = scene.getSootClass("java.util.Set");
-        final RefType refTypeSet = setClassModel.getType();
+        final RefType refTypeSet = setClassModel.getClassType();
         final SootMethodRef addMethodRef = setClassModel.getMethodByName("add").makeRef();
 
         int callSiteId = 0;
-        for (SootMethod m : RTI.methodsContainingReflectiveCalls()) {
+        for (MethodModel m : RTI.methodsContainingReflectiveCalls()) {
             if (!RTI.classForNameClassNames(m).isEmpty()) {
                 SootFieldRef fieldRef = scene.makeFieldRef(reflCallsClass, "classForName", refTypeSet, true);
                 Local setLocal = localGen.generateLocal(refTypeSet);
@@ -221,9 +224,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
     private void addCaching() {
         final Scene scene = Scene.v();
         final BooleanType bt = BooleanType.v();
-        scene.getSootClass("java.lang.reflect.Method").addField(scene.makeSootField(ALREADY_CHECKED_FIELDNAME, bt));
-        scene.getSootClass("java.lang.reflect.Constructor").addField(scene.makeSootField(ALREADY_CHECKED_FIELDNAME, bt));
-        scene.getSootClass("java.lang.Class").addField(scene.makeSootField(ALREADY_CHECKED_FIELDNAME, bt));
+        scene.getSootClass("java.lang.reflect.Method").addFieldModel(scene.makeSootField(ALREADY_CHECKED_FIELDNAME, bt));
+        scene.getSootClass("java.lang.reflect.Constructor").addFieldModel(scene.makeSootField(ALREADY_CHECKED_FIELDNAME, bt));
+        scene.getSootClass("java.lang.Class").addFieldModel(scene.makeSootField(ALREADY_CHECKED_FIELDNAME, bt));
 
         for (Kind k : Kind.values()) {
             addCaching(k);
@@ -255,7 +258,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                 throw new IllegalStateException("unknown kind: " + kind);
         }
 
-        final SootMethod m = scene.getSootClass("soot.rtlib.tamiflex.ReflectiveCalls").getMethodByName(methodName);
+        final MethodModel m = scene.getSootClass("soot.rtlib.tamiflex.ReflectiveCalls").getMethodByName(methodName);
         final JimpleBody body = (JimpleBody) m.retrieveActiveBody();
         final Chain<Unit> units = body.getUnits();
         final Unit firstStmt = units.getPredOf(body.getFirstNonIdentityStmt());
@@ -292,7 +295,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         }
     }
 
-    private void inlineRelectiveCalls(SootMethod m, Set<String> targets, Kind callKind) {
+    private void inlineRelectiveCalls(MethodModel m, Set<String> targets, Kind callKind) {
         final Body b = m.retrieveActiveBody();
         final Chain<Unit> units = b.getUnits();
         final Scene scene = Scene.v();
@@ -345,12 +348,12 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                                     "<soot.rtlib.tamiflex.ReflectiveCalls: void knownMethodInvoke(int,java.lang.Object,java.lang.reflect.Method)>")
                             .makeRef(), IntConstant.v(callSiteId), recv, methodLocal)));
                 } else if (callKind == Kind.FieldSet) {
-                    SootMethod sootMethod = ie.getMethodRef().resolve();
-                    if ("java.lang.reflect.Field".equals(sootMethod.getDeclaringClass().getName())
-                            && fieldSets.contains(sootMethod.getName())) {
+                    MethodModel methodModel = ie.getMethodRef().resolve();
+                    if ("java.lang.reflect.Field".equals(methodModel.getDeclaringClass().getName())
+                            && fieldSets.contains(methodModel.getName())) {
                         found = true;
                         // assign type of 2nd parameter (1st is receiver object)
-                        fieldSetGetType = sootMethod.getParameterType(1);
+                        fieldSetGetType = methodModel.getParameterType(1);
                         Value recv = ie.getArg(0);
                         Value field = ((InstanceInvokeExpr) ie).getBase();
                         newUnits.add(jimp.newInvokeStmt(jimp.newStaticInvokeExpr(scene.getMethod(
@@ -358,12 +361,12 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                                 .makeRef(), IntConstant.v(callSiteId), recv, field)));
                     }
                 } else if (callKind == Kind.FieldGet) {
-                    SootMethod sootMethod = ie.getMethodRef().resolve();
-                    if ("java.lang.reflect.Field".equals(sootMethod.getDeclaringClass().getName())
-                            && fieldGets.contains(sootMethod.getName())) {
+                    MethodModel methodModel = ie.getMethodRef().resolve();
+                    if ("java.lang.reflect.Field".equals(methodModel.getDeclaringClass().getName())
+                            && fieldGets.contains(methodModel.getName())) {
                         found = true;
                         // assign return type of get
-                        fieldSetGetType = sootMethod.getReturnType();
+                        fieldSetGetType = methodModel.getReturnType();
                         Value recv = ie.getArg(0);
                         Value field = ((InstanceInvokeExpr) ie).getBase();
                         newUnits.add(jimp.newInvokeStmt(jimp.newStaticInvokeExpr(scene.getMethod(
@@ -388,7 +391,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                     // if predLocal == 0 goto <original reflective call>
                     newUnits.add(jimp.newIfStmt(jimp.newEqExpr(IntConstant.v(0), predLocal), jumpTarget));
 
-                    SootMethod newMethod = createNewMethod(callKind, target, fieldSetGetType);
+                    MethodModel newMethod = createNewMethod(callKind, target, fieldSetGetType);
 
                     List<Value> args = new LinkedList<>();
                     switch (callKind) {
@@ -442,7 +445,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         callSiteId++;
     }
 
-    private SootMethod createNewMethod(Kind callKind, String target, Type fieldSetGetType) {
+    private MethodModel createNewMethod(Kind callKind, String target, Type fieldSetGetType) {
         List<Type> parameterTypes = new LinkedList<>();
         Type returnType = null;
         switch (callKind) {
@@ -476,7 +479,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
         final Jimple jimp = Jimple.v();
         final Scene scene = Scene.v();
-        final SootMethod newMethod = scene.makeSootMethod("reflectiveCall" + (callNum++), parameterTypes, returnType,
+        final MethodModel newMethod = scene.makeSootMethod("reflectiveCall" + (callNum++), parameterTypes, returnType,
                 Modifier.PUBLIC | Modifier.STATIC);
         final Body newBody = jimp.newBody(newMethod);
         newMethod.setActiveBody(newBody);
@@ -507,7 +510,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                  * replace r=constr.newInstance(args) by: Object p0 = args[0]; ... Object pn = args[n]; T0 a0 = (T0)p0; ... Tn an =
                  * (Tn)pn;
                  */
-                SootMethod constructor = scene.getMethod(target);
+                MethodModel constructor = scene.getMethod(target);
                 paramLocals = new Local[constructor.getParameterCount()];
                 if (constructor.getParameterCount() > 0) {
                     // argArrayLocal = @parameter-0
@@ -521,7 +524,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                         i++;
                     }
                 }
-                RefType targetType = constructor.getDeclaringClass().getType();
+                RefType targetType = constructor.getDeclaringClass().getClassType();
                 freshLocal = localGen.generateLocal(targetType);
                 replacement = jimp.newNewExpr(targetType);
                 break;
@@ -531,7 +534,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                  * replace r=m.invoke(obj,args) by: T recv = (T)obj; Object p0 = args[0]; ... Object pn = args[n]; T0 a0 = (T0)p0;
                  * ... Tn an = (Tn)pn;
                  */
-                SootMethod method = scene.getMethod(target);
+                MethodModel method = scene.getMethod(target);
                 // recvObject = @parameter-0
                 RefType objectType = Scene.v().getObjectType();
                 Local recvObject = localGen.generateLocal(objectType);
@@ -549,9 +552,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                         i++;
                     }
                 }
-                RefType targetType = method.getDeclaringClass().getType();
+                RefType targetType = method.getDeclaringClass().getClassType();
                 freshLocal = localGen.generateLocal(targetType);
-                replacement = jimp.newCastExpr(recvObject, method.getDeclaringClass().getType());
+                replacement = jimp.newCastExpr(recvObject, method.getDeclaringClass().getClassType());
                 break;
             }
             case FieldSet:
@@ -563,7 +566,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                 Local recvObject = localGen.generateLocal(objectType);
                 newUnits.add(jimp.newIdentityStmt(recvObject, jimp.newParameterRef(objectType, 0)));
 
-                RefType fieldClassType = scene.getField(target).getDeclaringClass().getType();
+                RefType fieldClassType = scene.getField(target).getDeclaringClass().getClassType();
                 freshLocal = localGen.generateLocal(fieldClassType);
                 replacement = jimp.newCastExpr(recvObject, fieldClassType);
                 break;
@@ -585,7 +588,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
             case ClassNewInstance: {
                 // add: freshLocal.<init>()
                 newUnits.add(jimp.newInvokeStmt(jimp.newSpecialInvokeExpr(freshLocal, scene.makeMethodRef(scene.getSootClass(target),
-                        SootMethod.constructorName, Collections.emptyList(), VoidType.v(), false))));
+                        MethodModel.constructorName, Collections.emptyList(), VoidType.v(), false))));
                 // add: retLocal = freshLocal
                 newUnits.add(jimp.newAssignStmt(retLocal, freshLocal));
                 break;
@@ -600,7 +603,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
             }
             case MethodInvoke: {
                 // add: freshLocal=recv.<target>(a0,...,an);
-                SootMethod method = scene.getMethod(target);
+                MethodModel method = scene.getMethod(target);
                 InvokeExpr invokeExpr;
                 if (method.isStatic()) {
                     invokeExpr = jimp.newStaticInvokeExpr(method.makeRef(), Arrays.asList(paramLocals));
@@ -620,7 +623,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                 // add freshLocal.<f> = v;
                 Local value = localGen.generateLocal(fieldSetGetType);
                 newUnits.insertBeforeNoRedirect(jimp.newIdentityStmt(value, jimp.newParameterRef(fieldSetGetType, 1)), replStmt);
-                SootField field = scene.getField(target);
+                FieldModel field = scene.getField(target);
                 Local boxedOrCasted = localGen.generateLocal(field.getType());
                 insertCastOrUnboxingCode(boxedOrCasted, value, newUnits);
 
@@ -637,7 +640,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
                 /*
                  * add: T2 temp = recv.<f>; return temp;
                  */
-                SootField field = scene.getField(target);
+                FieldModel field = scene.getField(target);
                 Local value = localGen.generateLocal(field.getType());
 
                 FieldRef fieldRef;

@@ -22,6 +22,7 @@ package soot.jimple.toolkits.thread.synchronization;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -46,7 +47,7 @@ import java.util.*;
 public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, LocksetFlowInfo> {
     private static final Logger logger = LoggerFactory.getLogger(LockableReferenceAnalysis.class);
     UnitGraph graph;
-    SootMethod method;
+    MethodModel method;
     CriticalSectionAwareSideEffectAnalysis tasea;
     RWSet contributingRWSet;
     CriticalSection tn;
@@ -57,7 +58,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     Map<Ref, EquivalentValue> refToBase;
     Map<Ref, EquivalentValue> refToIndex;
 
-    static Set<SootMethod> analyzing = new HashSet<SootMethod>();
+    static Set<MethodModel> analyzing = new HashSet<MethodModel>();
 
     public LockableReferenceAnalysis(UnitGraph g) {
         super(g);
@@ -474,7 +475,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
 
                 if (stmt.containsInvokeExpr()) {
                     InvokeExpr ie = stmt.getInvokeExpr();
-                    SootMethod called = ie.getMethod();
+                    MethodModel called = ie.getMethod();
                     if (called.isConcrete()) {
                         if (called.getDeclaringClass().toString().startsWith("java.util")
                                 || called.getDeclaringClass().toString().startsWith("java.lang")) {

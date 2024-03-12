@@ -22,6 +22,7 @@ package soot.baf.syntax;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -97,7 +98,7 @@ public class BafBody extends Body {
     }
 
     // clone constructor
-    BafBody(SootMethod m) {
+    BafBody(MethodModel m) {
         super(m);
         this.jimpleToBafContext = null;
     }

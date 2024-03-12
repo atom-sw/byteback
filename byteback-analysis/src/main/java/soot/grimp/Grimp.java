@@ -23,6 +23,8 @@ package soot.grimp;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.grimp.syntax.*;
 import soot.jimple.*;
@@ -768,7 +770,7 @@ public class Grimp {
     /**
      * Returns an empty GrimpBody associated with method m.
      */
-    public GrimpBody newBody(SootMethod m) {
+    public GrimpBody newBody(MethodModel m) {
         return new GrimpBody(m);
     }
 

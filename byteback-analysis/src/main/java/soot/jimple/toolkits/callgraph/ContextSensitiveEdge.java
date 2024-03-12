@@ -24,7 +24,7 @@ package soot.jimple.toolkits.callgraph;
 
 import soot.Context;
 import soot.Kind;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Unit;
 import soot.jimple.Stmt;
 
@@ -44,7 +44,7 @@ public interface ContextSensitiveEdge {
      * The method in which the call occurs; may be null for calls not occurring in a specific method (eg. implicit calls by the
      * VM)
      */
-    SootMethod src();
+    MethodModel src();
 
     /**
      * The unit at which the call occurs; may be null for calls not occurring at a specific statement (eg. calls in native
@@ -62,7 +62,7 @@ public interface ContextSensitiveEdge {
     /**
      * The target method of the call edge.
      */
-    SootMethod tgt();
+    MethodModel tgt();
 
     /**
      * The kind of edge. Note: kind should not be tested by other classes; instead, accessors such as isExplicit() should be

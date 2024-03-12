@@ -4,7 +4,7 @@ import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.common.namespace.BBLibNames;
 import byteback.common.function.Lazy;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.ValueBox;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
@@ -25,7 +25,7 @@ public class CallExprTransformer extends ValueTransformer {
     @Override
     public void transformValue(final ValueBox valueBox) {
         if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
-            final SootMethod invokedMethod = invokeExpr.getMethod();
+            final MethodModel invokedMethod = invokeExpr.getMethod();
 
             if (BBLibNames.v().isFunctionMethod(invokedMethod)) {
                 final var args = new ArrayList<>(invokeExpr.getArgs());

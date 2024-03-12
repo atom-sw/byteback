@@ -22,6 +22,8 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.options.CGOptions;
 
@@ -46,7 +48,7 @@ public class CallGraphPack extends RadioScenePack {
                 Scene.v().setEntryPoints(EntryPoints.v().application());
             }
             if (options.all_reachable()) {
-                List<SootMethod> entryPoints = new ArrayList<SootMethod>();
+                List<MethodModel> entryPoints = new ArrayList<MethodModel>();
                 entryPoints.addAll(EntryPoints.v().all());
                 entryPoints.addAll(EntryPoints.v().methodsOfApplicationClasses());
                 Scene.v().setEntryPoints(entryPoints);
@@ -58,7 +60,7 @@ public class CallGraphPack extends RadioScenePack {
         if (options.trim_clinit()) {
             ClinitElimTransformer trimmer = new ClinitElimTransformer();
             for (ClassModel cl : Scene.v().getClasses(ClassModel.BODIES)) {
-                for (SootMethod m : cl.getMethods()) {
+                for (MethodModel m : cl.getMethodModels()) {
                     if (m.isConcrete() && m.hasActiveBody()) {
                         trimmer.transform(m.getActiveBody());
                     }

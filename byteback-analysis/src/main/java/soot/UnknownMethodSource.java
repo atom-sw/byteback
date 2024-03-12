@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
+
 /**
  * A MethodSource for methods that don't know where to get Body's from.
  *
@@ -31,7 +33,7 @@ public class UnknownMethodSource implements MethodSource {
     UnknownMethodSource() {
     }
 
-    public Body getBody(SootMethod m, String phaseName) {
+    public Body getBody(MethodModel m, String phaseName) {
         // we ignore options here.
         // actually we should have default option verbatim,
         // and apply phase options.

@@ -24,7 +24,7 @@ package soot.jimple.toolkits.pointer.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.pointer.nativemethods.*;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 
@@ -95,7 +95,7 @@ public class NativeMethodDriver {
      * @param returnVar, the variable represent @return it is null if the method has no return
      * @param params,    array of parameters.
      */
-    public boolean process(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+    public boolean process(MethodModel method, ReferenceVariable thisVar, ReferenceVariable returnVar,
                            ReferenceVariable[] params) {
 
         String cname = method.getDeclaringClass().getName();

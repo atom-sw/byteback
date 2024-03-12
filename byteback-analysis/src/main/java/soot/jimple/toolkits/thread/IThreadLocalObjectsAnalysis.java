@@ -22,7 +22,7 @@ package soot.jimple.toolkits.thread;
  * #L%
  */
 
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.Value;
 
 /**
@@ -32,6 +32,6 @@ import soot.Value;
  */
 public interface IThreadLocalObjectsAnalysis {
 
-    boolean isObjectThreadLocal(Value localOrRef, SootMethod sm);
+    boolean isObjectThreadLocal(Value localOrRef, MethodModel sm);
 
 }

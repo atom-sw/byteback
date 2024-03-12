@@ -22,6 +22,9 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
+import byteback.analysis.model.MethodModel;
 import soot.options.Options;
 import soot.tag.Host;
 import soot.tag.JimpleLineNumberTag;
@@ -45,7 +48,7 @@ public class Printer {
     private int jimpleLnNum = 0; // actual line number
     private Function<Body, LabeledUnitPrinter> customUnitPrinter;
     private Function<ClassModel, String> customClassSignaturePrinter;
-    private Function<SootMethod, String> customMethodSignaturePrinter;
+    private Function<MethodModel, String> customMethodSignaturePrinter;
 
     public Printer(Singletons.Global g) {
     }
@@ -102,12 +105,12 @@ public class Printer {
 
         // Print extension
         if (cl.hasSuperclass()) {
-            out.print(" extends " + printSignature(cl.getSuperclass()));
+            out.print(" extends " + printSignature(cl.getSuperType()));
         }
 
         // Print interfaces
         {
-            Iterator<ClassModel> interfaceIt = cl.getInterfaces().iterator();
+            Iterator<ClassModel> interfaceIt = cl.getInterfaceTypes().iterator();
             if (interfaceIt.hasNext()) {
                 out.print(" implements " + printSignature(interfaceIt.next()));
                 while (interfaceIt.hasNext()) {
@@ -133,7 +136,7 @@ public class Printer {
         }
 
         // Print fields
-        for (SootField f : cl.getFields()) {
+        for (FieldModel f : cl.getFieldModels()) {
             if (!f.isPhantom()) {
                 if (printTagsInOutput) {
                     for (Tag t : f.getTags()) {
@@ -150,7 +153,7 @@ public class Printer {
 
         // Print methods
         {
-            Iterator<SootMethod> methodIt = cl.methodIterator();
+            Iterator<MethodModel> methodIt = cl.methodIterator();
             if (methodIt.hasNext()) {
                 if (cl.getMethodCount() != 0) {
                     out.println();
@@ -158,7 +161,7 @@ public class Printer {
                 }
 
                 do { // condition already checked
-                    SootMethod method = methodIt.next();
+                    MethodModel method = methodIt.next();
 
                     if (method.isPhantom()) {
                         continue;
@@ -241,7 +244,7 @@ public class Printer {
         this.customClassSignaturePrinter = customPrinter;
     }
 
-    public void setCustomMethodSignaturePrinter(Function<SootMethod, String> customPrinter) {
+    public void setCustomMethodSignaturePrinter(Function<MethodModel, String> customPrinter) {
         this.customMethodSignaturePrinter = customPrinter;
     }
 
@@ -263,11 +266,11 @@ public class Printer {
         }
     }
 
-    private String printSignature(SootMethod sootMethod) {
+    private String printSignature(MethodModel methodModel) {
         if (customMethodSignaturePrinter != null) {
-            return customMethodSignaturePrinter.apply(sootMethod);
+            return customMethodSignaturePrinter.apply(methodModel);
         } else {
-            return sootMethod.getDeclaration();
+            return methodModel.getDeclaration();
         }
     }
 

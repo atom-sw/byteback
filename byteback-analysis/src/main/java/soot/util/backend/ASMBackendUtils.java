@@ -1,5 +1,7 @@
 package soot.util.backend;
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.FieldModel;
 import org.objectweb.asm.ByteVector;
 import org.objectweb.asm.ClassWriter;
 import soot.*;
@@ -139,7 +141,7 @@ public class ASMBackendUtils {
      * @param field Field to get default value for
      * @return Default value or <code>null</code> if there is no default value.
      */
-    public static Object getDefaultValue(SootField field) {
+    public static Object getDefaultValue(FieldModel field) {
         for (Tag t : field.getTags()) {
             switch (t.getName()) {
                 case IntegerConstantValueTag.NAME:
@@ -167,7 +169,7 @@ public class ASMBackendUtils {
      * @param field Field
      * @return <code>true</code> if the field is of type String or sub-type, <code>false</code> otherwise.
      */
-    public static boolean acceptsStringInitialValue(SootField field) {
+    public static boolean acceptsStringInitialValue(FieldModel field) {
         if (field.getType() instanceof RefType) {
             ClassModel fieldClass = ((RefType) field.getType()).getSootClass();
             return fieldClass.getName().equals("java.lang.String");

@@ -24,7 +24,7 @@ package soot.jimple.toolkits.annotation.purity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.SootMethod;
+import byteback.analysis.model.MethodModel;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.toolkits.graph.DirectedGraph;
@@ -41,14 +41,14 @@ import java.util.*;
  * <p>
  * Methods filtered-out by the SootMethodFilter will not appear in the DirectedGraph!
  */
-public class DirectedCallGraph implements DirectedGraph<SootMethod> {
+public class DirectedCallGraph implements DirectedGraph<MethodModel> {
     private static final Logger logger = LoggerFactory.getLogger(DirectedCallGraph.class);
 
-    protected Set<SootMethod> nodes;
-    protected Map<SootMethod, List<SootMethod>> succ;
-    protected Map<SootMethod, List<SootMethod>> pred;
-    protected List<SootMethod> heads;
-    protected List<SootMethod> tails;
+    protected Set<MethodModel> nodes;
+    protected Map<MethodModel, List<MethodModel>> succ;
+    protected Map<MethodModel, List<MethodModel>> pred;
+    protected List<MethodModel> heads;
+    protected List<MethodModel> tails;
     protected int size;
 
     /**
@@ -63,37 +63,37 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
      * @param heads   is a List of SootMethod
      * @param verbose
      */
-    public DirectedCallGraph(CallGraph cg, SootMethodFilter filter, Iterator<SootMethod> heads, boolean verbose) {
+    public DirectedCallGraph(CallGraph cg, SootMethodFilter filter, Iterator<MethodModel> heads, boolean verbose) {
         // filter heads by filter
-        List<SootMethod> filteredHeads = new LinkedList<SootMethod>();
+        List<MethodModel> filteredHeads = new LinkedList<MethodModel>();
         while (heads.hasNext()) {
-            SootMethod m = heads.next();
+            MethodModel m = heads.next();
             if (m.isConcrete() && filter.want(m)) {
                 filteredHeads.add(m);
             }
         }
 
-        this.nodes = new HashSet<SootMethod>(filteredHeads);
+        this.nodes = new HashSet<MethodModel>(filteredHeads);
 
-        MultiMap<SootMethod, SootMethod> s = new HashMultiMap<SootMethod, SootMethod>();
-        MultiMap<SootMethod, SootMethod> p = new HashMultiMap<SootMethod, SootMethod>();
+        MultiMap<MethodModel, MethodModel> s = new HashMultiMap<MethodModel, MethodModel>();
+        MultiMap<MethodModel, MethodModel> p = new HashMultiMap<MethodModel, MethodModel>();
 
         if (verbose) {
             logger.debug("[AM] dumping method dependencies");
         }
         // simple breadth-first visit
         int nb = 0;
-        Set<SootMethod> remain = new HashSet<SootMethod>(filteredHeads);
+        Set<MethodModel> remain = new HashSet<MethodModel>(filteredHeads);
         while (!remain.isEmpty()) {
-            Set<SootMethod> newRemain = new HashSet<SootMethod>();
-            for (SootMethod m : remain) {
+            Set<MethodModel> newRemain = new HashSet<MethodModel>();
+            for (MethodModel m : remain) {
                 if (verbose) {
                     logger.debug(" |- " + m.toString() + " calls");
                 }
 
                 for (Iterator<Edge> itt = cg.edgesOutOf(m); itt.hasNext(); ) {
                     Edge edge = itt.next();
-                    SootMethod mm = edge.tgt();
+                    MethodModel mm = edge.tgt();
                     boolean keep = mm.isConcrete() && filter.want(mm);
                     if (verbose) {
                         logger.debug(" |  |- " + mm + (keep ? "" : " (filtered out)"));
@@ -113,15 +113,15 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
         logger.debug("[AM] number of methods to be analysed: " + nb);
 
         // MultiMap -> Map of List
-        this.succ = new HashMap<SootMethod, List<SootMethod>>();
-        this.pred = new HashMap<SootMethod, List<SootMethod>>();
-        this.tails = new LinkedList<SootMethod>();
-        this.heads = new LinkedList<SootMethod>();
-        for (SootMethod x : this.nodes) {
-            Set<SootMethod> ss = s.get(x);
-            Set<SootMethod> pp = p.get(x);
-            this.succ.put(x, new LinkedList<SootMethod>(ss));
-            this.pred.put(x, new LinkedList<SootMethod>(pp));
+        this.succ = new HashMap<MethodModel, List<MethodModel>>();
+        this.pred = new HashMap<MethodModel, List<MethodModel>>();
+        this.tails = new LinkedList<MethodModel>();
+        this.heads = new LinkedList<MethodModel>();
+        for (MethodModel x : this.nodes) {
+            Set<MethodModel> ss = s.get(x);
+            Set<MethodModel> pp = p.get(x);
+            this.succ.put(x, new LinkedList<MethodModel>(ss));
+            this.pred.put(x, new LinkedList<MethodModel>(pp));
             if (ss.isEmpty()) {
                 this.tails.add(x);
             }
@@ -139,7 +139,7 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
      * @return
      */
     @Override
-    public List<SootMethod> getHeads() {
+    public List<MethodModel> getHeads() {
         return heads;
     }
 
@@ -149,7 +149,7 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
      * @return
      */
     @Override
-    public List<SootMethod> getTails() {
+    public List<MethodModel> getTails() {
         return tails;
     }
 
@@ -159,7 +159,7 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
      * @return
      */
     @Override
-    public Iterator<SootMethod> iterator() {
+    public Iterator<MethodModel> iterator() {
         return nodes.iterator();
     }
 
@@ -178,7 +178,7 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
      * @return
      */
     @Override
-    public List<SootMethod> getSuccsOf(SootMethod s) {
+    public List<MethodModel> getSuccsOf(MethodModel s) {
         return succ.get(s);
     }
 
@@ -189,7 +189,7 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
      * @return
      */
     @Override
-    public List<SootMethod> getPredsOf(SootMethod s) {
+    public List<MethodModel> getPredsOf(MethodModel s) {
         return pred.get(s);
     }
 }

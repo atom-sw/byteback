@@ -26,7 +26,7 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
-import soot.SootField;
+import byteback.analysis.model.FieldModel;
 
 /**
  * Soot field builder.
@@ -36,10 +36,10 @@ import soot.SootField;
 final class FieldModelBuilder extends FieldVisitor {
 
     private TagBuilder tb;
-    private final SootField field;
+    private final FieldModel field;
     private final ClassModelBuilder scb;
 
-    FieldModelBuilder(SootField field, ClassModelBuilder scb) {
+    FieldModelBuilder(FieldModel field, ClassModelBuilder scb) {
         super(Opcodes.ASM5);
         this.field = field;
         this.scb = scb;

@@ -22,6 +22,7 @@ package soot.asm.model;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import org.objectweb.asm.ClassReader;
 import soot.*;
 

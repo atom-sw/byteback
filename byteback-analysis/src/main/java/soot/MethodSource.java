@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
+
 /**
  * A class which knows how to produce Body's for SootMethods.
  */
@@ -29,5 +31,5 @@ public interface MethodSource {
     /**
      * Returns a filled-out body for the given SootMethod.
      */
-    Body getBody(SootMethod m, String phaseName);
+    Body getBody(MethodModel m, String phaseName);
 }

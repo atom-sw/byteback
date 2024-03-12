@@ -22,6 +22,7 @@ package soot.jimple.spark.internal;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -86,7 +87,7 @@ public final class TypeManager {
             }
         }
         ClassModel cl = rt.getSootClass();
-        return cl.resolvingLevel() < ClassModel.HIERARCHY;
+        return cl.getResolvingLevel() < ClassModel.HIERARCHY;
     }
 
     public BitVector get(Type type) {
@@ -135,7 +136,7 @@ public final class TypeManager {
             } else {
                 // Scan through the hierarchy. We might have a phantom class higher up
                 while (curClass.hasSuperclass()) {
-                    curClass = curClass.getSuperclass();
+                    curClass = curClass.getSuperType();
                     if (type instanceof RefType && curClass.isPhantom()) {
                         return new BitVector();
                     }
@@ -270,7 +271,7 @@ public final class TypeManager {
 
     private BitVector makeClassTypeMask(ClassModel clazz) {
         {
-            BitVector cachedMask = typeMask.get(clazz.getType());
+            BitVector cachedMask = typeMask.get(clazz.getClassType());
             if (cachedMask != null) {
                 return cachedMask;
             }
@@ -294,7 +295,7 @@ public final class TypeManager {
             for (AllocNode an : anySubtypeAllocs) {
                 mask.set(an.getNumber());
             }
-            typeMask.put(clazz.getType(), mask);
+            typeMask.put(clazz.getClassType(), mask);
             return mask;
         }
 
@@ -302,7 +303,7 @@ public final class TypeManager {
             mask.or(makeClassTypeMask(subcl));
         }
 
-        typeMask.put(clazz.getType(), mask);
+        typeMask.put(clazz.getClassType(), mask);
         return mask;
     }
 
@@ -312,11 +313,11 @@ public final class TypeManager {
         }
 
         BitVector ret = new BitVector(pag.getAllocNodeNumberer().size());
-        typeMask.put(interf.getType(), ret);
+        typeMask.put(interf.getClassType(), ret);
         Collection<ClassModel> implementers = getFastHierarchy().getAllImplementersOfInterface(interf);
 
         for (ClassModel impl : implementers) {
-            BitVector other = typeMask.get(impl.getType());
+            BitVector other = typeMask.get(impl.getClassType());
             if (other == null) {
                 other = makeClassTypeMask(impl);
             }

@@ -22,6 +22,8 @@ package soot.jimple.toolkits.annotation.callgraph;
  * #L%
  */
 
+import byteback.analysis.model.ClassModel;
+import byteback.analysis.model.MethodModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
@@ -53,7 +55,7 @@ public class CallGraphGrapher extends SceneTransformer {
     private CallGraph cg;
     private boolean showLibMeths;
 
-    private ArrayList<MethInfo> getTgtMethods(SootMethod method, boolean recurse) {
+    private ArrayList<MethInfo> getTgtMethods(MethodModel method, boolean recurse) {
         // logger.debug("meth for tgts: "+method);
         if (!method.hasActiveBody()) {
             return new ArrayList<MethInfo>();
@@ -66,7 +68,7 @@ public class CallGraphGrapher extends SceneTransformer {
             Iterator edges = cg.edgesOutOf(s);
             while (edges.hasNext()) {
                 Edge e = (Edge) edges.next();
-                SootMethod sm = e.tgt();
+                MethodModel sm = e.tgt();
                 // logger.debug("found target method: "+sm);
 
                 if (sm.getDeclaringClass().isLibraryClass()) {
@@ -89,17 +91,17 @@ public class CallGraphGrapher extends SceneTransformer {
         return list;
     }
 
-    private boolean hasTgtMethods(SootMethod meth) {
+    private boolean hasTgtMethods(MethodModel meth) {
         ArrayList<MethInfo> list = getTgtMethods(meth, false);
         return !list.isEmpty();
     }
 
-    private boolean hasSrcMethods(SootMethod meth) {
+    private boolean hasSrcMethods(MethodModel meth) {
         ArrayList<MethInfo> list = getSrcMethods(meth, false);
         return list.size() > 1;
     }
 
-    private ArrayList<MethInfo> getSrcMethods(SootMethod method, boolean recurse) {
+    private ArrayList<MethInfo> getSrcMethods(MethodModel method, boolean recurse) {
         // logger.debug("meth for srcs: "+method);
         ArrayList<MethInfo> list = new ArrayList<MethInfo>();
 
@@ -108,7 +110,7 @@ public class CallGraphGrapher extends SceneTransformer {
             Iterator callerEdges = cg.edgesInto(momc);
             while (callerEdges.hasNext()) {
                 Edge callEdge = (Edge) callerEdges.next();
-                SootMethod methodCaller = callEdge.src();
+                MethodModel methodCaller = callEdge.src();
                 if (methodCaller.getDeclaringClass().isLibraryClass()) {
                     if (isShowLibMeths()) {
                         if (recurse) {
@@ -149,7 +151,7 @@ public class CallGraphGrapher extends SceneTransformer {
 
         if (Scene.v().hasCallGraph()) {
             ClassModel sc = Scene.v().getMainClass();
-            SootMethod sm = getFirstMethod(sc);
+            MethodModel sm = getFirstMethod(sc);
             // logger.debug("got first method");
             ArrayList<MethInfo> tgts = getTgtMethods(sm, true);
             // logger.debug("got tgt methods");
@@ -161,14 +163,14 @@ public class CallGraphGrapher extends SceneTransformer {
         }
     }
 
-    private SootMethod getFirstMethod(ClassModel sc) {
+    private MethodModel getFirstMethod(ClassModel sc) {
         ArrayList paramTypes = new ArrayList();
         paramTypes.add(soot.ArrayType.v(soot.RefType.v("java.lang.String"), 1));
-        SootMethod sm = sc.getMethodUnsafe("main", paramTypes, soot.VoidType.v());
+        MethodModel sm = sc.getMethodUnsafe("main", paramTypes, soot.VoidType.v());
         if (sm != null) {
             return sm;
         } else {
-            return sc.getMethods().get(0);
+            return sc.getMethodModels().get(0);
         }
     }
 
@@ -186,13 +188,13 @@ public class CallGraphGrapher extends SceneTransformer {
         // handleNextMethod();
     }
 
-    private SootMethod nextMethod;
+    private MethodModel nextMethod;
 
-    public void setNextMethod(SootMethod m) {
+    public void setNextMethod(MethodModel m) {
         nextMethod = m;
     }
 
-    public SootMethod getNextMethod() {
+    public MethodModel getNextMethod() {
         return nextMethod;
     }
 

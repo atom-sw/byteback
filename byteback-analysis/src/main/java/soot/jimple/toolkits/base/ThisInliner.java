@@ -22,6 +22,7 @@ package soot.jimple.toolkits.base;
  * #L%
  */
 
+import byteback.analysis.model.MethodModel;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
@@ -50,7 +51,7 @@ public class ThisInliner extends BodyTransformer {
             return;
         }
         final SpecialInvokeExpr specInvokeExpr = (SpecialInvokeExpr) invokeStmt.getInvokeExpr();
-        final SootMethod specInvokeMethod = specInvokeExpr.getMethod();
+        final MethodModel specInvokeMethod = specInvokeExpr.getMethod();
         if (specInvokeMethod.getDeclaringClass().equals(b.getMethod().getDeclaringClass())) {
             // Get or construct the body for the method
             final Body specInvokeBody = specInvokeMethod.retrieveActiveBody();

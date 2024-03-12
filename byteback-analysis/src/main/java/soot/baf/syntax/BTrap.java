@@ -23,7 +23,7 @@ package soot.baf.syntax;
  */
 
 import soot.AbstractTrap;
-import soot.ClassModel;
+import byteback.analysis.model.ClassModel;
 import soot.Unit;
 
 public class BTrap extends AbstractTrap {
