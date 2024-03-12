@@ -22,72 +22,65 @@ package soot.jimple.toolkits.pointer.representations;
  * #L%
  */
 
-import soot.AnySubType;
-import soot.ArrayType;
-import soot.G;
-import soot.PhaseOptions;
-import soot.RefType;
-import soot.Scene;
-import soot.Singletons;
-import soot.Type;
+import soot.*;
 import soot.options.CGOptions;
 
 public class TypeConstants {
 
-  public static TypeConstants v() {
-    return G.v().soot_jimple_toolkits_pointer_representations_TypeConstants();
-  }
-
-  public Type OBJECTCLASS;
-  public Type STRINGCLASS;
-  public Type CLASSLOADERCLASS;
-  public Type PROCESSCLASS;
-  public Type THREADCLASS;
-  public Type CLASSCLASS;
-  public Type FIELDCLASS;
-  public Type METHODCLASS;
-  public Type CONSTRUCTORCLASS;
-  public Type FILESYSTEMCLASS;
-  public Type PRIVILEGEDACTIONEXCEPTION;
-  public Type ACCESSCONTROLCONTEXT;
-  public Type ARRAYFIELDS;
-  public Type ARRAYMETHODS;
-  public Type ARRAYCONSTRUCTORS;
-  public Type ARRAYCLASSES;
-
-  public TypeConstants(Singletons.Global g) {
-    int jdkver = new CGOptions(PhaseOptions.v().getPhaseOptions("cg")).jdkver();
-
-    OBJECTCLASS = Scene.v().getObjectType();
-
-    STRINGCLASS = RefType.v("java.lang.String");
-
-    CLASSLOADERCLASS = AnySubType.v(RefType.v("java.lang.ClassLoader"));
-
-    PROCESSCLASS = AnySubType.v(RefType.v("java.lang.Process"));
-
-    THREADCLASS = AnySubType.v(RefType.v("java.lang.Thread"));
-
-    CLASSCLASS = RefType.v("java.lang.Class");
-
-    FIELDCLASS = RefType.v("java.lang.reflect.Field");
-
-    METHODCLASS = RefType.v("java.lang.reflect.Method");
-
-    CONSTRUCTORCLASS = RefType.v("java.lang.reflect.Constructor");
-
-    if (jdkver >= 2) {
-      FILESYSTEMCLASS = AnySubType.v(RefType.v("java.io.FileSystem"));
+    public static TypeConstants v() {
+        return G.v().soot_jimple_toolkits_pointer_representations_TypeConstants();
     }
 
-    if (jdkver >= 2) {
-      PRIVILEGEDACTIONEXCEPTION = AnySubType.v(RefType.v("java.security.PrivilegedActionException"));
-      ACCESSCONTROLCONTEXT = RefType.v("java.security.AccessControlContext");
-    }
+    public Type OBJECTCLASS;
+    public Type STRINGCLASS;
+    public Type CLASSLOADERCLASS;
+    public Type PROCESSCLASS;
+    public Type THREADCLASS;
+    public Type CLASSCLASS;
+    public Type FIELDCLASS;
+    public Type METHODCLASS;
+    public Type CONSTRUCTORCLASS;
+    public Type FILESYSTEMCLASS;
+    public Type PRIVILEGEDACTIONEXCEPTION;
+    public Type ACCESSCONTROLCONTEXT;
+    public Type ARRAYFIELDS;
+    public Type ARRAYMETHODS;
+    public Type ARRAYCONSTRUCTORS;
+    public Type ARRAYCLASSES;
 
-    ARRAYFIELDS = ArrayType.v(RefType.v("java.lang.reflect.Field"), 1);
-    ARRAYMETHODS = ArrayType.v(RefType.v("java.lang.reflect.Method"), 1);
-    ARRAYCONSTRUCTORS = ArrayType.v(RefType.v("java.lang.reflect.Constructor"), 1);
-    ARRAYCLASSES = ArrayType.v(RefType.v("java.lang.Class"), 1);
-  }
+    public TypeConstants(Singletons.Global g) {
+        int jdkver = new CGOptions(PhaseOptions.v().getPhaseOptions("cg")).jdkver();
+
+        OBJECTCLASS = Scene.v().getObjectType();
+
+        STRINGCLASS = RefType.v("java.lang.String");
+
+        CLASSLOADERCLASS = AnySubType.v(RefType.v("java.lang.ClassLoader"));
+
+        PROCESSCLASS = AnySubType.v(RefType.v("java.lang.Process"));
+
+        THREADCLASS = AnySubType.v(RefType.v("java.lang.Thread"));
+
+        CLASSCLASS = RefType.v("java.lang.Class");
+
+        FIELDCLASS = RefType.v("java.lang.reflect.Field");
+
+        METHODCLASS = RefType.v("java.lang.reflect.Method");
+
+        CONSTRUCTORCLASS = RefType.v("java.lang.reflect.Constructor");
+
+        if (jdkver >= 2) {
+            FILESYSTEMCLASS = AnySubType.v(RefType.v("java.io.FileSystem"));
+        }
+
+        if (jdkver >= 2) {
+            PRIVILEGEDACTIONEXCEPTION = AnySubType.v(RefType.v("java.security.PrivilegedActionException"));
+            ACCESSCONTROLCONTEXT = RefType.v("java.security.AccessControlContext");
+        }
+
+        ARRAYFIELDS = ArrayType.v(RefType.v("java.lang.reflect.Field"), 1);
+        ARRAYMETHODS = ArrayType.v(RefType.v("java.lang.reflect.Method"), 1);
+        ARRAYCONSTRUCTORS = ArrayType.v(RefType.v("java.lang.reflect.Constructor"), 1);
+        ARRAYCLASSES = ArrayType.v(RefType.v("java.lang.Class"), 1);
+    }
 }

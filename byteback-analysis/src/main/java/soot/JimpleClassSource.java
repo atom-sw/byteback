@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -32,28 +32,28 @@ import org.slf4j.LoggerFactory;
  * A class source for resolving from .jimple files using the Jimple parser.
  */
 public class JimpleClassSource extends ClassSource {
-  private static final Logger logger = LoggerFactory.getLogger(JimpleClassSource.class);
+    private static final Logger logger = LoggerFactory.getLogger(JimpleClassSource.class);
 
-  private FoundFile foundFile;
+    private InputSource inputSource;
 
-  public JimpleClassSource(String className, FoundFile foundFile) {
-    super(className);
-    if (foundFile == null) {
-      throw new IllegalStateException("Error: The FoundFile must not be null.");
+    public JimpleClassSource(String className, InputSource inputSource) {
+        super(className);
+        if (inputSource == null) {
+            throw new IllegalStateException("Error: The FoundFile must not be null.");
+        }
+        this.inputSource = inputSource;
     }
-    this.foundFile = foundFile;
-  }
 
-  @Override
-  public Dependencies resolve(SootClass sc) {
-    return null;
-  }
-
-  @Override
-  public void close() {
-    if (foundFile != null) {
-      foundFile.close();
-      foundFile = null;
+    @Override
+    public Dependencies resolve(ClassModel sc) {
+        return null;
     }
-  }
+
+    @Override
+    public void close() {
+        if (inputSource != null) {
+            inputSource.close();
+            inputSource = null;
+        }
+    }
 }

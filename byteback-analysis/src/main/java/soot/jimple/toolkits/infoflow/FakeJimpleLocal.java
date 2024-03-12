@@ -10,12 +10,12 @@ package soot.jimple.toolkits.infoflow;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -36,57 +36,63 @@ import soot.jimple.internal.JimpleLocal;
 // a new meaningful piece of Jimple code base on this one.
 
 public class FakeJimpleLocal extends JimpleLocal {
-  Local realLocal;
-  Object info; // whatever you want to attach to it...
+    Local realLocal;
+    Object info; // whatever you want to attach to it...
 
-  /** Constructs a FakeJimpleLocal of the given name and type. */
-  public FakeJimpleLocal(String name, Type t, Local realLocal) {
-    this(name, t, realLocal, null);
-  }
-
-  public FakeJimpleLocal(String name, Type t, Local realLocal, Object info) {
-    super(name, t);
-    this.realLocal = realLocal;
-    this.info = info;
-  }
-
-  /** Returns true if the given object is structurally equal to this one. */
-  public boolean equivTo(Object o) {
-    if (o == null) {
-      return false;
+    /**
+     * Constructs a FakeJimpleLocal of the given name and type.
+     */
+    public FakeJimpleLocal(String name, Type t, Local realLocal) {
+        this(name, t, realLocal, null);
     }
-    if (o instanceof JimpleLocal) {
-      if (getName() != null && getType() != null) {
-        return getName().equals(((Local) o).getName()) && getType().equals(((Local) o).getType());
-      } else if (getName() != null) {
-        return getName().equals(((Local) o).getName()) && ((Local) o).getType() == null;
-      } else if (getType() != null) {
-        return ((Local) o).getName() == null && getType().equals(((Local) o).getType());
-      } else {
-        return ((Local) o).getName() == null && ((Local) o).getType() == null;
-      }
+
+    public FakeJimpleLocal(String name, Type t, Local realLocal, Object info) {
+        super(name, t);
+        this.realLocal = realLocal;
+        this.info = info;
     }
-    return false;
-  }
 
-  public boolean equals(Object o) {
-    return equivTo(o);
-  }
+    /**
+     * Returns true if the given object is structurally equal to this one.
+     */
+    public boolean equivTo(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof JimpleLocal) {
+            if (getName() != null && getType() != null) {
+                return getName().equals(((Local) o).getName()) && getType().equals(((Local) o).getType());
+            } else if (getName() != null) {
+                return getName().equals(((Local) o).getName()) && ((Local) o).getType() == null;
+            } else if (getType() != null) {
+                return ((Local) o).getName() == null && getType().equals(((Local) o).getType());
+            } else {
+                return ((Local) o).getName() == null && ((Local) o).getType() == null;
+            }
+        }
+        return false;
+    }
 
-  /** Returns a clone of the current JimpleLocal. */
-  public Object clone() {
-    return new FakeJimpleLocal(getName(), getType(), realLocal, info);
-  }
+    public boolean equals(Object o) {
+        return equivTo(o);
+    }
 
-  public Local getRealLocal() {
-    return realLocal;
-  }
+    /**
+     * Returns a clone of the current JimpleLocal.
+     */
+    public Object clone() {
+        return new FakeJimpleLocal(getName(), getType(), realLocal, info);
+    }
 
-  public Object getInfo() {
-    return info;
-  }
+    public Local getRealLocal() {
+        return realLocal;
+    }
 
-  public void setInfo(Object o) {
-    info = o;
-  }
+    public Object getInfo() {
+        return info;
+    }
+
+    public void setInfo(Object o) {
+        info = o;
+    }
 }

@@ -11,12 +11,12 @@ package soot.baf.syntax;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -29,35 +29,35 @@ import soot.util.Switch;
 
 public class BStaticInvokeInst extends AbstractInvokeInst implements StaticInvokeInst {
 
-  public BStaticInvokeInst(SootMethodRef methodRef) {
-    if (!methodRef.isStatic()) {
-      throw new RuntimeException("wrong static-ness");
+    public BStaticInvokeInst(SootMethodRef methodRef) {
+        if (!methodRef.isStatic()) {
+            throw new RuntimeException("wrong static-ness");
+        }
+        super.methodRef = methodRef;
     }
-    super.methodRef = methodRef;
-  }
 
-  @Override
-  public Object clone() {
-    return new BStaticInvokeInst(methodRef);
-  }
+    @Override
+    public Object clone() {
+        return new BStaticInvokeInst(methodRef);
+    }
 
-  @Override
-  public int getInCount() {
-    return methodRef.getParameterTypes().size();
-  }
+    @Override
+    public int getInCount() {
+        return methodRef.getParameterTypes().size();
+    }
 
-  @Override
-  public int getOutCount() {
-    return (methodRef.getReturnType() instanceof VoidType) ? 0 : 1;
-  }
+    @Override
+    public int getOutCount() {
+        return (methodRef.getReturnType() instanceof VoidType) ? 0 : 1;
+    }
 
-  @Override
-  public String getName() {
-    return "staticinvoke";
-  }
+    @Override
+    public String getName() {
+        return "staticinvoke";
+    }
 
-  @Override
-  public void apply(Switch sw) {
-    ((InstSwitch) sw).caseStaticInvokeInst(this);
-  }
+    @Override
+    public void apply(Switch sw) {
+        ((InstSwitch) sw).caseStaticInvokeInst(this);
+    }
 }

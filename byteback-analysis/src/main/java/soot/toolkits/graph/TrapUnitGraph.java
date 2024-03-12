@@ -10,28 +10,28 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.Timers;
 import soot.Trap;
 import soot.Unit;
 import soot.options.Options;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -60,56 +60,52 @@ import soot.options.Options;
  * </ol>
  */
 public class TrapUnitGraph extends UnitGraph {
-  /**
-   * Constructs the graph from a given Body instance.
-   *
-   * @param body
-   *          the Body instance from which the graph is built.
-   */
-  public TrapUnitGraph(Body body) {
-    super(body);
-    int size = unitChain.size();
+    /**
+     * Constructs the graph from a given Body instance.
+     *
+     * @param body the Body instance from which the graph is built.
+     */
+    public TrapUnitGraph(Body body) {
+        super(body);
+        int size = unitChain.size();
 
-    if (Options.v().time()) {
-      Timers.v().graphTimer.start();
+        if (Options.v().time()) {
+            Timers.v().graphTimer.start();
+        }
+
+        unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+        unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+        buildUnexceptionalEdges(unitToSuccs, unitToPreds);
+        buildExceptionalEdges(unitToSuccs, unitToPreds);
+
+        buildHeadsAndTails();
+
+        if (Options.v().time()) {
+            Timers.v().graphTimer.end();
+        }
+
+        soot.util.PhaseDumper.v().dumpGraph(this, body);
     }
 
-    unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
-    unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
-    buildUnexceptionalEdges(unitToSuccs, unitToPreds);
-    buildExceptionalEdges(unitToSuccs, unitToPreds);
-
-    buildHeadsAndTails();
-
-    if (Options.v().time()) {
-      Timers.v().graphTimer.end();
+    /**
+     * Method to compute the edges corresponding to exceptional control flow.
+     *
+     * @param unitToSuccs A <code>Map</code> from {@link Unit}s to {@link List}s of <code>Unit</code>s. This is an &ldquo;out
+     *                    parameter&rdquo;; <code>buildExceptionalEdges</code> will add a mapping for every <code>Unit</code> within the
+     *                    scope of one or more {@link Trap}s to a <code>List</code> of the handler units of those <code>Trap</code>s.
+     * @param unitToPreds A <code>Map</code> from <code>Unit</code>s to <code>List</code>s of <code>Unit</code>s. This is an &ldquo;out
+     *                    parameter&rdquo;; <code>buildExceptionalEdges</code> will add a mapping for every <code>Trap</code> handler to
+     *                    all the <code>Unit</code>s within the scope of that <code>Trap</code>.
+     */
+    protected void buildExceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
+        for (Trap trap : body.getTraps()) {
+            Unit catcher = trap.getHandlerUnit();
+            Unit first = trap.getBeginUnit();
+            Unit last = unitChain.getPredOf(trap.getEndUnit());
+            for (Iterator<Unit> unitIt = unitChain.iterator(first, last); unitIt.hasNext(); ) {
+                Unit trapped = unitIt.next();
+                addEdge(unitToSuccs, unitToPreds, trapped, catcher);
+            }
+        }
     }
-
-    soot.util.PhaseDumper.v().dumpGraph(this, body);
-  }
-
-  /**
-   * Method to compute the edges corresponding to exceptional control flow.
-   *
-   * @param unitToSuccs
-   *          A <code>Map</code> from {@link Unit}s to {@link List}s of <code>Unit</code>s. This is an &ldquo;out
-   *          parameter&rdquo;; <code>buildExceptionalEdges</code> will add a mapping for every <code>Unit</code> within the
-   *          scope of one or more {@link Trap}s to a <code>List</code> of the handler units of those <code>Trap</code>s.
-   *
-   * @param unitToPreds
-   *          A <code>Map</code> from <code>Unit</code>s to <code>List</code>s of <code>Unit</code>s. This is an &ldquo;out
-   *          parameter&rdquo;; <code>buildExceptionalEdges</code> will add a mapping for every <code>Trap</code> handler to
-   *          all the <code>Unit</code>s within the scope of that <code>Trap</code>.
-   */
-  protected void buildExceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
-    for (Trap trap : body.getTraps()) {
-      Unit catcher = trap.getHandlerUnit();
-      Unit first = trap.getBeginUnit();
-      Unit last = unitChain.getPredOf(trap.getEndUnit());
-      for (Iterator<Unit> unitIt = unitChain.iterator(first, last); unitIt.hasNext();) {
-        Unit trapped = unitIt.next();
-        addEdge(unitToSuccs, unitToPreds, trapped, catcher);
-      }
-    }
-  }
 }

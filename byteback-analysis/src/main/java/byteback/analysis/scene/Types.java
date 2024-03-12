@@ -1,81 +1,72 @@
 package byteback.analysis.scene;
 
 import byteback.common.function.Lazy;
-import soot.BooleanType;
-import soot.ByteType;
-import soot.IntType;
-import soot.LongType;
-import soot.NullType;
-import soot.Scene;
-import soot.ShortType;
-import soot.Type;
-import soot.UnknownType;
-import soot.VoidType;
+import soot.*;
 
 public class Types {
-	
-	private static final Lazy<Types> instance = Lazy.from(Types::new);
 
-	public static Types v() {
-		return instance.get();
-	}
+    private static final Lazy<Types> instance = Lazy.from(Types::new);
 
-	private Types() {
-	}
+    public static Types v() {
+        return instance.get();
+    }
 
-	public int typeOrder(final Type type) {
+    private Types() {
+    }
 
-		if (type == LongType.v()) {
-			return 0;
-		}
+    public int typeOrder(final Type type) {
 
-		if (type == IntType.v()) {
-			return 1;
-		}
+        if (type == LongType.v()) {
+            return 0;
+        }
 
-		if (type == ShortType.v()) {
-			return 2;
-		}
+        if (type == IntType.v()) {
+            return 1;
+        }
 
-		if (type == ByteType.v()) {
-			return 3;
-		}
+        if (type == ShortType.v()) {
+            return 2;
+        }
 
-		if (type == BooleanType.v()) {
-			return 4;
-		}
+        if (type == ByteType.v()) {
+            return 3;
+        }
 
-		return -1;
-	}
+        if (type == BooleanType.v()) {
+            return 4;
+        }
 
-	public Type join(final Type a, final Type b) {
+        return -1;
+    }
 
-		if (a != b) {
+    public Type join(final Type a, final Type b) {
 
-			if (a == UnknownType.v() || b == UnknownType.v()) {
-				throw new RuntimeException("Unable to merge unknown type");
-			}
+        if (a != b) {
 
-			if (a == VoidType.v() || b == VoidType.v()) {
-				return VoidType.v();
-			}
+            if (a == UnknownType.v() || b == UnknownType.v()) {
+                throw new RuntimeException("Unable to merge unknown type");
+            }
 
-			if (a == NullType.v() || b == NullType.v()) {
-				return NullType.v();
-			}
+            if (a == VoidType.v() || b == VoidType.v()) {
+                return VoidType.v();
+            }
 
-			if (Type.toMachineType(a) == Type.toMachineType(b)) {
-				if (typeOrder(a) < typeOrder(b)) {
-					return a;
-				} else {
-					return b;
-				}
-			}
+            if (a == NullType.v() || b == NullType.v()) {
+                return NullType.v();
+            }
 
-			return a.merge(b, Scene.v());
-		}
+            if (Type.toMachineType(a) == Type.toMachineType(b)) {
+                if (typeOrder(a) < typeOrder(b)) {
+                    return a;
+                } else {
+                    return b;
+                }
+            }
 
-		return a;
-	}
+            return a.merge(b, Scene.v());
+        }
+
+        return a;
+    }
 
 }

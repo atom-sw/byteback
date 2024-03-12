@@ -1,11 +1,12 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.VimpValues;
 import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.VimpValues;
 import byteback.common.collection.SetHashMap;
 import soot.*;
-import soot.jimple.*;
+import soot.jimple.AssignStmt;
+import soot.jimple.Ref;
 import soot.jimple.toolkits.infoflow.CachedEquivalentValue;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.LocalDefs;
@@ -15,7 +16,9 @@ import soot.toolkits.scalar.SimpleLocalUses;
 import soot.util.Chain;
 import soot.util.HashChain;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Set;
 
 public abstract class ExprFolder extends BodyTransformer {
 

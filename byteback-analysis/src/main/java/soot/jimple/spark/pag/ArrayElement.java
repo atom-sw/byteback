@@ -10,12 +10,12 @@ package soot.jimple.spark.pag;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -29,31 +29,31 @@ import soot.Type;
 
 /**
  * Represents an array element.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class ArrayElement implements SparkField {
-  public ArrayElement(Singletons.Global g) {
-  }
+    public ArrayElement(Singletons.Global g) {
+    }
 
-  public static ArrayElement v() {
-    return G.v().soot_jimple_spark_pag_ArrayElement();
-  }
+    public static ArrayElement v() {
+        return G.v().soot_jimple_spark_pag_ArrayElement();
+    }
 
-  public ArrayElement() {
-  }
+    public ArrayElement() {
+    }
 
-  public final int getNumber() {
-    return number;
-  }
+    public final int getNumber() {
+        return number;
+    }
 
-  public final void setNumber(int number) {
-    this.number = number;
-  }
+    public final void setNumber(int number) {
+        this.number = number;
+    }
 
-  public Type getType() {
-    return Scene.v().getObjectType();
-  }
+    public Type getType() {
+        return Scene.v().getObjectType();
+    }
 
-  private int number = 0;
+    private int number = 0;
 }

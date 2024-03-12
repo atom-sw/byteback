@@ -10,12 +10,12 @@ package soot.baf.syntax;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -23,17 +23,17 @@ package soot.baf.syntax;
  */
 
 import soot.AbstractTrap;
-import soot.SootClass;
+import soot.ClassModel;
 import soot.Unit;
 
 public class BTrap extends AbstractTrap {
 
-  public BTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt) {
-    super(exception, Baf.v().newInstBox(beginStmt), Baf.v().newInstBox(endStmt), Baf.v().newInstBox(handlerStmt));
-  }
+    public BTrap(ClassModel exception, Unit beginStmt, Unit endStmt, Unit handlerStmt) {
+        super(exception, Baf.v().newInstBox(beginStmt), Baf.v().newInstBox(endStmt), Baf.v().newInstBox(handlerStmt));
+    }
 
-  @Override
-  public Object clone() {
-    return new BTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
-  }
+    @Override
+    public Object clone() {
+        return new BTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
+    }
 }

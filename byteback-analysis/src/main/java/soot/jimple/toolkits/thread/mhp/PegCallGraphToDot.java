@@ -10,28 +10,24 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.toolkits.graph.DirectedGraph;
 import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphConstants;
 import soot.util.dot.DotGraphNode;
+
+import java.util.*;
 
 //import soot.toolkits.mhp.*;
 
@@ -48,141 +44,138 @@ import soot.util.dot.DotGraphNode;
 
 public class PegCallGraphToDot {
 
-  /*
-   * make all control fields public, allow other soot class dump the graph in the middle
-   */
+    /*
+     * make all control fields public, allow other soot class dump the graph in the middle
+     */
 
-  public static boolean isBrief = false;
-  private static final Map<Object, String> listNodeName = new HashMap<Object, String>();
+    public static boolean isBrief = false;
+    private static final Map<Object, String> listNodeName = new HashMap<Object, String>();
 
-  /* in one page or several pages of 8.5x11 */
-  public static boolean onepage = true;
+    /* in one page or several pages of 8.5x11 */
+    public static boolean onepage = true;
 
-  public PegCallGraphToDot(DirectedGraph graph, boolean onepage, String name) {
+    public PegCallGraphToDot(DirectedGraph graph, boolean onepage, String name) {
 
-    PegCallGraphToDot.onepage = onepage;
-    toDotFile(name, graph, "PegCallGraph");
+        PegCallGraphToDot.onepage = onepage;
+        toDotFile(name, graph, "PegCallGraph");
 
-  }
-
-  /*
-   * public PegToDotFile(PegGraph graph, boolean onepage, String name) { this.onepage = onepage; toDotFile(name,
-   * graph,"Simple graph"); }
-   */
-
-  private static int nodecount = 0;
-
-  /**
-   * Generates a dot format file for a DirectedGraph
-   *
-   * @param methodname,
-   *          the name of generated dot file
-   * @param graph,
-   *          a directed control flow graph (UnitGraph, BlockGraph ...)
-   * @param graphname,
-   *          the title of the graph
-   */
-  public static void toDotFile(String methodname, DirectedGraph graph, String graphname) {
-    int sequence = 0;
-    // this makes the node name unique
-    nodecount = 0; // reset node counter first.
-    Hashtable nodeindex = new Hashtable(graph.size());
-
-    // file name is the method name + .dot
-    DotGraph canvas = new DotGraph(methodname);
-    // System.out.println("onepage is:"+onepage);
-    if (!onepage) {
-      canvas.setPageSize(8.5, 11.0);
     }
 
-    canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_BOX);
-    canvas.setGraphLabel(graphname);
+    /*
+     * public PegToDotFile(PegGraph graph, boolean onepage, String name) { this.onepage = onepage; toDotFile(name,
+     * graph,"Simple graph"); }
+     */
 
-    Iterator nodesIt = graph.iterator();
+    private static int nodecount = 0;
 
-    {
-      while (nodesIt.hasNext()) {
-        Object node = nodesIt.next();
+    /**
+     * Generates a dot format file for a DirectedGraph
+     *
+     * @param methodname, the name of generated dot file
+     * @param graph,      a directed control flow graph (UnitGraph, BlockGraph ...)
+     * @param graphname,  the title of the graph
+     */
+    public static void toDotFile(String methodname, DirectedGraph graph, String graphname) {
+        int sequence = 0;
+        // this makes the node name unique
+        nodecount = 0; // reset node counter first.
+        Hashtable nodeindex = new Hashtable(graph.size());
 
-        if (node instanceof List) {
-          String listName = "list" + (new Integer(sequence++)).toString();
-          String nodeName = makeNodeName(getNodeOrder(nodeindex, listName));
-          listNodeName.put(node, listName);
-          // System.out.println("put node: "+node +"into listNodeName");
-
-        }
-      }
-    }
-
-    nodesIt = graph.iterator();
-    while (nodesIt.hasNext()) {
-      Object node = nodesIt.next();
-      String nodeName = null;
-      if (node instanceof List) {
-
-        nodeName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(node)));
-      } else {
-
-        nodeName = makeNodeName(getNodeOrder(nodeindex, node));
-      }
-      Iterator succsIt = graph.getSuccsOf(node).iterator();
-
-      while (succsIt.hasNext()) {
-        Object s = succsIt.next();
-        String succName = null;
-        if (s instanceof List) {
-          succName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(s)));
-        } else {
-          Object succ = s;
-          // System.out.println("$$$$$$succ: "+succ);
-          // nodeName = makeNodeName(getNodeOrder(nodeindex, tag+" "+node));
-          succName = makeNodeName(getNodeOrder(nodeindex, succ));
-          // System.out.println("node is :" +node);
-          // System.out.println("find start node in pegtodotfile:"+node);
+        // file name is the method name + .dot
+        DotGraph canvas = new DotGraph(methodname);
+        // System.out.println("onepage is:"+onepage);
+        if (!onepage) {
+            canvas.setPageSize(8.5, 11.0);
         }
 
-        canvas.drawEdge(nodeName, succName);
-      }
+        canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_BOX);
+        canvas.setGraphLabel(graphname);
 
-    }
+        Iterator nodesIt = graph.iterator();
 
-    // set node label
-    if (!isBrief) {
-      nodesIt = nodeindex.keySet().iterator();
-      while (nodesIt.hasNext()) {
-        Object node = nodesIt.next();
-        // System.out.println("node is:"+node);
-        if (node != null) {
-          // System.out.println("node: "+node);
-          String nodename = makeNodeName(getNodeOrder(nodeindex, node));
-          // System.out.println("nodename: "+ nodename);
-          DotGraphNode dotnode = canvas.getNode(nodename);
-          // System.out.println("dotnode: "+dotnode);
-          if (dotnode != null) {
-            dotnode.setLabel(node.toString());
-          }
+        {
+            while (nodesIt.hasNext()) {
+                Object node = nodesIt.next();
+
+                if (node instanceof List) {
+                    String listName = "list" + (Integer.valueOf(sequence++));
+                    String nodeName = makeNodeName(getNodeOrder(nodeindex, listName));
+                    listNodeName.put(node, listName);
+                    // System.out.println("put node: "+node +"into listNodeName");
+
+                }
+            }
         }
-      }
+
+        nodesIt = graph.iterator();
+        while (nodesIt.hasNext()) {
+            Object node = nodesIt.next();
+            String nodeName = null;
+            if (node instanceof List) {
+
+                nodeName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(node)));
+            } else {
+
+                nodeName = makeNodeName(getNodeOrder(nodeindex, node));
+            }
+            Iterator succsIt = graph.getSuccsOf(node).iterator();
+
+            while (succsIt.hasNext()) {
+                Object s = succsIt.next();
+                String succName = null;
+                if (s instanceof List) {
+                    succName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(s)));
+                } else {
+                    Object succ = s;
+                    // System.out.println("$$$$$$succ: "+succ);
+                    // nodeName = makeNodeName(getNodeOrder(nodeindex, tag+" "+node));
+                    succName = makeNodeName(getNodeOrder(nodeindex, succ));
+                    // System.out.println("node is :" +node);
+                    // System.out.println("find start node in pegtodotfile:"+node);
+                }
+
+                canvas.drawEdge(nodeName, succName);
+            }
+
+        }
+
+        // set node label
+        if (!isBrief) {
+            nodesIt = nodeindex.keySet().iterator();
+            while (nodesIt.hasNext()) {
+                Object node = nodesIt.next();
+                // System.out.println("node is:"+node);
+                if (node != null) {
+                    // System.out.println("node: "+node);
+                    String nodename = makeNodeName(getNodeOrder(nodeindex, node));
+                    // System.out.println("nodename: "+ nodename);
+                    DotGraphNode dotnode = canvas.getNode(nodename);
+                    // System.out.println("dotnode: "+dotnode);
+                    if (dotnode != null) {
+                        dotnode.setLabel(node.toString());
+                    }
+                }
+            }
+        }
+
+        canvas.plot("pecg.dot");
+
+        // clean up
+        listNodeName.clear();
     }
 
-    canvas.plot("pecg.dot");
+    private static int getNodeOrder(Hashtable<Object, Integer> nodeindex, Object node) {
 
-    // clean up
-    listNodeName.clear();
-  }
-
-  private static int getNodeOrder(Hashtable<Object, Integer> nodeindex, Object node) {
-
-    Integer index = nodeindex.get(node);
-    if (index == null) {
-      index = new Integer(nodecount++);
-      nodeindex.put(node, index);
+        Integer index = nodeindex.get(node);
+        if (index == null) {
+            index = Integer.valueOf(nodecount++);
+            nodeindex.put(node, index);
+        }
+        // System.out.println("order is:"+index.intValue());
+        return index.intValue();
     }
-    // System.out.println("order is:"+index.intValue());
-    return index.intValue();
-  }
 
-  private static String makeNodeName(int index) {
-    return "N" + index;
-  }
+    private static String makeNodeName(int index) {
+        return "N" + index;
+    }
 }

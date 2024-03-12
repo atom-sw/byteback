@@ -1,17 +1,15 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.common.namespace.BBLibNames;
 import byteback.analysis.common.Hosts;
+import byteback.analysis.common.namespace.BBLibNames;
 import byteback.common.function.Lazy;
-
-import java.util.Iterator;
-import java.util.Map;
-
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.InvokeStmt;
+
+import java.util.Iterator;
 
 public class InvokeIgnorer extends BodyTransformer {
 

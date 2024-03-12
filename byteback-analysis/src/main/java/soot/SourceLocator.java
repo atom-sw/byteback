@@ -25,8 +25,8 @@ package soot;
 import com.google.common.cache.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.asm.AsmClassProvider;
-import soot.asm.AsmJava9ClassProvider;
+import soot.asm.model.AsmClassProvider;
+import soot.asm.model.AsmJava9ClassProvider;
 import soot.options.Options;
 import soot.util.SharedCloseable;
 
@@ -207,21 +207,21 @@ public class SourceLocator {
         additionalClassLoaders.add(c);
     }
 
-  protected void setupClassProviders() {
-    final List<ClassProvider> classProviders = new LinkedList<ClassProvider>();
-    final ClassProvider classFileClassProvider = new AsmClassProvider();
-    switch (Options.v().src_prec()) {
-      case Options.src_prec_class, Options.src_prec_java, Options.src_prec_only_class, Options.src_prec_jimple:
-        classProviders.add(classFileClassProvider);
-        break;
-        default:
-        throw new RuntimeException("Other source precedences are not currently supported.");
+    protected void setupClassProviders() {
+        final List<ClassProvider> classProviders = new LinkedList<ClassProvider>();
+        final ClassProvider classFileClassProvider = new AsmClassProvider();
+        switch (Options.v().src_prec()) {
+            case Options.src_prec_class, Options.src_prec_java, Options.src_prec_only_class, Options.src_prec_jimple:
+                classProviders.add(classFileClassProvider);
+                break;
+            default:
+                throw new RuntimeException("Other source precedences are not currently supported.");
+        }
+        if (this.java9Mode) {
+            classProviders.add(new AsmJava9ClassProvider());
+        }
+        this.classProviders = classProviders;
     }
-    if (this.java9Mode) {
-      classProviders.add(new AsmJava9ClassProvider());
-    }
-    this.classProviders = classProviders;
-  }
 
     public void setClassProviders(List<ClassProvider> classProviders) {
         this.classProviders = classProviders;
@@ -316,7 +316,7 @@ public class SourceLocator {
         return classes;
     }
 
-    public String getFileNameFor(SootClass c, int rep) {
+    public String getFileNameFor(ClassModel c, int rep) {
         if (rep == Options.output_format_none) {
             return null;
         }
@@ -479,9 +479,9 @@ public class SourceLocator {
     /**
      * Searches for a file with the given name in the exploded classPath.
      */
-    public Optional<FoundFile> lookupInClassPath(String fileName) {
+    public Optional<InputSource> lookupInClassPath(String fileName) {
         for (String dir : classPath) {
-            Optional<FoundFile> foundFileOption = Optional.empty();
+            Optional<InputSource> foundFileOption = Optional.empty();
             final ClassSourceType classSourceType = getClassSourceType(dir);
 
             if (classSourceType == ClassSourceType.zip || classSourceType == ClassSourceType.jar) {
@@ -497,12 +497,12 @@ public class SourceLocator {
         return Optional.empty();
     }
 
-    protected Optional<FoundFile> lookupInDir(String dir, String fileName) {
+    protected Optional<InputSource> lookupInDir(String dir, String fileName) {
         File f = new File(dir, fileName);
-        return (f.exists() && f.canRead()) ? Optional.of(new FoundFile(f)) : Optional.empty();
+        return (f.exists() && f.canRead()) ? Optional.of(new InputSource(f)) : Optional.empty();
     }
 
-    protected Optional<FoundFile> lookupInArchive(final String archivePath, final String fileName) {
+    protected Optional<InputSource> lookupInArchive(final String archivePath, final String fileName) {
         final Set<String> entryNames;
 
         try {
@@ -512,7 +512,7 @@ public class SourceLocator {
                     "Error: Failed to retrieve the archive entries list for the archive at path '" + archivePath + "'.", e);
         }
 
-        return entryNames.contains(fileName) ? Optional.of(new FoundFile(archivePath, fileName)) : Optional.empty();
+        return entryNames.contains(fileName) ? Optional.of(new InputSource(archivePath, fileName)) : Optional.empty();
     }
 
     /**

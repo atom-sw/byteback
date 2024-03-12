@@ -10,12 +10,12 @@ package soot.shimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,17 +30,17 @@ import soot.toolkits.scalar.ValueUnitPair;
  * @author Navindra Umanee
  **/
 public interface PiExpr extends ShimpleExpr {
-  public ValueUnitPair getArgBox();
+    ValueUnitPair getArgBox();
 
-  public Value getValue();
+    Value getValue();
 
-  public Unit getCondStmt();
+    Unit getCondStmt();
 
-  public Object getTargetKey();
+    Object getTargetKey();
 
-  public void setValue(Value v);
+    void setValue(Value v);
 
-  public void setCondStmt(Unit cs);
+    void setCondStmt(Unit cs);
 
-  public void setTargetKey(Object targetKey);
+    void setTargetKey(Object targetKey);
 }

@@ -1,0 +1,82 @@
+package soot.asm.model;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ModuleVisitor;
+import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.ClassProvider;
+import soot.ClassSource;
+import soot.InputSource;
+import soot.ModulePathSourceLocator;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+
+/**
+ * Objectweb ASM module class provider.
+ *
+ * @author Andreas Dann
+ */
+public class AsmModuleClassProvider implements ClassProvider {
+    private static final Logger logger = LoggerFactory.getLogger(AsmModuleClassProvider.class);
+
+    @Override
+    public Optional<ClassSource> find(final String className) {
+        final int index = className.lastIndexOf(':') + 1;
+        final String classPath = className.substring(0, index) + className.substring(index)
+                .replace('.', '/') + ".class";
+
+        return ModulePathSourceLocator.v().lookUpInModulePath(classPath)
+                .map((file) -> new AsmClassSource(className, file));
+    }
+
+    public String getModuleName(final InputSource file) {
+        final var moduleNameRef = new AtomicReference<String>();
+        final ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM8) {
+            @Override
+            public ModuleVisitor visitModule(final String name, final int access, final String version) {
+                moduleNameRef.set(name);
+
+                return null;
+            }
+        };
+
+        try (InputStream inputStream = file.inputStream()) {
+            new ClassReader(inputStream).accept(classVisitor, ClassReader.SKIP_FRAMES);
+
+            return moduleNameRef.get();
+        } catch (IOException e) {
+            logger.debug(e.getMessage(), e);
+        } finally {
+            file.close();
+        }
+
+        return null;
+    }
+}

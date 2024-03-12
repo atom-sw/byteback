@@ -1,7 +1,6 @@
 package byteback.analysis.body.vimp.syntax;
 
 import soot.BooleanType;
-import soot.Immediate;
 import soot.Type;
 import soot.jimple.Expr;
 

@@ -10,12 +10,12 @@ package soot.util.dot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,27 +30,24 @@ import java.io.OutputStream;
  */
 public class DotGraphCommand implements Renderable {
 
-  private final String command;
+    private final String command;
 
-  /**
-   * @param cmd
-   *          a dot dommand string
-   */
-  public DotGraphCommand(String cmd) {
-    this.command = cmd;
-  }
+    /**
+     * @param cmd a dot dommand string
+     */
+    public DotGraphCommand(String cmd) {
+        this.command = cmd;
+    }
 
-  /**
-   * Implements Renderable interface.
-   * 
-   * @param out
-   *          the output stream
-   * @param indent
-   *          the number of indent space
-   * @see Renderable
-   */
-  @Override
-  public void render(OutputStream out, int indent) throws IOException {
-    DotGraphUtility.renderLine(out, command, indent);
-  }
+    /**
+     * Implements Renderable interface.
+     *
+     * @param out    the output stream
+     * @param indent the number of indent space
+     * @see Renderable
+     */
+    @Override
+    public void render(OutputStream out, int indent) throws IOException {
+        DotGraphUtility.renderLine(out, command, indent);
+    }
 }

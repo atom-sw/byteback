@@ -1,18 +1,19 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.VimpValues;
 import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.VimpValues;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.common.function.Lazy;
-
-import java.util.Iterator;
-import java.util.Map;
-
-import soot.*;
+import soot.Body;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
 import soot.grimp.Grimp;
 import soot.jimple.CaughtExceptionRef;
 import soot.util.Chain;
+
+import java.util.Iterator;
 
 public class CallCheckTransformer extends BodyTransformer {
 

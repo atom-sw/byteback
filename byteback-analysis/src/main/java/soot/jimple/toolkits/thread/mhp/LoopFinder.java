@@ -10,26 +10,26 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
+import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
+import soot.tag.Tag;
+import soot.util.Chain;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.tagkit.Tag;
-import soot.util.Chain;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -43,33 +43,33 @@ import soot.util.Chain;
 // -Richard L. Halpert, 2006-11-30
 
 public class LoopFinder {
-  private final Map<Chain, Set<Set<Object>>> chainToLoop = new HashMap<Chain, Set<Set<Object>>>();
+    private final Map<Chain, Set<Set<Object>>> chainToLoop = new HashMap<Chain, Set<Set<Object>>>();
 
-  LoopFinder(PegGraph peg) {
-    Chain chain = peg.getMainPegChain();
-    DfsForBackEdge dfsForBackEdge = new DfsForBackEdge(chain, peg);
-    Map<Object, Object> backEdges = dfsForBackEdge.getBackEdges();
-    LoopBodyFinder lbf = new LoopBodyFinder(backEdges, peg);
-    Set<Set<Object>> loopBody = lbf.getLoopBody();
-    testLoops(loopBody);
-    chainToLoop.put(chain, loopBody);
+    LoopFinder(PegGraph peg) {
+        Chain chain = peg.getMainPegChain();
+        DfsForBackEdge dfsForBackEdge = new DfsForBackEdge(chain, peg);
+        Map<Object, Object> backEdges = dfsForBackEdge.getBackEdges();
+        LoopBodyFinder lbf = new LoopBodyFinder(backEdges, peg);
+        Set<Set<Object>> loopBody = lbf.getLoopBody();
+        testLoops(loopBody);
+        chainToLoop.put(chain, loopBody);
 
-  }
-
-  private void testLoops(Set<Set<Object>> loopBody) {
-    System.out.println("====loops===");
-    Iterator<Set<Object>> it = loopBody.iterator();
-    while (it.hasNext()) {
-      Set loop = it.next();
-      Iterator loopIt = loop.iterator();
-      System.out.println("---loop---");
-      while (loopIt.hasNext()) {
-        JPegStmt o = (JPegStmt) loopIt.next();
-        Tag tag = (Tag) o.getTags().get(0);
-        System.out.println(tag + " " + o);
-      }
     }
-    System.out.println("===end===loops===");
-  }
+
+    private void testLoops(Set<Set<Object>> loopBody) {
+        System.out.println("====loops===");
+        Iterator<Set<Object>> it = loopBody.iterator();
+        while (it.hasNext()) {
+            Set loop = it.next();
+            Iterator loopIt = loop.iterator();
+            System.out.println("---loop---");
+            while (loopIt.hasNext()) {
+                JPegStmt o = (JPegStmt) loopIt.next();
+                Tag tag = o.getTags().get(0);
+                System.out.println(tag + " " + o);
+            }
+        }
+        System.out.println("===end===loops===");
+    }
 
 }

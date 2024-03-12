@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand.genericutil;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,25 +27,25 @@ import java.util.Set;
 
 public interface MultiMap<K, V> {
 
-  public Set<V> get(K key);
+    Set<V> get(K key);
 
-  public boolean put(K key, V val);
+    boolean put(K key, V val);
 
-  public boolean remove(K key, V val);
+    boolean remove(K key, V val);
 
-  public Set<K> keySet();
+    Set<K> keySet();
 
-  public boolean containsKey(K key);
+    boolean containsKey(K key);
 
-  public int size();
+    int size();
 
-  public String toString();
+    String toString();
 
-  public boolean putAll(K key, Collection<? extends V> vals);
+    boolean putAll(K key, Collection<? extends V> vals);
 
-  public Set<V> removeAll(K key);
+    Set<V> removeAll(K key);
 
-  public void clear();
+    void clear();
 
-  public boolean isEmpty();
+    boolean isEmpty();
 }

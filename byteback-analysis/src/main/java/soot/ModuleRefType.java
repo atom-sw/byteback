@@ -22,140 +22,139 @@ package soot;
  * #L%
  */
 
-import java.util.Optional;
-import java.util.LinkedList;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import soot.options.Options;
+
+import java.util.LinkedList;
+import java.util.Optional;
 
 /**
  * A class that models Java's reference types. RefTypes are parameterized by a class name. Two RefType are equal iff they are
  * parameterized by the same class name as a String. Extends RefType in order to deal with Java 9 modules.
- * 
+ *
  * @author Andreas Dann
  */
 public class ModuleRefType extends RefType {
-  private static final Logger logger = LoggerFactory.getLogger(ModuleRefType.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModuleRefType.class);
 
-  private String moduleName;
+    private String moduleName;
 
-  public ModuleRefType(Singletons.Global g) {
-    super(g);
-  }
-
-  protected ModuleRefType(String className, String moduleName) {
-    super(className);
-    this.moduleName = moduleName;
-  }
-
-  public static RefType v(String className) {
-    ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
-    return v(wrapper.getClassName(), wrapper.getModuleNameOptional());
-  }
-
-  public static RefType v(String className, Optional<String> moduleName) {
-    final boolean isPresent = moduleName.isPresent();
-    final String module = isPresent ? ModuleUtil.v().declaringModule(className, moduleName.get()) : null;
-
-    if (!isPresent && Options.v().verbose()) {
-      logger.warn("ModuleRefType called with empty module for: " + className);
-    }
-    RefType rt = ModuleScene.v().getRefTypeUnsafe(className, Optional.ofNullable(module));
-    if (rt == null) {
-      rt = new ModuleRefType(className, isPresent ? module : null);
-      ModuleScene.v().addRefType(rt);
-    }
-    return rt;
-  }
-
-  public String getModuleName() {
-    return moduleName;
-  }
-
-  /**
-   * Get the SootClass object corresponding to this RefType.
-   *
-   * @return the corresponding SootClass
-   */
-  @Override
-  public SootClass getSootClass() {
-    if (super.sootClass == null) {
-      super.setSootClass(SootModuleResolver.v().makeClassRef(getClassName(), Optional.ofNullable(this.moduleName)));
-    }
-    return super.getSootClass();
-  }
-
-  /**
-   * Returns the least common superclass of this type and other.
-   */
-  @Override
-  public Type merge(Type other, Scene cm) {
-    if (UnknownType.v().equals(other) || this.equals(other)) {
-      return this;
+    public ModuleRefType(Singletons.Global g) {
+        super(g);
     }
 
-    if (!(other instanceof RefType)) {
-      throw new RuntimeException("illegal type merge: " + this + " and " + other);
+    protected ModuleRefType(String className, String moduleName) {
+        super(className);
+        this.moduleName = moduleName;
     }
 
-    {
-      // Return least common superclass
-      final ModuleScene cmMod = (ModuleScene) cm;
+    public static RefType v(String className) {
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
+        return v(wrapper.getClassName(), wrapper.getModuleNameOptional());
+    }
 
-      final SootClass javalangObject = cm.getObjectType().getSootClass();
+    public static RefType v(String className, Optional<String> moduleName) {
+        final boolean isPresent = moduleName.isPresent();
+        final String module = isPresent ? ModuleUtil.v().declaringModule(className, moduleName.get()) : null;
 
-      LinkedList<SootClass> thisHierarchy = new LinkedList<>();
-      LinkedList<SootClass> otherHierarchy = new LinkedList<>();
-
-      // Build thisHierarchy
-      for (SootClass sc = cmMod.getSootClass(getClassName(), Optional.ofNullable(this.moduleName));;) {
-        thisHierarchy.addFirst(sc);
-        if (sc == javalangObject) {
-          break;
+        if (!isPresent && Options.v().verbose()) {
+            logger.warn("ModuleRefType called with empty module for: " + className);
         }
-        sc = sc.hasSuperclass() ? sc.getSuperclass() : javalangObject;
-      }
-
-      // Build otherHierarchy
-      for (SootClass sc = cmMod.getSootClass(((RefType) other).getClassName(), Optional.ofNullable(this.moduleName));;) {
-        otherHierarchy.addFirst(sc);
-        if (sc == javalangObject) {
-          break;
+        RefType rt = ModuleScene.v().getRefTypeUnsafe(className, Optional.ofNullable(module));
+        if (rt == null) {
+            rt = new ModuleRefType(className, isPresent ? module : null);
+            ModuleScene.v().addRefType(rt);
         }
-        sc = sc.hasSuperclass() ? sc.getSuperclass() : javalangObject;
-      }
+        return rt;
+    }
 
-      // Find the least common superclass
-      {
-        SootClass commonClass = null;
-        while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty()
-            && otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
-          commonClass = otherHierarchy.removeFirst();
-          thisHierarchy.removeFirst();
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    /**
+     * Get the SootClass object corresponding to this RefType.
+     *
+     * @return the corresponding SootClass
+     */
+    @Override
+    public ClassModel getSootClass() {
+        if (super.classModel == null) {
+            super.setSootClass(SootModuleResolver.v().makeClassRef(getClassName(), Optional.ofNullable(this.moduleName)));
         }
-        if (commonClass == null) {
-          throw new RuntimeException("Could not find a common superclass for " + this + " and " + other);
+        return super.getSootClass();
+    }
+
+    /**
+     * Returns the least common superclass of this type and other.
+     */
+    @Override
+    public Type merge(Type other, Scene cm) {
+        if (UnknownType.v().equals(other) || this.equals(other)) {
+            return this;
         }
 
-        return commonClass.getType();
-      }
-    }
-  }
+        if (!(other instanceof RefType)) {
+            throw new RuntimeException("illegal type merge: " + this + " and " + other);
+        }
 
-  @Override
-  public Type getArrayElementType() {
-    if (getClassName().equals(Scene.v().getObjectType().toString())) {
-      return ModuleRefType.v(Scene.v().getObjectType().toString());
+        {
+            // Return least common superclass
+            final ModuleScene cmMod = (ModuleScene) cm;
+
+            final ClassModel javalangObject = cm.getObjectType().getSootClass();
+
+            LinkedList<ClassModel> thisHierarchy = new LinkedList<>();
+            LinkedList<ClassModel> otherHierarchy = new LinkedList<>();
+
+            // Build thisHierarchy
+            for (ClassModel sc = cmMod.getSootClass(getClassName(), Optional.ofNullable(this.moduleName)); ; ) {
+                thisHierarchy.addFirst(sc);
+                if (sc == javalangObject) {
+                    break;
+                }
+                sc = sc.hasSuperclass() ? sc.getSuperclass() : javalangObject;
+            }
+
+            // Build otherHierarchy
+            for (ClassModel sc = cmMod.getSootClass(((RefType) other).getClassName(), Optional.ofNullable(this.moduleName)); ; ) {
+                otherHierarchy.addFirst(sc);
+                if (sc == javalangObject) {
+                    break;
+                }
+                sc = sc.hasSuperclass() ? sc.getSuperclass() : javalangObject;
+            }
+
+            // Find the least common superclass
+            {
+                ClassModel commonClass = null;
+                while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty()
+                        && otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
+                    commonClass = otherHierarchy.removeFirst();
+                    thisHierarchy.removeFirst();
+                }
+                if (commonClass == null) {
+                    throw new RuntimeException("Could not find a common superclass for " + this + " and " + other);
+                }
+
+                return commonClass.getType();
+            }
+        }
     }
-    switch (getClassName()) {
-      case "java.lang.Object":
-      case "java.io.Serializable":
-      case "java.lang.Cloneable":
-        return ModuleRefType.v("java.lang.Object", Optional.of("java.base"));
-      default:
-        throw new RuntimeException("Attempt to get array base type of a non-array");
+
+    @Override
+    public Type getArrayElementType() {
+        if (getClassName().equals(Scene.v().getObjectType().toString())) {
+            return ModuleRefType.v(Scene.v().getObjectType().toString());
+        }
+        switch (getClassName()) {
+            case "java.lang.Object":
+            case "java.io.Serializable":
+            case "java.lang.Cloneable":
+                return ModuleRefType.v("java.lang.Object", Optional.of("java.base"));
+            default:
+                throw new RuntimeException("Attempt to get array base type of a non-array");
+        }
     }
-  }
 }

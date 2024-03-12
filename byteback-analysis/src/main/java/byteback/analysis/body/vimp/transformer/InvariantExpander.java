@@ -5,10 +5,6 @@ import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.AssertStmt;
 import byteback.analysis.body.vimp.syntax.InvariantStmt;
 import byteback.common.function.Lazy;
-
-import java.util.*;
-import java.util.function.Supplier;
-
 import soot.Body;
 import soot.Unit;
 import soot.Value;
@@ -17,6 +13,9 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.util.Chain;
+
+import java.util.*;
+import java.util.function.Supplier;
 
 public class InvariantExpander extends BodyTransformer {
 

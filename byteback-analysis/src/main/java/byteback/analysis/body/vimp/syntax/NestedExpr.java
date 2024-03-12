@@ -1,7 +1,10 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
-import soot.*;
+import soot.Local;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.util.Switch;

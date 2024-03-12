@@ -10,73 +10,65 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.Iterator;
-import java.util.Map;
-
-import soot.Body;
-import soot.BodyTransformer;
-import soot.G;
-import soot.Local;
-import soot.Singletons;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Transformer that removes unnecessary identity casts such as
- * 
+ * <p>
  * $i3 = (int) $i3
- * 
+ * <p>
  * when $i3 is already of type "int".
- * 
+ *
  * @author Steven Arzt
  */
 public class IdentityCastEliminator extends BodyTransformer {
 
-  public IdentityCastEliminator(Singletons.Global g) {
-  }
-
-  public static IdentityCastEliminator v() {
-    return G.v().soot_jimple_toolkits_scalar_IdentityCastEliminator();
-  }
-
-  @Override
-  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    for (Iterator<Unit> unitIt = b.getUnits().iterator(); unitIt.hasNext();) {
-      Unit curUnit = unitIt.next();
-      if (curUnit instanceof AssignStmt) {
-        final AssignStmt assignStmt = (AssignStmt) curUnit;
-        final Value leftOp = assignStmt.getLeftOp();
-        final Value rightOp = assignStmt.getRightOp();
-        if (leftOp instanceof Local && rightOp instanceof CastExpr) {
-          final CastExpr ce = (CastExpr) rightOp;
-          final Value castOp = ce.getOp();
-
-          // If this a cast such as a = (X) a, we can remove the whole line.
-          // Otherwise, if only the types match, we can replace the typecast
-          // with a normal assignment.
-          if (castOp.getType() == ce.getCastType()) {
-            if (leftOp == castOp) {
-              unitIt.remove();
-            } else {
-              assignStmt.setRightOp(castOp);
-            }
-          }
-        }
-      }
+    public IdentityCastEliminator(Singletons.Global g) {
     }
-  }
+
+    public static IdentityCastEliminator v() {
+        return G.v().soot_jimple_toolkits_scalar_IdentityCastEliminator();
+    }
+
+    @Override
+    protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+        for (Iterator<Unit> unitIt = b.getUnits().iterator(); unitIt.hasNext(); ) {
+            Unit curUnit = unitIt.next();
+            if (curUnit instanceof AssignStmt assignStmt) {
+                final Value leftOp = assignStmt.getLeftOp();
+                final Value rightOp = assignStmt.getRightOp();
+                if (leftOp instanceof Local && rightOp instanceof CastExpr ce) {
+                    final Value castOp = ce.getOp();
+
+                    // If this a cast such as a = (X) a, we can remove the whole line.
+                    // Otherwise, if only the types match, we can replace the typecast
+                    // with a normal assignment.
+                    if (castOp.getType() == ce.getCastType()) {
+                        if (leftOp == castOp) {
+                            unitIt.remove();
+                        } else {
+                            assignStmt.setRightOp(castOp);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

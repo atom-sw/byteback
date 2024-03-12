@@ -10,56 +10,58 @@ package soot.jimple.spark.fieldrw;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
+import soot.SootField;
+import soot.tag.Tag;
+
 import java.util.Set;
 
-import soot.SootField;
-import soot.tagkit.Tag;
-
-/** Implements a tag that holds a list of fields read or written by a call. */
+/**
+ * Implements a tag that holds a list of fields read or written by a call.
+ */
 public abstract class FieldRWTag implements Tag {
 
-  private final String fieldNames;
+    private final String fieldNames;
 
-  FieldRWTag(Set<SootField> fields) {
-    StringBuilder sb = new StringBuilder();
-    boolean first = true;
-    for (SootField field : fields) {
-      if (first) {
-        first = false;
-      } else {
-        sb.append('%');
-      }
-      sb.append(field.getDeclaringClass().getName());
-      sb.append(':');
-      sb.append(field.getName());
+    FieldRWTag(Set<SootField> fields) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (SootField field : fields) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append('%');
+            }
+            sb.append(field.getDeclaringClass().getName());
+            sb.append(':');
+            sb.append(field.getName());
+        }
+        this.fieldNames = sb.toString();
     }
-    this.fieldNames = sb.toString();
-  }
 
-  @Override
-  public byte[] getValue() {
-    byte[] bytes = fieldNames.getBytes();
-    byte[] ret = new byte[bytes.length + 2];
-    ret[0] = (byte) (bytes.length / 256);
-    ret[1] = (byte) (bytes.length % 256);
-    System.arraycopy(bytes, 0, ret, 2, bytes.length);
-    return ret;
-  }
+    @Override
+    public byte[] getValue() {
+        byte[] bytes = fieldNames.getBytes();
+        byte[] ret = new byte[bytes.length + 2];
+        ret[0] = (byte) (bytes.length / 256);
+        ret[1] = (byte) (bytes.length % 256);
+        System.arraycopy(bytes, 0, ret, 2, bytes.length);
+        return ret;
+    }
 
-  @Override
-  public String toString() {
-    return getName() + fieldNames;
-  }
+    @Override
+    public String toString() {
+        return getName() + fieldNames;
+    }
 }

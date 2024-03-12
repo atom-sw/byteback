@@ -10,12 +10,12 @@ package soot.toolkits.graph.interaction;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,31 +24,31 @@ package soot.toolkits.graph.interaction;
 
 public class InteractionEvent {
 
-  private int type;
-  private Object info;
+    private int type;
+    private Object info;
 
-  public InteractionEvent(int type) {
-    type(type);
-  }
+    public InteractionEvent(int type) {
+        type(type);
+    }
 
-  public InteractionEvent(int type, Object info) {
-    type(type);
-    info(info);
-  }
+    public InteractionEvent(int type, Object info) {
+        type(type);
+        info(info);
+    }
 
-  private void type(int t) {
-    type = t;
-  }
+    private void type(int t) {
+        type = t;
+    }
 
-  private void info(Object i) {
-    info = i;
-  }
+    private void info(Object i) {
+        info = i;
+    }
 
-  public int type() {
-    return type;
-  }
+    public int type() {
+        return type;
+    }
 
-  public Object info() {
-    return info;
-  }
+    public Object info() {
+        return info;
+    }
 }

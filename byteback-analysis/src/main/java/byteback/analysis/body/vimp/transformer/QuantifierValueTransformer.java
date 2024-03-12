@@ -1,24 +1,16 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.common.namespace.BBLibNames;
-import byteback.analysis.body.vimp.syntax.QuantifierExpr;
-import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.common.transformer.ValueTransformer;
+import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.syntax.QuantifierExpr;
+import byteback.analysis.common.namespace.BBLibNames;
 import byteback.common.function.Lazy;
-
-import java.util.Iterator;
-import java.util.Map;
-
-import soot.Body;
-import soot.Local;
-import soot.SootClass;
-import soot.SootMethod;
-import soot.Unit;
-import soot.Value;
-import soot.ValueBox;
+import soot.*;
 import soot.jimple.*;
 import soot.util.Chain;
 import soot.util.HashChain;
+
+import java.util.Iterator;
 
 public class QuantifierValueTransformer extends ValueTransformer {
 
@@ -41,7 +33,7 @@ public class QuantifierValueTransformer extends ValueTransformer {
             if (unit instanceof AssignStmt assignStmt) {
                 if (assignStmt.getRightOp() instanceof InvokeExpr invokeExpr) {
                     final SootMethod invokedMethod = invokeExpr.getMethod();
-                    final SootClass declaringClass = invokedMethod.getDeclaringClass();
+                    final ClassModel declaringClass = invokedMethod.getDeclaringClass();
 
                     if (BBLibNames.v().isBindingClass(declaringClass)) {
                         body.getUnits().remove(assignStmt);
@@ -67,7 +59,7 @@ public class QuantifierValueTransformer extends ValueTransformer {
                 assert invokeExpr.getArgCount() == 2;
 
                 final SootMethod method = invokeExpr.getMethod();
-                final SootClass clazz = method.getDeclaringClass();
+                final ClassModel clazz = method.getDeclaringClass();
 
                 if (BBLibNames.v().isQuantifierClass(clazz)) {
                     final Chain<Local> locals = new HashChain<>();
@@ -86,10 +78,8 @@ public class QuantifierValueTransformer extends ValueTransformer {
                     }
 
                     final QuantifierExpr substitute = switch (method.getName()) {
-                        case BBLibNames.UNIVERSAL_QUANTIFIER_NAME ->
-                                Vimp.v().newLogicForallExpr(locals, expression);
-                        case BBLibNames.EXISTENTIAL_QUANTIFIER_NAME ->
-                                Vimp.v().newLogicExistsExpr(locals, expression);
+                        case BBLibNames.UNIVERSAL_QUANTIFIER_NAME -> Vimp.v().newLogicForallExpr(locals, expression);
+                        case BBLibNames.EXISTENTIAL_QUANTIFIER_NAME -> Vimp.v().newLogicExistsExpr(locals, expression);
                         default -> throw new IllegalStateException("Unknown quantifier method " + method.getName());
                     };
 

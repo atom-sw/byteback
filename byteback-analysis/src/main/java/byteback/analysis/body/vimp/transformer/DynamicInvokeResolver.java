@@ -2,9 +2,6 @@ package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.common.function.Lazy;
-
-import java.util.Map;
-
 import soot.Body;
 import soot.Value;
 import soot.ValueBox;

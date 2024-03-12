@@ -7,8 +7,8 @@ import soot.jimple.internal.JIfStmt;
 
 public class LogicIfStmt extends JIfStmt {
 
-	public LogicIfStmt(final Value condition, final Unit target) {
-		super(Grimp.v().newArgBox(condition), Grimp.v().newStmtBox(target));
-	}
+    public LogicIfStmt(final Value condition, final Unit target) {
+        super(Grimp.v().newArgBox(condition), Grimp.v().newStmtBox(target));
+    }
 
 }

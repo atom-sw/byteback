@@ -1,6 +1,5 @@
 package byteback.analysis.body.vimp;
 
-import byteback.analysis.body.vimp.Vimp;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;

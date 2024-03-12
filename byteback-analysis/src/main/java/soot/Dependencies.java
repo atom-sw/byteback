@@ -11,8 +11,9 @@ public class Dependencies {
         typesToSignature = new HashSet<>();
     }
 
-    public Dependencies(Set<Type> typesToHierarchy, Set<Type> typesToSignature) {
-        this.typesToHierarchy = typesToHierarchy == null ? new HashSet<>() : typesToHierarchy;
-        this.typesToSignature = typesToSignature == null ? new HashSet<>() : typesToSignature;
+    public Dependencies(final Set<Type> typesToHierarchy, final Set<Type> typesToSignature) {
+        this.typesToHierarchy = typesToHierarchy;
+        this.typesToSignature = typesToSignature;
     }
+
 }

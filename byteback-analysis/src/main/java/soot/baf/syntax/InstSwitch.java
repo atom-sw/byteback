@@ -10,12 +10,12 @@ package soot.baf.syntax;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -25,143 +25,143 @@ package soot.baf.syntax;
 import soot.util.Switch;
 
 public interface InstSwitch extends Switch {
-  public void caseReturnVoidInst(ReturnVoidInst i);
+    void caseReturnVoidInst(ReturnVoidInst i);
 
-  public void caseReturnInst(ReturnInst i);
+    void caseReturnInst(ReturnInst i);
 
-  public void caseNopInst(NopInst i);
+    void caseNopInst(NopInst i);
 
-  public void caseGotoInst(GotoInst i);
+    void caseGotoInst(GotoInst i);
 
-  public void caseJSRInst(JSRInst i);
+    void caseJSRInst(JSRInst i);
 
-  public void casePushInst(PushInst i);
+    void casePushInst(PushInst i);
 
-  public void casePopInst(PopInst i);
+    void casePopInst(PopInst i);
 
-  public void caseIdentityInst(IdentityInst i);
+    void caseIdentityInst(IdentityInst i);
 
-  public void caseStoreInst(StoreInst i);
+    void caseStoreInst(StoreInst i);
 
-  public void caseLoadInst(LoadInst i);
+    void caseLoadInst(LoadInst i);
 
-  public void caseArrayWriteInst(ArrayWriteInst i);
+    void caseArrayWriteInst(ArrayWriteInst i);
 
-  public void caseArrayReadInst(ArrayReadInst i);
+    void caseArrayReadInst(ArrayReadInst i);
 
-  public void caseIfNullInst(IfNullInst i);
+    void caseIfNullInst(IfNullInst i);
 
-  public void caseIfNonNullInst(IfNonNullInst i);
+    void caseIfNonNullInst(IfNonNullInst i);
 
-  public void caseIfEqInst(IfEqInst i);
+    void caseIfEqInst(IfEqInst i);
 
-  public void caseIfNeInst(IfNeInst i);
+    void caseIfNeInst(IfNeInst i);
 
-  public void caseIfGtInst(IfGtInst i);
+    void caseIfGtInst(IfGtInst i);
 
-  public void caseIfGeInst(IfGeInst i);
+    void caseIfGeInst(IfGeInst i);
 
-  public void caseIfLtInst(IfLtInst i);
+    void caseIfLtInst(IfLtInst i);
 
-  public void caseIfLeInst(IfLeInst i);
+    void caseIfLeInst(IfLeInst i);
 
-  public void caseIfCmpEqInst(IfCmpEqInst i);
+    void caseIfCmpEqInst(IfCmpEqInst i);
 
-  public void caseIfCmpNeInst(IfCmpNeInst i);
+    void caseIfCmpNeInst(IfCmpNeInst i);
 
-  public void caseIfCmpGtInst(IfCmpGtInst i);
+    void caseIfCmpGtInst(IfCmpGtInst i);
 
-  public void caseIfCmpGeInst(IfCmpGeInst i);
+    void caseIfCmpGeInst(IfCmpGeInst i);
 
-  public void caseIfCmpLtInst(IfCmpLtInst i);
+    void caseIfCmpLtInst(IfCmpLtInst i);
 
-  public void caseIfCmpLeInst(IfCmpLeInst i);
+    void caseIfCmpLeInst(IfCmpLeInst i);
 
-  public void caseStaticGetInst(StaticGetInst i);
+    void caseStaticGetInst(StaticGetInst i);
 
-  public void caseStaticPutInst(StaticPutInst i);
+    void caseStaticPutInst(StaticPutInst i);
 
-  public void caseFieldGetInst(FieldGetInst i);
+    void caseFieldGetInst(FieldGetInst i);
 
-  public void caseFieldPutInst(FieldPutInst i);
+    void caseFieldPutInst(FieldPutInst i);
 
-  public void caseInstanceCastInst(InstanceCastInst i);
+    void caseInstanceCastInst(InstanceCastInst i);
 
-  public void caseInstanceOfInst(InstanceOfInst i);
+    void caseInstanceOfInst(InstanceOfInst i);
 
-  public void casePrimitiveCastInst(PrimitiveCastInst i);
+    void casePrimitiveCastInst(PrimitiveCastInst i);
 
-  public void caseDynamicInvokeInst(DynamicInvokeInst i);
+    void caseDynamicInvokeInst(DynamicInvokeInst i);
 
-  public void caseStaticInvokeInst(StaticInvokeInst i);
+    void caseStaticInvokeInst(StaticInvokeInst i);
 
-  public void caseVirtualInvokeInst(VirtualInvokeInst i);
+    void caseVirtualInvokeInst(VirtualInvokeInst i);
 
-  public void caseInterfaceInvokeInst(InterfaceInvokeInst i);
+    void caseInterfaceInvokeInst(InterfaceInvokeInst i);
 
-  public void caseSpecialInvokeInst(SpecialInvokeInst i);
+    void caseSpecialInvokeInst(SpecialInvokeInst i);
 
-  public void caseThrowInst(ThrowInst i);
+    void caseThrowInst(ThrowInst i);
 
-  public void caseAddInst(AddInst i);
+    void caseAddInst(AddInst i);
 
-  public void caseAndInst(AndInst i);
+    void caseAndInst(AndInst i);
 
-  public void caseOrInst(OrInst i);
+    void caseOrInst(OrInst i);
 
-  public void caseXorInst(XorInst i);
+    void caseXorInst(XorInst i);
 
-  public void caseArrayLengthInst(ArrayLengthInst i);
+    void caseArrayLengthInst(ArrayLengthInst i);
 
-  public void caseCmpInst(CmpInst i);
+    void caseCmpInst(CmpInst i);
 
-  public void caseCmpgInst(CmpgInst i);
+    void caseCmpgInst(CmpgInst i);
 
-  public void caseCmplInst(CmplInst i);
+    void caseCmplInst(CmplInst i);
 
-  public void caseDivInst(DivInst i);
+    void caseDivInst(DivInst i);
 
-  public void caseIncInst(IncInst i);
+    void caseIncInst(IncInst i);
 
-  public void caseMulInst(MulInst i);
+    void caseMulInst(MulInst i);
 
-  public void caseRemInst(RemInst i);
+    void caseRemInst(RemInst i);
 
-  public void caseSubInst(SubInst i);
+    void caseSubInst(SubInst i);
 
-  public void caseShlInst(ShlInst i);
+    void caseShlInst(ShlInst i);
 
-  public void caseShrInst(ShrInst i);
+    void caseShrInst(ShrInst i);
 
-  public void caseUshrInst(UshrInst i);
+    void caseUshrInst(UshrInst i);
 
-  public void caseNewInst(NewInst i);
+    void caseNewInst(NewInst i);
 
-  public void caseNegInst(NegInst i);
+    void caseNegInst(NegInst i);
 
-  public void caseSwapInst(SwapInst i);
+    void caseSwapInst(SwapInst i);
 
-  public void caseDup1Inst(Dup1Inst i);
+    void caseDup1Inst(Dup1Inst i);
 
-  public void caseDup2Inst(Dup2Inst i);
+    void caseDup2Inst(Dup2Inst i);
 
-  public void caseDup1_x1Inst(Dup1_x1Inst i);
+    void caseDup1_x1Inst(Dup1_x1Inst i);
 
-  public void caseDup1_x2Inst(Dup1_x2Inst i);
+    void caseDup1_x2Inst(Dup1_x2Inst i);
 
-  public void caseDup2_x1Inst(Dup2_x1Inst i);
+    void caseDup2_x1Inst(Dup2_x1Inst i);
 
-  public void caseDup2_x2Inst(Dup2_x2Inst i);
+    void caseDup2_x2Inst(Dup2_x2Inst i);
 
-  public void caseNewArrayInst(NewArrayInst i);
+    void caseNewArrayInst(NewArrayInst i);
 
-  public void caseNewMultiArrayInst(NewMultiArrayInst i);
+    void caseNewMultiArrayInst(NewMultiArrayInst i);
 
-  public void caseLookupSwitchInst(LookupSwitchInst i);
+    void caseLookupSwitchInst(LookupSwitchInst i);
 
-  public void caseTableSwitchInst(TableSwitchInst i);
+    void caseTableSwitchInst(TableSwitchInst i);
 
-  public void caseEnterMonitorInst(EnterMonitorInst i);
+    void caseEnterMonitorInst(EnterMonitorInst i);
 
-  public void caseExitMonitorInst(ExitMonitorInst i);
+    void caseExitMonitorInst(ExitMonitorInst i);
 }

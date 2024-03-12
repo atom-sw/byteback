@@ -10,26 +10,26 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
 import soot.toolkits.exceptions.ThrowAnalysis;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -68,48 +68,44 @@ import soot.toolkits.exceptions.ThrowAnalysis;
  * </p>
  */
 public class ClassicCompleteUnitGraph extends TrapUnitGraph {
-  /**
-   * Constructs the graph from a given Body instance.
-   *
-   * @param body
-   *          the Body instance from which the graph is built.
-   */
-  public ClassicCompleteUnitGraph(Body body) {
-    // The TrapUnitGraph constructor will use our buildExceptionalEdges:
-    super(body);
-  }
-
-  /**
-   * Method to compute the edges corresponding to exceptional control flow.
-   *
-   * @param unitToSuccs
-   *          A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is * an ``out parameter'';
-   *          <tt>buildExceptionalEdges</tt> will add a mapping for every <tt>Unit</tt> within the scope of one or more
-   *          {@link Trap}s to a <tt>List</tt> of the handler units of those <tt>Trap</tt>s.
-   *
-   * @param unitToPreds
-   *          A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is an ``out parameter'';
-   *          <tt>buildExceptionalEdges</tt> will add a mapping for every {@link Trap} handler to all the <tt>Unit</tt>s
-   *          within the scope of that <tt>Trap</tt>.
-   */
-  @Override
-  protected void buildExceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
-    // First, add the same edges as TrapUnitGraph.
-    super.buildExceptionalEdges(unitToSuccs, unitToPreds);
-    // Then add edges from the predecessors of the first
-    // trapped Unit for each Trap.
-    for (Trap trap : body.getTraps()) {
-      Unit catcher = trap.getHandlerUnit();
-      // Make a copy of firstTrapped's predecessors to iterate over,
-      // just in case we're about to add new predecessors to this
-      // very list, though that can only happen if the handler traps
-      // itself. And to really allow for that
-      // possibility, we should iterate here until we reach a fixed
-      // point; but the old UnitGraph that we are attempting to
-      // duplicate did not do that, so we won't either.
-      for (Unit pred : new ArrayList<Unit>(getPredsOf(trap.getBeginUnit()))) {
-        addEdge(unitToSuccs, unitToPreds, pred, catcher);
-      }
+    /**
+     * Constructs the graph from a given Body instance.
+     *
+     * @param body the Body instance from which the graph is built.
+     */
+    public ClassicCompleteUnitGraph(Body body) {
+        // The TrapUnitGraph constructor will use our buildExceptionalEdges:
+        super(body);
     }
-  }
+
+    /**
+     * Method to compute the edges corresponding to exceptional control flow.
+     *
+     * @param unitToSuccs A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is * an ``out parameter'';
+     *                    <tt>buildExceptionalEdges</tt> will add a mapping for every <tt>Unit</tt> within the scope of one or more
+     *                    {@link Trap}s to a <tt>List</tt> of the handler units of those <tt>Trap</tt>s.
+     * @param unitToPreds A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is an ``out parameter'';
+     *                    <tt>buildExceptionalEdges</tt> will add a mapping for every {@link Trap} handler to all the <tt>Unit</tt>s
+     *                    within the scope of that <tt>Trap</tt>.
+     */
+    @Override
+    protected void buildExceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
+        // First, add the same edges as TrapUnitGraph.
+        super.buildExceptionalEdges(unitToSuccs, unitToPreds);
+        // Then add edges from the predecessors of the first
+        // trapped Unit for each Trap.
+        for (Trap trap : body.getTraps()) {
+            Unit catcher = trap.getHandlerUnit();
+            // Make a copy of firstTrapped's predecessors to iterate over,
+            // just in case we're about to add new predecessors to this
+            // very list, though that can only happen if the handler traps
+            // itself. And to really allow for that
+            // possibility, we should iterate here until we reach a fixed
+            // point; but the old UnitGraph that we are attempting to
+            // duplicate did not do that, so we won't either.
+            for (Unit pred : new ArrayList<Unit>(getPredsOf(trap.getBeginUnit()))) {
+                addEdge(unitToSuccs, unitToPreds, pred, catcher);
+            }
+        }
+    }
 }

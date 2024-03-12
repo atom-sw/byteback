@@ -10,12 +10,12 @@ package soot.options;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,12 +24,14 @@ package soot.options;
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
-import java.util.*;
+import java.util.Map;
 
-/** Option parser for Available Expressions Tagger. */
+/**
+ * Option parser for Available Expressions Tagger.
+ */
 public class AETOptions {
 
-    private Map<String, String> options;
+    private final Map<String, String> options;
 
     public AETOptions(Map<String, String> options) {
         this.options = options;
@@ -51,8 +53,8 @@ public class AETOptions {
     public int kind() {
         String s = soot.PhaseOptions.getString(options, "kind");
         if (s == null || s.isEmpty())
-        	return kind_optimistic;
-	
+            return kind_optimistic;
+
         if (s.equalsIgnoreCase("optimistic"))
             return kind_optimistic;
         if (s.equalsIgnoreCase("pessimistic"))

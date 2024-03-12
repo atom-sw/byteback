@@ -10,12 +10,12 @@ package soot.baf.syntax;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,73 +30,73 @@ import soot.util.Switch;
 
 public class BStaticGetInst extends AbstractInst implements StaticGetInst {
 
-  SootFieldRef fieldRef;
+    SootFieldRef fieldRef;
 
-  public BStaticGetInst(SootFieldRef fieldRef) {
-    if (!fieldRef.isStatic()) {
-      throw new RuntimeException("wrong static-ness");
+    public BStaticGetInst(SootFieldRef fieldRef) {
+        if (!fieldRef.isStatic()) {
+            throw new RuntimeException("wrong static-ness");
+        }
+        this.fieldRef = fieldRef;
     }
-    this.fieldRef = fieldRef;
-  }
 
-  @Override
-  public Object clone() {
-    return new BStaticGetInst(fieldRef);
-  }
+    @Override
+    public Object clone() {
+        return new BStaticGetInst(fieldRef);
+    }
 
-  @Override
-  public int getInCount() {
-    return 0;
-  }
+    @Override
+    public int getInCount() {
+        return 0;
+    }
 
-  @Override
-  public int getInMachineCount() {
-    return 0;
-  }
+    @Override
+    public int getInMachineCount() {
+        return 0;
+    }
 
-  @Override
-  public int getOutCount() {
-    return 1;
-  }
+    @Override
+    public int getOutCount() {
+        return 1;
+    }
 
-  @Override
-  public int getOutMachineCount() {
-    return AbstractJasminClass.sizeOfType(fieldRef.type());
-  }
+    @Override
+    public int getOutMachineCount() {
+        return AbstractJasminClass.sizeOfType(fieldRef.type());
+    }
 
-  @Override
-  final public String getName() {
-    return "staticget";
-  }
+    @Override
+    final public String getName() {
+        return "staticget";
+    }
 
-  @Override
-  final String getParameters() {
-    return " " + fieldRef.getSignature();
-  }
+    @Override
+    final String getParameters() {
+        return " " + fieldRef.getSignature();
+    }
 
-  @Override
-  protected void getParameters(UnitPrinter up) {
-    up.literal(" ");
-    up.fieldRef(fieldRef);
-  }
+    @Override
+    protected void getParameters(UnitPrinter up) {
+        up.literal(" ");
+        up.fieldRef(fieldRef);
+    }
 
-  @Override
-  public SootFieldRef getFieldRef() {
-    return fieldRef;
-  }
+    @Override
+    public SootFieldRef getFieldRef() {
+        return fieldRef;
+    }
 
-  @Override
-  public SootField getField() {
-    return fieldRef.resolve();
-  }
+    @Override
+    public SootField getField() {
+        return fieldRef.resolve();
+    }
 
-  @Override
-  public void apply(Switch sw) {
-    ((InstSwitch) sw).caseStaticGetInst(this);
-  }
+    @Override
+    public void apply(Switch sw) {
+        ((InstSwitch) sw).caseStaticGetInst(this);
+    }
 
-  @Override
-  public boolean containsFieldRef() {
-    return true;
-  }
+    @Override
+    public boolean containsFieldRef() {
+        return true;
+    }
 }

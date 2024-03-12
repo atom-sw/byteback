@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -29,30 +29,30 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class ErroneousType extends Type {
-  public ErroneousType(Singletons.Global g) {
-  }
+    public ErroneousType(Singletons.Global g) {
+    }
 
-  public static ErroneousType v() {
-    return G.v().soot_ErroneousType();
-  }
+    public static ErroneousType v() {
+        return G.v().soot_ErroneousType();
+    }
 
-  @Override
-  public int hashCode() {
-    return 0x92473FFF;
-  }
+    @Override
+    public int hashCode() {
+        return 0x92473FFF;
+    }
 
-  @Override
-  public boolean equals(Object t) {
-    return this == t;
-  }
+    @Override
+    public boolean equals(Object t) {
+        return this == t;
+    }
 
-  @Override
-  public String toString() {
-    return "<error>";
-  }
+    @Override
+    public String toString() {
+        return "<error>";
+    }
 
-  @Override
-  public void apply(Switch sw) {
-    ((TypeSwitch) sw).caseErroneousType(this);
-  }
+    @Override
+    public void apply(Switch sw) {
+        ((TypeSwitch) sw).caseErroneousType(this);
+    }
 }

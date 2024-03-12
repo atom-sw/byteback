@@ -17,7 +17,7 @@ public class CallExpr extends AbstractInvokeExpr implements Immediate {
     public CallExpr(final SootMethodRef methodRef, final List<Value> args) {
         super(methodRef, new ValueBox[args.size()]);
 
-        for (final ListIterator<Value> valueIterator = args.listIterator(); valueIterator.hasNext();) {
+        for (final ListIterator<Value> valueIterator = args.listIterator(); valueIterator.hasNext(); ) {
             final Value value = valueIterator.next();
             this.argBoxes[valueIterator.previousIndex()] = Vimp.v().newImmediateBox(value);
         }

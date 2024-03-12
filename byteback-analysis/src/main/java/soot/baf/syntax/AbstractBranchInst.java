@@ -10,73 +10,73 @@ package soot.baf.syntax;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.Collections;
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
 
+import java.util.Collections;
+import java.util.List;
+
 public abstract class AbstractBranchInst extends AbstractInst {
 
-  UnitBox targetBox;
-  final List<UnitBox> targetBoxes;
+    UnitBox targetBox;
+    final List<UnitBox> targetBoxes;
 
-  AbstractBranchInst(UnitBox targetBox) {
-    this.targetBox = targetBox;
-    this.targetBoxes = Collections.singletonList(targetBox);
-  }
-
-  @Override
-  public String toString() {
-    String target;
-    Unit targetUnit = getTarget();
-    if (this == targetUnit) {
-      target = getName();
-    } else {
-      target = targetUnit.toString();
+    AbstractBranchInst(UnitBox targetBox) {
+        this.targetBox = targetBox;
+        this.targetBoxes = Collections.singletonList(targetBox);
     }
-    return getName() + " " + target;
-  }
 
-  @Override
-  public void toString(UnitPrinter up) {
-    up.literal(getName());
-    up.literal(" ");
-    targetBox.toString(up);
-  }
+    @Override
+    public String toString() {
+        String target;
+        Unit targetUnit = getTarget();
+        if (this == targetUnit) {
+            target = getName();
+        } else {
+            target = targetUnit.toString();
+        }
+        return getName() + " " + target;
+    }
 
-  public Unit getTarget() {
-    return targetBox.getUnit();
-  }
+    @Override
+    public void toString(UnitPrinter up) {
+        up.literal(getName());
+        up.literal(" ");
+        targetBox.toString(up);
+    }
 
-  public void setTarget(Unit target) {
-    targetBox.setUnit(target);
-  }
+    public Unit getTarget() {
+        return targetBox.getUnit();
+    }
 
-  public UnitBox getTargetBox() {
-    return targetBox;
-  }
+    public void setTarget(Unit target) {
+        targetBox.setUnit(target);
+    }
 
-  @Override
-  public List<UnitBox> getUnitBoxes() {
-    return targetBoxes;
-  }
+    public UnitBox getTargetBox() {
+        return targetBox;
+    }
 
-  @Override
-  public boolean branches() {
-    return true;
-  }
+    @Override
+    public List<UnitBox> getUnitBoxes() {
+        return targetBoxes;
+    }
+
+    @Override
+    public boolean branches() {
+        return true;
+    }
 }

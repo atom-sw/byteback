@@ -10,19 +10,18 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -31,47 +30,47 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public class DoubleType extends PrimType {
 
-  public static final int HASHCODE = 0x4B9D7242;
+    public static final int HASHCODE = 0x4B9D7242;
 
-  public DoubleType(Singletons.Global g) {
-  }
+    public DoubleType(Singletons.Global g) {
+    }
 
-  public static DoubleType v() {
-    return G.v().soot_DoubleType();
-  }
+    public static DoubleType v() {
+        return G.v().soot_DoubleType();
+    }
 
-  @Override
-  public boolean equals(Object t) {
-    return this == t;
-  }
+    @Override
+    public boolean equals(Object t) {
+        return this == t;
+    }
 
-  @Override
-  public int hashCode() {
-    return HASHCODE;
-  }
+    @Override
+    public int hashCode() {
+        return HASHCODE;
+    }
 
-  @Override
-  public String toString() {
-    return "double";
-  }
+    @Override
+    public String toString() {
+        return "double";
+    }
 
-  @Override
-  public void apply(Switch sw) {
-    ((TypeSwitch) sw).caseDoubleType(this);
-  }
+    @Override
+    public void apply(Switch sw) {
+        ((TypeSwitch) sw).caseDoubleType(this);
+    }
 
-  @Override
-  public String getTypeAsString() {
-    return JavaBasicTypes.JAVA_LANG_DOUBLE;
-  }
+    @Override
+    public String getTypeAsString() {
+        return JavaBasicTypes.JAVA_LANG_DOUBLE;
+    }
 
-  @Override
-  public Class<?> getJavaBoxedType() {
-    return Double.class;
-  }
+    @Override
+    public Class<?> getJavaBoxedType() {
+        return Double.class;
+    }
 
-  @Override
-  public Class<?> getJavaPrimitiveType() {
-    return double.class;
-  }
+    @Override
+    public Class<?> getJavaPrimitiveType() {
+        return double.class;
+    }
 }

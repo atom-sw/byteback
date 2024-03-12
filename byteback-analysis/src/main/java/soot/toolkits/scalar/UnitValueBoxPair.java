@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,55 +30,49 @@ import soot.ValueBox;
  */
 public class UnitValueBoxPair {
 
-  public Unit unit;
-  public ValueBox valueBox;
+    public Unit unit;
+    public ValueBox valueBox;
 
-  /**
-   * Constructs a UnitValueBoxPair from a Unit object and a ValueBox object.
-   * 
-   * @param unit
-   *          some Unit
-   * @param valueBox
-   *          some ValueBox
-   */
-  public UnitValueBoxPair(Unit unit, ValueBox valueBox) {
-    this.unit = unit;
-    this.valueBox = valueBox;
-  }
-
-  /**
-   * Two UnitValueBoxPairs are equal iff they the Units they hold are 'equal' and the ValueBoxes they hold are 'equal'.
-   * 
-   * @param other
-   *          another UnitValueBoxPair
-   * @return true if equal.
-   */
-  @Override
-  public boolean equals(Object other) {
-    if (other instanceof UnitValueBoxPair) {
-      UnitValueBoxPair otherPair = (UnitValueBoxPair) other;
-      if (this.unit.equals(otherPair.unit) && this.valueBox.equals(otherPair.valueBox)) {
-        return true;
-      }
+    /**
+     * Constructs a UnitValueBoxPair from a Unit object and a ValueBox object.
+     *
+     * @param unit     some Unit
+     * @param valueBox some ValueBox
+     */
+    public UnitValueBoxPair(Unit unit, ValueBox valueBox) {
+        this.unit = unit;
+        this.valueBox = valueBox;
     }
-    return false;
-  }
 
-  @Override
-  public int hashCode() {
-    return unit.hashCode() + valueBox.hashCode();
-  }
+    /**
+     * Two UnitValueBoxPairs are equal iff they the Units they hold are 'equal' and the ValueBoxes they hold are 'equal'.
+     *
+     * @param other another UnitValueBoxPair
+     * @return true if equal.
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof UnitValueBoxPair otherPair) {
+            return this.unit.equals(otherPair.unit) && this.valueBox.equals(otherPair.valueBox);
+        }
+        return false;
+    }
 
-  @Override
-  public String toString() {
-    return valueBox + " in " + unit;
-  }
+    @Override
+    public int hashCode() {
+        return unit.hashCode() + valueBox.hashCode();
+    }
 
-  public Unit getUnit() {
-    return unit;
-  }
+    @Override
+    public String toString() {
+        return valueBox + " in " + unit;
+    }
 
-  public ValueBox getValueBox() {
-    return valueBox;
-  }
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public ValueBox getValueBox() {
+        return valueBox;
+    }
 }

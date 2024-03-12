@@ -5,17 +5,17 @@ import soot.util.Switchable;
 
 public interface Visitor<T extends Switchable, R> extends Switch {
 
-	default R getResult() {
-		return null;
-	}
+    default R getResult() {
+        return null;
+    }
 
-	default void defaultCase(T o) {
-	}
+    default void defaultCase(T o) {
+    }
 
-	default R visit(final T o) {
-		o.apply(this);
+    default R visit(final T o) {
+        o.apply(this);
 
-		return getResult();
-	}
+        return getResult();
+    }
 
 }

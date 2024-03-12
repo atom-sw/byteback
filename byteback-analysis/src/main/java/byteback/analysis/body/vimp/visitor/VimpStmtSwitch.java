@@ -8,16 +8,16 @@ import soot.jimple.Stmt;
 
 public interface VimpStmtSwitch<T> extends Visitor<Stmt, T> {
 
-	default void caseAssertionStmt(final AssertStmt assertStmt) {
-		defaultCase(assertStmt);
-	}
+    default void caseAssertionStmt(final AssertStmt assertStmt) {
+        defaultCase(assertStmt);
+    }
 
-	default void caseAssumptionStmt(final AssumeStmt assumeStmt) {
-		defaultCase(assumeStmt);
-	}
+    default void caseAssumptionStmt(final AssumeStmt assumeStmt) {
+        defaultCase(assumeStmt);
+    }
 
-	default void caseInvariantStmt(final InvariantStmt invariantStmt) {
-		defaultCase(invariantStmt);
-	}
+    default void caseInvariantStmt(final InvariantStmt invariantStmt) {
+        defaultCase(invariantStmt);
+    }
 
 }

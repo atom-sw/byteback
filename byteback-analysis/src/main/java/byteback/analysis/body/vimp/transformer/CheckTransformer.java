@@ -1,14 +1,8 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.analysis.body.vimp.Vimp;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.function.Supplier;
-
+import byteback.analysis.body.vimp.VimpExprFactory;
 import soot.*;
 import soot.grimp.Grimp;
 import soot.jimple.Jimple;
@@ -16,11 +10,16 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.function.Supplier;
+
 public abstract class CheckTransformer extends BodyTransformer {
 
-    public final SootClass exceptionClass;
+    public final ClassModel exceptionClass;
 
-    public CheckTransformer(final SootClass exceptionClass) {
+    public CheckTransformer(final ClassModel exceptionClass) {
         this.exceptionClass = exceptionClass;
     }
 

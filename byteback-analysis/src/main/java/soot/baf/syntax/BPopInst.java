@@ -10,12 +10,12 @@ package soot.baf.syntax;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,63 +28,63 @@ import soot.util.Switch;
 
 public class BPopInst extends AbstractInst implements PopInst {
 
-  protected Type mType;
+    protected Type mType;
 
-  public BPopInst(Type aType) {
-    this.mType = aType;
-  }
+    public BPopInst(Type aType) {
+        this.mType = aType;
+    }
 
-  @Override
-  public Object clone() {
-    return new BPopInst(mType);
-  }
+    @Override
+    public Object clone() {
+        return new BPopInst(mType);
+    }
 
-  @Override
-  public int getWordCount() {
-    return getInMachineCount();
-  }
+    @Override
+    public int getWordCount() {
+        return getInMachineCount();
+    }
 
-  @Override
-  public void setWordCount(int count) {
-    throw new RuntimeException("not implemented");
-  }
+    @Override
+    public void setWordCount(int count) {
+        throw new RuntimeException("not implemented");
+    }
 
-  @Override
-  final public String getName() {
-    return "pop";
-  }
+    @Override
+    final public String getName() {
+        return "pop";
+    }
 
-  @Override
-  final String getParameters() {
-    return "";
-  }
+    @Override
+    final String getParameters() {
+        return "";
+    }
 
-  @Override
-  public int getInCount() {
-    return 1;
-  }
+    @Override
+    public int getInCount() {
+        return 1;
+    }
 
-  @Override
-  public int getOutMachineCount() {
-    return 0;
-  }
+    @Override
+    public int getOutMachineCount() {
+        return 0;
+    }
 
-  @Override
-  public int getOutCount() {
-    return 0;
-  }
+    @Override
+    public int getOutCount() {
+        return 0;
+    }
 
-  @Override
-  public int getInMachineCount() {
-    return AbstractJasminClass.sizeOfType(mType);
-  }
+    @Override
+    public int getInMachineCount() {
+        return AbstractJasminClass.sizeOfType(mType);
+    }
 
-  @Override
-  public void apply(Switch sw) {
-    ((InstSwitch) sw).casePopInst(this);
-  }
+    @Override
+    public void apply(Switch sw) {
+        ((InstSwitch) sw).casePopInst(this);
+    }
 
-  public Type getType() {
-    return mType;
-  }
+    public Type getType() {
+        return mType;
+    }
 }

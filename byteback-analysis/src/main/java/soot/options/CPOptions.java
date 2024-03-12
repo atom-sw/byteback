@@ -10,12 +10,12 @@ package soot.options;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,12 +24,14 @@ package soot.options;
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
-import java.util.*;
+import java.util.Map;
 
-/** Option parser for Copy Propagator. */
+/**
+ * Option parser for Copy Propagator.
+ */
 public class CPOptions {
 
-    private Map<String, String> options;
+    private final Map<String, String> options;
 
     public CPOptions(Map<String, String> options) {
         this.options = options;
@@ -44,7 +46,7 @@ public class CPOptions {
 
     /**
      * Only Regular Locals
-     * Only propagate copies through ``regular'' locals, that is, those 
+     * Only propagate copies through ``regular'' locals, that is, those
      * declared in the source bytecode.
      */
     public boolean only_regular_locals() {
@@ -53,7 +55,7 @@ public class CPOptions {
 
     /**
      * Only Stack Locals
-     * Only propagate copies through locals that represent stack 
+     * Only propagate copies through locals that represent stack
      * locations in the original bytecode.
      */
     public boolean only_stack_locals() {

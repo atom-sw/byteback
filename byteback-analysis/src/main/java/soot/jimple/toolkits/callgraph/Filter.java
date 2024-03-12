@@ -10,12 +10,12 @@ package soot.jimple.toolkits.callgraph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -26,52 +26,52 @@ import java.util.Iterator;
 
 /**
  * Represents a subset of the edges in a call graph satisfying an EdgePredicate predicate.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class Filter implements Iterator<Edge> {
 
-  private final EdgePredicate pred;
-  private Iterator<Edge> source;
-  private Edge next = null;
+    private final EdgePredicate pred;
+    private Iterator<Edge> source;
+    private Edge next = null;
 
-  public Filter(EdgePredicate pred) {
-    this.pred = pred;
-  }
-
-  public Iterator<Edge> wrap(Iterator<Edge> source) {
-    this.source = source;
-    advance();
-    return this;
-  }
-
-  private void advance() {
-    while (source.hasNext()) {
-      next = source.next();
-      if (next == null) {
-    	continue;
-      }
-      if (pred.want(next)) {
-        return;
-      }
+    public Filter(EdgePredicate pred) {
+        this.pred = pred;
     }
-    next = null;
-  }
 
-  @Override
-  public boolean hasNext() {
-    return next != null;
-  }
+    public Iterator<Edge> wrap(Iterator<Edge> source) {
+        this.source = source;
+        advance();
+        return this;
+    }
 
-  @Override
-  public Edge next() {
-    Edge ret = next;
-    advance();
-    return ret;
-  }
+    private void advance() {
+        while (source.hasNext()) {
+            next = source.next();
+            if (next == null) {
+                continue;
+            }
+            if (pred.want(next)) {
+                return;
+            }
+        }
+        next = null;
+    }
 
-  @Override
-  public void remove() {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public boolean hasNext() {
+        return next != null;
+    }
+
+    @Override
+    public Edge next() {
+        Edge ret = next;
+        advance();
+        return ret;
+    }
+
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

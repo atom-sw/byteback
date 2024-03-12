@@ -10,12 +10,12 @@ package soot.jimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,42 +34,44 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public abstract class AbstractLengthExpr extends AbstractUnopExpr implements LengthExpr {
 
-  protected AbstractLengthExpr(ValueBox opBox) {
-    super(opBox);
-  }
-
-  @Override
-  public boolean equivTo(Object o) {
-    if (o instanceof AbstractLengthExpr) {
-      return this.opBox.getValue().equivTo(((AbstractLengthExpr) o).opBox.getValue());
+    protected AbstractLengthExpr(ValueBox opBox) {
+        super(opBox);
     }
-    return false;
-  }
 
-  /** Returns a hash code for this object, consistent with structural equality. */
-  @Override
-  public int equivHashCode() {
-    return opBox.getValue().equivHashCode();
-  }
+    @Override
+    public boolean equivTo(Object o) {
+        if (o instanceof AbstractLengthExpr) {
+            return this.opBox.getValue().equivTo(((AbstractLengthExpr) o).opBox.getValue());
+        }
+        return false;
+    }
 
-  @Override
-  public String toString() {
-    return Jimple.LENGTHOF + " " + opBox.getValue().toString();
-  }
+    /**
+     * Returns a hash code for this object, consistent with structural equality.
+     */
+    @Override
+    public int equivHashCode() {
+        return opBox.getValue().equivHashCode();
+    }
 
-  @Override
-  public void toString(UnitPrinter up) {
-    up.literal(Jimple.LENGTHOF + " ");
-    opBox.toString(up);
-  }
+    @Override
+    public String toString() {
+        return Jimple.LENGTHOF + " " + opBox.getValue().toString();
+    }
 
-  @Override
-  public Type getType() {
-    return IntType.v();
-  }
+    @Override
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.LENGTHOF + " ");
+        opBox.toString(up);
+    }
 
-  @Override
-  public void apply(Switch sw) {
-    ((ExprSwitch) sw).caseLengthExpr(this);
-  }
+    @Override
+    public Type getType() {
+        return IntType.v();
+    }
+
+    @Override
+    public void apply(Switch sw) {
+        ((ExprSwitch) sw).caseLengthExpr(this);
+    }
 }

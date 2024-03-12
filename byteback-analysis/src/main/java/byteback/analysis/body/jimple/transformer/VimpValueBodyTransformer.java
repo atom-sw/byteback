@@ -4,7 +4,10 @@ import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.analysis.body.jimple.visitor.AbstractJimpleValueSwitch;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.syntax.*;
+import byteback.analysis.body.vimp.syntax.AssertStmt;
+import byteback.analysis.body.vimp.syntax.AssumeStmt;
+import byteback.analysis.body.vimp.syntax.InvariantStmt;
+import byteback.analysis.body.vimp.syntax.LogicConstant;
 import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
 import byteback.analysis.scene.Types;
 import byteback.common.function.Lazy;
@@ -17,6 +20,7 @@ import java.util.function.Function;
 /**
  * Converts bytecode boolean expressions into logic boolean expressions. Unlike bytecode boolean expressions, logic
  * boolean expressions do not operate on integer values.
+ *
  * @author paganma
  */
 public class VimpValueBodyTransformer extends BodyTransformer {
@@ -319,13 +323,16 @@ public class VimpValueBodyTransformer extends BodyTransformer {
             }
 
             @Override
-            public void caseCmpExpr(final CmpExpr $) {}
+            public void caseCmpExpr(final CmpExpr $) {
+            }
 
             @Override
-            public void caseCmplExpr(final CmplExpr $) {}
+            public void caseCmplExpr(final CmplExpr $) {
+            }
 
             @Override
-            public void caseCmpgExpr(final CmpgExpr $) {}
+            public void caseCmpgExpr(final CmpgExpr $) {
+            }
 
             @Override
             public void defaultCase(final Value value) {

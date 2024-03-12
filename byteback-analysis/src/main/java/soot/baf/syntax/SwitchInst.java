@@ -10,40 +10,40 @@ package soot.baf.syntax;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 
+import java.util.List;
+
 public interface SwitchInst extends Inst {
 
-  public Unit getDefaultTarget();
+    Unit getDefaultTarget();
 
-  public void setDefaultTarget(Unit defTarget);
+    void setDefaultTarget(Unit defTarget);
 
-  public UnitBox getDefaultTargetBox();
+    UnitBox getDefaultTargetBox();
 
-  public int getTargetCount();
+    int getTargetCount();
 
-  public List<Unit> getTargets();
+    List<Unit> getTargets();
 
-  public Unit getTarget(int index);
+    Unit getTarget(int index);
 
-  public void setTarget(int index, Unit target);
+    void setTarget(int index, Unit target);
 
-  public void setTargets(List<Unit> targets);
+    void setTargets(List<Unit> targets);
 
-  public UnitBox getTargetBox(int index);
+    UnitBox getTargetBox(int index);
 }

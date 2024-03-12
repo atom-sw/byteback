@@ -9,34 +9,34 @@ import soot.util.Switch;
 
 public class LogicXorExpr extends AbstractLogicBinopExpr implements XorExpr {
 
-	public LogicXorExpr(final Value op1, final Value op2) {
-		super(op1, op2);
-	}
+    public LogicXorExpr(final Value op1, final Value op2) {
+        super(op1, op2);
+    }
 
-	public LogicXorExpr(final ValueBox op1box, final ValueBox op2box) {
-		super(op1box, op2box);
-	}
+    public LogicXorExpr(final ValueBox op1box, final ValueBox op2box) {
+        super(op1box, op2box);
+    }
 
-	@Override
-	public String getSymbol() {
-		return " ⊕ ";
-	}
+    @Override
+    public String getSymbol() {
+        return " ⊕ ";
+    }
 
-	@Override
-	public LogicXorExpr clone() {
-		return new LogicXorExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
-	}
+    @Override
+    public LogicXorExpr clone() {
+        return new LogicXorExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+    }
 
-	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicXorExpr(this);
-		}
-	}
+    @Override
+    public void apply(final Switch visitor) {
+        if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
+            vimpValueSwitch.caseLogicXorExpr(this);
+        }
+    }
 
-	@Override
-	public int getPrecedence() {
-		return 500;
-	}
+    @Override
+    public int getPrecedence() {
+        return 500;
+    }
 
 }

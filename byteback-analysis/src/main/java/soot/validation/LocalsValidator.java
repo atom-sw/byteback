@@ -10,54 +10,54 @@ package soot.validation;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.List;
-
 import soot.Body;
 import soot.Local;
 import soot.Value;
 import soot.ValueBox;
 
+import java.util.List;
+
 public enum LocalsValidator implements BodyValidator {
-  INSTANCE;
+    INSTANCE;
 
-  public static LocalsValidator v() {
-    return INSTANCE;
-  }
-
-  @Override
-  /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
-  public void validate(Body body, List<ValidationException> exception) {
-    for (ValueBox vb : body.getUseBoxes()) {
-      validateLocal(body, vb, exception);
+    public static LocalsValidator v() {
+        return INSTANCE;
     }
-    for (ValueBox vb : body.getDefBoxes()) {
-      validateLocal(body, vb, exception);
-    }
-  }
 
-  private void validateLocal(Body body, ValueBox vb, List<ValidationException> exception) {
-    Value value = vb.getValue();
-    if (value instanceof Local) {
-      if (!body.getLocals().contains((Local) value)) {
-        exception.add(new ValidationException(value, "Local not in chain : " + value + " in " + body.getMethod()));
-      }
+    @Override
+    /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
+    public void validate(Body body, List<ValidationException> exception) {
+        for (ValueBox vb : body.getUseBoxes()) {
+            validateLocal(body, vb, exception);
+        }
+        for (ValueBox vb : body.getDefBoxes()) {
+            validateLocal(body, vb, exception);
+        }
     }
-  }
 
-  @Override
-  public boolean isBasicValidator() {
-    return true;
-  }
+    private void validateLocal(Body body, ValueBox vb, List<ValidationException> exception) {
+        Value value = vb.getValue();
+        if (value instanceof Local) {
+            if (!body.getLocals().contains((Local) value)) {
+                exception.add(new ValidationException(value, "Local not in chain : " + value + " in " + body.getMethod()));
+            }
+        }
+    }
+
+    @Override
+    public boolean isBasicValidator() {
+        return true;
+    }
 }

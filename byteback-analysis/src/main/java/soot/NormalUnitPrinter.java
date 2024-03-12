@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -32,48 +32,47 @@ import soot.jimple.ThisRef;
  */
 public class NormalUnitPrinter extends LabeledUnitPrinter {
 
-  public NormalUnitPrinter(Body body) {
-    super(body);
-  }
-
-  @Override
-  public void type(Type t) {
-    handleIndent();
-    output.append(t == null ? "<null>" : t.toQuotedString());
-  }
-
-  @Override
-  public void methodRef(SootMethodRef m) {
-    handleIndent();
-    output.append(m.getSignature());
-  }
-
-  @Override
-  public void fieldRef(SootFieldRef f) {
-    handleIndent();
-    output.append(f.getSignature());
-  }
-
-  @Override
-  public void identityRef(IdentityRef r) {
-    handleIndent();
-    if (r instanceof ThisRef) {
-      literal("@this: ");
-      type(r.getType());
-    } else if (r instanceof ParameterRef) {
-      ParameterRef pr = (ParameterRef) r;
-      literal("@parameter" + pr.getIndex() + ": ");
-      type(r.getType());
-    } else if (r instanceof CaughtExceptionRef) {
-      literal("@caughtexception");
-    } else {
-      throw new RuntimeException();
+    public NormalUnitPrinter(Body body) {
+        super(body);
     }
-  }
 
-  @Override
-  public void literal(String s) {
-    handleIndent();
-    output.append(s);
-  }
+    @Override
+    public void type(Type t) {
+        handleIndent();
+        output.append(t == null ? "<null>" : t.toQuotedString());
+    }
+
+    @Override
+    public void methodRef(SootMethodRef m) {
+        handleIndent();
+        output.append(m.getSignature());
+    }
+
+    @Override
+    public void fieldRef(SootFieldRef f) {
+        handleIndent();
+        output.append(f.getSignature());
+    }
+
+    @Override
+    public void identityRef(IdentityRef r) {
+        handleIndent();
+        if (r instanceof ThisRef) {
+            literal("@this: ");
+            type(r.getType());
+        } else if (r instanceof ParameterRef pr) {
+            literal("@parameter" + pr.getIndex() + ": ");
+            type(r.getType());
+        } else if (r instanceof CaughtExceptionRef) {
+            literal("@caughtexception");
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public void literal(String s) {
+        handleIndent();
+        output.append(s);
+    }
 }

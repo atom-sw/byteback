@@ -10,12 +10,12 @@ package soot.grimp.syntax;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,27 +30,27 @@ import soot.util.Switch;
 
 public class GOrExpr extends AbstractGrimpIntLongBinopExpr implements OrExpr {
 
-  public GOrExpr(Value op1, Value op2) {
-    super(op1, op2);
-  }
+    public GOrExpr(Value op1, Value op2) {
+        super(op1, op2);
+    }
 
-  @Override
-  public String getSymbol() {
-    return " | ";
-  }
+    @Override
+    public String getSymbol() {
+        return " | ";
+    }
 
-  @Override
-  public int getPrecedence() {
-    return 350;
-  }
+    @Override
+    public int getPrecedence() {
+        return 350;
+    }
 
-  @Override
-  public void apply(Switch sw) {
-    ((ExprSwitch) sw).caseOrExpr(this);
-  }
+    @Override
+    public void apply(Switch sw) {
+        ((ExprSwitch) sw).caseOrExpr(this);
+    }
 
-  @Override
-  public Object clone() {
-    return new GOrExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
-  }
+    @Override
+    public Object clone() {
+        return new GOrExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+    }
 }

@@ -10,12 +10,12 @@ package soot.toolkits.graph.pdg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -23,24 +23,22 @@ package soot.toolkits.graph.pdg;
  */
 
 /**
- *
  * This represents a PDGNode that has more than 1 dependent but is not a loop header. This includes a conditional node, or a
  * potentially exceptional node.
- *
  */
 public class ConditionalPDGNode extends PDGNode {
 
-  public ConditionalPDGNode(Object obj, Type t) {
-    super(obj, t);
-  }
+    public ConditionalPDGNode(Object obj, Type t) {
+        super(obj, t);
+    }
 
-  public ConditionalPDGNode(PDGNode node) {
-    this(node.getNode(), node.getType());
-    this.m_dependents.addAll(node.m_dependents);
-    this.m_backDependents.addAll(node.m_backDependents);
-    this.m_next = node.m_next;
-    this.m_prev = node.m_prev;
+    public ConditionalPDGNode(PDGNode node) {
+        this(node.getNode(), node.getType());
+        this.m_dependents.addAll(node.m_dependents);
+        this.m_backDependents.addAll(node.m_backDependents);
+        this.m_next = node.m_next;
+        this.m_prev = node.m_prev;
 
-  }
+    }
 
 }

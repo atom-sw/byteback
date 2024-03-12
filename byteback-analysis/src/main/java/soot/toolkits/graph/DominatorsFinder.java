@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -31,28 +31,28 @@ import java.util.List;
  * @author Navindra Umanee
  **/
 public interface DominatorsFinder<N> {
-  /**
-   * Returns the graph to which the analysis pertains.
-   **/
-  public DirectedGraph<N> getGraph();
+    /**
+     * Returns the graph to which the analysis pertains.
+     **/
+    DirectedGraph<N> getGraph();
 
-  /**
-   * Returns a list of dominators for the given node in the graph.
-   **/
-  public List<N> getDominators(N node);
+    /**
+     * Returns a list of dominators for the given node in the graph.
+     **/
+    List<N> getDominators(N node);
 
-  /**
-   * Returns the immediate dominator of node or null if the node has no immediate dominator.
-   **/
-  public N getImmediateDominator(N node);
+    /**
+     * Returns the immediate dominator of node or null if the node has no immediate dominator.
+     **/
+    N getImmediateDominator(N node);
 
-  /**
-   * True if "node" is dominated by "dominator" in the graph.
-   **/
-  public boolean isDominatedBy(N node, N dominator);
+    /**
+     * True if "node" is dominated by "dominator" in the graph.
+     **/
+    boolean isDominatedBy(N node, N dominator);
 
-  /**
-   * True if "node" is dominated by all nodes in "dominators" in the graph.
-   **/
-  public boolean isDominatedByAll(N node, Collection<N> dominators);
+    /**
+     * True if "node" is dominated by all nodes in "dominators" in the graph.
+     **/
+    boolean isDominatedByAll(N node, Collection<N> dominators);
 }

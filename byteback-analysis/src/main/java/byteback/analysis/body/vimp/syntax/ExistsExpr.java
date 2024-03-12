@@ -9,25 +9,25 @@ import soot.util.Switch;
 
 public class ExistsExpr extends QuantifierExpr {
 
-	public ExistsExpr(final Chain<Local> freeLocals, final Value value) {
-		super(freeLocals, value);
-	}
+    public ExistsExpr(final Chain<Local> freeLocals, final Value value) {
+        super(freeLocals, value);
+    }
 
-	@Override
-	protected String getSymbol() {
-		return "∃";
-	}
+    @Override
+    protected String getSymbol() {
+        return "∃";
+    }
 
-	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicExistsExpr(this);
-		}
-	}
+    @Override
+    public void apply(final Switch visitor) {
+        if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
+            vimpValueSwitch.caseLogicExistsExpr(this);
+        }
+    }
 
-	@Override
-	public ExistsExpr clone() {
-		return new ExistsExpr(cloneBindings(), Vimp.cloneIfNecessary(getValue()));
-	}
+    @Override
+    public ExistsExpr clone() {
+        return new ExistsExpr(cloneBindings(), Vimp.cloneIfNecessary(getValue()));
+    }
 
 }

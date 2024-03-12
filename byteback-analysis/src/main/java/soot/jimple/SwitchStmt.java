@@ -10,51 +10,52 @@ package soot.jimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.List;
-
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
 import soot.ValueBox;
 
+import java.util.List;
+
 public interface SwitchStmt extends Stmt {
-  public Unit getDefaultTarget();
+    Unit getDefaultTarget();
 
-  public void setDefaultTarget(Unit defaultTarget);
+    void setDefaultTarget(Unit defaultTarget);
 
-  public UnitBox getDefaultTargetBox();
+    UnitBox getDefaultTargetBox();
 
-  public Value getKey();
+    Value getKey();
 
-  public void setKey(Value key);
+    void setKey(Value key);
 
-  public ValueBox getKeyBox();
+    ValueBox getKeyBox();
 
-  public List<Unit> getTargets();
-  
-  /**
-   * Returns the target unit if a value with value
-   * "value" is the key
-   * @param value the value
-   * @return the target
-   */
-  public Unit getTargetForValue(int value);
+    List<Unit> getTargets();
 
-  public Unit getTarget(int index);
+    /**
+     * Returns the target unit if a value with value
+     * "value" is the key
+     *
+     * @param value the value
+     * @return the target
+     */
+    Unit getTargetForValue(int value);
 
-  public void setTarget(int index, Unit target);
+    Unit getTarget(int index);
 
-  public UnitBox getTargetBox(int index);
+    void setTarget(int index, Unit target);
+
+    UnitBox getTargetBox(int index);
 }

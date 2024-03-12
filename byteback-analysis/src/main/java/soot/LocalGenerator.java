@@ -23,6 +23,8 @@ package soot;
  */
 
 public abstract class LocalGenerator {
-  /** generates a new soot local given the type */
-  public abstract Local generateLocal(Type type);
+    /**
+     * generates a new soot local given the type
+     */
+    public abstract Local generateLocal(Type type);
 }

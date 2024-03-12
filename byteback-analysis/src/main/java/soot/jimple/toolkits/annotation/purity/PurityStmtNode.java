@@ -10,22 +10,22 @@ package soot.jimple.toolkits.annotation.purity;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
+import soot.jimple.Stmt;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import soot.jimple.Stmt;
 
 /**
  * A node created dynamically and attached to a statement Stmt. Can be either an inside or a load node. Two such nodes are
@@ -34,57 +34,62 @@ import soot.jimple.Stmt;
  */
 public class PurityStmtNode implements PurityNode {
 
-  /** gives a unique id, for pretty-printing purposes */
-  private static final Map<Stmt, Integer> nMap = new HashMap<Stmt, Integer>();
-  private static int n = 0;
+    /**
+     * gives a unique id, for pretty-printing purposes
+     */
+    private static final Map<Stmt, Integer> nMap = new HashMap<Stmt, Integer>();
+    private static int n = 0;
 
-  /** Statement that created the node */
-  private final Stmt id;
+    /**
+     * Statement that created the node
+     */
+    private final Stmt id;
 
-  /** true if an inside node, false if an load node */
-  private final boolean inside;
+    /**
+     * true if an inside node, false if an load node
+     */
+    private final boolean inside;
 
-  PurityStmtNode(Stmt id, boolean inside) {
-    this.id = id;
-    this.inside = inside;
-    if (!nMap.containsKey(id)) {
-      nMap.put(id, n);
-      n++;
+    PurityStmtNode(Stmt id, boolean inside) {
+        this.id = id;
+        this.inside = inside;
+        if (!nMap.containsKey(id)) {
+            nMap.put(id, n);
+            n++;
+        }
     }
-  }
 
-  @Override
-  public String toString() {
-    return inside ? ("I_" + nMap.get(id)) : ("L_" + nMap.get(id));
-  }
-
-  @Override
-  public int hashCode() {
-    return id.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o instanceof PurityStmtNode) {
-      PurityStmtNode oo = (PurityStmtNode) o;
-      return this.id.equals(oo.id) && this.inside == oo.inside;
-    } else {
-      return false;
+    @Override
+    public String toString() {
+        return inside ? ("I_" + nMap.get(id)) : ("L_" + nMap.get(id));
     }
-  }
 
-  @Override
-  public boolean isInside() {
-    return inside;
-  }
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
-  @Override
-  public boolean isLoad() {
-    return !inside;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof PurityStmtNode oo) {
+            return this.id.equals(oo.id) && this.inside == oo.inside;
+        } else {
+            return false;
+        }
+    }
 
-  @Override
-  public boolean isParam() {
-    return false;
-  }
+    @Override
+    public boolean isInside() {
+        return inside;
+    }
+
+    @Override
+    public boolean isLoad() {
+        return !inside;
+    }
+
+    @Override
+    public boolean isParam() {
+        return false;
+    }
 }

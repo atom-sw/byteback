@@ -3,27 +3,20 @@ package byteback.analysis.body.vimp.transformer;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
-import byteback.common.function.Lazy;
 import byteback.common.collection.ListHashMap;
 import byteback.common.collection.Stacks;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
-import soot.Body;
-import soot.Local;
-import soot.RefType;
-import soot.Trap;
-import soot.Unit;
-import soot.Value;
+import byteback.common.function.Lazy;
+import soot.*;
 import soot.grimp.Grimp;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
 
 public class GuardTransformer extends BodyTransformer {
 

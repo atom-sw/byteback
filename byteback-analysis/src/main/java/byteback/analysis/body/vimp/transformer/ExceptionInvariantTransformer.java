@@ -2,13 +2,11 @@ package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.common.function.Lazy;
-
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
+
+import java.util.Set;
 
 public class ExceptionInvariantTransformer extends BodyTransformer {
 

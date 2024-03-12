@@ -10,44 +10,44 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
+import soot.util.Switchable;
+
 import java.io.Serializable;
 import java.util.List;
 
-import soot.util.Switchable;
-
 /**
  * Data used as, for instance, arguments to instructions; typical implementations are constants or expressions.
- *
+ * <p>
  * Values are typed, clonable and must declare which other Values they use (contain).
  */
 public interface Value extends Switchable, EquivTo, Serializable {
 
-  /**
-   * Returns a List of boxes corresponding to Values which are used by (ie contained within) this Value.
-   */
-  public List<ValueBox> getUseBoxes();
+    /**
+     * Returns a List of boxes corresponding to Values which are used by (ie contained within) this Value.
+     */
+    List<ValueBox> getUseBoxes();
 
-  /**
-   * Returns the Soot type of this Value.
-   */
-  public Type getType();
+    /**
+     * Returns the Soot type of this Value.
+     */
+    Type getType();
 
-  /**
-   * Returns a clone of this Value.
-   */
-  public Object clone();
+    /**
+     * Returns a clone of this Value.
+     */
+    Object clone();
 
-  public void toString(UnitPrinter up);
+    void toString(UnitPrinter up);
 }

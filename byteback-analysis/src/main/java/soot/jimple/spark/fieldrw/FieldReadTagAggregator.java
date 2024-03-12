@@ -10,12 +10,12 @@ package soot.jimple.spark.fieldrw;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,23 +24,25 @@ package soot.jimple.spark.fieldrw;
 
 import soot.G;
 import soot.Singletons;
-import soot.tagkit.ImportantTagAggregator;
-import soot.tagkit.Tag;
+import soot.tag.ImportantTagAggregator;
+import soot.tag.Tag;
 
 public class FieldReadTagAggregator extends ImportantTagAggregator {
-  public FieldReadTagAggregator(Singletons.Global g) {
-  }
+    public FieldReadTagAggregator(Singletons.Global g) {
+    }
 
-  public static FieldReadTagAggregator v() {
-    return G.v().soot_jimple_spark_fieldrw_FieldReadTagAggregator();
-  }
+    public static FieldReadTagAggregator v() {
+        return G.v().soot_jimple_spark_fieldrw_FieldReadTagAggregator();
+    }
 
-  /** Decide whether this tag should be aggregated by this aggregator. */
-  public boolean wantTag(Tag t) {
-    return (t instanceof FieldReadTag);
-  }
+    /**
+     * Decide whether this tag should be aggregated by this aggregator.
+     */
+    public boolean wantTag(Tag t) {
+        return (t instanceof FieldReadTag);
+    }
 
-  public String aggregatedName() {
-    return "FieldRead";
-  }
+    public String aggregatedName() {
+        return "FieldRead";
+    }
 }

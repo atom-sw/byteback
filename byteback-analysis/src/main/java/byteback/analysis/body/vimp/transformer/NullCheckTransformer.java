@@ -1,13 +1,14 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.common.function.Lazy;
+import soot.Scene;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.*;
 
 import java.util.Optional;
-
-import soot.*;
-import soot.jimple.*;
 
 public class NullCheckTransformer extends CheckTransformer {
 

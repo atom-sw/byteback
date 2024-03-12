@@ -9,25 +9,25 @@ import soot.util.Switch;
 
 public class ForallExpr extends QuantifierExpr {
 
-	public ForallExpr(final Chain<Local> freeLocals, final Value value) {
-		super(freeLocals, value);
-	}
+    public ForallExpr(final Chain<Local> freeLocals, final Value value) {
+        super(freeLocals, value);
+    }
 
-	@Override
-	protected String getSymbol() {
-		return "∀";
-	}
+    @Override
+    protected String getSymbol() {
+        return "∀";
+    }
 
-	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicForallExpr(this);
-		}
-	}
+    @Override
+    public void apply(final Switch visitor) {
+        if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
+            vimpValueSwitch.caseLogicForallExpr(this);
+        }
+    }
 
-	@Override
-	public ForallExpr clone() {
-		return new ForallExpr(cloneBindings(), Vimp.cloneIfNecessary(getValue()));
-	}
+    @Override
+    public ForallExpr clone() {
+        return new ForallExpr(cloneBindings(), Vimp.cloneIfNecessary(getValue()));
+    }
 
 }

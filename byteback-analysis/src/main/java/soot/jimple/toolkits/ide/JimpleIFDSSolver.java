@@ -10,12 +10,12 @@ package soot.jimple.toolkits.ide;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -23,10 +23,14 @@ package soot.jimple.toolkits.ide;
  */
 
 import com.google.common.collect.Table.Cell;
-
 import heros.IFDSTabulationProblem;
 import heros.InterproceduralCFG;
 import heros.solver.IFDSSolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.PatchingChain;
+import soot.SootMethod;
+import soot.Unit;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -35,63 +39,56 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import soot.PatchingChain;
-import soot.SootMethod;
-import soot.Unit;
-
 public class JimpleIFDSSolver<D, I extends InterproceduralCFG<Unit, SootMethod>> extends IFDSSolver<Unit, D, SootMethod, I> {
-  private static final Logger logger = LoggerFactory.getLogger(JimpleIFDSSolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(JimpleIFDSSolver.class);
 
-  private final boolean DUMP_RESULTS;
+    private final boolean DUMP_RESULTS;
 
-  public JimpleIFDSSolver(IFDSTabulationProblem<Unit, D, SootMethod, I> problem) {
-    this(problem, false);
-  }
-
-  public JimpleIFDSSolver(IFDSTabulationProblem<Unit, D, SootMethod, I> problem, boolean dumpResults) {
-    super(problem);
-    this.DUMP_RESULTS = dumpResults;
-  }
-
-  @Override
-  public void solve() {
-    super.solve();
-    if (DUMP_RESULTS) {
-      dumpResults();
+    public JimpleIFDSSolver(IFDSTabulationProblem<Unit, D, SootMethod, I> problem) {
+        this(problem, false);
     }
-  }
 
-  public void dumpResults() {
-    try {
-      PrintWriter out = new PrintWriter(new FileOutputStream("ideSolverDump" + System.currentTimeMillis() + ".csv"));
-      List<SortableCSVString> res = new ArrayList<SortableCSVString>();
-      for (Cell<Unit, D, ?> entry : val.cellSet()) {
-        SootMethod methodOf = (SootMethod) icfg.getMethodOf(entry.getRowKey());
-        PatchingChain<Unit> units = methodOf.getActiveBody().getUnits();
-        int i = 0;
-        for (Unit unit : units) {
-          if (unit == entry.getRowKey()) {
-            break;
-          }
-          i++;
+    public JimpleIFDSSolver(IFDSTabulationProblem<Unit, D, SootMethod, I> problem, boolean dumpResults) {
+        super(problem);
+        this.DUMP_RESULTS = dumpResults;
+    }
+
+    @Override
+    public void solve() {
+        super.solve();
+        if (DUMP_RESULTS) {
+            dumpResults();
         }
-
-        res.add(new SortableCSVString(
-            methodOf + ";" + entry.getRowKey() + "@" + i + ";" + entry.getColumnKey() + ";" + entry.getValue(), i));
-      }
-      Collections.sort(res);
-      // replacement is bugfix for excel view:
-      for (SortableCSVString string : res) {
-        out.println(string.value.replace("\"", "'"));
-      }
-      out.flush();
-      out.close();
-    } catch (FileNotFoundException e) {
-      logger.error(e.getMessage(), e);
     }
-  }
+
+    public void dumpResults() {
+        try {
+            PrintWriter out = new PrintWriter(new FileOutputStream("ideSolverDump" + System.currentTimeMillis() + ".csv"));
+            List<SortableCSVString> res = new ArrayList<SortableCSVString>();
+            for (Cell<Unit, D, ?> entry : val.cellSet()) {
+                SootMethod methodOf = icfg.getMethodOf(entry.getRowKey());
+                PatchingChain<Unit> units = methodOf.getActiveBody().getUnits();
+                int i = 0;
+                for (Unit unit : units) {
+                    if (unit == entry.getRowKey()) {
+                        break;
+                    }
+                    i++;
+                }
+
+                res.add(new SortableCSVString(
+                        methodOf + ";" + entry.getRowKey() + "@" + i + ";" + entry.getColumnKey() + ";" + entry.getValue(), i));
+            }
+            Collections.sort(res);
+            // replacement is bugfix for excel view:
+            for (SortableCSVString string : res) {
+                out.println(string.value.replace("\"", "'"));
+            }
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 
 }

@@ -10,23 +10,23 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -41,47 +41,47 @@ import soot.util.Chain;
 
 public class MethodInliner {
 
-  // private ArrayList inlineSite;
-  MethodInliner() {
-    // inlineSite = new ArrayList();
-  }
-
-  public static void inline(ArrayList sites) {
-    Iterator it = sites.iterator();
-    while (it.hasNext()) {
-      ArrayList element = (ArrayList) it.next();
-      JPegStmt stmt = (JPegStmt) element.get(0);
-      Chain chain = (Chain) element.get(1);
-      PegGraph p1 = (PegGraph) element.get(2);
-      PegGraph p2 = (PegGraph) element.get(3);
-      // testHeads(p2);
-      // System.out.println("before inlining: stmt:"+stmt);
-      // System.out.println(p1);
-
-      inline(stmt, chain, p1, p2);
-      // System.out.println("after inlining: stmt:"+stmt);
-
-      // System.out.println(p1);
+    // private ArrayList inlineSite;
+    MethodInliner() {
+        // inlineSite = new ArrayList();
     }
 
-  }
+    public static void inline(ArrayList sites) {
+        Iterator it = sites.iterator();
+        while (it.hasNext()) {
+            ArrayList element = (ArrayList) it.next();
+            JPegStmt stmt = (JPegStmt) element.get(0);
+            Chain chain = (Chain) element.get(1);
+            PegGraph p1 = (PegGraph) element.get(2);
+            PegGraph p2 = (PegGraph) element.get(3);
+            // testHeads(p2);
+            // System.out.println("before inlining: stmt:"+stmt);
+            // System.out.println(p1);
 
-  private static void inline(JPegStmt invokeStmt, Chain chain, PegGraph container, PegGraph inlinee) {
-    // System.out.println("==inside inline===");
-    // PegToDotFile printer = new PegToDotFile(inlinee, false, "before_addPeg_inlinee"+invokeStmt.getName());
-    if (!container.addPeg(inlinee, chain)) {
-      throw new RuntimeException("heads >1 stm: " + invokeStmt);
+            inline(stmt, chain, p1, p2);
+            // System.out.println("after inlining: stmt:"+stmt);
+
+            // System.out.println(p1);
+        }
+
     }
 
-    // printer = new PegToDotFile(container, false, "after_addPeg_"+invokeStmt);
-    container.buildSuccsForInlining(invokeStmt, chain, inlinee);
-    // printer = new PegToDotFile(container, false, "after_bu_succ_"+invokeStmt.getName());
+    private static void inline(JPegStmt invokeStmt, Chain chain, PegGraph container, PegGraph inlinee) {
+        // System.out.println("==inside inline===");
+        // PegToDotFile printer = new PegToDotFile(inlinee, false, "before_addPeg_inlinee"+invokeStmt.getName());
+        if (!container.addPeg(inlinee, chain)) {
+            throw new RuntimeException("heads >1 stm: " + invokeStmt);
+        }
 
-    // System.out.println(container);
-    container.buildMaps(inlinee);
-    container.buildPreds();
-    // container.testStartToThread();
+        // printer = new PegToDotFile(container, false, "after_addPeg_"+invokeStmt);
+        container.buildSuccsForInlining(invokeStmt, chain, inlinee);
+        // printer = new PegToDotFile(container, false, "after_bu_succ_"+invokeStmt.getName());
 
-  }
+        // System.out.println(container);
+        container.buildMaps(inlinee);
+        container.buildPreds();
+        // container.testStartToThread();
+
+    }
 
 }

@@ -2,7 +2,7 @@ package byteback.analysis.common.namespace;
 
 import byteback.analysis.common.Hosts;
 import byteback.common.function.Lazy;
-import soot.SootClass;
+import soot.ClassModel;
 import soot.SootMethod;
 
 /**
@@ -79,24 +79,24 @@ public class BBLibNames {
     private BBLibNames() {
     }
 
-    public boolean isContractClass(final SootClass sootClass) {
-        return sootClass.getName().equals(CONTRACT_CLASS_NAME);
+    public boolean isContractClass(final ClassModel classModel) {
+        return classModel.getName().equals(CONTRACT_CLASS_NAME);
     }
 
-    public boolean isQuantifierClass(final SootClass sootClass) {
-        return sootClass.getName().equals(QUANTIFIER_CLASS_NAME);
+    public boolean isQuantifierClass(final ClassModel classModel) {
+        return classModel.getName().equals(QUANTIFIER_CLASS_NAME);
     }
 
-    public boolean isSpecialClass(final SootClass sootClass) {
-        return sootClass.getName().equals(SPECIAL_CLASS_NAME);
+    public boolean isSpecialClass(final ClassModel classModel) {
+        return classModel.getName().equals(SPECIAL_CLASS_NAME);
     }
 
-    public boolean isBindingClass(final SootClass sootClass) {
-        return sootClass.getName().equals(BINDING_CLASS_NAME);
+    public boolean isBindingClass(final ClassModel classModel) {
+        return classModel.getName().equals(BINDING_CLASS_NAME);
     }
 
-    public boolean isAnnotationClass(final SootClass sootClass) {
-        return sootClass.getPackageName().equals(ANNOTATION_PACKAGE);
+    public boolean isAnnotationClass(final ClassModel classModel) {
+        return classModel.getPackageName().equals(ANNOTATION_PACKAGE);
     }
 
     public boolean isFunctionMethod(final SootMethod method) {

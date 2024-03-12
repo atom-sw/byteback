@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.purity;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -29,54 +29,53 @@ package soot.jimple.toolkits.annotation.purity;
  */
 public class PurityEdge {
 
-  private final String field;
-  private final PurityNode source;
-  private final PurityNode target;
-  private final boolean inside;
+    private final String field;
+    private final PurityNode source;
+    private final PurityNode target;
+    private final boolean inside;
 
-  PurityEdge(PurityNode source, String field, PurityNode target, boolean inside) {
-    this.source = source;
-    this.field = field;
-    this.target = target;
-    this.inside = inside;
-  }
-
-  public String getField() {
-    return field;
-  }
-
-  public PurityNode getTarget() {
-    return target;
-  }
-
-  public PurityNode getSource() {
-    return source;
-  }
-
-  public boolean isInside() {
-    return inside;
-  }
-
-  @Override
-  public int hashCode() {
-    return field.hashCode() + target.hashCode() + source.hashCode() + (inside ? 69 : 0);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof PurityEdge)) {
-      return false;
+    PurityEdge(PurityNode source, String field, PurityNode target, boolean inside) {
+        this.source = source;
+        this.field = field;
+        this.target = target;
+        this.inside = inside;
     }
-    PurityEdge e = (PurityEdge) o;
-    return source.equals(e.source) && field.equals(e.field) && target.equals(e.target) && inside == e.inside;
-  }
 
-  @Override
-  public String toString() {
-    if (inside) {
-      return source.toString() + " = " + field + " => " + target.toString();
-    } else {
-      return source.toString() + " - " + field + " -> " + target.toString();
+    public String getField() {
+        return field;
     }
-  }
+
+    public PurityNode getTarget() {
+        return target;
+    }
+
+    public PurityNode getSource() {
+        return source;
+    }
+
+    public boolean isInside() {
+        return inside;
+    }
+
+    @Override
+    public int hashCode() {
+        return field.hashCode() + target.hashCode() + source.hashCode() + (inside ? 69 : 0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof PurityEdge e)) {
+            return false;
+        }
+        return source.equals(e.source) && field.equals(e.field) && target.equals(e.target) && inside == e.inside;
+    }
+
+    @Override
+    public String toString() {
+        if (inside) {
+            return source.toString() + " = " + field + " => " + target.toString();
+        } else {
+            return source.toString() + " - " + field + " -> " + target.toString();
+        }
+    }
 }

@@ -10,12 +10,12 @@ package soot.options;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,12 +24,14 @@ package soot.options;
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
-import java.util.*;
+import java.util.Map;
 
-/** Option parser for Profiling Generator. */
+/**
+ * Option parser for Profiling Generator.
+ */
 public class ProfilingOptions {
 
-    private Map<String, String> options;
+    private final Map<String, String> options;
 
     public ProfilingOptions(Map<String, String> options) {
         this.options = options;
@@ -45,9 +47,9 @@ public class ProfilingOptions {
     /**
      * Not Main Entry --
      * Instrument runBenchmark() instead of main().
-     *
-     * Insert the calls to the MultiCounter at the beginning and end of 
-     * methods with the signature long runBenchmark(java.lang.String[]) 
+     * <p>
+     * Insert the calls to the MultiCounter at the beginning and end of
+     * methods with the signature long runBenchmark(java.lang.String[])
      * instead of the signature void main(java.lang.String[]).
      */
     public boolean notmainentry() {

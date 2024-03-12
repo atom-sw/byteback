@@ -1,8 +1,8 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.common.function.Lazy;
 import soot.Body;
 import soot.Unit;

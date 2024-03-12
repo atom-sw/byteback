@@ -10,12 +10,12 @@ package soot.grimp.syntax;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -32,34 +32,34 @@ import soot.jimple.internal.AbstractFloatBinopExpr;
 
 public abstract class AbstractGrimpFloatBinopExpr extends AbstractFloatBinopExpr implements Precedence {
 
-  AbstractGrimpFloatBinopExpr(Value op1, Value op2) {
-    this(Grimp.v().newArgBox(op1), Grimp.v().newArgBox(op2));
-  }
-
-  protected AbstractGrimpFloatBinopExpr(ValueBox op1Box, ValueBox op2Box) {
-    super(op1Box, op2Box);
-  }
-
-  @Override
-  public abstract int getPrecedence();
-
-  @Override
-  public String toString() {
-    final Value op1 = op1Box.getValue();
-    String leftOp = op1.toString();
-    if (op1 instanceof Precedence && ((Precedence) op1).getPrecedence() < getPrecedence()) {
-      leftOp = "(" + leftOp + ")";
+    AbstractGrimpFloatBinopExpr(Value op1, Value op2) {
+        this(Grimp.v().newArgBox(op1), Grimp.v().newArgBox(op2));
     }
 
-    final Value op2 = op2Box.getValue();
-    String rightOp = op2.toString();
-    if (op2 instanceof Precedence) {
-      int opPrec = ((Precedence) op2).getPrecedence(), myPrec = getPrecedence();
-      if ((opPrec < myPrec) || ((opPrec == myPrec) && ((this instanceof SubExpr) || (this instanceof DivExpr)))) {
-        rightOp = "(" + rightOp + ")";
-      }
+    protected AbstractGrimpFloatBinopExpr(ValueBox op1Box, ValueBox op2Box) {
+        super(op1Box, op2Box);
     }
 
-    return leftOp + getSymbol() + rightOp;
-  }
+    @Override
+    public abstract int getPrecedence();
+
+    @Override
+    public String toString() {
+        final Value op1 = op1Box.getValue();
+        String leftOp = op1.toString();
+        if (op1 instanceof Precedence && ((Precedence) op1).getPrecedence() < getPrecedence()) {
+            leftOp = "(" + leftOp + ")";
+        }
+
+        final Value op2 = op2Box.getValue();
+        String rightOp = op2.toString();
+        if (op2 instanceof Precedence) {
+            int opPrec = ((Precedence) op2).getPrecedence(), myPrec = getPrecedence();
+            if ((opPrec < myPrec) || ((opPrec == myPrec) && ((this instanceof SubExpr) || (this instanceof DivExpr)))) {
+                rightOp = "(" + rightOp + ")";
+            }
+        }
+
+        return leftOp + getSymbol() + rightOp;
+    }
 }

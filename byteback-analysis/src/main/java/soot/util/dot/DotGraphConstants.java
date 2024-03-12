@@ -10,12 +10,12 @@ package soot.util.dot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -29,25 +29,25 @@ package soot.util.dot;
  */
 
 public interface DotGraphConstants {
-  public static final String NODE_SHAPE_BOX = "box";
-  public static final String NODE_SHAPE_ELLIPSE = "ellipse";
-  public static final String NODE_SHAPE_CIRCLE = "circle";
-  public static final String NODE_SHAPE_DIAMOND = "diamond";
-  public static final String NODE_SHAPE_PLAINTEXT = "plaintext";
+    String NODE_SHAPE_BOX = "box";
+    String NODE_SHAPE_ELLIPSE = "ellipse";
+    String NODE_SHAPE_CIRCLE = "circle";
+    String NODE_SHAPE_DIAMOND = "diamond";
+    String NODE_SHAPE_PLAINTEXT = "plaintext";
 
-  public static final String NODE_STYLE_SOLID = "solid";
-  public static final String NODE_STYLE_DASHED = "dashed";
-  public static final String NODE_STYLE_DOTTED = "dotted";
-  public static final String NODE_STYLE_BOLD = "bold";
-  public static final String NODE_STYLE_INVISIBLE = "invis";
-  public static final String NODE_STYLE_FILLED = "filled";
-  public static final String NODE_STYLE_DIAGONALS = "diagonals";
-  public static final String NODE_STYLE_ROUNDED = "rounded";
+    String NODE_STYLE_SOLID = "solid";
+    String NODE_STYLE_DASHED = "dashed";
+    String NODE_STYLE_DOTTED = "dotted";
+    String NODE_STYLE_BOLD = "bold";
+    String NODE_STYLE_INVISIBLE = "invis";
+    String NODE_STYLE_FILLED = "filled";
+    String NODE_STYLE_DIAGONALS = "diagonals";
+    String NODE_STYLE_ROUNDED = "rounded";
 
-  public static final String EDGE_STYLE_DOTTED = "dotted";
-  public static final String EDGE_STYLE_SOLID = "solid";
+    String EDGE_STYLE_DOTTED = "dotted";
+    String EDGE_STYLE_SOLID = "solid";
 
-  public static final String GRAPH_ORIENT_PORTRAIT = "portrait";
-  public static final String GRAPH_ORIENT_LANDSCAPE = "landscape";
+    String GRAPH_ORIENT_PORTRAIT = "portrait";
+    String GRAPH_ORIENT_LANDSCAPE = "landscape";
 
 }

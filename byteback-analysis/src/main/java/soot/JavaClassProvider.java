@@ -22,8 +22,6 @@ package soot;
  * #L%
  */
 
-import soot.options.Options;
-
 /**
  * A class provider looks for a file of a specific format for a specified class, and returns a ClassSource for it if it finds
  * it.

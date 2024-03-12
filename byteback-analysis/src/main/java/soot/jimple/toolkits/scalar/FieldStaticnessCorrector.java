@@ -10,30 +10,25 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.util.Map;
-
-import soot.Body;
-import soot.ConflictingFieldRefException;
-import soot.G;
-import soot.Singletons;
-import soot.SootField;
-import soot.Unit;
+import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.Jimple;
+
+import java.util.Map;
 
 /**
  * Transformer that checks whether a static field is used like an instance field. If this is the case, all instance
@@ -43,41 +38,40 @@ import soot.jimple.Jimple;
  */
 public class FieldStaticnessCorrector extends AbstractStaticnessCorrector {
 
-  public FieldStaticnessCorrector(Singletons.Global g) {
-  }
-
-  public static FieldStaticnessCorrector v() {
-    return G.v().soot_jimple_toolkits_scalar_FieldStaticnessCorrector();
-  }
-
-  @Override
-  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    // Some apps reference static fields as instance fields. We need to fix
-    // this for not breaking the client analysis.
-    for (Unit u : b.getUnits()) {
-      if (u instanceof AssignStmt) {
-        AssignStmt assignStmt = (AssignStmt) u;
-        if (assignStmt.containsFieldRef()) {
-          FieldRef ref = assignStmt.getFieldRef();
-          // Make sure that the target class has already been loaded
-          if (isTypeLoaded(ref.getFieldRef().type())) {
-            try {
-              if (ref instanceof InstanceFieldRef) {
-                SootField fld = ref.getField();
-                if (fld != null && fld.isStatic()) {
-                  if (assignStmt.getLeftOp() == ref) {
-                    assignStmt.setLeftOp(Jimple.v().newStaticFieldRef(ref.getField().makeRef()));
-                  } else if (assignStmt.getRightOp() == ref) {
-                    assignStmt.setRightOp(Jimple.v().newStaticFieldRef(ref.getField().makeRef()));
-                  }
-                }
-              }
-            } catch (ConflictingFieldRefException ex) {
-              // That field is broken, just don't touch it
-            }
-          }
-        }
-      }
+    public FieldStaticnessCorrector(Singletons.Global g) {
     }
-  }
+
+    public static FieldStaticnessCorrector v() {
+        return G.v().soot_jimple_toolkits_scalar_FieldStaticnessCorrector();
+    }
+
+    @Override
+    protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+        // Some apps reference static fields as instance fields. We need to fix
+        // this for not breaking the client analysis.
+        for (Unit u : b.getUnits()) {
+            if (u instanceof AssignStmt assignStmt) {
+                if (assignStmt.containsFieldRef()) {
+                    FieldRef ref = assignStmt.getFieldRef();
+                    // Make sure that the target class has already been loaded
+                    if (isTypeLoaded(ref.getFieldRef().type())) {
+                        try {
+                            if (ref instanceof InstanceFieldRef) {
+                                SootField fld = ref.getField();
+                                if (fld != null && fld.isStatic()) {
+                                    if (assignStmt.getLeftOp() == ref) {
+                                        assignStmt.setLeftOp(Jimple.v().newStaticFieldRef(ref.getField().makeRef()));
+                                    } else if (assignStmt.getRightOp() == ref) {
+                                        assignStmt.setRightOp(Jimple.v().newStaticFieldRef(ref.getField().makeRef()));
+                                    }
+                                }
+                            }
+                        } catch (ConflictingFieldRefException ex) {
+                            // That field is broken, just don't touch it
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

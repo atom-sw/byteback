@@ -11,12 +11,12 @@ package soot.jimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -29,15 +29,15 @@ import soot.ValueBox;
 import soot.jimple.Jimple;
 
 public class JInstanceFieldRef extends AbstractInstanceFieldRef {
-  public JInstanceFieldRef(Value base, SootFieldRef fieldRef) {
-    super(Jimple.v().newLocalBox(base), fieldRef);
-  }
+    public JInstanceFieldRef(Value base, SootFieldRef fieldRef) {
+        super(Jimple.v().newLocalBox(base), fieldRef);
+    }
 
-  public JInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef) {
-    super(baseBox, fieldRef);
-  }
+    public JInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef) {
+        super(baseBox, fieldRef);
+    }
 
-  public Object clone() {
-    return new JInstanceFieldRef(Jimple.cloneIfNecessary(getBase()), fieldRef);
-  }
+    public Object clone() {
+        return new JInstanceFieldRef(Jimple.cloneIfNecessary(getBase()), fieldRef);
+    }
 }

@@ -10,12 +10,12 @@ package soot.options;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,12 +24,14 @@ package soot.options;
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
-import java.util.*;
+import java.util.Map;
 
-/** Option parser for Paddle. */
+/**
+ * Option parser for Paddle.
+ */
 public class PaddleOptions {
 
-    private Map<String, String> options;
+    private final Map<String, String> options;
 
     public PaddleOptions(Map<String, String> options) {
         this.options = options;
@@ -45,8 +47,8 @@ public class PaddleOptions {
     /**
      * Verbose --
      * Print detailed information about the execution of Paddle.
-     *
-     * When this option is set to true, Paddle prints detailed 
+     * <p>
+     * When this option is set to true, Paddle prints detailed
      * information about its execution.
      */
     public boolean verbose() {
@@ -56,7 +58,7 @@ public class PaddleOptions {
     /**
      * Use BDDs --
      * Use BDD version of Paddle.
-     *
+     * <p>
      * Causes Paddle to use BDD versions of its components
      */
     public boolean bdd() {
@@ -74,7 +76,7 @@ public class PaddleOptions {
     /**
      * Profile --
      * Profile BDDs using JeddProfiler.
-     *
+     * <p>
      * Turns on JeddProfiler for profiling BDD operations.
      */
     public boolean profile() {
@@ -84,7 +86,7 @@ public class PaddleOptions {
     /**
      * Verbose GC --
      * Print memory usage at each BDD garbage collection.
-     *
+     * <p>
      * Print memory usage at each BDD garbage collection.
      */
     public boolean verbosegc() {
@@ -94,8 +96,8 @@ public class PaddleOptions {
     /**
      * Ignore Types Entirely --
      * Make Paddle completely ignore declared types of variables.
-     *
-     * When this option is set to true, all parts of Paddle completely 
+     * <p>
+     * When this option is set to true, all parts of Paddle completely
      * ignore declared types of variables and casts.
      */
     public boolean ignore_types() {
@@ -105,12 +107,12 @@ public class PaddleOptions {
     /**
      * Pre Jimplify --
      * Jimplify all methods before starting Paddle.
-     *
-     * When this option is set to true, Paddle converts all available 
-     * methods to Jimple before starting the points-to analysis. This 
-     * allows the Jimplification time to be separated from the 
-     * points-to time. However, it increases the total time and memory 
-     * requirement, because all methods are Jimplified, rather than 
+     * <p>
+     * When this option is set to true, Paddle converts all available
+     * methods to Jimple before starting the points-to analysis. This
+     * allows the Jimplification time to be separated from the
+     * points-to time. However, it increases the total time and memory
+     * requirement, because all methods are Jimplified, rather than
      * only those deemed reachable by the points-to analysis.
      */
     public boolean pre_jimplify() {
@@ -120,12 +122,12 @@ public class PaddleOptions {
     /**
      * Context-sensitive Heap Locations --
      * Treat allocation sites context-sensitively.
-     *
-     * When this option is set to true, the context-sensitivity level 
-     * that is set for the context-sensitive call graph and for pointer 
-     * variables is also used to model heap locations 
-     * context-sensitively. When this option is false, heap locations 
-     * are modelled context-insensitively regardless of the 
+     * <p>
+     * When this option is set to true, the context-sensitivity level
+     * that is set for the context-sensitive call graph and for pointer
+     * variables is also used to model heap locations
+     * context-sensitively. When this option is false, heap locations
+     * are modelled context-insensitively regardless of the
      * context-sensitivity level.
      */
     public boolean context_heap() {
@@ -135,9 +137,9 @@ public class PaddleOptions {
     /**
      * RTA --
      * Emulate Rapid Type Analysis.
-     *
-     * Setting RTA to true sets types-for-sites to true, and causes 
-     * Paddle to use a single points-to set for all variables, giving 
+     * <p>
+     * Setting RTA to true sets types-for-sites to true, and causes
+     * Paddle to use a single points-to set for all variables, giving
      * Rapid Type Analysis.
      */
     public boolean rta() {
@@ -147,12 +149,12 @@ public class PaddleOptions {
     /**
      * Field Based --
      * Use a field-based rather than field-sensitive representation.
-     *
-     * When this option is set to true, fields are represented by 
-     * variable (Green) nodes, and the object that the field belongs to 
-     * is ignored (all objects are lumped together), giving a 
-     * field-based analysis. Otherwise, fields are represented by field 
-     * reference (Red) nodes, and the objects that they belong to are 
+     * <p>
+     * When this option is set to true, fields are represented by
+     * variable (Green) nodes, and the object that the field belongs to
+     * is ignored (all objects are lumped together), giving a
+     * field-based analysis. Otherwise, fields are represented by field
+     * reference (Red) nodes, and the objects that they belong to are
      * distinguished, giving a field-sensitive analysis.
      */
     public boolean field_based() {
@@ -161,10 +163,10 @@ public class PaddleOptions {
 
     /**
      * Types For Sites --
-     * Represent objects by their actual type rather than allocation 
+     * Represent objects by their actual type rather than allocation
      * site.
-     *
-     * When this option is set to true, types rather than allocation 
+     * <p>
+     * When this option is set to true, types rather than allocation
      * sites are used as the elements of the points-to sets.
      */
     public boolean types_for_sites() {
@@ -174,11 +176,11 @@ public class PaddleOptions {
     /**
      * Merge String Buffer --
      * Represent all StringBuffers as one object.
-     *
-     * When this option is set to true, all allocation sites creating 
-     * java.lang.StringBuffer objects are grouped together as a single 
-     * allocation site. Allocation sites creating a 
-     * java.lang.StringBuilder object are also grouped together as a 
+     * <p>
+     * When this option is set to true, all allocation sites creating
+     * java.lang.StringBuffer objects are grouped together as a single
+     * allocation site. Allocation sites creating a
+     * java.lang.StringBuilder object are also grouped together as a
      * single allocation site.
      */
     public boolean merge_stringbuffer() {
@@ -188,12 +190,12 @@ public class PaddleOptions {
     /**
      * Propagate All String Constants --
      * Propagate all string constants, not just class names.
-     *
-     * When this option is set to false, Paddle only distinguishes 
-     * string constants that may be the name of a class loaded 
-     * dynamically using reflection, and all other string constants are 
-     * lumped together into a single string constant node. Setting this 
-     * option to true causes all string constants to be propagated 
+     * <p>
+     * When this option is set to false, Paddle only distinguishes
+     * string constants that may be the name of a class loaded
+     * dynamically using reflection, and all other string constants are
+     * lumped together into a single string constant node. Setting this
+     * option to true causes all string constants to be propagated
      * individually.
      */
     public boolean string_constants() {
@@ -203,8 +205,8 @@ public class PaddleOptions {
     /**
      * Simulate Natives --
      * Simulate effects of native methods in standard class library.
-     *
-     * When this option is set to true, the effects of native methods 
+     * <p>
+     * When this option is set to true, the effects of native methods
      * in the standard Java class library are simulated.
      */
     public boolean simulate_natives() {
@@ -213,14 +215,14 @@ public class PaddleOptions {
 
     /**
      * Global Nodes in Simulated Natives --
-     * Use global node to model variables in simulations of native 
+     * Use global node to model variables in simulations of native
      * methods.
-     *
-     * The simulations of native methods such as System.arraycopy() use 
-     * temporary local variable nodes. Setting this switch to true 
-     * causes them to use global variable nodes instead, reducing 
-     * precision. The switch exists only to make it possible to measure 
-     * this effect on precision; there is no other practical reason to 
+     * <p>
+     * The simulations of native methods such as System.arraycopy() use
+     * temporary local variable nodes. Setting this switch to true
+     * causes them to use global variable nodes instead, reducing
+     * precision. The switch exists only to make it possible to measure
+     * this effect on precision; there is no other practical reason to
      * set it to true.
      */
     public boolean global_nodes_in_natives() {
@@ -230,9 +232,9 @@ public class PaddleOptions {
     /**
      * Simple Edges Bidirectional --
      * Equality-based analysis between variable nodes.
-     *
-     * When this option is set to true, all edges connecting variable 
-     * (Green) nodes are made bidirectional, as in Steensgaard's 
+     * <p>
+     * When this option is set to true, all edges connecting variable
+     * (Green) nodes are made bidirectional, as in Steensgaard's
      * analysis.
      */
     public boolean simple_edges_bidirectional() {
@@ -242,13 +244,13 @@ public class PaddleOptions {
     /**
      * this Pointer Assignment Edge --
      * Use pointer assignment edges to model this parameters.
-     *
-     * When constructing a call graph on-the-fly during points-to 
-     * analysis, Paddle normally propagates only those receivers that 
-     * cause a method to be invoked to the this pointer of the method. 
-     * When this option is set to true, however, Paddle instead models 
-     * flow of receivers as an assignnment edge from the receiver at 
-     * the call site to the this pointer of the method, reducing 
+     * <p>
+     * When constructing a call graph on-the-fly during points-to
+     * analysis, Paddle normally propagates only those receivers that
+     * cause a method to be invoked to the this pointer of the method.
+     * When this option is set to true, however, Paddle instead models
+     * flow of receivers as an assignnment edge from the receiver at
+     * the call site to the this pointer of the method, reducing
      * precision.
      */
     public boolean this_edges() {
@@ -258,10 +260,10 @@ public class PaddleOptions {
     /**
      * Precise newInstance --
      * Make newInstance only allocate objects of dynamic classes.
-     *
-     * Normally, newInstance() calls are treated as if they may return 
-     * an object of any type. Setting this option to true causes them 
-     * to be treated as if they return only objects of the type of some 
+     * <p>
+     * Normally, newInstance() calls are treated as if they may return
+     * an object of any type. Setting this option to true causes them
+     * to be treated as if they return only objects of the type of some
      * dynamic class.
      */
     public boolean precise_newinstance() {
@@ -271,9 +273,9 @@ public class PaddleOptions {
     /**
      * Print Context Counts --
      * Print number of contexts for each method.
-     *
-     * Causes Paddle to print the number of contexts for each method 
-     * and call edge, and the number of equivalence classes of contexts 
+     * <p>
+     * Causes Paddle to print the number of contexts for each method
+     * and call edge, and the number of equivalence classes of contexts
      * for each variable node.
      */
     public boolean context_counts() {
@@ -283,8 +285,8 @@ public class PaddleOptions {
     /**
      * Print Context Counts (Totals only) --
      * Print total number of contexts.
-     *
-     * Causes Paddle to print the number of contexts and number of 
+     * <p>
+     * Causes Paddle to print the number of contexts and number of
      * context equivalence classes.
      */
     public boolean total_context_counts() {
@@ -294,9 +296,9 @@ public class PaddleOptions {
     /**
      * Method Context Counts (Totals only) --
      * Print number of contexts for each method.
-     *
-     * Causes Paddle to print the number of contexts and number of 
-     * context equivalence classes split out by method. Requires 
+     * <p>
+     * Causes Paddle to print the number of contexts and number of
+     * context equivalence classes split out by method. Requires
      * total-context-counts to also be turned on.
      */
     public boolean method_context_counts() {
@@ -306,9 +308,9 @@ public class PaddleOptions {
     /**
      * Calculate Set Mass --
      * Calculate statistics about points-to set sizes.
-     *
-     * When this option is set to true, Paddle computes and prints 
-     * various cryptic statistics about the size of the points-to sets 
+     * <p>
+     * When this option is set to true, Paddle computes and prints
+     * various cryptic statistics about the size of the points-to sets
      * computed.
      */
     public boolean set_mass() {
@@ -318,8 +320,8 @@ public class PaddleOptions {
     /**
      * Number nodes --
      * Print node numbers in dumps.
-     *
-     * When printing debug information about nodes, this option causes 
+     * <p>
+     * When printing debug information about nodes, this option causes
      * the node number of each node to be printed.
      */
     public boolean number_nodes() {
@@ -337,11 +339,11 @@ public class PaddleOptions {
     /**
      * BDD Nodes --
      * Number of BDD nodes to allocate (0=unlimited).
-     *
-     * This option specifies the number of BDD nodes to be used by the 
-     * BDD backend. A value of 0 causes the backend to start with one 
-     * million nodes, and allocate more as required. A value other than 
-     * zero causes the backend to start with the specified size, and 
+     * <p>
+     * This option specifies the number of BDD nodes to be used by the
+     * BDD backend. A value of 0 causes the backend to start with one
+     * million nodes, and allocate more as required. A value other than
+     * zero causes the backend to start with the specified size, and
      * prevents it from ever allocating any more nodes.
      */
     public int bdd_nodes() {
@@ -350,7 +352,7 @@ public class PaddleOptions {
 
     /**
      * Context length (k)
-     * The maximum length of call string or receiver object string used 
+     * The maximum length of call string or receiver object string used
      * as context.
      */
     public int k() {
@@ -369,15 +371,15 @@ public class PaddleOptions {
     /**
      * Configuration --
      * Select Paddle configuration.
-     *
-     * Selects the configuration of points-to analysis and call graph 
+     * <p>
+     * Selects the configuration of points-to analysis and call graph
      * construction to be used in Paddle.
      */
     public int conf() {
         String s = soot.PhaseOptions.getString(options, "conf");
         if (s == null || s.isEmpty())
-        	return conf_ofcg;
-	
+            return conf_ofcg;
+
         if (s.equalsIgnoreCase("ofcg"))
             return conf_ofcg;
         if (s.equalsIgnoreCase("cha"))
@@ -408,14 +410,14 @@ public class PaddleOptions {
     /**
      * Worklist Implementation --
      * Select queue implementation.
-     *
+     * <p>
      * Select the implementation of worklists to be used in Paddle.
      */
     public int q() {
         String s = soot.PhaseOptions.getString(options, "q");
         if (s == null || s.isEmpty())
-        	return q_auto;
-	
+            return q_auto;
+
         if (s.equalsIgnoreCase("auto"))
             return q_auto;
         if (s.equalsIgnoreCase("trad"))
@@ -442,14 +444,14 @@ public class PaddleOptions {
     /**
      * Backend --
      * Select BDD backend.
-     *
+     * <p>
      * This option tells Paddle which implementation of BDDs to use.
      */
     public int backend() {
         String s = soot.PhaseOptions.getString(options, "backend");
         if (s == null || s.isEmpty())
-        	return backend_auto;
-	
+            return backend_auto;
+
         if (s.equalsIgnoreCase("auto"))
             return backend_auto;
         if (s.equalsIgnoreCase("buddy"))
@@ -477,15 +479,15 @@ public class PaddleOptions {
     /**
      * Context abstraction --
      * Select context-sensitivity level.
-     *
-     * This option tells Paddle which level of context-sensitivity to 
+     * <p>
+     * This option tells Paddle which level of context-sensitivity to
      * use in constructing the call graph.
      */
     public int context() {
         String s = soot.PhaseOptions.getString(options, "context");
         if (s == null || s.isEmpty())
-        	return context_insens;
-	
+            return context_insens;
+
         if (s.equalsIgnoreCase("insens"))
             return context_insens;
         if (s.equalsIgnoreCase("1cfa"))
@@ -514,14 +516,14 @@ public class PaddleOptions {
     /**
      * Propagator --
      * Select propagation algorithm.
-     *
+     * <p>
      * This option tells Paddle which propagation algorithm to use.
      */
     public int propagator() {
         String s = soot.PhaseOptions.getString(options, "propagator");
         if (s == null || s.isEmpty())
-        	return propagator_auto;
-	
+            return propagator_auto;
+
         if (s.equalsIgnoreCase("auto"))
             return propagator_auto;
         if (s.equalsIgnoreCase("iter"))
@@ -548,14 +550,14 @@ public class PaddleOptions {
     /**
      * Set Implementation --
      * Select points-to set implementation.
-     *
+     * <p>
      * Select an implementation of points-to sets for Paddle to use.
      */
     public int set_impl() {
         String s = soot.PhaseOptions.getString(options, "set-impl");
         if (s == null || s.isEmpty())
-        	return set_impl_double;
-	
+            return set_impl_double;
+
         if (s.equalsIgnoreCase("hash"))
             return set_impl_hash;
         if (s.equalsIgnoreCase("bit"))
@@ -580,18 +582,18 @@ public class PaddleOptions {
 
     /**
      * Double Set Old --
-     * Select implementation of points-to set for old part of double 
+     * Select implementation of points-to set for old part of double
      * set.
-     *
-     * Select an implementation for sets of old objects in the double 
-     * points-to set implementation. This option has no effect unless 
+     * <p>
+     * Select an implementation for sets of old objects in the double
+     * points-to set implementation. This option has no effect unless
      * Set Implementation is set to double.
      */
     public int double_set_old() {
         String s = soot.PhaseOptions.getString(options, "double-set-old");
         if (s == null || s.isEmpty())
-        	return double_set_old_hybrid;
-	
+            return double_set_old_hybrid;
+
         if (s.equalsIgnoreCase("hash"))
             return double_set_old_hash;
         if (s.equalsIgnoreCase("bit"))
@@ -614,18 +616,18 @@ public class PaddleOptions {
 
     /**
      * Double Set New --
-     * Select implementation of points-to set for new part of double 
+     * Select implementation of points-to set for new part of double
      * set.
-     *
-     * Select an implementation for sets of new objects in the double 
-     * points-to set implementation. This option has no effect unless 
+     * <p>
+     * Select an implementation for sets of new objects in the double
+     * points-to set implementation. This option has no effect unless
      * Set Implementation is set to double.
      */
     public int double_set_new() {
         String s = soot.PhaseOptions.getString(options, "double-set-new");
         if (s == null || s.isEmpty())
-        	return double_set_new_hybrid;
-	
+            return double_set_new_hybrid;
+
         if (s.equalsIgnoreCase("hash"))
             return double_set_new_hash;
         if (s.equalsIgnoreCase("bit"))
