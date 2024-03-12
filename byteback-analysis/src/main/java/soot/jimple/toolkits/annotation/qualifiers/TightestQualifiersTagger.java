@@ -186,7 +186,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
     boolean sameClassAccess = isCallClassMethodClass(callingClass, methodClass);
 
     if (!insidePackageAccess && subClassAccess) {
-      methodResultsMap.put(sm, new Integer(RESULT_PROTECTED));
+      methodResultsMap.put(sm, RESULT_PROTECTED);
       return true;
     } else if (insidePackageAccess && !sameClassAccess) {
       updateToPackage(sm);
@@ -227,7 +227,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
     boolean sameClassAccess = isCallClassMethodClass(callingClass, methodClass);
 
     if (!insidePackageAccess && !subClassAccess) {
-      methodResultsMap.put(sm, new Integer(RESULT_PUBLIC));
+      methodResultsMap.put(sm, RESULT_PUBLIC);
       return true;
     } else if (!insidePackageAccess && subClassAccess) {
       updateToProtected(sm);
@@ -244,27 +244,27 @@ public class TightestQualifiersTagger extends SceneTransformer {
 
   private void updateToProtected(SootMethod sm) {
     if (!methodResultsMap.containsKey(sm)) {
-      methodResultsMap.put(sm, new Integer(RESULT_PROTECTED));
+      methodResultsMap.put(sm, RESULT_PROTECTED);
     } else {
       if (methodResultsMap.get(sm).intValue() != RESULT_PUBLIC) {
-        methodResultsMap.put(sm, new Integer(RESULT_PROTECTED));
+        methodResultsMap.put(sm, RESULT_PROTECTED);
       }
     }
   }
 
   private void updateToPackage(SootMethod sm) {
     if (!methodResultsMap.containsKey(sm)) {
-      methodResultsMap.put(sm, new Integer(RESULT_PACKAGE));
+      methodResultsMap.put(sm, RESULT_PACKAGE);
     } else {
       if (methodResultsMap.get(sm).intValue() == RESULT_PRIVATE) {
-        methodResultsMap.put(sm, new Integer(RESULT_PACKAGE));
+        methodResultsMap.put(sm, RESULT_PACKAGE);
       }
     }
   }
 
   private void updateToPrivate(SootMethod sm) {
     if (!methodResultsMap.containsKey(sm)) {
-      methodResultsMap.put(sm, new Integer(RESULT_PRIVATE));
+      methodResultsMap.put(sm, RESULT_PRIVATE);
     }
   }
 
@@ -388,7 +388,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
     boolean sameClassAccess = isCallClassMethodClass(callingClass, fieldClass);
 
     if (!insidePackageAccess && !subClassAccess) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PUBLIC));
+      fieldResultsMap.put(sf, RESULT_PUBLIC);
       return true;
     } else if (!insidePackageAccess && subClassAccess) {
       updateToProtected(sf);
@@ -403,7 +403,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
 
   }
 
-  private boolean analyzeProtectedField(SootField sf, SootClass callingClass) {
+  private void analyzeProtectedField(SootField sf, SootClass callingClass) {
     SootClass fieldClass = sf.getDeclaringClass();
 
     boolean insidePackageAccess = isCallSamePackage(callingClass, fieldClass);
@@ -411,56 +411,50 @@ public class TightestQualifiersTagger extends SceneTransformer {
     boolean sameClassAccess = isCallClassMethodClass(callingClass, fieldClass);
 
     if (!insidePackageAccess && subClassAccess) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PROTECTED));
-      return true;
+      fieldResultsMap.put(sf, RESULT_PROTECTED);
     } else if (insidePackageAccess && !sameClassAccess) {
       updateToPackage(sf);
-      return false;
     } else {
       updateToPrivate(sf);
-      return false;
     }
   }
 
-  private boolean analyzePackageField(SootField sf, SootClass callingClass) {
+  private void analyzePackageField(SootField sf, SootClass callingClass) {
     SootClass fieldClass = sf.getDeclaringClass();
 
     boolean insidePackageAccess = isCallSamePackage(callingClass, fieldClass);
-    boolean subClassAccess = isCallClassSubClass(callingClass, fieldClass);
     boolean sameClassAccess = isCallClassMethodClass(callingClass, fieldClass);
 
     if (insidePackageAccess && !sameClassAccess) {
       updateToPackage(sf);
-      return true;
     } else {
       updateToPrivate(sf);
-      return false;
     }
   }
 
   private void updateToProtected(SootField sf) {
     if (!fieldResultsMap.containsKey(sf)) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PROTECTED));
+      fieldResultsMap.put(sf, RESULT_PROTECTED);
     } else {
-      if (fieldResultsMap.get(sf).intValue() != RESULT_PUBLIC) {
-        fieldResultsMap.put(sf, new Integer(RESULT_PROTECTED));
+      if (fieldResultsMap.get(sf) != RESULT_PUBLIC) {
+        fieldResultsMap.put(sf, RESULT_PROTECTED);
       }
     }
   }
 
   private void updateToPackage(SootField sf) {
     if (!fieldResultsMap.containsKey(sf)) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PACKAGE));
+      fieldResultsMap.put(sf, RESULT_PACKAGE);
     } else {
-      if (fieldResultsMap.get(sf).intValue() == RESULT_PRIVATE) {
-        fieldResultsMap.put(sf, new Integer(RESULT_PACKAGE));
+      if (fieldResultsMap.get(sf) == RESULT_PRIVATE) {
+        fieldResultsMap.put(sf, RESULT_PACKAGE);
       }
     }
   }
 
   private void updateToPrivate(SootField sf) {
     if (!fieldResultsMap.containsKey(sf)) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PRIVATE));
+      fieldResultsMap.put(sf, RESULT_PRIVATE);
     }
   }
 }

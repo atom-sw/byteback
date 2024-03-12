@@ -276,8 +276,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     if (method.getParameterCount() < index + 1) {
       return null;
     }
-    VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, Integer>(method, new Integer(index)),
-        method.getParameterType(index), method);
+    VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, Integer>(method, index),
+            method.getParameterType(index), method);
     ret.setInterProcTarget();
     return ret;
   }
@@ -373,7 +373,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   @Override
   final public void caseNewMultiArrayExpr(NewMultiArrayExpr nmae) {
     ArrayType type = (ArrayType) nmae.getType();
-    AllocNode prevAn = pag.makeAllocNode(new Pair<Expr, Integer>(nmae, new Integer(type.numDimensions)), type, method);
+    AllocNode prevAn = pag.makeAllocNode(new Pair<Expr, Integer>(nmae, type.numDimensions), type, method);
     VarNode prevVn = pag.makeLocalVarNode(prevAn, prevAn.getType(), method);
     mpag.addInternalEdge(prevAn, prevVn);
     setResult(prevAn);
@@ -383,7 +383,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         break;
       }
       type = (ArrayType) t;
-      AllocNode an = pag.makeAllocNode(new Pair<Expr, Integer>(nmae, new Integer(type.numDimensions)), type, method);
+      AllocNode an = pag.makeAllocNode(new Pair<Expr, Integer>(nmae, type.numDimensions), type, method);
       VarNode vn = pag.makeLocalVarNode(an, an.getType(), method);
       mpag.addInternalEdge(an, vn);
       mpag.addInternalEdge(vn, pag.makeFieldRefNode(prevVn, ArrayElement.v()));

@@ -233,7 +233,7 @@ public class CallLocalityContext {
       }
     }
     for (int i = 0; i < other.nodes.size(); i++) {
-      Boolean temp = new Boolean(isNodeLocal.get(i).booleanValue() && other.isNodeLocal.get(i).booleanValue());
+      Boolean temp = isNodeLocal.get(i) && other.isNodeLocal.get(i);
       if (!temp.equals(isNodeLocal.get(i))) {
         isChanged = true;
       }

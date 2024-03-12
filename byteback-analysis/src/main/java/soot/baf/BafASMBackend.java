@@ -430,7 +430,7 @@ public class BafASMBackend extends AbstractASMBackend {
           /*
            * Do not emit a DCONST_0 for negative zero, therefore we need the following check.
            */
-          if (new Double(v).equals(0.0)) {
+          if (v == 0.0) {
             mv.visitInsn(Opcodes.DCONST_0);
           } else if (v == 1) {
             mv.visitInsn(Opcodes.DCONST_1);
@@ -442,7 +442,7 @@ public class BafASMBackend extends AbstractASMBackend {
           /*
            * Do not emit a FCONST_0 for negative zero, therefore we need the following check.
            */
-          if (new Float(v).equals(0.0f)) {
+          if (v == 0.0f) {
             mv.visitInsn(Opcodes.FCONST_0);
           } else if (v == 1) {
             mv.visitInsn(Opcodes.FCONST_1);

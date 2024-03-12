@@ -450,7 +450,7 @@ public class LockAllocator extends SceneTransformer {
             }
 
             // Assign a lock number to the placeholder
-            Integer lockNum = new Integer(-lockPTSets.size()); // negative indicates a static lock
+            Integer lockNum = -lockPTSets.size(); // negative indicates a static lock
             logger.debug("[wjtp.tn] Lock: num " + lockNum + " type " + newStaticLock.getType() + " obj " + newStaticLock);
             lockToLockNum.put(newStaticLockEqVal, lockNum);
             lockToLockNum.put(newStaticLock, lockNum);
@@ -492,17 +492,17 @@ public class LockAllocator extends SceneTransformer {
                   if (lockPT.hasNonEmptyIntersection(otherLockPT)) // will never happen for empty, negative numbered sets
                   {
                     logger.debug("[wjtp.tn] Lock: num " + i + " type " + lock.getType() + " obj " + lock);
-                    lockToLockNum.put(lock, new Integer(i));
+                    lockToLockNum.put(lock, i);
                     otherLockPT.addAll(lockPT, null);
                     foundLock = true;
                     break;
                   }
                 }
 
-                // Assign a brand new lock number otherwise
+                // Assign a brand-new lock number otherwise
                 if (!foundLock) {
                   logger.debug("[wjtp.tn] Lock: num " + lockPTSets.size() + " type " + lock.getType() + " obj " + lock);
-                  lockToLockNum.put(lock, new Integer(lockPTSets.size()));
+                  lockToLockNum.put(lock, lockPTSets.size());
                   PointsToSetInternal otherLockPT = new HashPointsToSet(lockPT.getType(), (PAG) pta);
                   lockPTSets.add(otherLockPT);
                   otherLockPT.addAll(lockPT, null);
@@ -515,7 +515,7 @@ public class LockAllocator extends SceneTransformer {
                   logger.debug("[wjtp.tn] Lock: num " + lockNum + " type " + lock.getType() + " obj " + lock);
                   lockToLockNum.put(lock, lockNum);
                 } else {
-                  Integer lockNum = new Integer(-lockPTSets.size()); // negative indicates a static lock
+                  Integer lockNum = -lockPTSets.size(); // negative indicates a static lock
                   logger.debug("[wjtp.tn] Lock: num " + lockNum + " type " + lock.getType() + " obj " + lock);
                   lockToLockNum.put(lockEqVal, lockNum);
                   lockToLockNum.put(lock, lockNum);
@@ -555,7 +555,7 @@ public class LockAllocator extends SceneTransformer {
             Map.Entry entry = (Map.Entry) e;
             Integer value = (Integer) entry.getValue();
             if (value == i) {
-              entry.setValue(new Integer(-i));
+              entry.setValue(-i);
             }
           }
         }
@@ -957,13 +957,11 @@ public class LockAllocator extends SceneTransformer {
       }
     }
     logger.debug("Erasing \n[transaction-groups]      : ");
-    Iterator<CriticalSection> tnIt = AllTransactions.iterator();
-    while (tnIt.hasNext()) {
-      CriticalSection tn = tnIt.next();
-      if (tn.setNumber == -1) {
-        logger.debug("" + tn.name + " ");
+      for (CriticalSection tn : AllTransactions) {
+          if (tn.setNumber == -1) {
+              logger.debug(tn.name + " ");
+          }
       }
-    }
     logger.debug("\n[transaction-groups] ");
   }
 

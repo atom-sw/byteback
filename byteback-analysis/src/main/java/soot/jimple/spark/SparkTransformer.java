@@ -88,14 +88,15 @@ public class SparkTransformer extends SceneTransformer {
     SparkOptions opts = new SparkOptions(options);
     final String output_dir = SourceLocator.v().getOutputDir();
 
-    // Build pointer assignment graph
     ContextInsensitiveBuilder b = new ContextInsensitiveBuilder();
+
     if (opts.pre_jimplify()) {
       b.preJimplify();
     }
     if (opts.force_gc()) {
       doGC();
     }
+
     Date startBuild = new Date();
     final PAG pag = b.setup(opts);
     b.build();
@@ -129,12 +130,12 @@ public class SparkTransformer extends SceneTransformer {
     if ((opts.simplify_sccs() && !opts.on_fly_cg()) || opts.vta()) {
       new SCCCollapser(pag, opts.ignore_types_for_sccs()).collapse();
     }
+    
     if (opts.simplify_offline() && !opts.on_fly_cg()) {
       new EBBCollapser(pag).collapse();
     }
-    if (true || opts.simplify_sccs() || opts.vta() || opts.simplify_offline()) {
-      pag.cleanUpMerges();
-    }
+
+    pag.cleanUpMerges();
     Date endSimplify = new Date();
     reportTime("Pointer Graph simplified", startSimplify, endSimplify);
     if (opts.force_gc()) {
@@ -178,7 +179,8 @@ public class SparkTransformer extends SceneTransformer {
       new ReachingTypeDumper(pag, output_dir).dump();
     }
     if (opts.dump_solution()) {
-      dumper.dumpPointsToSets();
+        assert dumper != null;
+        dumper.dumpPointsToSets();
     }
     if (opts.dump_html()) {
       new PAG2HTML(pag, output_dir).dump();
@@ -299,11 +301,7 @@ public class SparkTransformer extends SceneTransformer {
   }
 
   protected void addTag(Host h, Node n, Map<Node, Tag> nodeToTag, Tag unknown) {
-    if (nodeToTag.containsKey(n)) {
-      h.addTag(nodeToTag.get(n));
-    } else {
-      h.addTag(unknown);
-    }
+      h.addTag(nodeToTag.getOrDefault(n, unknown));
   }
 
   protected void findSetMass(PAG pag) {
@@ -328,7 +326,7 @@ public class SparkTransformer extends SceneTransformer {
         if (set != null) {
           mass += set.size();
         }
-        if (set != null && set.size() > 0) {
+        if (set != null && !set.isEmpty()) {
           adfs++;
         }
       }
@@ -355,7 +353,7 @@ public class SparkTransformer extends SceneTransformer {
     logger.debug("Dereference counts BEFORE trimming (total = " + total + "):");
     for (int i = 0; i < deRefCounts.length; i++) {
       if (deRefCounts[i] > 0) {
-        logger.debug("" + i + " " + deRefCounts[i] + " " + (deRefCounts[i] * 100.0 / total) + "%");
+        logger.debug(i + " " + deRefCounts[i] + " " + (deRefCounts[i] * 100.0 / total) + "%");
       }
     }
   }

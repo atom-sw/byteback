@@ -114,7 +114,6 @@ import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
 import soot.shimple.ShimpleTransformer;
 import soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder;
-import soot.sootify.TemplatePrinter;
 import soot.tagkit.InnerClassTagAggregator;
 import soot.tagkit.LineNumberTagAggregator;
 import soot.toolkits.exceptions.DuplicateCatchAllTrapRemover;
@@ -882,10 +881,6 @@ public class PackManager {
       case Options.output_format_xml:
         writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
         XMLPrinter.v().printJimpleStyleTo(c, writerOut);
-        break;
-      case Options.output_format_template:
-        writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-        TemplatePrinter.v().printTo(c, writerOut);
         break;
       case Options.output_format_asm:
         createASMBackend(c).generateTextualRepresentation(writerOut);

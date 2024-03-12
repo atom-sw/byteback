@@ -249,46 +249,4 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
     return (new ForwardOrderBuilder<>(g, reverse)).computeOrder();
   }
 
-  // deprecated methods follow
-
-  /**
-   * @deprecated use {@link #SlowPseudoTopologicalOrderer()} instead
-   */
-  public SlowPseudoTopologicalOrderer(boolean isReversed) {
-    this.mIsReversed = isReversed;
-  }
-
-  /**
-   * @param g
-   *          a DirectedGraph instance whose nodes we wish to order.
-   * @return a pseudo-topologically ordered list of the graph's nodes.
-   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
-   */
-  @Deprecated
-  public List<N> newList(DirectedGraph<N> g) {
-    return (new ForwardOrderBuilder<>(g, mIsReversed)).computeOrder();
-  }
-
-  /**
-   * Set the ordering for the orderer.
-   *
-   * @param isReversed
-   *          specify if we want reverse pseudo-topological ordering, or not.
-   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
-   */
-  @Deprecated
-  public void setReverseOrder(boolean isReversed) {
-    mIsReversed = isReversed;
-  }
-
-  /**
-   * Check the ordering for the orderer.
-   *
-   * @return true if we have reverse pseudo-topological ordering, false otherwise.
-   * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
-   */
-  @Deprecated
-  public boolean isReverseOrder() {
-    return mIsReversed;
-  }
 }

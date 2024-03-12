@@ -35,9 +35,7 @@ import soot.jimple.spark.pag.Parm;
 import soot.jimple.spark.sets.P2SetFactory;
 import soot.jimple.toolkits.annotation.arraycheck.Array2ndDimensionSymbol;
 import soot.jimple.toolkits.pointer.UnionFactory;
-import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.typing.ClassHierarchy;
-import soot.toolkits.astmetrics.ClassData;
 import soot.toolkits.scalar.Pair;
 
 /** A class to group together all the global variables in Soot. */
@@ -98,8 +96,4 @@ public class G extends Singletons {
   public int Timer_count;
   public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<Scene, ClassHierarchy>();
   public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<MethodContext, MethodContext>();
-
-  // ASTMetrics Data
-  public ArrayList<ClassData> ASTMetricsData = new ArrayList<ClassData>();
-
 }

@@ -1839,20 +1839,6 @@ public class Singletons {
     	instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator = null;
     }
 
-    private soot.sootify.TemplatePrinter instance_soot_sootify_TemplatePrinter;
-    public soot.sootify.TemplatePrinter soot_sootify_TemplatePrinter() {
-        if (instance_soot_sootify_TemplatePrinter == null) {
-	       	synchronized (this) {
-		        if (instance_soot_sootify_TemplatePrinter == null)
-	        		instance_soot_sootify_TemplatePrinter = new soot.sootify.TemplatePrinter(g);
-	       	}
-       	}
-        return instance_soot_sootify_TemplatePrinter;
-    }
-    protected void release_soot_sootify_TemplatePrinter() {
-    	instance_soot_sootify_TemplatePrinter = null;
-    }
-
     private soot.jimple.toolkits.scalar.EmptySwitchEliminator instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator;
     public soot.jimple.toolkits.scalar.EmptySwitchEliminator soot_jimple_toolkits_scalar_EmptySwitchEliminator() {
         if (instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator == null) {
