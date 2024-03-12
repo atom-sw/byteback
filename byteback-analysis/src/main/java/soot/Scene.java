@@ -97,11 +97,7 @@ public class Scene {
 
     public static Scene v() {
         G g = G.v();
-        if (g.soot_ModuleUtil().isInModuleMode()) {
-            return g.soot_ModuleScene();
-        } else {
-            return g.soot_Scene();
-        }
+        return g.soot_Scene();
     }
 
     private void determineExcludedPackages() {
@@ -675,49 +671,32 @@ public class Scene {
      */
     public static String defaultJavaClassPath() {
         final String javaHome = System.getProperty("java.home");
-        StringBuilder sb = new StringBuilder();
-        if ("Mac OS X".equals(System.getProperty("os.name"))) {
-            // in older Mac OS X versions, rt.jar was split into classes.jar and
-            // ui.jar
-            String prefix = javaHome + File.separatorChar + ".." + File.separatorChar + "Classes" + File.separatorChar;
-            File classesJar = new File(prefix + "classes.jar");
-            if (classesJar.exists()) {
-                sb.append(classesJar.getAbsolutePath()).append(File.pathSeparatorChar);
-            }
+        final StringBuilder sb = new StringBuilder();
+        File rtJar = new File(javaHome + File.separatorChar + "lib" + File.separatorChar + "rt.jar");
 
-            File uiJar = new File(prefix + "ui.jar");
-            if (uiJar.exists()) {
-                sb.append(uiJar.getAbsolutePath()).append(File.pathSeparatorChar);
-            }
-        }
-        // behavior for Java versions >=9, which do not have a rt.jar file
-        final boolean javaGEQ9 = isJavaGEQ9(System.getProperty("java.version"));
-        if (javaGEQ9) {
-            sb.append(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS);
-            // this is a new basic class in java >= 9 that needs to be laoded
-            Scene.v().addBasicClass("java.lang.invoke.StringConcatFactory");
+        if (rtJar.exists() && rtJar.isFile()) {
+            // logger.debug("Using JRE runtime: " + rtJar.getAbsolutePath());
+            sb.append(rtJar.getAbsolutePath());
         } else {
-            File rtJar = new File(javaHome + File.separatorChar + "lib" + File.separatorChar + "rt.jar");
+            // in case we're not in JRE environment, try JDK
+            rtJar = new File(javaHome + File.separatorChar + "jre" + File.separatorChar + "lib" + File.separatorChar + "rt.jar");
             if (rtJar.exists() && rtJar.isFile()) {
-                // logger.debug("Using JRE runtime: " + rtJar.getAbsolutePath());
+                // logger.debug("Using JDK runtime: " + rtJar.getAbsolutePath());
                 sb.append(rtJar.getAbsolutePath());
             } else {
-                // in case we're not in JRE environment, try JDK
-                rtJar = new File(javaHome + File.separatorChar + "jre" + File.separatorChar + "lib" + File.separatorChar + "rt.jar");
-                if (rtJar.exists() && rtJar.isFile()) {
-                    // logger.debug("Using JDK runtime: " + rtJar.getAbsolutePath());
-                    sb.append(rtJar.getAbsolutePath());
-                } else {
-                    // not in JDK either
-                    return null;
-                }
+                // not in JDK either
+                return null;
             }
         }
 
-        if (!javaGEQ9 && (Options.v().whole_program() || Options.v().whole_shimple())) {
+        if (Options.v().whole_program() || Options.v().whole_shimple()) {
             // add jce.jar, which is necessary for whole program mode
             // (java.security.Signature from rt.jar imports javax.crypto.Cipher from jce.jar)
-            sb.append(File.pathSeparatorChar).append(javaHome).append(File.separatorChar).append("lib").append(File.separatorChar)
+            sb.append(File.pathSeparatorChar)
+                    .append(javaHome)
+                    .append(File.separatorChar)
+                    .append("lib")
+                    .append(File.separatorChar)
                     .append("jce.jar");
         }
 
@@ -1996,11 +1975,11 @@ public class Scene {
         return c;
     }
 
-    public ClassModel makeSootClass(String name) {
+    public ClassModel makeClassModel(String name) {
         return new ClassModel(name);
     }
 
-    public ClassModel makeSootClass(String name, int modifiers) {
+    public ClassModel makeClassModel(String name, int modifiers) {
         return new ClassModel(name, modifiers);
     }
 

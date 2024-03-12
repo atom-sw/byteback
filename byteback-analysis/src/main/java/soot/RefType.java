@@ -62,11 +62,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
     public static RefType v() {
         G g = G.v();
-        if (g.soot_ModuleUtil().isInModuleMode()) {
-            return g.soot_ModuleRefType();
-        } else {
-            return g.soot_RefType();
-        }
+        return g.soot_RefType();
     }
 
     /**
@@ -76,11 +72,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
      * @return a RefType for the given class name.
      */
     public static RefType v(String className) {
-        if (ModuleUtil.module_mode()) {
-            return ModuleRefType.v(className);
-        } else {
-            return Scene.v().getOrAddRefType(className);
-        }
+        return Scene.v().getOrAddRefType(className);
     }
 
     /**
@@ -90,11 +82,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
      * @return a RefType for the given SootClass..
      */
     public static RefType v(ClassModel c) {
-        if (ModuleUtil.module_mode()) {
-            return ModuleRefType.v(c.getName(), Optional.ofNullable(c.moduleName));
-        } else {
-            return v(c.getName());
-        }
+        return v(c.getName());
     }
 
     public String getClassName() {

@@ -63,8 +63,6 @@ public class AsmMethodSource implements MethodSource {
             + "java.lang.String,java.lang.invoke.MethodType,java.lang.Object[])>";
 
     /* -const fields- */
-    private final String module;
-
     private final int maxLocals;
 
     private final InsnList instructions;
@@ -103,12 +101,11 @@ public class AsmMethodSource implements MethodSource {
     private ArrayDeque<Edge> pendingConversions;
 
     public AsmMethodSource(final int maxLocals, final InsnList insns, final List<LocalVariableNode> localVars,
-                           final List<TryCatchBlockNode> tryCatchBlocks, final String module) {
+                           final List<TryCatchBlockNode> tryCatchBlocks) {
         this.maxLocals = maxLocals;
         this.instructions = insns;
         this.localVars = localVars;
         this.tryCatchBlocks = tryCatchBlocks;
-        this.module = module;
     }
 
     private StackFrame getFrame(AbstractInsnNode insn) {
@@ -121,12 +118,7 @@ public class AsmMethodSource implements MethodSource {
     }
 
     private ClassModel getClassFromScene(String className) {
-        ClassModel result;
-        if (ModuleUtil.module_mode()) {
-            result = ModuleScene.v().getSootClassUnsafe(className, Optional.ofNullable(this.module));
-        } else {
-            result = Scene.v().getSootClassUnsafe(className);
-        }
+        ClassModel result = Scene.v().getSootClassUnsafe(className);
 
         if (result == null) {
             String msg = String.format("%s was not found on classpath.", className);
@@ -135,7 +127,7 @@ public class AsmMethodSource implements MethodSource {
                 // make sure nobody else creates the same class
                 synchronized (ref) {
                     logger.warn(msg);
-                    result = Scene.v().makeSootClass(className, Modifier.PUBLIC);
+                    result = Scene.v().makeClassModel(className, Modifier.PUBLIC);
                     Scene.v().addClass(result);
                     result.setPhantomClass();
                     return ref.getSootClass();
@@ -372,7 +364,7 @@ public class AsmMethodSource implements MethodSource {
         Type type;
         if (out == null) {
             ClassModel declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
-            type = AsmUtil.toJimpleType(insn.desc, Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
+            type = AsmUtil.toJimpleTypeName(insn.desc);
             Value val;
             SootFieldRef ref;
             if (insn.getOpcode() == GETSTATIC) {
@@ -407,7 +399,7 @@ public class AsmMethodSource implements MethodSource {
         Type type;
         if (out == null) {
             ClassModel declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
-            type = AsmUtil.toJimpleType(insn.desc, Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
+            type = AsmUtil.toJimpleTypeName(insn.desc);
             Value val;
             SootFieldRef ref;
             rvalue = popImmediate(type);
@@ -1094,8 +1086,7 @@ public class AsmMethodSource implements MethodSource {
             v = StringConstant.v(val.toString());
         } else if (val instanceof org.objectweb.asm.Type t) {
             if (t.getSort() == org.objectweb.asm.Type.METHOD) {
-                List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor(),
-                        Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
+                List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor());
                 Type returnType = paramTypes.remove(paramTypes.size() - 1);
                 v = MethodType.v(paramTypes, returnType);
             } else {
@@ -1161,7 +1152,7 @@ public class AsmMethodSource implements MethodSource {
                 clsName = "java.lang.Object";
             }
             List<Type> sigTypes
-                    = AsmUtil.toJimpleDesc(insn.desc, Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
+                    = AsmUtil.toJimpleDesc(insn.desc);
             returnType = sigTypes.remove(sigTypes.size() - 1);
             SootMethodRef ref
                     = Scene.v().makeMethodRef(this.getClassFromScene(clsName), insn.name, sigTypes, returnType, !instance);
@@ -1364,8 +1355,7 @@ public class AsmMethodSource implements MethodSource {
     private SootMethodRef toSootMethodRef(Handle methodHandle) {
         String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
         ClassModel bsmCls = this.getClassFromScene(bsmClsName);
-        List<Type> bsmSigTypes = AsmUtil.toJimpleDesc(methodHandle.getDesc(),
-                Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
+        List<Type> bsmSigTypes = AsmUtil.toJimpleDesc(methodHandle.getDesc());
         Type returnType = bsmSigTypes.remove(bsmSigTypes.size() - 1);
         return Scene.v().makeMethodRef(bsmCls, methodHandle.getName(), bsmSigTypes, returnType,
                 methodHandle.getTag() == MethodHandle.Kind.REF_INVOKE_STATIC.getValue());
@@ -1375,7 +1365,7 @@ public class AsmMethodSource implements MethodSource {
         String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
         ClassModel bsmCls = Scene.v().getSootClass(bsmClsName);
         Type t = AsmUtil
-                .toJimpleDesc(methodHandle.getDesc(), Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName))
+                .toJimpleDesc(methodHandle.getDesc())
                 .get(0);
         int kind = methodHandle.getTag();
         return Scene.v().makeFieldRef(bsmCls, methodHandle.getName(), t,
@@ -1388,8 +1378,7 @@ public class AsmMethodSource implements MethodSource {
         Operand[] out = frame.out();
         Operand opr;
         if (out == null) {
-            ArrayType t = (ArrayType) AsmUtil.toJimpleType(insn.desc,
-                    Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
+            ArrayType t = (ArrayType) AsmUtil.toJimpleTypeName(insn.desc);
             int dims = insn.dims;
             Operand[] sizes = new Operand[dims];
             Value[] sizeVals = new Value[dims];
@@ -1448,8 +1437,7 @@ public class AsmMethodSource implements MethodSource {
         Operand[] out = frame.out();
         Operand opr;
         if (out == null) {
-            Optional<String> module = Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName);
-            Type t = AsmUtil.toJimpleRefType(insn.desc, module);
+            Type t = AsmUtil.toRefType(insn.desc);
             Value val;
             if (op == NEW) {
                 val = Jimple.v().newNewExpr((RefType) t);

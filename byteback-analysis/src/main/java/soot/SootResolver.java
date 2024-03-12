@@ -62,11 +62,7 @@ public class SootResolver {
 
     public static SootResolver v() {
         G g = G.v();
-        if (g.soot_ModuleUtil().isInModuleMode()) {
-            return g.soot_SootModuleResolver();
-        } else {
-            return g.soot_SootResolver();
-        }
+        return g.soot_SootResolver();
     }
 
     /**
@@ -93,12 +89,7 @@ public class SootResolver {
         if (scene.containsClass(className)) {
             return scene.getSootClass(className);
         } else {
-            ClassModel newClass;
-            if (className.endsWith(ModuleInfoModel.MODULE_INFO)) {
-                newClass = new ModuleInfoModel(className, null);
-            } else {
-                newClass = new ClassModel(className);
-            }
+            ClassModel newClass = new ClassModel(className);
             newClass.setResolvingLevel(ClassModel.DANGLING);
             scene.addClass(newClass);
             return newClass;
@@ -210,17 +201,11 @@ public class SootResolver {
     }
 
     protected void bringToHierarchyUnchecked(ClassModel sc) {
-        String className = sc.getName();
-        ClassSource is;
-
-        if (ModuleUtil.module_mode()) {
-            is = ModulePathSourceLocator.v().getClassSource(className, Optional.of(sc.moduleName));
-        } else {
-            is = SourceLocator.v().getClassSource(className);
-        }
+        final String className = sc.getName();
+        final ClassSource classSource = SourceLocator.v().getClassSource(className);
 
         try {
-            boolean modelAsPhantomRef = (is == null);
+            boolean modelAsPhantomRef = (classSource == null);
             if (modelAsPhantomRef) {
                 if (!Scene.v().allowsPhantomRefs()) {
                     String suffix = "";
@@ -238,7 +223,7 @@ public class SootResolver {
                     sc.setPhantomClass();
                 }
             } else {
-                Dependencies dependencies = is.resolve(sc);
+                Dependencies dependencies = classSource.resolve(sc);
                 if (!dependencies.typesToSignature.isEmpty()) {
                     classToTypesSignature.putAll(sc, dependencies.typesToSignature);
                 }
@@ -247,8 +232,8 @@ public class SootResolver {
                 }
             }
         } finally {
-            if (is != null) {
-                is.close();
+            if (classSource != null) {
+                classSource.close();
             }
         }
         reResolveHierarchy(sc, ClassModel.HIERARCHY);

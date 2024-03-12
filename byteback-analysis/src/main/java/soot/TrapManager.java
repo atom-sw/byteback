@@ -29,6 +29,8 @@ import java.util.*;
 /**
  * Utility methods for dealing with traps.
  */
+
+// TODO is this class really necessary?
 public class TrapManager {
 
     /**
@@ -133,17 +135,10 @@ public class TrapManager {
      * Given a body and a unit handling an exception, returns the list of exception types possibly caught by the handler.
      */
     public static List<RefType> getExceptionTypesOf(Unit u, Body body) {
-        final boolean module_mode = ModuleUtil.module_mode();
-
         List<RefType> possibleTypes = new ArrayList<>();
         for (Trap trap : body.getTraps()) {
             if (trap.getHandlerUnit() == u) {
-                RefType type;
-                if (module_mode) {
-                    type = ModuleRefType.v(trap.getException().getName(), Optional.ofNullable(trap.getException().moduleName));
-                } else {
-                    type = RefType.v(trap.getException().getName());
-                }
+                RefType type = RefType.v(trap.getException().getName());
                 possibleTypes.add(type);
             }
         }

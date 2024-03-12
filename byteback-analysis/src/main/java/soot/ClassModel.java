@@ -77,9 +77,6 @@ public class ClassModel extends AbstractHost {
 
     protected boolean isPhantom;
 
-    public final String moduleName;
-    protected ModuleInfoModel moduleInformation;
-
     private RefType refType;
 
     private volatile int resolvingLevel = DANGLING;
@@ -97,35 +94,27 @@ public class ClassModel extends AbstractHost {
         }
     }
 
-    /**
-     * Constructs an empty SootClass with the given name and modifiers.
-     */
-    public ClassModel(String name, int modifiers) {
-        this(name, modifiers, null);
+    public ClassModel(final String className) {
+        this(className, 0);
     }
 
-    public ClassModel(String name, String moduleName) {
-        this(name, 0, moduleName);
-    }
-
-    public ClassModel(String name) {
-        this(name, 0, null);
-    }
-
-    public ClassModel(String name, int modifiers, String moduleName) {
+    public ClassModel(final String name, int modifiers) {
         if (name.isEmpty()) {
-            throw new RuntimeException("Class must not be empty!");
+            throw new IllegalArgumentException("Class name must not be empty!");
         }
+
         if (name.charAt(0) == '[') {
             throw new RuntimeException("Attempt to make a class whose name starts with [");
         }
-        this.moduleName = moduleName;
+
         setName(name);
         this.modifiers = modifiers;
-        initializeRefType(name, moduleName);
+        initializeRefType(name);
+
         if (Options.v().debug_resolver()) {
             logger.debug("created " + name + " with modifiers " + modifiers);
         }
+
         setResolvingLevel(BODIES);
     }
 
@@ -135,12 +124,8 @@ public class ClassModel extends AbstractHost {
      *
      * @param name The name of the new class
      */
-    protected void initializeRefType(String name, String moduleName) {
-        if (ModuleUtil.module_mode()) {
-            this.refType = ModuleRefType.v(name, Optional.ofNullable(this.moduleName));
-        } else {
-            this.refType = RefType.v(name);
-        }
+    protected void initializeRefType(String name) {
+        this.refType = RefType.v(name);
         this.refType.setSootClass(this);
     }
 
@@ -1158,8 +1143,6 @@ public class ClassModel extends AbstractHost {
 
         if (this.refType != null) {
             this.refType.setClassName(name);
-        } else if (ModuleUtil.module_mode()) {
-            this.refType = ModuleScene.v().getOrAddRefType(name, Optional.ofNullable(this.moduleName));
         } else {
             this.refType = Scene.v().getOrAddRefType(name);
         }
@@ -1170,8 +1153,9 @@ public class ClassModel extends AbstractHost {
      * structure.
      */
     public void validate() {
-        final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
+        final List<ValidationException> exceptionList = new ArrayList<>();
         validate(exceptionList);
+
         if (!exceptionList.isEmpty()) {
             throw exceptionList.get(0);
         }
@@ -1188,22 +1172,6 @@ public class ClassModel extends AbstractHost {
                 validator.validate(this, exceptionList);
             }
         }
-    }
-
-    public String getFilePath() {
-        if (ModuleUtil.module_mode()) {
-            return moduleName + ':' + this.getName();
-        } else {
-            return this.getName();
-        }
-    }
-
-    public ModuleInfoModel getModuleInformation() {
-        return moduleInformation;
-    }
-
-    public void setModuleInformation(ModuleInfoModel moduleInformation) {
-        this.moduleInformation = moduleInformation;
     }
 
     /**

@@ -26,7 +26,6 @@ import com.google.common.cache.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.asm.model.AsmClassProvider;
-import soot.asm.model.AsmJava9ClassProvider;
 import soot.options.Options;
 import soot.util.SharedCloseable;
 
@@ -134,11 +133,7 @@ public class SourceLocator {
 
     public static SourceLocator v() {
         G g = G.v();
-        if (g.soot_ModuleUtil().isInModuleMode()) {
-            return g.soot_ModulePathSourceLocator();
-        } else {
-            return g.soot_SourceLocator();
-        }
+        return g.soot_SourceLocator();
     }
 
     /**
@@ -169,10 +164,6 @@ public class SourceLocator {
                 try {
                     originalDir = originalDir.replaceAll("\\\\" + Pattern.quote(File.pathSeparator), File.pathSeparator);
                     String canonicalDir = new File(originalDir).getCanonicalPath();
-                    if (ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS.equals(originalDir)) {
-                        SourceLocator.v().java9Mode = true;
-                        continue;
-                    }
                     ret.add(canonicalDir);
                 } catch (IOException e) {
                     throw new CompilationDeathException("Couldn't resolve classpath entry " + originalDir + ": " + e);
@@ -210,6 +201,7 @@ public class SourceLocator {
     protected void setupClassProviders() {
         final List<ClassProvider> classProviders = new LinkedList<ClassProvider>();
         final ClassProvider classFileClassProvider = new AsmClassProvider();
+
         switch (Options.v().src_prec()) {
             case Options.src_prec_class, Options.src_prec_java, Options.src_prec_only_class, Options.src_prec_jimple:
                 classProviders.add(classFileClassProvider);
@@ -217,9 +209,7 @@ public class SourceLocator {
             default:
                 throw new RuntimeException("Other source precedences are not currently supported.");
         }
-        if (this.java9Mode) {
-            classProviders.add(new AsmJava9ClassProvider());
-        }
+
         this.classProviders = classProviders;
     }
 
@@ -267,16 +257,9 @@ public class SourceLocator {
 
     public List<String> getClassesUnder(String aPath, String prefix) {
         // FIXME: AD the dummy_classpath_variable should be replaced with a more stable concept
-        if (ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS.equals(aPath)) {
-            ArrayList<String> foundClasses = new ArrayList<String>();
-            for (List<String> classesInModule : ModulePathSourceLocator.v().getClassUnderModulePath("jrt:/").values()) {
-                foundClasses.addAll(classesInModule);
-            }
-            return foundClasses;
-        }
-
         List<String> classes = new ArrayList<String>();
         ClassSourceType cst = getClassSourceType(aPath);
+
         if (cst == ClassSourceType.jar || cst == ClassSourceType.zip) {
             // load Java class files from ZIP and JAR
             try (SharedCloseable<ZipFile> archive = archivePathToZip.getRef(aPath)) {
@@ -313,6 +296,7 @@ public class SourceLocator {
         } else {
             throw new RuntimeException("Invalid class source type " + cst + " for " + aPath);
         }
+
         return classes;
     }
 

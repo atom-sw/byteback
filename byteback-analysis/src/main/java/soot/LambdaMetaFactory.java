@@ -138,35 +138,27 @@ public class LambdaMetaFactory {
         final String enclosingClassname = enclosingClass.getName();
 
         String className;
-        final boolean readableClassnames = true;
-        if (readableClassnames) {
-            // class names cannot contain <>
-            String implMethodName = implMethod.getMethodRef().getName();
-            String dummyName = "<init>".equals(implMethodName) ? "init" : implMethodName;
-            // XXX: $ causes confusion in inner class inference; remove for now
-            dummyName = dummyName.replace('$', '_');
-            String prefix
-                    = (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy." : enclosingClassname + "$";
-            className = prefix + dummyName + "__" + uniqSupply();
-        } else {
-            className = "soot.dummy.lambda" + uniqSupply();
-        }
-        ClassModel tclass = Scene.v().makeSootClass(className);
-        tclass.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
-        tclass.setSuperclass(Scene.v().getObjectType().getSootClass());
-        tclass.addInterface(functionalInterfaceToImplement);
-        tclass.addTag(new ArtificialEntityTag());
+        String implMethodName = implMethod.getMethodRef().getName();
+        String dummyName = "<init>".equals(implMethodName) ? "init" : implMethodName;
+        dummyName = dummyName.replace('$', '_');
+        String prefix = (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy." : enclosingClassname + "$";
+        className = prefix + dummyName + "__" + uniqSupply();
+        ClassModel classModel = Scene.v().makeClassModel(className);
+        classModel.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
+        classModel.setSuperclass(Scene.v().getObjectType().getSootClass());
+        classModel.addInterface(functionalInterfaceToImplement);
+        classModel.addTag(new ArtificialEntityTag());
 
         // additions from altMetafactory
         if (serializable) {
-            tclass.addInterface(RefType.v("java.io.Serializable").getSootClass());
+            classModel.addInterface(RefType.v("java.io.Serializable").getSootClass());
         }
         for (int i = 0; i < markerInterfaces.size(); i++) {
             String internal = markerInterfaces.get(i).getValue();
-            RefType refType = ((RefType) AsmUtil.toBaseType(internal, Optional.ofNullable(tclass.moduleName)));
+            RefType refType = ((RefType) AsmUtil.toBaseType(internal));
             ClassModel interfaceClass = refType.getSootClass();
             if (!interfaceClass.equals(functionalInterfaceToImplement)) {
-                tclass.addInterface(interfaceClass);
+                classModel.addInterface(interfaceClass);
             }
         }
 
@@ -175,7 +167,7 @@ public class LambdaMetaFactory {
         for (int i = 0, e = capTypes.size(); i < e; i++) {
             SootField f = Scene.v().makeSootField("cap" + i, capTypes.get(i), 0);
             capFields.add(f);
-            tclass.addField(f);
+            classModel.addField(f);
         }
 
         // if the implMethod is a new private static in the enclosing class, make it public access so
@@ -193,31 +185,31 @@ public class LambdaMetaFactory {
         // Bootstrap method creates a new instance of this class
         SootMethod tboot = Scene.v().makeSootMethod("bootstrap$", capTypes, functionalInterfaceToImplement.getType(),
                 Modifier.PUBLIC | Modifier.STATIC);
-        tclass.addMethod(tboot);
+        classModel.addMethod(tboot);
         tboot.setSource(ms);
 
         // Constructor just copies the captures
         SootMethod tctor = Scene.v().makeSootMethod("<init>", capTypes, VoidType.v(), Modifier.PUBLIC);
-        tclass.addMethod(tctor);
+        classModel.addMethod(tctor);
         tctor.setSource(ms);
 
         // Dispatch runs the 'real' method implementing the body of the lambda
-        addDispatch(name, tclass, samMethodType, instantiatedMethodType, capFields, implMethod);
+        addDispatch(name, classModel, samMethodType, instantiatedMethodType, capFields, implMethod);
 
         // For each bridge MethodType, add another dispatch method which calls the 'real' method
         for (MethodType bridgeType : bridges) {
-            addDispatch(name, tclass, bridgeType, instantiatedMethodType, capFields, implMethod);
+            addDispatch(name, classModel, bridgeType, instantiatedMethodType, capFields, implMethod);
         }
 
-        for (SootMethod m : tclass.getMethods()) {
+        for (SootMethod m : classModel.getMethods()) {
             // There is no reason not to load the bodies directly. After all,
             // we are introducing new classes while loading bodies.
             m.retrieveActiveBody();
         }
 
-        addClassAndInvalidateHierarchy(tclass);
+        addClassAndInvalidateHierarchy(classModel);
         if (enclosingClass.isApplicationClass()) {
-            tclass.setApplicationClass();
+            classModel.setApplicationClass();
         }
 
         return tboot.makeRef();

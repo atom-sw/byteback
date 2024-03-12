@@ -72,6 +72,7 @@ public class VirtualEdgesSummaries {
     public VirtualEdgesSummaries() {
         final String virtualEdgesPath = Options.v().virtualedges_path();
         Path summariesFile = null;
+
         if (virtualEdgesPath != null && !virtualEdgesPath.isEmpty()) {
             final Path virtualEdgesFilePath = Paths.get(virtualEdgesPath);
             if (Files.exists(virtualEdgesFilePath)) {
@@ -80,11 +81,13 @@ public class VirtualEdgesSummaries {
                 logger.error("The virtual edges path {} does not exist", virtualEdgesPath);
             }
         }
+
         if (summariesFile == null) {
             summariesFile = Paths.get(SUMMARIESFILE);
         }
-        try (InputStream in = Files.exists(summariesFile) ? Files.newInputStream(summariesFile)
-                : ModuleUtil.class.getResourceAsStream("/" + SUMMARIESFILE)) {
+
+        try (InputStream in = Files.exists(summariesFile) ? Files.newInputStream(summariesFile) :
+                getClass().getResourceAsStream("/" + SUMMARIESFILE)) {
             if (in == null) {
                 logger.error("Virtual edge summaries file not found");
             } else {

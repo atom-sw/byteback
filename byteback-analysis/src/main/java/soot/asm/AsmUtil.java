@@ -39,11 +39,7 @@ import java.util.Optional;
 public class AsmUtil {
     private static final Logger logger = LoggerFactory.getLogger(AsmUtil.class);
 
-    private static RefType makeRefType(final String className, final Optional<String> moduleName) {
-        if (ModuleUtil.module_mode()) {
-            return ModuleRefType.v(className, moduleName);
-        }
-
+    private static RefType makeRefType(final String className) {
         return RefType.v(className);
     }
 
@@ -60,22 +56,22 @@ public class AsmUtil {
     /**
      * Converts an internal class name to a Type.
      *
-     * @param internal internal name.
+     * @param internalName internal name.
      * @return type
      */
-    public static Type toBaseType(String internal, final Optional<String> moduleName) {
-        if (internal.charAt(0) == '[') {
-            internal = internal.substring(internal.lastIndexOf('[') + 1);
+    public static Type toBaseType(String internalName) {
+        if (internalName.charAt(0) == '[') {
+            internalName = internalName.substring(internalName.lastIndexOf('[') + 1);
         }
-        if (internal.charAt(internal.length() - 1) == ';') {
-            internal = internal.substring(0, internal.length() - 1);
-            if (internal.charAt(0) == 'L') {
-                internal = internal.substring(1);
+        if (internalName.charAt(internalName.length() - 1) == ';') {
+            internalName = internalName.substring(0, internalName.length() - 1);
+            if (internalName.charAt(0) == 'L') {
+                internalName = internalName.substring(1);
             }
-            internal = toQualifiedName(internal);
-            return makeRefType(internal, moduleName);
+            internalName = toQualifiedName(internalName);
+            return makeRefType(internalName);
         }
-        switch (internal.charAt(0)) {
+        switch (internalName.charAt(0)) {
             case 'Z':
                 return BooleanType.v();
             case 'B':
@@ -93,8 +89,8 @@ public class AsmUtil {
             case 'D':
                 return DoubleType.v();
             default:
-                internal = toQualifiedName(internal);
-                return makeRefType(internal, moduleName);
+                internalName = toQualifiedName(internalName);
+                return makeRefType(internalName);
         }
     }
 
@@ -114,7 +110,7 @@ public class AsmUtil {
      * @param qualifiedName fully qualified class name.
      * @return internal name.
      */
-    public static String toInternalName(String qualifiedName) {
+    public static String toInternalName(final String qualifiedName) {
         return qualifiedName.replace('.', '/');
     }
 
@@ -124,8 +120,8 @@ public class AsmUtil {
      * @param desc the descriptor.
      * @return the reference type.
      */
-    public static Type toJimpleRefType(String desc, Optional<String> moduleName) {
-        return desc.charAt(0) == '[' ? toJimpleType(desc, moduleName) : makeRefType(toQualifiedName(desc), moduleName);
+    public static Type toRefType(final String desc) {
+        return desc.charAt(0) == '[' ? toJimpleTypeName(desc) : makeRefType(toQualifiedName(desc));
     }
 
     /**
@@ -134,7 +130,7 @@ public class AsmUtil {
      * @param desc the descriptor.
      * @return equivalent Jimple type.
      */
-    public static Type toJimpleType(String desc, Optional<String> moduleName) {
+    public static Type toJimpleTypeName(String desc) {
         int idx = desc.lastIndexOf('[');
         int nrDims = idx + 1;
         if (nrDims > 0) {
@@ -175,7 +171,7 @@ public class AsmUtil {
                 }
                 String name = desc.substring(1, desc.length() - 1);
                 name = toQualifiedName(name);
-                baseType = makeRefType(name, moduleName);
+                baseType = makeRefType(name);
                 break;
             default:
                 throw new AssertionError("Unknown descriptor: " + desc);
@@ -192,7 +188,7 @@ public class AsmUtil {
      * @param desc method signature.
      * @return list of types.
      */
-    public static List<Type> toJimpleDesc(final String desc, final Optional<String> moduleName) {
+    public static List<Type> toJimpleDesc(final String desc) {
         ArrayList<Type> types = new ArrayList<>(2);
         int len = desc.length();
         int idx = 0;
@@ -241,7 +237,7 @@ public class AsmUtil {
                         int begin = idx;
                         while (desc.charAt(++idx) != ';');
                         String cls = desc.substring(begin, idx++);
-                        baseType = makeRefType(toQualifiedName(cls), moduleName);
+                        baseType = makeRefType(toQualifiedName(cls));
                         break this_type;
                     default:
                         throw new AssertionError("Unknown type: " + c);
@@ -259,8 +255,9 @@ public class AsmUtil {
     /**
      * strips suffix for indicating an array type
      */
-    public static String baseTypeName(String s) {
+    public static String stripArrayTypeName(String s) {
         int index = s.indexOf("[");
+
         if (index < 0) {
             return s;
         } else {

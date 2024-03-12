@@ -180,18 +180,18 @@ public class MethodModelBuilder extends JSRInlinerAdapter {
     @Override
     public void visitTypeInsn(int op, String t) {
         super.visitTypeInsn(op, t);
-        Type rt = AsmUtil.toJimpleRefType(t, Optional.ofNullable(this.classBuilder.getClassModel().moduleName));
-        if (rt instanceof ArrayType) {
-            classBuilder.addDep(((ArrayType) rt).baseType);
+        Type refType = AsmUtil.toRefType(t);
+        if (refType instanceof ArrayType) {
+            classBuilder.addDep(((ArrayType) refType).baseType);
         } else {
-            classBuilder.addDep(rt);
+            classBuilder.addDep(refType);
         }
     }
 
     @Override
     public void visitFieldInsn(int opcode, String owner, String name, String desc) {
         super.visitFieldInsn(opcode, owner, name, desc);
-        for (Type t : AsmUtil.toJimpleDesc(desc, Optional.ofNullable(this.classBuilder.getClassModel().moduleName))) {
+        for (Type t : AsmUtil.toJimpleDesc(desc)) {
             if (t instanceof RefType) {
                 classBuilder.addDep(t);
             }
@@ -204,11 +204,11 @@ public class MethodModelBuilder extends JSRInlinerAdapter {
     public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean isInterf) {
         super.visitMethodInsn(opcode, owner, name, desc, isInterf);
 
-        for (Type t : AsmUtil.toJimpleDesc(desc, Optional.ofNullable(this.classBuilder.getClassModel().moduleName))) {
+        for (Type t : AsmUtil.toJimpleDesc(desc)) {
             addDeps(t);
         }
 
-        classBuilder.addDep(AsmUtil.toJimpleRefType(owner, Optional.ofNullable(this.classBuilder.getClassModel().moduleName)));
+        classBuilder.addDep(AsmUtil.toRefType(owner));
     }
 
     @Override
@@ -216,7 +216,7 @@ public class MethodModelBuilder extends JSRInlinerAdapter {
         super.visitLdcInsn(cst);
 
         if (cst instanceof final Handle methodHandle) {
-            classBuilder.addDep(AsmUtil.toBaseType(methodHandle.getOwner(), Optional.ofNullable(this.classBuilder.getClassModel().moduleName)));
+            classBuilder.addDep(AsmUtil.toBaseType(methodHandle.getOwner()));
         }
     }
 
@@ -276,13 +276,13 @@ public class MethodModelBuilder extends JSRInlinerAdapter {
         }
         if (method.isConcrete()) {
             method.setSource(
-                    createAsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, classBuilder.getClassModel().moduleName));
+                    createAsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks));
         }
     }
 
     protected MethodSource createAsmMethodSource(int maxLocals, InsnList instructions, List<LocalVariableNode> localVariables,
-                                                 List<TryCatchBlockNode> tryCatchBlocks, String moduleName) {
-        return new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, moduleName);
+                                                 List<TryCatchBlockNode> tryCatchBlocks) {
+        return new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks);
     }
 
     /**
