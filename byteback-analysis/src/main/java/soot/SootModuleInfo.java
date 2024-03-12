@@ -22,10 +22,8 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,8 +36,8 @@ import java.util.Set;
  * @author Andreas Dann
  */
 public class SootModuleInfo extends SootClass {
-
   public static final String MODULE_INFO_FILE = "module-info.class";
+
   public static final String MODULE_INFO = "module-info";
 
   private static final String ALL_MODULES = "EVERYONE_MODULE";
@@ -123,8 +121,7 @@ public class SootModuleInfo extends SootClass {
     }
 
     for (SootModuleInfo moduleInfo : moduleInfos.keySet()) {
-      SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES,
-          Optional.fromNullable(moduleInfo.moduleName));
+      SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES, Optional.ofNullable(moduleInfo.moduleName));
     }
     return moduleInfos;
   }
@@ -187,6 +184,7 @@ public class SootModuleInfo extends SootClass {
     if (qualifiedExport.contains(ALL_MODULES)) {
       return true;
     }
+
     return (toModule != ALL_MODULES) && qualifiedExport.contains(toModule);
   }
 
@@ -203,10 +201,10 @@ public class SootModuleInfo extends SootClass {
   }
 
   public void addModulePackage(String packageName) {
-    this.modulePackages.add(packageName);
+    modulePackages.add(packageName);
   }
 
   public boolean moduleContainsPackage(String packageName) {
-    return this.modulePackages.contains(packageName);
+    return modulePackages.contains(packageName);
   }
 }

@@ -36,7 +36,7 @@ import java.util.Queue;
 import java.util.RandomAccess;
 import java.util.Set;
 
-import soot.baf.GotoInst;
+import soot.baf.syntax.GotoInst;
 import soot.jimple.GotoStmt;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;

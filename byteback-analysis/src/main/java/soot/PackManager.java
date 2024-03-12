@@ -48,15 +48,16 @@ import java.util.zip.ZipEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.baf.Baf;
-import soot.baf.BafASMBackend;
-import soot.baf.BafBody;
+import soot.baf.syntax.Baf;
+import soot.baf.syntax.BafASMBackend;
+import soot.baf.syntax.BafBody;
+import soot.baf.syntax.JasminClass;
 import soot.baf.toolkits.base.LoadStoreOptimizer;
 import soot.baf.toolkits.base.PeepholeOptimizer;
 import soot.baf.toolkits.base.StoreChainOptimizer;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
-import soot.grimp.toolkits.base.ConstructorFolder;
+import soot.grimp.transformer.ConstructorFolder;
 import soot.jimple.JimpleBody;
 import soot.jimple.paddle.PaddleHook;
 import soot.jimple.spark.SparkTransformer;
@@ -128,8 +129,6 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.EscapedWriter;
 import soot.util.JasminOutputStream;
 import soot.util.PhaseDumper;
-import soot.xml.TagCollector;
-import soot.xml.XMLPrinter;
 
 /**
  * Manages the Packs containing the various phases and their options.
@@ -251,7 +250,7 @@ public class PackManager {
       p.add(new Transform("wjap.uft", UnreachableFieldsTagger.v()));
       p.add(new Transform("wjap.tqt", TightestQualifiersTagger.v()));
       p.add(new Transform("wjap.cgg", CallGraphGrapher.v()));
-      p.add(new Transform("wjap.purity", PurityAnalysis.v())); // [AM]
+      p.add(new Transform("wjap.purity", PurityAnalysis.v()));
     }
 
     // Shimple pack
@@ -526,7 +525,6 @@ public class PackManager {
 
     writeOutput(reachableClasses());
     tearDownJAR();
-    postProcessXML(reachableClasses());
 
     if (!Options.v().no_writeout_body_releasing()) {
       releaseBodies(reachableClasses());
@@ -698,8 +696,6 @@ public class PackManager {
         throw new RuntimeException();
     }
 
-    TagCollector tc = (format != Options.output_format_jimple && Options.v().xml_attributes()) ? new TagCollector() : null;
-
     boolean wholeShimple = Options.v().whole_shimple();
     if (Options.v().via_shimple()) {
       produceShimple = true;
@@ -745,7 +741,7 @@ public class PackManager {
         getPack("stp").apply(sBody);
         getPack("sop").apply(sBody);
 
-        if (produceJimple || (wholeShimple && !produceShimple)) {
+        if (produceJimple) {
           m.setActiveBody(sBody.toJimpleBody());
         }
       }
@@ -765,9 +761,6 @@ public class PackManager {
         }
         getPack("jop").apply(body);
         getPack("jap").apply(body);
-        if (tc != null) {
-          tc.collectBodyTags(body);
-        }
       }
 
       // getPack("cfg").apply(m.retrieveActiveBody());
@@ -780,10 +773,6 @@ public class PackManager {
           m.setActiveBody(convertJimpleBodyToBaf(m));
         }
       }
-    }
-
-    if (tc != null) {
-      processXMLForClass(c, tc);
     }
   }
 
@@ -878,10 +867,6 @@ public class PackManager {
         writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
         Printer.v().printTo(c, writerOut);
         break;
-      case Options.output_format_xml:
-        writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-        XMLPrinter.v().printJimpleStyleTo(c, writerOut);
-        break;
       case Options.output_format_asm:
         createASMBackend(c).generateTextualRepresentation(writerOut);
         break;
@@ -911,7 +896,7 @@ public class PackManager {
    */
   private AbstractJasminClass createJasminBackend(SootClass c) {
     if (c.containsBafBody()) {
-      return new soot.baf.JasminClass(c);
+      return new JasminClass(c);
     } else {
       return new soot.jimple.JasminClass(c);
     }
@@ -927,34 +912,6 @@ public class PackManager {
    */
   protected BafASMBackend createASMBackend(SootClass c) {
     return new BafASMBackend(c, Options.v().java_version());
-  }
-
-  private void postProcessXML(Iterator<SootClass> classes) {
-    if (!Options.v().xml_attributes() || (Options.v().output_format() != Options.output_format_jimple)) {
-      return;
-    }
-    while (classes.hasNext()) {
-      SootClass c = classes.next();
-      processXMLForClass(c);
-    }
-  }
-
-  private void processXMLForClass(SootClass c, TagCollector tc) {
-    int ofmt = Options.v().output_format();
-    final int format = ofmt != Options.output_format_none ? ofmt : Options.output_format_jimple;
-    String fileName = SourceLocator.v().getFileNameFor(c, format);
-    XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName, SourceLocator.v().getOutputDir());
-    xap.printAttrs(c, tc);
-  }
-
-  /**
-   * assumption: only called when <code>Options.v().output_format() == Options.output_format_jimple</code>
-   */
-  private void processXMLForClass(SootClass c) {
-    final int format = Options.v().output_format();
-    String fileName = SourceLocator.v().getFileNameFor(c, format);
-    XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName, SourceLocator.v().getOutputDir());
-    xap.printAttrs(c);
   }
 
   private void releaseBodies(SootClass cl) {

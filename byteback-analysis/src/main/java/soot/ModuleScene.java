@@ -22,7 +22,7 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -87,16 +87,6 @@ public class ModuleScene extends Scene {
       throw new RuntimeException("Main class declares no main method!");
     }
     return mainMethod;
-  }
-
-  @Override
-  public void extendSootClassPath(String newPathElement) {
-    this.extendSootModulePath(newPathElement);
-  }
-
-  public void extendSootModulePath(String newPathElement) {
-    modulePath += File.pathSeparatorChar + newPathElement;
-    ModulePathSourceLocator.v().extendClassPath(newPathElement);
   }
 
   @Override
@@ -166,7 +156,7 @@ public class ModuleScene extends Scene {
     }
 
     final String className = c.getName();
-    if (containsClass(className, Optional.fromNullable(c.moduleName))) {
+    if (containsClass(className, Optional.ofNullable(c.moduleName))) {
       throw new RuntimeException("duplicate class: " + className);
     }
 
@@ -488,7 +478,7 @@ public class ModuleScene extends Scene {
       for (String path : opts.process_dir()) {
         for (Map.Entry<String, List<String>> entry : ModulePathSourceLocator.v().getClassUnderModulePath(path).entrySet()) {
           for (String cl : entry.getValue()) {
-            SootClass theClass = loadClassAndSupport(cl, Optional.fromNullable(entry.getKey()));
+            SootClass theClass = loadClassAndSupport(cl, Optional.ofNullable(entry.getKey()));
             theClass.setApplicationClass();
           }
         }
@@ -519,7 +509,7 @@ public class ModuleScene extends Scene {
 
     for (Map.Entry<String, List<String>> entry : temp.entrySet()) {
       for (String className : entry.getValue()) {
-        dynamicClasses.add(loadClassAndSupport(className, Optional.fromNullable(entry.getKey())));
+        dynamicClasses.add(loadClassAndSupport(className, Optional.ofNullable(entry.getKey())));
       }
     }
 
@@ -570,7 +560,7 @@ public class ModuleScene extends Scene {
         }
         if (s.isApplicationClass()) {
           // make sure we have the support
-          loadClassAndSupport(s.getName(), Optional.fromNullable(s.moduleName));
+          loadClassAndSupport(s.getName(), Optional.ofNullable(s.moduleName));
         }
       }
     }
@@ -636,7 +626,7 @@ public class ModuleScene extends Scene {
   }
 
   public RefType getOrAddRefType(RefType tp) {
-    RefType existing = getRefType(tp.getClassName(), Optional.fromNullable(((ModuleRefType) tp).getModuleName()));
+    RefType existing = getRefType(tp.getClassName(), Optional.ofNullable(((ModuleRefType) tp).getModuleName()));
     if (existing != null) {
       return existing;
     }

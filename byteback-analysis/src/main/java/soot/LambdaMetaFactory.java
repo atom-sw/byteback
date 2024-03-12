@@ -23,7 +23,7 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -182,7 +182,7 @@ public class LambdaMetaFactory {
     }
     for (int i = 0; i < markerInterfaces.size(); i++) {
       String internal = markerInterfaces.get(i).getValue();
-      RefType refType = ((RefType) AsmUtil.toBaseType(internal, Optional.fromNullable(tclass.moduleName)));
+      RefType refType = ((RefType) AsmUtil.toBaseType(internal, Optional.ofNullable(tclass.moduleName)));
       SootClass interfaceClass = refType.getSootClass();
       if (!interfaceClass.equals(functionalInterfaceToImplement)) {
         tclass.addInterface(interfaceClass);

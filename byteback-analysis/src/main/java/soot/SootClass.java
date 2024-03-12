@@ -23,8 +23,7 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
-
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +33,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.baf.syntax.BafBody;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.Chain;
@@ -127,10 +127,10 @@ public class SootClass extends AbstractHost {
   }
 
   public SootClass(String name, int modifiers, String moduleName) {
-    if (name.length() == 0) {
+    if (name.isEmpty()) {
       throw new RuntimeException("Class must not be empty!");
     }
-    if (name.length() > 0 && name.charAt(0) == '[') {
+    if (name.charAt(0) == '[') {
       throw new RuntimeException("Attempt to make a class whose name starts with [");
     }
     this.moduleName = moduleName;
@@ -152,7 +152,7 @@ public class SootClass extends AbstractHost {
    */
   protected void initializeRefType(String name, String moduleName) {
     if (ModuleUtil.module_mode()) {
-      this.refType = ModuleRefType.v(name, Optional.fromNullable(this.moduleName));
+      this.refType = ModuleRefType.v(name, Optional.ofNullable(this.moduleName));
     } else {
       this.refType = RefType.v(name);
     }
@@ -989,7 +989,7 @@ public class SootClass extends AbstractHost {
   public boolean containsBafBody() {
     for (Iterator<SootMethod> methodIt = methodIterator(); methodIt.hasNext();) {
       SootMethod m = methodIt.next();
-      if (m.hasActiveBody() && m.getActiveBody() instanceof soot.baf.BafBody) {
+      if (m.hasActiveBody() && m.getActiveBody() instanceof BafBody) {
         return true;
       }
     }
@@ -1172,7 +1172,7 @@ public class SootClass extends AbstractHost {
     if (this.refType != null) {
       this.refType.setClassName(name);
     } else if (ModuleUtil.module_mode()) {
-      this.refType = ModuleScene.v().getOrAddRefType(name, Optional.fromNullable(this.moduleName));
+      this.refType = ModuleScene.v().getOrAddRefType(name, Optional.ofNullable(this.moduleName));
     } else {
       this.refType = Scene.v().getOrAddRefType(name);
     }

@@ -22,7 +22,7 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * Loads symbols for SootClasses from either class files or jimple files.
@@ -50,8 +50,8 @@ public class SootModuleResolver extends SootResolver {
 
     // if no module return first one found
     final ModuleScene modScene = ModuleScene.v();
-    if (modScene.containsClass(className, Optional.fromNullable(module))) {
-      return modScene.getSootClass(className, Optional.fromNullable(module));
+    if (modScene.containsClass(className, Optional.ofNullable(module))) {
+      return modScene.getSootClass(className, Optional.ofNullable(module));
     }
 
     SootClass newClass;

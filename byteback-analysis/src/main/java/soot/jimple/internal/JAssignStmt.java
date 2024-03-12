@@ -33,7 +33,7 @@ import soot.UnitBoxOwner;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.jimple.AbstractJimpleValueSwitch;
 import soot.jimple.AddExpr;
 import soot.jimple.ArrayRef;

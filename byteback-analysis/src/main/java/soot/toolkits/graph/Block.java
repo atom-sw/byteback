@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
-import soot.baf.BafBody;
+import soot.baf.syntax.BafBody;
 import soot.util.Chain;
 
 /**

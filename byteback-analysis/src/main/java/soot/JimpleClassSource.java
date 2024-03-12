@@ -22,17 +22,11 @@ package soot;
  * #L%
  */
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import soot.IInitialResolver.Dependencies;
 //import soot.jimple.parser.lexer.LexerException;
 //import soot.jimple.parser.parser.ParserException;
-import soot.options.Options;
+
 
 /**
  * A class source for resolving from .jimple files using the Jimple parser.
@@ -40,9 +34,9 @@ import soot.options.Options;
 public class JimpleClassSource extends ClassSource {
   private static final Logger logger = LoggerFactory.getLogger(JimpleClassSource.class);
 
-  private IFoundFile foundFile;
+  private FoundFile foundFile;
 
-  public JimpleClassSource(String className, IFoundFile foundFile) {
+  public JimpleClassSource(String className, FoundFile foundFile) {
     super(className);
     if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");

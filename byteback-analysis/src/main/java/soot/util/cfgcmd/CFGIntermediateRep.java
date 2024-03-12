@@ -23,7 +23,7 @@ package soot.util.cfgcmd;
  */
 
 import soot.Body;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.grimp.Grimp;
 import soot.jimple.JimpleBody;
 import soot.shimple.Shimple;

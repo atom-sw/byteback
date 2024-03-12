@@ -24,6 +24,7 @@ package soot.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -35,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import soot.ClassProvider;
 import soot.ClassSource;
 import soot.FoundFile;
-import soot.IFoundFile;
 import soot.ModulePathSourceLocator;
 
 /**
@@ -47,23 +47,24 @@ public class AsmModuleClassProvider implements ClassProvider {
   private static final Logger logger = LoggerFactory.getLogger(AsmModuleClassProvider.class);
 
   @Override
-  public ClassSource find(String cls) {
-    final int idx = cls.lastIndexOf(':') + 1;
-    String clsFile = cls.substring(0, idx) + cls.substring(idx).replace('.', '/') + ".class";
-    IFoundFile file = ModulePathSourceLocator.v().lookUpInModulePath(clsFile);
-    return file == null ? null : new AsmClassSource(cls, file);
+  public Optional<ClassSource> find(String className) {
+    final int idx = className.lastIndexOf(':') + 1;
+    final String classPath = className.substring(0, idx) + className.substring(idx).replace('.', '/') + ".class";
+
+    return ModulePathSourceLocator.v().lookUpInModulePath(classPath)
+            .map((file) -> new AsmClassSource(className, file));
   }
 
   public String getModuleName(FoundFile file) {
     final String[] moduleName = { null };
     ClassVisitor visitor = new ClassVisitor(Opcodes.ASM8) {
-
       @Override
-      public ModuleVisitor visitModule(String name, int access, String version) {
+      public ModuleVisitor visitModule(final String name, final int access, final String version) {
         moduleName[0] = name;
         return null;
       }
     };
+
     try (InputStream d = file.inputStream()) {
       new ClassReader(d).accept(visitor, ClassReader.SKIP_FRAMES);
       return moduleName[0];
@@ -72,6 +73,7 @@ public class AsmModuleClassProvider implements ClassProvider {
     } finally {
       file.close();
     }
+
     return null;
   }
 }

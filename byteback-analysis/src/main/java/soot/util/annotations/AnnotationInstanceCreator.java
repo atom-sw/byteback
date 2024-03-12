@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationEnumElem;
+import soot.tagkit.AnnotationEnumElement;
 import soot.tagkit.AnnotationTag;
 import soot.util.annotations.AnnotationElemSwitch.AnnotationElemResult;
 
@@ -61,7 +61,7 @@ public class AnnotationInstanceCreator {
    *
    *           <li>a class defined within a {@link AnnotationElem} could not be loaded.</li>
    *
-   *           <li>the enum defined in {@link AnnotationEnumElem} is no instance of {@link Enum}.</li>
+   *           <li>the enum defined in {@link AnnotationEnumElement} is no instance of {@link Enum}.</li>
    *           </ul>
    */
   public Object create(AnnotationTag tag) {

@@ -33,7 +33,7 @@ import soot.Unit;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.InstanceFieldRef;

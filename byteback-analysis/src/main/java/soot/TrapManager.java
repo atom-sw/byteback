@@ -22,8 +22,7 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
-
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,7 +59,7 @@ public class TrapManager {
   /** Returns the list of traps caught at Unit u in Body b. */
   public static List<Trap> getTrapsAt(Unit unit, Body b) {
     final Chain<Unit> units = b.getUnits();
-    List<Trap> trapsList = new ArrayList<Trap>();
+    List<Trap> trapsList = new ArrayList<>();
     for (Trap t : b.getTraps()) {
       for (Iterator<Unit> it = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); it.hasNext();) {
         if (unit.equals(it.next())) {
@@ -72,10 +71,10 @@ public class TrapManager {
   }
 
   /** Returns a set of units which lie inside the range of any trap. */
-  public static Set<Unit> getTrappedUnitsOf(Body b) {
-    final Chain<Unit> units = b.getUnits();
-    Set<Unit> trapsSet = new HashSet<Unit>();
-    for (Trap t : b.getTraps()) {
+  public static Set<Unit> getTrappedUnitsOf(Body body) {
+    final Chain<Unit> units = body.getUnits();
+    Set<Unit> trapsSet = new HashSet<>();
+    for (Trap t : body.getTraps()) {
       for (Iterator<Unit> it = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); it.hasNext();) {
         trapsSet.add(it.next());
       }
@@ -87,9 +86,9 @@ public class TrapManager {
    * Splits all traps so that they do not cross the range rangeStart - rangeEnd. Note that rangeStart is inclusive, rangeEnd
    * is exclusive.
    */
-  public static void splitTrapsAgainst(Body b, Unit rangeStart, Unit rangeEnd) {
-    final Chain<Trap> traps = b.getTraps();
-    final Chain<Unit> units = b.getUnits();
+  public static void splitTrapsAgainst(final Body body, final Unit rangeStart, final Unit rangeEnd) {
+    final Chain<Trap> traps = body.getTraps();
+    final Chain<Unit> units = body.getUnits();
 
     for (Iterator<Trap> trapsIt = traps.snapshotIterator(); trapsIt.hasNext();) {
       Trap t = trapsIt.next();
@@ -135,12 +134,12 @@ public class TrapManager {
   public static List<RefType> getExceptionTypesOf(Unit u, Body body) {
     final boolean module_mode = ModuleUtil.module_mode();
 
-    List<RefType> possibleTypes = new ArrayList<RefType>();
+    List<RefType> possibleTypes = new ArrayList<>();
     for (Trap trap : body.getTraps()) {
       if (trap.getHandlerUnit() == u) {
         RefType type;
         if (module_mode) {
-          type = ModuleRefType.v(trap.getException().getName(), Optional.fromNullable(trap.getException().moduleName));
+          type = ModuleRefType.v(trap.getException().getName(), Optional.ofNullable(trap.getException().moduleName));
         } else {
           type = RefType.v(trap.getException().getName());
         }

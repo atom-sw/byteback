@@ -26,14 +26,12 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.ClassProvider;
-import soot.ClassSource;
-import soot.IFoundFile;
-import soot.ModulePathSourceLocator;
+import soot.*;
 
 /**
  * Objectweb ASM class provider.
@@ -44,18 +42,19 @@ public class AsmJava9ClassProvider implements ClassProvider {
   private static final Logger logger = LoggerFactory.getLogger(AsmJava9ClassProvider.class);
 
   @Override
-  public ClassSource find(String cls) {
-    final String clsFile = cls.replace('.', '/') + ".class";
+  public Optional<ClassSource> find(String name) {
+    final String classPath = name.replace('.', '/') + ".class";
 
     // here we go through all modules, since we are in classpath mode
-    IFoundFile file = null;
     Path p = ModulePathSourceLocator.getRootModulesPathOfJDK();
+
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
       for (Path entry : stream) {
-        // check each module folder for the class
-        file = ModulePathSourceLocator.v().lookUpInVirtualFileSystem(entry.toUri().toString(), clsFile);
-        if (file != null) {
-          break;
+        final Optional<FoundFile> fileOption = ModulePathSourceLocator.v()
+                .lookUpInVirtualFileSystem(entry.toUri().toString(), classPath);
+
+        if (fileOption.isPresent()) {
+          return fileOption.map((file) -> new AsmClassSource(name, file));
         }
       }
     } catch (FileSystemNotFoundException ex) {
@@ -63,6 +62,7 @@ public class AsmJava9ClassProvider implements ClassProvider {
     } catch (IOException e) {
       logger.debug(e.getMessage(), e);
     }
-    return file == null ? null : new AsmClassSource(cls, file);
+
+    return Optional.empty();
   }
 }

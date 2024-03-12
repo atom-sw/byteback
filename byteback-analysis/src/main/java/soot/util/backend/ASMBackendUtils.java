@@ -43,7 +43,7 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.TypeSwitch;
 import soot.VoidType;
-import soot.baf.DoubleWordType;
+import soot.baf.syntax.DoubleWordType;
 import soot.options.Options;
 import soot.tagkit.Attribute;
 import soot.tagkit.DoubleConstantValueTag;

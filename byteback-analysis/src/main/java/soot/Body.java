@@ -35,6 +35,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.baf.syntax.BafBody;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
@@ -65,7 +66,7 @@ import soot.validation.ValueBoxesValidator;
  *
  * @see soot.grimp.GrimpBody
  * @see soot.jimple.JimpleBody
- * @see soot.baf.BafBody
+ * @see BafBody
  */
 @SuppressWarnings("serial")
 public abstract class Body extends AbstractHost implements Serializable {

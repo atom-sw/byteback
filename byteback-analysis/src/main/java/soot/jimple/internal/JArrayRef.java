@@ -34,7 +34,7 @@ import soot.UnitPrinter;
 import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.jimple.ArrayRef;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.Jimple;

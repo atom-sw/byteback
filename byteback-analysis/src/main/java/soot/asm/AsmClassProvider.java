@@ -24,8 +24,9 @@ package soot.asm;
 
 import soot.ClassProvider;
 import soot.ClassSource;
-import soot.IFoundFile;
 import soot.SourceLocator;
+
+import java.util.Optional;
 
 /**
  * Objectweb ASM class provider.
@@ -35,9 +36,11 @@ import soot.SourceLocator;
 public class AsmClassProvider implements ClassProvider {
 
   @Override
-  public ClassSource find(String cls) {
-    String clsFile = cls.replace('.', '/') + ".class";
-    IFoundFile file = SourceLocator.v().lookupInClassPath(clsFile);
-    return file == null ? null : new AsmClassSource(cls, file);
+  public Optional<ClassSource> find(String name) {
+    final String classPath = name.replace('.', '/') + ".class";
+
+    return SourceLocator.v().lookupInClassPath(classPath)
+            .map((file) -> new AsmClassSource(name, file));
   }
+
 }

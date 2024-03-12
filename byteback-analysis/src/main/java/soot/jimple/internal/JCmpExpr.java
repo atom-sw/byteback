@@ -25,7 +25,7 @@ package soot.jimple.internal;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.jimple.CmpExpr;
 import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;

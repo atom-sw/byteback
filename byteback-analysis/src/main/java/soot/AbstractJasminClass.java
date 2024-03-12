@@ -35,7 +35,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.baf.DoubleWordType;
+import soot.baf.syntax.DoubleWordType;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IdentityStmt;
@@ -48,7 +48,7 @@ import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationEnumElem;
+import soot.tagkit.AnnotationEnumElement;
 import soot.tagkit.AnnotationFloatElem;
 import soot.tagkit.AnnotationIntElem;
 import soot.tagkit.AnnotationLongElem;
@@ -360,9 +360,9 @@ public abstract class AbstractJasminClass {
       case 'e': {
         result.append(".enum_kind ");
         result.append('"').append(elem.getName()).append("\" ");
-        result.append(StringTools.getQuotedStringOf(((AnnotationEnumElem) elem).getTypeName()));
+        result.append(StringTools.getQuotedStringOf(((AnnotationEnumElement) elem).getTypeName()));
         result.append(' ');
-        result.append(StringTools.getQuotedStringOf(((AnnotationEnumElem) elem).getConstantName()));
+        result.append(StringTools.getQuotedStringOf(((AnnotationEnumElement) elem).getConstantName()));
         result.append('\n');
         break;
       }

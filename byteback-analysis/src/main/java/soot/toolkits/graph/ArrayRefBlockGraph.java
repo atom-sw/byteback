@@ -27,7 +27,7 @@ import java.util.Set;
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
-import soot.baf.Inst;
+import soot.baf.syntax.Inst;
 import soot.jimple.Stmt;
 
 /**

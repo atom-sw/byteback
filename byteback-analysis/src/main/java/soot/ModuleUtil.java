@@ -22,7 +22,6 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -41,6 +40,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
+import java.util.Optional;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,17 +124,17 @@ public class ModuleUtil {
 
     final ModuleScene modSc = ModuleScene.v();
     final SootModuleInfo modInfo;
-    if (modSc.containsClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName))) {
-      SootClass temp = modSc.getSootClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName));
+    if (modSc.containsClass(SootModuleInfo.MODULE_INFO, Optional.ofNullable(toModuleName))) {
+      SootClass temp = modSc.getSootClass(SootModuleInfo.MODULE_INFO, Optional.ofNullable(toModuleName));
       if (temp.resolvingLevel() < SootClass.BODIES) {
         modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES,
-            Optional.fromNullable(toModuleName));
+            Optional.ofNullable(toModuleName));
       } else {
         modInfo = (SootModuleInfo) temp;
       }
     } else {
       modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES,
-          Optional.fromNullable(toModuleName));
+          Optional.ofNullable(toModuleName));
     }
     if (modInfo == null) {
       return null;
@@ -292,7 +293,7 @@ public class ModuleUtil {
     }
 
     public Optional<String> getModuleNameOptional() {
-      return Optional.fromNullable(this.moduleName);
+      return Optional.ofNullable(this.moduleName);
     }
   }
 }

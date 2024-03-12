@@ -3,16 +3,12 @@ package byteback.analysis.body.vimp;
 import byteback.analysis.body.vimp.syntax.*;
 import byteback.common.function.Lazy;
 import soot.*;
-import soot.grimp.internal.ExprBox;
 import soot.jimple.*;
 import soot.jimple.internal.ImmediateBox;
-import soot.jimple.internal.JimpleLocalBox;
 import soot.util.Chain;
 import soot.util.HashChain;
 
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class Vimp {
 

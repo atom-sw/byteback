@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.Unit;
 import soot.UnitBox;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.options.Options;
 
 /**

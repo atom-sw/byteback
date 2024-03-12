@@ -31,7 +31,7 @@ import soot.UnitBox;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.jimple.AbstractJimpleValueSwitch;
 import soot.jimple.BinopExpr;
 import soot.jimple.ConvertToBaf;

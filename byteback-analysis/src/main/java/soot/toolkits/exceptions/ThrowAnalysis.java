@@ -23,7 +23,7 @@ package soot.toolkits.exceptions;
  */
 
 import soot.Unit;
-import soot.baf.ThrowInst;
+import soot.baf.syntax.ThrowInst;
 import soot.jimple.ThrowStmt;
 
 /**

@@ -35,7 +35,7 @@ public interface IAnnotationElemTypeSwitch extends Switch {
 
   public abstract void caseAnnotationDoubleElem(AnnotationDoubleElem v);
 
-  public abstract void caseAnnotationEnumElem(AnnotationEnumElem v);
+  public abstract void caseAnnotationEnumElem(AnnotationEnumElement v);
 
   public abstract void caseAnnotationFloatElem(AnnotationFloatElem v);
 

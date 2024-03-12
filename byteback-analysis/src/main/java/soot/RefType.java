@@ -22,11 +22,10 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import java.util.ArrayDeque;
 
-import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -95,7 +94,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
    */
   public static RefType v(SootClass c) {
     if (ModuleUtil.module_mode()) {
-      return ModuleRefType.v(c.getName(), Optional.fromNullable(c.moduleName));
+      return ModuleRefType.v(c.getName(), Optional.ofNullable(c.moduleName));
     } else {
       return v(c.getName());
     }

@@ -41,11 +41,8 @@ import soot.Trap;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.baf.Inst;
-import soot.baf.NewInst;
-import soot.baf.StaticGetInst;
-import soot.baf.StaticPutInst;
-import soot.baf.ThrowInst;
+import soot.baf.syntax.*;
+import soot.baf.syntax.StaticPutInst;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.StaticFieldRef;
@@ -633,10 +630,10 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 
     tails = new ArrayList<Unit>();
     for (Unit u : unitChain) {
-      if (u instanceof soot.jimple.ReturnStmt || u instanceof soot.jimple.ReturnVoidStmt || u instanceof soot.baf.ReturnInst
-          || u instanceof soot.baf.ReturnVoidInst) {
+      if (u instanceof soot.jimple.ReturnStmt || u instanceof soot.jimple.ReturnVoidStmt || u instanceof ReturnInst
+          || u instanceof ReturnVoidInst) {
         tails.add(u);
-      } else if (u instanceof soot.jimple.ThrowStmt || u instanceof soot.baf.ThrowInst) {
+      } else if (u instanceof soot.jimple.ThrowStmt || u instanceof ThrowInst) {
         int escapeMethodCount = 0;
         for (ExceptionDest dest : getExceptionDests(u)) {
           if (dest.getTrap() == null) {

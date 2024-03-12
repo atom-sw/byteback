@@ -49,7 +49,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
 
 import soot.asm.AsmUtil;
-import soot.baf.BafBody;
+import soot.baf.syntax.BafBody;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
 import soot.tagkit.AnnotationAnnotationElem;
@@ -60,7 +60,7 @@ import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationEnumElem;
+import soot.tagkit.AnnotationEnumElement;
 import soot.tagkit.AnnotationFloatElem;
 import soot.tagkit.AnnotationIntElem;
 import soot.tagkit.AnnotationLongElem;
@@ -542,8 +542,8 @@ public abstract class AbstractASMBackend {
     if (av != null) {
       for (AnnotationElem elem : elements) {
         assert (elem != null);
-        if (elem instanceof AnnotationEnumElem) {
-          AnnotationEnumElem enumElem = (AnnotationEnumElem) elem;
+        if (elem instanceof AnnotationEnumElement) {
+          AnnotationEnumElement enumElem = (AnnotationEnumElement) elem;
           av.visitEnum(enumElem.getName(), enumElem.getTypeName(), enumElem.getConstantName());
         } else if (elem instanceof AnnotationArrayElem) {
           AnnotationArrayElem arrayElem = (AnnotationArrayElem) elem;

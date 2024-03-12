@@ -27,7 +27,7 @@ import java.util.List;
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
-import soot.baf.BafBody;
+import soot.baf.syntax.BafBody;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.validation.BodyValidator;

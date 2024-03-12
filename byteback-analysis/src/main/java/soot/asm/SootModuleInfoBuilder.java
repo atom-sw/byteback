@@ -22,7 +22,7 @@ package soot.asm;
  * #L%
  */
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;

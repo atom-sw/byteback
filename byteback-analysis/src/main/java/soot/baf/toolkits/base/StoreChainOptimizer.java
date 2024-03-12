@@ -33,8 +33,8 @@ import soot.G;
 import soot.Local;
 import soot.Singletons;
 import soot.Unit;
-import soot.baf.PushInst;
-import soot.baf.StoreInst;
+import soot.baf.syntax.PushInst;
+import soot.baf.syntax.StoreInst;
 import soot.toolkits.scalar.Pair;
 
 /**

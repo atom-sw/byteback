@@ -28,7 +28,7 @@ import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
-import soot.baf.BafBody;
+import soot.baf.syntax.BafBody;
 
 /** Interface to aggregate tags of units. */
 public abstract class TagAggregator extends BodyTransformer {

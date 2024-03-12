@@ -22,8 +22,6 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -37,14 +35,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,20 +95,23 @@ public class ModulePathSourceLocator extends SourceLocator {
       setupClassProviders();
     }
 
-    JavaClassProvider.JarException ex = null;
-    String searchFor = moduleName.isPresent() ? moduleName.get() + ':' + className : className;
-    for (ClassProvider cp : classProviders) {
+    JavaClassProvider.JarException jarException = null;
+    String searchFor = moduleName.map(string -> string + ':' + className)
+            .orElse(className);
+
+    for (final ClassProvider classProvider : classProviders) {
       try {
-        ClassSource ret = cp.find(searchFor);
-        if (ret != null) {
-          return ret;
+        final Optional<ClassSource> classSourceOption = classProvider.find(searchFor);
+        if (classSourceOption.isPresent()) {
+          return classSourceOption.get();
         }
       } catch (JavaClassProvider.JarException e) {
-        ex = e;
+        jarException = e;
       }
     }
-    if (ex != null) {
-      throw ex;
+
+    if (jarException != null) {
+      throw jarException;
     }
 
     return null;
@@ -464,7 +458,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    * Searches for a file with the given name in the exploded modulePath.
    */
   @Override
-  public IFoundFile lookupInClassPath(String fileName) {
+  public Optional<FoundFile> lookupInClassPath(String fileName) {
     return lookUpInModulePath(fileName);
   }
 
@@ -485,23 +479,25 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
   }
 
-  public IFoundFile lookUpInModulePath(String fileName) {
-    String[] moduleAndClassName = fileName.split(":");
-    String className = moduleAndClassName[moduleAndClassName.length - 1];
-    String moduleName = moduleAndClassName[0];
+  public Optional<FoundFile> lookUpInModulePath(final String fileName) {
+    final String[] moduleAndClassName = fileName.split(File.pathSeparator);
+    final String className = moduleAndClassName[moduleAndClassName.length - 1];
+    final String moduleName = moduleAndClassName[0];
 
     if (className.isEmpty() || moduleName.isEmpty()) {
       throw new RuntimeException("No module given!");
     }
 
     // look if we know where the module is
-    Path foundModulePath = discoverModule(moduleName);
+    final Path foundModulePath = discoverModule(moduleName);
+
     if (foundModulePath == null) {
-      return null;
+      return Optional.empty();
     }
+
     // transform the path to a String to reuse the
-    String uriString = foundModulePath.toUri().toString();
-    String dir = uriString.startsWith("jrt:/") ? uriString : foundModulePath.toAbsolutePath().toString();
+    final String uriString = foundModulePath.toUri().toString();
+    final String dir = uriString.startsWith("jrt:/") ? uriString : foundModulePath.toAbsolutePath().toString();
 
     ClassSourceType cst = getClassSourceType(foundModulePath);
     if (null != cst) {
@@ -515,7 +511,8 @@ public class ModulePathSourceLocator extends SourceLocator {
           return lookUpInVirtualFileSystem(dir, className);
       }
     }
-    return null;
+
+    return Optional.empty();
   }
 
   /**
@@ -542,13 +539,13 @@ public class ModulePathSourceLocator extends SourceLocator {
     return null;
   }
 
-  protected IFoundFile lookupInDir(String dir, String fileName) {
-    Path dirPath = Paths.get(dir);
+  protected Optional<FoundFile> lookupInDir(final String dirName, final String fileName) {
+    Path dirPath = Paths.get(dirName);
     Path foundFile = dirPath.resolve(fileName);
-    if (foundFile != null && Files.isRegularFile(foundFile)) {
-      return new FoundFile(foundFile);
+    if (Files.isRegularFile(foundFile)) {
+      return Optional.of(new FoundFile(foundFile));
     } else {
-      return null;
+      return Optional.empty();
     }
   }
 
@@ -562,14 +559,14 @@ public class ModulePathSourceLocator extends SourceLocator {
    * @return the FoundFile
    */
   @Override
-  protected IFoundFile lookupInArchive(String archivePath, String fileName) {
+  protected Optional<FoundFile> lookupInArchive(final String archivePath, final String fileName) {
     Path archive = Paths.get(archivePath);
     try (FileSystem zipFileSystem = FileSystems.newFileSystem(archive, this.getClass().getClassLoader())) {
       Path entry = zipFileSystem.getPath(fileName);
-      if (entry == null || !Files.isRegularFile(entry)) {
-        return null;
+      if (!Files.isRegularFile(entry)) {
+        return Optional.empty();
       } else {
-        return new FoundFile(archive.toAbsolutePath().toString(), fileName);
+        return Optional.of(new FoundFile(archive.toAbsolutePath().toString(), fileName));
       }
     } catch (IOException e) {
       throw new RuntimeException(
@@ -586,13 +583,12 @@ public class ModulePathSourceLocator extends SourceLocator {
    *          the file to search
    * @return the FoundFile
    */
-  public IFoundFile lookUpInVirtualFileSystem(String archivePath, String fileName) {
-    // FileSystem fs = FileSystems.getFileSystem(URI.create(archivePath));
+  public Optional<FoundFile> lookUpInVirtualFileSystem(String archivePath, String fileName) {
     Path foundFile = Paths.get(URI.create(archivePath)).resolve(fileName);
-    if (foundFile != null && Files.isRegularFile(foundFile)) {
-      return new FoundFile(foundFile);
+    if (Files.isRegularFile(foundFile)) {
+      return Optional.of(new FoundFile(foundFile));
     } else {
-      return null;
+      return Optional.empty();
     }
   }
 

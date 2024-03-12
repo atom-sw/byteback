@@ -29,7 +29,7 @@ import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationEnumElem;
+import soot.tagkit.AnnotationEnumElement;
 import soot.tagkit.AnnotationFloatElem;
 import soot.tagkit.AnnotationIntElem;
 import soot.tagkit.AnnotationLongElem;
@@ -122,7 +122,7 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch<Annot
   }
 
   @Override
-  public void caseAnnotationEnumElem(AnnotationEnumElem v) {
+  public void caseAnnotationEnumElem(AnnotationEnumElement v) {
     try {
       Class<?> clazz = ClassLoaderUtils.loadClass(v.getTypeName().replace('/', '.'));
 

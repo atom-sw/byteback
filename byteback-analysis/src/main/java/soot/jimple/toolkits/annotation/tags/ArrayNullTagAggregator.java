@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import soot.G;
 import soot.Singletons;
 import soot.Unit;
-import soot.baf.Inst;
+import soot.baf.syntax.Inst;
 import soot.tagkit.Tag;
 import soot.tagkit.TagAggregator;
 

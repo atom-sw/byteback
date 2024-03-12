@@ -276,12 +276,6 @@ public class SootMethodRefImpl implements SootMethodRef {
       return resolved;
     }
 
-    // When allowing phantom refs we also allow for references to non-existing
-    // methods. We simply create the methods on the fly. The method body will
-    // throw an appropriate error just in case the code *is* actually reached
-    // at runtime. Furthermore, the declaring class of dynamic invocations is
-    // not known at compile time, treat as phantom class regardless if phantom
-    // classes are enabled or not.
     if (Options.v().allow_phantom_refs() || SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(declaringClass.getName())) {
       return createUnresolvedErrorMethod(declaringClass);
     }

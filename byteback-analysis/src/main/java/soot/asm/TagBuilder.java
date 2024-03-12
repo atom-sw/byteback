@@ -74,10 +74,10 @@ final class TagBuilder {
     }
     scb.addDep(AsmUtil.toQualifiedName(desc.substring(1, desc.length() - 1)));
     final VisibilityAnnotationTag _tag = tag;
-    return new AnnotationElemBuilder() {
+    return new AnnotationElementBuilder() {
       @Override
       public void visitEnd() {
-        _tag.addAnnotation(new AnnotationTag(desc, elems));
+        _tag.addAnnotation(new AnnotationTag(desc, annotationElements));
       }
     };
   }

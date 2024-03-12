@@ -22,16 +22,13 @@ package soot.asm;
  * #L%
  */
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
@@ -57,12 +54,6 @@ import soot.VoidType;
 import soot.jimple.AssignStmt;
 import soot.options.Options;
 
-/**
- * Contains static utility methods.
- *
- * @author Aaloan Miftah
- */
-/** @author eric */
 public class AsmUtil {
   private static final Logger logger = LoggerFactory.getLogger(AsmUtil.class);
 
@@ -78,7 +69,7 @@ public class AsmUtil {
    *
    * @param type
    *          the type to check.
-   * @return {@code true} if its a dword type.
+   * @return {@code true} if it's a dword type.
    */
   public static boolean isDWord(Type type) {
     return type instanceof LongType || type instanceof DoubleType;
@@ -403,12 +394,10 @@ public class AsmUtil {
   }
 
   static boolean alreadyExists(Unit prev, Object left, Object right) {
-    if (prev instanceof AssignStmt) {
-      AssignStmt prevAsign = (AssignStmt) prev;
-      if (prevAsign.getLeftOp().equivTo(left) && prevAsign.getRightOp().equivTo(right)) {
-        return true;
-      }
+    if (prev instanceof AssignStmt prevAsign) {
+        return prevAsign.getLeftOp().equivTo(left) && prevAsign.getRightOp().equivTo(right);
     }
+
     return false;
   }
 

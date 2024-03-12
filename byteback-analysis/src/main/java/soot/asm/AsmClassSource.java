@@ -27,11 +27,8 @@ import java.io.InputStream;
 
 import org.objectweb.asm.ClassReader;
 
-import soot.ClassSource;
-import soot.IFoundFile;
-import soot.SootClass;
-import soot.SootResolver;
-import soot.IInitialResolver.Dependencies;
+import soot.*;
+import soot.Dependencies;
 
 /**
  * ASM class source implementation.
@@ -40,18 +37,18 @@ import soot.IInitialResolver.Dependencies;
  */
 public class AsmClassSource extends ClassSource {
 
-  protected IFoundFile foundFile;
+  protected FoundFile foundFile;
 
   /**
    * Constructs a new ASM class source.
    * 
-   * @param cls
+   * @param className
    *          fully qualified name of the class.
    * @param foundFile
    *          foundfile pointing to the data for class.
    */
-  public AsmClassSource(String cls, IFoundFile foundFile) {
-    super(cls);
+  public AsmClassSource(final String className, final FoundFile foundFile) {
+    super(className);
     if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");
     }
@@ -59,18 +56,18 @@ public class AsmClassSource extends ClassSource {
   }
 
   @Override
-  public Dependencies resolve(SootClass sc) {
+  public Dependencies resolve(SootClass classModel) {
     InputStream d = null;
     try {
       d = foundFile.inputStream();
-      ClassReader clsr = new ClassReader(d);
-      SootClassBuilder scb = new SootClassBuilder(sc);
-      clsr.accept(scb, ClassReader.SKIP_FRAMES);
+      ClassReader classReader = new ClassReader(d);
+      SootClassBuilder classModelBuilder = new SootClassBuilder(classModel);
+      classReader.accept(classModelBuilder, ClassReader.SKIP_FRAMES);
       Dependencies deps = new Dependencies();
-      deps.typesToSignature.addAll(scb.deps);
+      deps.typesToSignature.addAll(classModelBuilder.typeDependencies);
       // add the outer class information, could not be called in the builder, since sc needs to be
       // resolved - before calling setOuterClass()
-      if (!sc.hasOuterClass() && className.contains("$")) {
+      if (!classModel.hasOuterClass() && className.contains("$")) {
         String outerClassName;
         if (className.contains("$-")) {
           /*
@@ -83,7 +80,7 @@ public class AsmClassSource extends ClassSource {
         } else {
           outerClassName = className.substring(0, className.lastIndexOf('$'));
         }
-        sc.setOuterClass(SootResolver.v().makeClassRef(outerClassName));
+        classModel.setOuterClass(SootResolver.v().makeClassRef(outerClassName));
       }
       return deps;
     } catch (IOException e) {

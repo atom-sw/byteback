@@ -22,12 +22,10 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Strings;
 import com.google.common.cache.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.asm.AsmClassProvider;
-import soot.asm.AsmClassSource;
 import soot.asm.AsmJava9ClassProvider;
 import soot.options.Options;
 import soot.util.SharedCloseable;
@@ -35,14 +33,12 @@ import soot.util.SharedCloseable;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
-import java.util.jar.JarException;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -54,23 +50,16 @@ import java.util.zip.ZipFile;
 public class SourceLocator {
     private static final Logger logger = LoggerFactory.getLogger(SourceLocator.class);
 
-    protected final Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
+    protected final Set<ClassLoader> additionalClassLoaders = new HashSet<>();
+
     protected List<ClassProvider> classProviders;
+
     protected List<String> classPath;
+
     protected List<String> sourcePath;
+
+
     protected boolean java9Mode = false;
-
-    /**
-     * Set containing all dex files that were appended to the classpath later on. The classes from these files are not
-     * yet loaded and are still missing from dexClassIndex.
-     */
-    private Set<String> dexClassPathExtensions;
-
-    /**
-     * The index that maps classes to the files they are defined in. This is necessary because a dex file can hold
-     * multiple classes.
-     */
-    private Map<String, File> dexClassIndex;
 
     // NOTE: Capacity here is based on the number of paths where classes are
     // loaded from. This is typically quite small. However, the maximum
@@ -85,7 +74,7 @@ public class SourceLocator {
     // enum type and strings are interned.
     protected final LoadingCache<String, ClassSourceType> pathToSourceType
             = CacheBuilder.newBuilder().initialCapacity(5).maximumSize(PATH_CACHE_CAPACITY)
-            .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, ClassSourceType>() {
+            .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<>() {
                 @Override
                 public ClassSourceType load(String path) throws Exception {
                     File f = new File(path);
@@ -101,14 +90,10 @@ public class SourceLocator {
                                 return ClassSourceType.zip;
                             case ".jar":
                                 return ClassSourceType.jar;
-                            case ".dex":
-                                return ClassSourceType.dex;
                             case ".exe":
                                 return ClassSourceType.exe;
-                            case ".dll":
-                                return ClassSourceType.dll;
                             default:
-                                return Scene.isApk(new File(path)) ? ClassSourceType.apk : ClassSourceType.unknown;
+                                return ClassSourceType.unknown;
                         }
                     } else if (f.isDirectory()) {
                         return ClassSourceType.directory;
@@ -207,38 +192,14 @@ public class SourceLocator {
         if (classProviders == null) {
             setupClassProviders();
         }
-        JarException ex = null;
-        for (ClassProvider cp : classProviders) {
-            ClassSource ret = cp.find(className);
-            if (ret != null) {
-                return ret;
+        for (final ClassProvider classProvider : classProviders) {
+            Optional<ClassSource> classSourceOption = classProvider.find(className);
+
+            if (classSourceOption.isPresent()) {
+                return classSourceOption.get();
             }
         }
 
-        for (final ClassLoader cl : additionalClassLoaders) {
-            ClassSource ret = new ClassProvider() {
-                @Override
-                public ClassSource find(String className) {
-                    String fileName = className.replace('.', '/') + ".class";
-                    InputStream stream = cl.getResourceAsStream(fileName);
-                    return (stream == null) ? null : new AsmClassSource(className, new ClassLoaderFoundFile(cl, fileName));
-                }
-            }.find(className);
-            if (ret != null) {
-                return ret;
-            }
-
-        }
-        if (className.startsWith("soot.rtlib.tamiflex.")) {
-            ClassLoader cl = getClass().getClassLoader();
-            if (cl != null) {
-                String fileName = className.replace('.', '/') + ".class";
-                InputStream stream = cl.getResourceAsStream(fileName);
-                if (stream != null) {
-                    return new AsmClassSource(className, new ClassLoaderFoundFile(cl, fileName));
-                }
-            }
-        }
         return null;
     }
 
@@ -250,18 +211,10 @@ public class SourceLocator {
     final List<ClassProvider> classProviders = new LinkedList<ClassProvider>();
     final ClassProvider classFileClassProvider = new AsmClassProvider();
     switch (Options.v().src_prec()) {
-      case Options.src_prec_class, Options.src_prec_java:
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JimpleClassProvider());
-        break;
-      case Options.src_prec_only_class:
+      case Options.src_prec_class, Options.src_prec_java, Options.src_prec_only_class, Options.src_prec_jimple:
         classProviders.add(classFileClassProvider);
         break;
-        case Options.src_prec_jimple:
-        classProviders.add(new JimpleClassProvider());
-        classProviders.add(classFileClassProvider);
-        break;
-      default:
+        default:
         throw new RuntimeException("Other source precedences are not currently supported.");
     }
     if (this.java9Mode) {
@@ -280,21 +233,23 @@ public class SourceLocator {
 
     public void invalidateClassPath() {
         this.classPath = null;
-        this.dexClassIndex = null;
     }
 
     public List<String> sourcePath() {
         List<String> sourcePath = this.sourcePath;
+
         if (sourcePath == null) {
-            sourcePath = new ArrayList<String>();
+            sourcePath = new ArrayList<>();
             for (String dir : classPath) {
-                ClassSourceType cst = getClassSourceType(dir);
-                if (cst != ClassSourceType.apk && cst != ClassSourceType.jar && cst != ClassSourceType.zip) {
+                final ClassSourceType classSourceType = getClassSourceType(dir);
+
+                if (classSourceType != ClassSourceType.jar && classSourceType != ClassSourceType.zip) {
                     sourcePath.add(dir);
                 }
             }
             this.sourcePath = sourcePath;
         }
+
         return sourcePath;
     }
 
@@ -372,7 +327,7 @@ public class SourceLocator {
             b.append(getOutputDir());
         }
 
-        if ((b.length() > 0) && (b.charAt(b.length() - 1) != File.separatorChar)) {
+        if ((!b.isEmpty()) && (b.charAt(b.length() - 1) != File.separatorChar)) {
             b.append(File.separatorChar);
         }
 
@@ -524,98 +479,40 @@ public class SourceLocator {
     /**
      * Searches for a file with the given name in the exploded classPath.
      */
-    public IFoundFile lookupInClassPath(String fileName) {
+    public Optional<FoundFile> lookupInClassPath(String fileName) {
         for (String dir : classPath) {
-            IFoundFile ret = null;
-            ClassSourceType cst = getClassSourceType(dir);
-            if (cst == ClassSourceType.zip || cst == ClassSourceType.jar) {
-                ret = lookupInArchive(dir, fileName);
-            } else if (cst == ClassSourceType.directory) {
-                ret = lookupInDir(dir, fileName);
+            Optional<FoundFile> foundFileOption = Optional.empty();
+            final ClassSourceType classSourceType = getClassSourceType(dir);
+
+            if (classSourceType == ClassSourceType.zip || classSourceType == ClassSourceType.jar) {
+                foundFileOption = lookupInArchive(dir, fileName);
+            } else if (classSourceType == ClassSourceType.directory) {
+                foundFileOption = lookupInDir(dir, fileName);
             }
-            if (ret != null) {
-                return ret;
+
+            if (foundFileOption.isPresent()) {
+                return foundFileOption;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    protected IFoundFile lookupInDir(String dir, String fileName) {
+    protected Optional<FoundFile> lookupInDir(String dir, String fileName) {
         File f = new File(dir, fileName);
-        return (f.exists() && f.canRead()) ? new FoundFile(f) : null;
+        return (f.exists() && f.canRead()) ? Optional.of(new FoundFile(f)) : Optional.empty();
     }
 
-    protected IFoundFile lookupInArchive(String archivePath, String fileName) {
-        Set<String> entryNames = null;
+    protected Optional<FoundFile> lookupInArchive(final String archivePath, final String fileName) {
+        final Set<String> entryNames;
+
         try {
             entryNames = archivePathToEntriesCache.get(archivePath);
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error: Failed to retrieve the archive entries list for the archive at path '" + archivePath + "'.", e);
         }
-        return entryNames.contains(fileName) ? new FoundFile(archivePath, fileName) : null;
-    }
 
-    /**
-     * Returns the name of the class in which the (possibly inner) class className appears.
-     */
-    public String getSourceForClass(String className) {
-        int i = className.indexOf('$');
-        if (i > -1) {
-            // class is an inner class and will be in Outer of Outer$Inner
-            return className.substring(0, i);
-        } else {
-            return className;
-        }
-    }
-
-    /**
-     * Return the class index that maps class names to dex/assembly(exe/dll) files. A dex/exe/dll file contains multiple
-     * classes and is not structured as a "folder structure"
-     *
-     * @return the index
-     */
-    public Map<String, File> dexClassIndex() {
-        return dexClassIndex;
-    }
-
-    /**
-     * Set the class_container (dex, assembly) class index
-     *
-     * @param index the index
-     */
-    public void setDexClassIndex(Map<String, File> index) {
-        dexClassIndex = index;
-    }
-
-    public void extendClassPath(String newPathElement) {
-        classPath = null;
-        if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk") || newPathElement.endsWith(".exe")
-                || newPathElement.endsWith(".dll")) {
-            Set<String> dexClassPathExtensions = this.dexClassPathExtensions;
-            if (dexClassPathExtensions == null) {
-                dexClassPathExtensions = new HashSet<String>();
-                this.dexClassPathExtensions = dexClassPathExtensions;
-            }
-            this.dexClassPathExtensions.add(newPathElement);
-        }
-    }
-
-    /**
-     * Gets all files that were added to the classpath later on and that have not yet been processed for the
-     * dexClassIndex mapping
-     *
-     * @return The set of dex or apk or assembly (exe/dll) files that still need to be indexed
-     */
-    public Set<String> getDexClassPathExtensions() {
-        return this.dexClassPathExtensions;
-    }
-
-    /**
-     * Clears the set of dex or apk or assembly files that still need to be indexed
-     */
-    public void clearDexClassPathExtensions() {
-        this.dexClassPathExtensions = null;
+        return entryNames.contains(fileName) ? Optional.of(new FoundFile(archivePath, fileName)) : Optional.empty();
     }
 
     /**
@@ -629,6 +526,7 @@ public class SourceLocator {
         this.sourcePath = null;
     }
 
+    // TODO remove apk dex, exe, dll
     protected enum ClassSourceType {
         jar, zip, apk, dex, directory, jrt, unknown, exe, dll
     }
@@ -742,7 +640,7 @@ public class SourceLocator {
         private final SharedResourceCache<String, ZipFile> cache;
 
         public SharedZipFileCacheWrapper(int initSize, int maxSize) {
-            this.cache = new SharedResourceCache<String, ZipFile>(initSize, maxSize, new CacheLoader<String, ZipFile>() {
+            this.cache = new SharedResourceCache<>(initSize, maxSize, new CacheLoader<String, ZipFile>() {
                 @Override
                 public ZipFile load(String archivePath) throws Exception {
                     return new ZipFile(archivePath);

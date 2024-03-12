@@ -30,7 +30,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.ValueBox;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.JimpleValueSwitch;

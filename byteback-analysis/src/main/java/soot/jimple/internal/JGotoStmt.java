@@ -28,7 +28,7 @@ import java.util.List;
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.jimple.GotoStmt;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;

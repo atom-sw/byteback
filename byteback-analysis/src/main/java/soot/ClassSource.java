@@ -22,8 +22,6 @@ package soot;
  * #L%
  */
 
-import soot.IInitialResolver.Dependencies;
-
 /**
  * A class source is responsible for resolving a single class from a particular source format (.class, .jimple, .java, etc.)
  */

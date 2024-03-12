@@ -22,8 +22,7 @@ package soot.asm;
  * #L%
  */
 
-import com.google.common.base.Optional;
-
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -68,33 +67,34 @@ import soot.tagkit.Tag;
  * @author Aaloan Miftah
  */
 public class SootClassBuilder extends ClassVisitor {
+  protected final SootClass classModel;
 
-  protected final SootClass klass;
-  protected final Set<Type> deps;
-  protected TagBuilder tb;
+  protected final Set<Type> typeDependencies;
+
+  private TagBuilder tagBuilder;
 
   /**
    * Constructs a new builder for the given {@link SootClass}.
    *
-   * @param klass
+   * @param classModel
    *          Soot class to build.
    */
-  protected SootClassBuilder(SootClass klass) {
+  protected SootClassBuilder(SootClass classModel) {
     super(Opcodes.ASM9);
-    this.klass = klass;
-    this.deps = new HashSet<>();
+    this.classModel = classModel;
+    this.typeDependencies = new HashSet<>();
   }
 
   private TagBuilder getTagBuilder() {
-    TagBuilder t = tb;
+    TagBuilder t = tagBuilder;
     if (t == null) {
-      t = tb = new TagBuilder(klass, this);
+      t = tagBuilder = new TagBuilder(classModel, this);
     }
     return t;
   }
 
-  protected SootClass getKlass() {
-    return klass;
+  protected SootClass getClassModel() {
+    return classModel;
   }
 
   protected void addDep(String s) {
@@ -108,7 +108,7 @@ public class SootClassBuilder extends ClassVisitor {
    *          name, or type of class.
    */
   protected void addDep(Type s) {
-    deps.add(s);
+    typeDependencies.add(s);
   }
 
   @Override
@@ -121,33 +121,33 @@ public class SootClassBuilder extends ClassVisitor {
       // if we are in module mode
       if (ModuleUtil.module_mode()) {
         SootModuleInfo moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO,
-            Optional.fromNullable(this.klass.moduleName));
-        klass.setModuleInformation(moduleInfo);
+            Optional.ofNullable(this.classModel.moduleName));
+        classModel.setModuleInformation(moduleInfo);
       }
     }
 
     name = AsmUtil.toQualifiedName(name);
-    if (!name.equals(klass.getName()) && Options.v().verbose()) {
-      System.err.println("Class names not equal! " + name + " != " + klass.getName());
+    if (!name.equals(classModel.getName()) && Options.v().verbose()) {
+      System.err.println("Class names not equal! " + name + " != " + classModel.getName());
     }
     // FIXME: ad -- throw excpetion again
     // throw new RuntimeException("Class names not equal! "+name+" != "+klass.getName());
-    klass.setModifiers(filterASMFlags(access) & ~Opcodes.ACC_SUPER);
+    classModel.setModifiers(filterASMFlags(access) & ~Opcodes.ACC_SUPER);
     if (superName != null) {
       superName = AsmUtil.toQualifiedName(superName);
       addDep(makeRefType(superName));
       SootClass superClass = makeClassRef(superName);
-      klass.setSuperclass(superClass);
+      classModel.setSuperclass(superClass);
     }
     for (String intrf : interfaces) {
       intrf = AsmUtil.toQualifiedName(intrf);
       addDep(makeRefType(intrf));
       SootClass interfaceClass = makeClassRef(intrf);
       interfaceClass.setModifiers(interfaceClass.getModifiers() | Modifier.INTERFACE);
-      klass.addInterface(interfaceClass);
+      classModel.addInterface(interfaceClass);
     }
     if (signature != null) {
-      klass.addTag(new SignatureTag(signature));
+      classModel.addTag(new SignatureTag(signature));
     }
   }
 
@@ -160,7 +160,7 @@ public class SootClassBuilder extends ClassVisitor {
 
   @Override
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-    Type type = AsmUtil.toJimpleType(desc, Optional.fromNullable(this.klass.moduleName));
+    Type type = AsmUtil.toJimpleType(desc, Optional.ofNullable(this.classModel.moduleName));
     addDep(type);
     SootField field = Scene.v().makeSootField(name, type, filterASMFlags(access));
     Tag tag;
@@ -183,7 +183,7 @@ public class SootClassBuilder extends ClassVisitor {
     if (signature != null) {
       field.addTag(new SignatureTag(signature));
     }
-    return new FieldBuilder(klass.getOrAddField(field), this);
+    return new FieldBuilder(classModel.getOrAddField(field), this);
   }
 
   public static int filterASMFlags(int access) {
@@ -204,7 +204,7 @@ public class SootClassBuilder extends ClassVisitor {
         thrownExceptions.add(makeClassRef(ex));
       }
     }
-    List<Type> sigTypes = AsmUtil.toJimpleDesc(desc, Optional.fromNullable(this.klass.moduleName));
+    List<Type> sigTypes = AsmUtil.toJimpleDesc(desc, Optional.ofNullable(this.classModel.moduleName));
     for (Type type : sigTypes) {
       addDep(type);
     }
@@ -213,7 +213,7 @@ public class SootClassBuilder extends ClassVisitor {
     if (signature != null) {
       method.addTag(new SignatureTag(signature));
     }
-    return createMethodBuilder(klass.getOrAddMethod(method), desc, exceptions);
+    return createMethodBuilder(classModel.getOrAddMethod(method), desc, exceptions);
   }
 
   protected MethodVisitor createMethodBuilder(SootMethod sootMethod, String desc, String[] exceptions) {
@@ -223,30 +223,30 @@ public class SootClassBuilder extends ClassVisitor {
   @Override
   public void visitSource(String source, String debug) {
     if (source != null) {
-      klass.addTag(new SourceFileTag(source));
+      classModel.addTag(new SourceFileTag(source));
     }
   }
 
   @Override
   public void visitInnerClass(String name, String outerName, String innerName, int access) {
-    klass.addTag(new InnerClassTag(name, outerName, innerName, access));
+    classModel.addTag(new InnerClassTag(name, outerName, innerName, access));
 
     // soot does not resolve all inner classes, e.g., java.util.stream.FindOps$FindSink$... is not
     // resolved
-    if (!(this.klass instanceof SootModuleInfo)) {
-      deps.add(makeRefType(AsmUtil.toQualifiedName(name)));
+    if (!(this.classModel instanceof SootModuleInfo)) {
+      typeDependencies.add(makeRefType(AsmUtil.toQualifiedName(name)));
     }
   }
 
   @Override
   public void visitOuterClass(String owner, String name, String desc) {
     if (name != null) {
-      klass.addTag(new EnclosingMethodTag(owner, name, desc));
+      classModel.addTag(new EnclosingMethodTag(owner, name, desc));
     }
 
     owner = AsmUtil.toQualifiedName(owner);
-    deps.add(makeRefType(owner));
-    klass.setOuterClass(makeClassRef(owner));
+    typeDependencies.add(makeRefType(owner));
+    classModel.setOuterClass(makeClassRef(owner));
   }
 
   @Override
@@ -261,12 +261,12 @@ public class SootClassBuilder extends ClassVisitor {
 
   @Override
   public ModuleVisitor visitModule(String name, int access, String version) {
-    return new SootModuleInfoBuilder(name, (SootModuleInfo) this.klass, this);
+    return new SootModuleInfoBuilder(name, (SootModuleInfo) this.classModel, this);
   }
 
   private SootClass makeClassRef(String className) {
     if (ModuleUtil.module_mode()) {
-      return SootModuleResolver.v().makeClassRef(className, Optional.fromNullable(this.klass.moduleName));
+      return SootModuleResolver.v().makeClassRef(className, Optional.ofNullable(this.classModel.moduleName));
     } else {
       return SootResolver.v().makeClassRef(className);
     }
@@ -274,7 +274,7 @@ public class SootClassBuilder extends ClassVisitor {
 
   private RefType makeRefType(String className) {
     if (ModuleUtil.module_mode()) {
-      return ModuleRefType.v(className, Optional.fromNullable(this.klass.moduleName));
+      return ModuleRefType.v(className, Optional.ofNullable(this.classModel.moduleName));
     } else {
       return RefType.v(className);
     }

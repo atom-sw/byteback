@@ -52,7 +52,7 @@ public abstract class AbstractAnnotationElemTypeSwitch<T> implements IAnnotation
   }
 
   @Override
-  public void caseAnnotationEnumElem(AnnotationEnumElem v) {
+  public void caseAnnotationEnumElem(AnnotationEnumElement v) {
     defaultCase(v);
   }
 

@@ -32,7 +32,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.ValueBox;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.util.Switch;
 
 public class StaticFieldRef implements FieldRef, ConvertToBaf {

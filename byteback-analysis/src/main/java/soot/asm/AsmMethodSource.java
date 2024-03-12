@@ -175,12 +175,12 @@ import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
+import java.util.Optional;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -356,7 +356,7 @@ public class AsmMethodSource implements MethodSource {
   private SootClass getClassFromScene(String className) {
     SootClass result;
     if (ModuleUtil.module_mode()) {
-      result = ModuleScene.v().getSootClassUnsafe(className, Optional.fromNullable(this.module));
+      result = ModuleScene.v().getSootClassUnsafe(className, Optional.ofNullable(this.module));
     } else {
       result = Scene.v().getSootClassUnsafe(className);
     }
@@ -605,7 +605,7 @@ public class AsmMethodSource implements MethodSource {
     Type type;
     if (out == null) {
       SootClass declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
-      type = AsmUtil.toJimpleType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+      type = AsmUtil.toJimpleType(insn.desc, Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
       Value val;
       SootFieldRef ref;
       if (insn.getOpcode() == GETSTATIC) {
@@ -640,7 +640,7 @@ public class AsmMethodSource implements MethodSource {
     Type type;
     if (out == null) {
       SootClass declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
-      type = AsmUtil.toJimpleType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+      type = AsmUtil.toJimpleType(insn.desc, Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
       Value val;
       SootFieldRef ref;
       rvalue = popImmediate(type);
@@ -1325,11 +1325,10 @@ public class AsmMethodSource implements MethodSource {
       v = DoubleConstant.v((Double) val);
     } else if (val instanceof String) {
       v = StringConstant.v(val.toString());
-    } else if (val instanceof org.objectweb.asm.Type) {
-      org.objectweb.asm.Type t = (org.objectweb.asm.Type) val;
+    } else if (val instanceof org.objectweb.asm.Type t) {
       if (t.getSort() == org.objectweb.asm.Type.METHOD) {
         List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor(),
-            Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+            Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
         Type returnType = paramTypes.remove(paramTypes.size() - 1);
         v = MethodType.v(paramTypes, returnType);
       } else {
@@ -1397,7 +1396,7 @@ public class AsmMethodSource implements MethodSource {
         clsName = "java.lang.Object";
       }
       List<Type> sigTypes
-          = AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+          = AsmUtil.toJimpleDesc(insn.desc, Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
       returnType = sigTypes.remove(sigTypes.size() - 1);
       SootMethodRef ref
           = Scene.v().makeMethodRef(this.getClassFromScene(clsName), insn.name, sigTypes, returnType, !instance);
@@ -1603,7 +1602,7 @@ public class AsmMethodSource implements MethodSource {
     String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
     SootClass bsmCls = this.getClassFromScene(bsmClsName);
     List<Type> bsmSigTypes = AsmUtil.toJimpleDesc(methodHandle.getDesc(),
-        Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+        Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
     Type returnType = bsmSigTypes.remove(bsmSigTypes.size() - 1);
     return Scene.v().makeMethodRef(bsmCls, methodHandle.getName(), bsmSigTypes, returnType,
         methodHandle.getTag() == MethodHandle.Kind.REF_INVOKE_STATIC.getValue());
@@ -1613,7 +1612,7 @@ public class AsmMethodSource implements MethodSource {
     String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
     SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
     Type t = AsmUtil
-        .toJimpleDesc(methodHandle.getDesc(), Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName))
+        .toJimpleDesc(methodHandle.getDesc(), Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName))
         .get(0);
     int kind = methodHandle.getTag();
     return Scene.v().makeFieldRef(bsmCls, methodHandle.getName(), t,
@@ -1627,7 +1626,7 @@ public class AsmMethodSource implements MethodSource {
     Operand opr;
     if (out == null) {
       ArrayType t = (ArrayType) AsmUtil.toJimpleType(insn.desc,
-          Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+          Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName));
       int dims = insn.dims;
       Operand[] sizes = new Operand[dims];
       Value[] sizeVals = new Value[dims];
@@ -1686,7 +1685,7 @@ public class AsmMethodSource implements MethodSource {
     Operand[] out = frame.out();
     Operand opr;
     if (out == null) {
-      Optional<String> module = Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName);
+      Optional<String> module = Optional.ofNullable(this.body.getMethod().getDeclaringClass().moduleName);
       Type t = AsmUtil.toJimpleRefType(insn.desc, module);
       Value val;
       if (op == NEW) {

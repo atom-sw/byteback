@@ -25,7 +25,7 @@ package soot.tagkit;
 import java.util.LinkedList;
 
 import soot.Unit;
-import soot.baf.Inst;
+import soot.baf.syntax.Inst;
 
 /**
  * A tag aggregator that associates a tag with the <b>most important</b> instruction that is tagged with it. An instruction

@@ -25,7 +25,7 @@ package soot.toolkits.exceptions;
 import soot.G;
 import soot.Singletons;
 import soot.Unit;
-import soot.baf.ThrowInst;
+import soot.baf.syntax.ThrowInst;
 import soot.jimple.ThrowStmt;
 
 /**

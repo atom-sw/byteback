@@ -22,8 +22,7 @@ package soot.asm;
  * #L%
  */
 
-import com.google.common.base.Optional;
-
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,14 +65,14 @@ public class MethodBuilder extends JSRInlinerAdapter {
   private List<VisibilityAnnotationTag> visibleLocalVarAnnotations;
   private List<VisibilityAnnotationTag> invisibleLocalVarAnnotations;
   private final SootMethod method;
-  private final SootClassBuilder scb;
+  private final SootClassBuilder classBuilder;
   private final String[] parameterNames;
   private final Map<Integer, Integer> slotToParameter;
 
-  public MethodBuilder(SootMethod method, SootClassBuilder scb, String desc, String[] ex) {
+  public MethodBuilder(SootMethod method, SootClassBuilder classBuilder, String desc, String[] ex) {
     super(Opcodes.ASM6, null, method.getModifiers(), method.getName(), desc, null, ex);
     this.method = method;
-    this.scb = scb;
+    this.classBuilder = classBuilder;
     this.parameterNames = new String[method.getParameterCount()];
     this.slotToParameter = createSlotToParameterMap();
   }
@@ -95,7 +94,7 @@ public class MethodBuilder extends JSRInlinerAdapter {
   private TagBuilder getTagBuilder() {
     TagBuilder t = tb;
     if (t == null) {
-      t = tb = new TagBuilder(method, scb);
+      t = tb = new TagBuilder(method, classBuilder);
     }
     return t;
   }
@@ -107,10 +106,10 @@ public class MethodBuilder extends JSRInlinerAdapter {
 
   @Override
   public AnnotationVisitor visitAnnotationDefault() {
-    return new AnnotationElemBuilder(1) {
+    return new AnnotationElementBuilder(1) {
       @Override
       public void visitEnd() {
-        method.addTag(new AnnotationDefaultTag(elems.get(0)));
+        method.addTag(new AnnotationDefaultTag(annotationElements.get(0)));
       }
     };
   }
@@ -148,10 +147,10 @@ public class MethodBuilder extends JSRInlinerAdapter {
       }
       invisibleLocalVarAnnotations.add(vat);
     }
-    return new AnnotationElemBuilder() {
+    return new AnnotationElementBuilder() {
       @Override
       public void visitEnd() {
-        AnnotationTag annotTag = new AnnotationTag(desc, elems);
+        AnnotationTag annotTag = new AnnotationTag(desc, annotationElements);
         vat.addAnnotation(annotTag);
       }
     };
@@ -185,10 +184,10 @@ public class MethodBuilder extends JSRInlinerAdapter {
       }
     }
     final VisibilityAnnotationTag _vat = vat;
-    return new AnnotationElemBuilder() {
+    return new AnnotationElementBuilder() {
       @Override
       public void visitEnd() {
-        AnnotationTag annotTag = new AnnotationTag(desc, elems);
+        AnnotationTag annotTag = new AnnotationTag(desc, annotationElements);
         _vat.addAnnotation(annotTag);
       }
     };
@@ -197,51 +196,50 @@ public class MethodBuilder extends JSRInlinerAdapter {
   @Override
   public void visitTypeInsn(int op, String t) {
     super.visitTypeInsn(op, t);
-    Type rt = AsmUtil.toJimpleRefType(t, Optional.fromNullable(this.scb.getKlass().moduleName));
+    Type rt = AsmUtil.toJimpleRefType(t, Optional.ofNullable(this.classBuilder.getClassModel().moduleName));
     if (rt instanceof ArrayType) {
-      scb.addDep(((ArrayType) rt).baseType);
+      classBuilder.addDep(((ArrayType) rt).baseType);
     } else {
-      scb.addDep(rt);
+      classBuilder.addDep(rt);
     }
   }
 
   @Override
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
     super.visitFieldInsn(opcode, owner, name, desc);
-    for (Type t : AsmUtil.toJimpleDesc(desc, Optional.fromNullable(this.scb.getKlass().moduleName))) {
+    for (Type t : AsmUtil.toJimpleDesc(desc, Optional.ofNullable(this.classBuilder.getClassModel().moduleName))) {
       if (t instanceof RefType) {
-        scb.addDep(t);
+        classBuilder.addDep(t);
       }
     }
 
-    scb.addDep(AsmUtil.toQualifiedName(owner));
+    classBuilder.addDep(AsmUtil.toQualifiedName(owner));
   }
 
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean isInterf) {
     super.visitMethodInsn(opcode, owner, name, desc, isInterf);
-    for (Type t : AsmUtil.toJimpleDesc(desc, Optional.fromNullable(this.scb.getKlass().moduleName))) {
+
+    for (Type t : AsmUtil.toJimpleDesc(desc, Optional.ofNullable(this.classBuilder.getClassModel().moduleName))) {
       addDeps(t);
     }
 
-    scb.addDep(AsmUtil.toJimpleRefType(owner, Optional.fromNullable(this.scb.getKlass().moduleName)));
+    classBuilder.addDep(AsmUtil.toJimpleRefType(owner, Optional.ofNullable(this.classBuilder.getClassModel().moduleName)));
   }
 
   @Override
   public void visitLdcInsn(Object cst) {
     super.visitLdcInsn(cst);
 
-    if (cst instanceof Handle) {
-      Handle methodHandle = (Handle) cst;
-      scb.addDep(AsmUtil.toBaseType(methodHandle.getOwner(), Optional.fromNullable(this.scb.getKlass().moduleName)));
+    if (cst instanceof final Handle methodHandle) {
+      classBuilder.addDep(AsmUtil.toBaseType(methodHandle.getOwner(), Optional.ofNullable(this.classBuilder.getClassModel().moduleName)));
     }
   }
 
   private void addDeps(Type t) {
     if (t instanceof RefType) {
-      scb.addDep(t);
-    } else if (t instanceof ArrayType) {
-      ArrayType at = (ArrayType) t;
+      classBuilder.addDep(t);
+    } else if (t instanceof ArrayType at) {
       addDeps(at.getElementType());
     }
   }
@@ -250,7 +248,7 @@ public class MethodBuilder extends JSRInlinerAdapter {
   public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
     super.visitTryCatchBlock(start, end, handler, type);
     if (type != null) {
-      scb.addDep(AsmUtil.toQualifiedName(type));
+      classBuilder.addDep(AsmUtil.toQualifiedName(type));
     }
   }
 
@@ -294,7 +292,7 @@ public class MethodBuilder extends JSRInlinerAdapter {
     }
     if (method.isConcrete()) {
       method.setSource(
-          createAsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, scb.getKlass().moduleName));
+          createAsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, classBuilder.getClassModel().moduleName));
     }
   }
 
@@ -311,11 +309,11 @@ public class MethodBuilder extends JSRInlinerAdapter {
    * @return True if the given arry contains only <code>null</code> values, false otherwise
    */
   private boolean isFullyEmpty(String[] array) {
-    for (int i = 0; i < array.length; i++) {
-      if (array[i] != null && !array[i].isEmpty()) {
-        return false;
+      for (String string : array) {
+          if (string != null && !string.isEmpty()) {
+              return false;
+          }
       }
-    }
     return true;
   }
 
@@ -330,14 +328,13 @@ public class MethodBuilder extends JSRInlinerAdapter {
     super.visitInvokeDynamicInsn(name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
 
     // convert info on bootstrap method
-    String bsmClsName = AsmUtil.toQualifiedName(bootstrapMethodHandle.getOwner());
-    scb.addDep(RefType.v(bsmClsName));
+    final String bsmClassName = AsmUtil.toQualifiedName(bootstrapMethodHandle.getOwner());
+    classBuilder.addDep(RefType.v(bsmClassName));
 
     for (Object arg : bootstrapMethodArguments) {
-      if (arg instanceof Handle) {
-        Handle argHandle = (Handle) arg;
+      if (arg instanceof final Handle argHandle) {
         String handleClsName = AsmUtil.toQualifiedName(argHandle.getOwner());
-        scb.addDep(RefType.v(handleClsName));
+        classBuilder.addDep(RefType.v(handleClsName));
       }
     }
   }

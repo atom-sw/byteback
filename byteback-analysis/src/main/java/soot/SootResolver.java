@@ -23,15 +23,12 @@ package soot;
  * #L%
  */
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.List;
+import java.io.Serial;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.IInitialResolver.Dependencies;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
@@ -41,19 +38,19 @@ public class SootResolver {
   private static final Logger logger = LoggerFactory.getLogger(SootResolver.class);
 
   /** Maps each resolved class to a list of all references in it. */
-  protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
+  protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<>();
 
   /** Maps each resolved class to a list of all references in it. */
-  protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<SootClass, Type>();
+  protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<>();
 
   /** SootClasses waiting to be resolved. */
   @SuppressWarnings("unchecked")
-  private final Deque<SootClass>[] worklist = new Deque[4];
+  private final Deque<SootClass>[] nextClasses = new Deque[4];
 
   public SootResolver(Singletons.Global g) {
-    worklist[SootClass.HIERARCHY] = new ArrayDeque<SootClass>();
-    worklist[SootClass.SIGNATURES] = new ArrayDeque<SootClass>();
-    worklist[SootClass.BODIES] = new ArrayDeque<SootClass>();
+    nextClasses[SootClass.HIERARCHY] = new ArrayDeque<>();
+    nextClasses[SootClass.SIGNATURES] = new ArrayDeque<>();
+    nextClasses[SootClass.BODIES] = new ArrayDeque<>();
   }
 
   public static SootResolver v() {
@@ -80,7 +77,7 @@ public class SootResolver {
    * will be resolved into this SootClass.
    */
   public SootClass makeClassRef(String className) {
-    if (className.length() == 0) {
+    if (className.isEmpty()) {
       throw new RuntimeException("Classname must not be empty!");
     }
     final Scene scene = Scene.v();
@@ -126,7 +123,7 @@ public class SootResolver {
     final boolean resolveEverything = resolveEverything();
     final boolean no_bodies_for_excluded = Options.v().no_bodies_for_excluded();
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
-      Deque<SootClass> currWorklist = worklist[i];
+      Deque<SootClass> currWorklist = nextClasses[i];
       while (!currWorklist.isEmpty()) {
         SootClass sc = currWorklist.pop();
         if (resolveEverything) {
@@ -161,7 +158,7 @@ public class SootResolver {
       }
       // The ArrayDeque can grow particularly large but the implementation will
       // never shrink the backing array, leaving a possibly large memory leak.
-      worklist[i] = new ArrayDeque<SootClass>(0);
+      nextClasses[i] = new ArrayDeque<SootClass>(0);
     }
   }
 
@@ -180,7 +177,7 @@ public class SootResolver {
     if (sc.resolvingLevel() >= desiredLevel) {
       return;
     }
-    worklist[desiredLevel].add(sc);
+    nextClasses[desiredLevel].add(sc);
   }
 
   /**
@@ -191,9 +188,11 @@ public class SootResolver {
     if (sc.resolvingLevel() >= SootClass.HIERARCHY) {
       return;
     }
+
     if (Options.v().debug_resolver()) {
       logger.debug("bringing to HIERARCHY: " + sc);
     }
+
     sc.setResolvingLevel(SootClass.HIERARCHY);
 
     bringToHierarchyUnchecked(sc);
@@ -202,12 +201,13 @@ public class SootResolver {
   protected void bringToHierarchyUnchecked(SootClass sc) {
     String className = sc.getName();
     ClassSource is;
+
     if (ModuleUtil.module_mode()) {
-      is = ModulePathSourceLocator.v().getClassSource(className,
-          com.google.common.base.Optional.fromNullable(sc.moduleName));
+      is = ModulePathSourceLocator.v().getClassSource(className, Optional.of(sc.moduleName));
     } else {
       is = SourceLocator.v().getClassSource(className);
     }
+
     try {
       boolean modelAsPhantomRef = (is == null);
       if (modelAsPhantomRef) {
@@ -221,7 +221,7 @@ public class SootResolver {
                 + ".:/path/to/jdk/jre/lib/rt.jar:/path/to/jdk/jre/lib/jce.jar <other options>";
           }
           throw new SootClassNotFoundException(
-              "couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
+                  "couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
         } else {
           // logger.warn(className + " is a phantom class!");
           sc.setPhantomClass();
@@ -354,10 +354,11 @@ public class SootResolver {
   }
 
 
-  public class SootClassNotFoundException extends RuntimeException {
+  public static class SootClassNotFoundException extends RuntimeException {
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = 1563461446590293827L;
 
     public SootClassNotFoundException(String s) {

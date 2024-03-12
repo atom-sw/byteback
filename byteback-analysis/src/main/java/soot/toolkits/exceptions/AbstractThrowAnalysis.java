@@ -34,7 +34,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
-import soot.baf.ThrowInst;
+import soot.baf.syntax.ThrowInst;
 import soot.grimp.NewInvokeExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.NewExpr;

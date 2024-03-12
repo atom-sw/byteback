@@ -22,8 +22,7 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Optional;
-
+import java.util.Optional;
 import java.util.LinkedList;
 
 import org.slf4j.Logger;
@@ -58,12 +57,12 @@ public class ModuleRefType extends RefType {
 
   public static RefType v(String className, Optional<String> moduleName) {
     final boolean isPresent = moduleName.isPresent();
-    String module = isPresent ? ModuleUtil.v().declaringModule(className, moduleName.get()) : null;
+    final String module = isPresent ? ModuleUtil.v().declaringModule(className, moduleName.get()) : null;
 
     if (!isPresent && Options.v().verbose()) {
       logger.warn("ModuleRefType called with empty module for: " + className);
     }
-    RefType rt = ModuleScene.v().getRefTypeUnsafe(className, Optional.fromNullable(module));
+    RefType rt = ModuleScene.v().getRefTypeUnsafe(className, Optional.ofNullable(module));
     if (rt == null) {
       rt = new ModuleRefType(className, isPresent ? module : null);
       ModuleScene.v().addRefType(rt);
@@ -83,7 +82,7 @@ public class ModuleRefType extends RefType {
   @Override
   public SootClass getSootClass() {
     if (super.sootClass == null) {
-      super.setSootClass(SootModuleResolver.v().makeClassRef(getClassName(), Optional.fromNullable(this.moduleName)));
+      super.setSootClass(SootModuleResolver.v().makeClassRef(getClassName(), Optional.ofNullable(this.moduleName)));
     }
     return super.getSootClass();
   }
@@ -111,7 +110,7 @@ public class ModuleRefType extends RefType {
       LinkedList<SootClass> otherHierarchy = new LinkedList<>();
 
       // Build thisHierarchy
-      for (SootClass sc = cmMod.getSootClass(getClassName(), Optional.fromNullable(this.moduleName));;) {
+      for (SootClass sc = cmMod.getSootClass(getClassName(), Optional.ofNullable(this.moduleName));;) {
         thisHierarchy.addFirst(sc);
         if (sc == javalangObject) {
           break;
@@ -120,7 +119,7 @@ public class ModuleRefType extends RefType {
       }
 
       // Build otherHierarchy
-      for (SootClass sc = cmMod.getSootClass(((RefType) other).getClassName(), Optional.fromNullable(this.moduleName));;) {
+      for (SootClass sc = cmMod.getSootClass(((RefType) other).getClassName(), Optional.ofNullable(this.moduleName));;) {
         otherHierarchy.addFirst(sc);
         if (sc == javalangObject) {
           break;
@@ -128,7 +127,7 @@ public class ModuleRefType extends RefType {
         sc = sc.hasSuperclass() ? sc.getSuperclass() : javalangObject;
       }
 
-      // Find least common superclass
+      // Find the least common superclass
       {
         SootClass commonClass = null;
         while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty()

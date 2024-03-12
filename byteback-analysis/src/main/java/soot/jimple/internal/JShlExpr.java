@@ -28,7 +28,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;
 import soot.jimple.ShlExpr;

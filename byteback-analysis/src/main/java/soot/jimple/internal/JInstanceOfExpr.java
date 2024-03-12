@@ -27,7 +27,7 @@ import java.util.List;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
-import soot.baf.Baf;
+import soot.baf.syntax.Baf;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;

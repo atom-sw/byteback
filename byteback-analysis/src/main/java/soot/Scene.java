@@ -290,15 +290,6 @@ public class Scene {
     SourceLocator.v().invalidateClassPath();
   }
 
-  public void extendSootClassPath(String newPathElement) {
-    if (sootClassPath == null) {
-      sootClassPath = newPathElement;
-    } else {
-      sootClassPath += File.pathSeparatorChar + newPathElement;
-    }
-    SourceLocator.v().extendClassPath(newPathElement);
-  }
-
   public void reset() {
     sootClassPath = null;
   }

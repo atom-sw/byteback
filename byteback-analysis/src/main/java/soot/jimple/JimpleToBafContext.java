@@ -27,7 +27,7 @@ import java.util.Map;
 
 import soot.Local;
 import soot.Unit;
-import soot.baf.BafBody;
+import soot.baf.syntax.BafBody;
 
 public class JimpleToBafContext {
 
