@@ -1,10 +1,10 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.ExprSwitch;
-import soot.jimple.GeExpr;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.ExprSwitch;
+import byteback.analysis.body.jimple.syntax.GeExpr;
 import soot.util.Switch;
 
 public class LogicGeExpr extends AbstractLogicBinopExpr implements GeExpr {

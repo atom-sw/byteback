@@ -1,9 +1,9 @@
 package byteback.analysis.body.common.transformer;
 
-import soot.Body;
-import soot.Unit;
-import soot.UnitBox;
-import soot.ValueBox;
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.UnitBox;
+import byteback.analysis.body.common.syntax.ValueBox;
 
 /**
  * Body transformer that applies a transformation to each value.

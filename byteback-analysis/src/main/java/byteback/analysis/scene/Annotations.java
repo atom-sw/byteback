@@ -1,6 +1,5 @@
 package byteback.analysis.scene;
 
-import byteback.analysis.scene.visitor.AbtractAnnotationElementSwitch;
 import byteback.common.function.Lazy;
 import soot.tag.AnnotationArrayElement;
 import soot.tag.AnnotationElement;

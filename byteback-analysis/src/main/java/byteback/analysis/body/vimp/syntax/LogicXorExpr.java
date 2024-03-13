@@ -2,9 +2,9 @@ package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.XorExpr;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.XorExpr;
 import soot.util.Switch;
 
 public class LogicXorExpr extends AbstractLogicBinopExpr implements XorExpr {

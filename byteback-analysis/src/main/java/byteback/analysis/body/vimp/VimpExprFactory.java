@@ -1,8 +1,13 @@
 package byteback.analysis.body.vimp;
 
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.common.syntax.Immediate;
+import byteback.analysis.body.common.syntax.Local;
+import byteback.analysis.body.common.syntax.LocalGenerator;
+import byteback.analysis.body.common.syntax.Value;
 import soot.*;
-import soot.jimple.AssignStmt;
-import soot.jimple.Jimple;
+import byteback.analysis.body.jimple.syntax.AssignStmt;
+import byteback.analysis.body.jimple.syntax.Jimple;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

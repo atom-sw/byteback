@@ -1,10 +1,15 @@
 package byteback.analysis.body.vimp;
 
+import byteback.analysis.body.common.syntax.Local;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.*;
+import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.body.vimp.syntax.*;
+import byteback.analysis.model.syntax.type.Type;
 import byteback.common.function.Lazy;
 import soot.*;
-import soot.jimple.*;
-import soot.jimple.internal.ImmediateBox;
+import byteback.analysis.body.jimple.syntax.internal.ImmediateBox;
 import soot.util.Chain;
 import soot.util.HashChain;
 

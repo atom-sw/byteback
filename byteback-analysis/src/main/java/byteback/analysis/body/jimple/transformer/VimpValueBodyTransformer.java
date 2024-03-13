@@ -1,7 +1,13 @@
 package byteback.analysis.body.jimple.transformer;
 
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.common.syntax.UnitBox;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.common.transformer.ValueTransformer;
+import byteback.analysis.body.jimple.syntax.*;
+import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.body.jimple.visitor.AbstractJimpleValueSwitch;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.AssertStmt;
@@ -9,10 +15,12 @@ import byteback.analysis.body.vimp.syntax.AssumeStmt;
 import byteback.analysis.body.vimp.syntax.InvariantStmt;
 import byteback.analysis.body.vimp.syntax.LogicConstant;
 import byteback.analysis.body.vimp.visitor.AbstractVimpStmtSwitch;
+import byteback.analysis.model.syntax.type.BooleanType;
+import byteback.analysis.model.syntax.type.Type;
+import byteback.analysis.model.syntax.type.visitor.TypeSwitch;
 import byteback.analysis.scene.Types;
 import byteback.common.function.Lazy;
 import soot.*;
-import soot.jimple.*;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -36,8 +44,8 @@ public class VimpValueBodyTransformer extends BodyTransformer {
 
     @Override
     public void transformBody(final Body body) {
-        final Type returnType = body.getMethod().getReturnType();
-        new VimpValueTransformer(returnType).transform(body);
+        final Type returnType = body.getMethodModel().getReturnType();
+        new VimpValueTransformer(returnType).transformBody(body);
     }
 
     public static class VimpValueTransformer extends ValueTransformer {

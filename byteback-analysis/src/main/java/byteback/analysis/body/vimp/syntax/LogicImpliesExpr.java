@@ -2,7 +2,7 @@ package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
-import soot.Value;
+import byteback.analysis.body.common.syntax.Value;
 import soot.util.Switch;
 
 public class LogicImpliesExpr extends AbstractLogicBinopExpr {

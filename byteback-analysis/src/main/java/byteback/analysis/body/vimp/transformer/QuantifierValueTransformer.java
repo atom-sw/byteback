@@ -1,14 +1,18 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.common.syntax.Local;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.common.transformer.ValueTransformer;
+import byteback.analysis.body.jimple.syntax.*;
+import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.QuantifierExpr;
-import byteback.analysis.common.namespace.BBLibNames;
-import byteback.analysis.model.ClassModel;
-import byteback.analysis.model.MethodModel;
+import byteback.analysis.common.naming.BBLibNames;
+import byteback.analysis.model.syntax.ClassModel;
+import byteback.analysis.model.syntax.MethodModel;
 import byteback.common.function.Lazy;
-import soot.*;
-import soot.jimple.*;
 import soot.util.Chain;
 import soot.util.HashChain;
 

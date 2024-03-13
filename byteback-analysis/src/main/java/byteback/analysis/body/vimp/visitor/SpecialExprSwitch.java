@@ -3,7 +3,7 @@ package byteback.analysis.body.vimp.visitor;
 import byteback.analysis.body.vimp.syntax.OldExpr;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.analysis.common.visitor.Visitor;
-import soot.Value;
+import byteback.analysis.body.common.syntax.Value;
 
 public interface SpecialExprSwitch<T> extends Visitor<Value, T> {
 

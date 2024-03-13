@@ -2,7 +2,7 @@ package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.UnitPrinter;
-import soot.jimple.Constant;
+import byteback.analysis.body.jimple.syntax.Constant;
 import soot.util.Switch;
 
 public class LogicConstant extends Constant implements LogicExpr {

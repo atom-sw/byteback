@@ -4,10 +4,10 @@ import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.common.function.Lazy;
-import soot.Body;
-import soot.Unit;
-import soot.Value;
-import soot.jimple.NullConstant;
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.jimple.syntax.NullConstant;
 
 public class ThisAssumptionTransformer extends BodyTransformer {
 
@@ -22,7 +22,7 @@ public class ThisAssumptionTransformer extends BodyTransformer {
 
     @Override
     public void transformBody(final Body body) {
-        if (!body.getMethod().isStatic()) {
+        if (!body.getMethodModel().isStatic()) {
             final Unit unit = body.getThisUnit();
             final Value condition = new VimpExprFactory(body).binary(
                     Vimp.v()::newNeExpr,

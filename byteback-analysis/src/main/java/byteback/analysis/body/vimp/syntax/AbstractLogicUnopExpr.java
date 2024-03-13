@@ -2,9 +2,9 @@ package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
 import soot.UnitPrinter;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.internal.AbstractUnopExpr;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.internal.AbstractUnopExpr;
 
 public abstract class AbstractLogicUnopExpr extends AbstractUnopExpr {
 

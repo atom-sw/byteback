@@ -4,7 +4,7 @@ import byteback.analysis.body.vimp.syntax.AssertStmt;
 import byteback.analysis.body.vimp.syntax.AssumeStmt;
 import byteback.analysis.body.vimp.syntax.InvariantStmt;
 import byteback.analysis.common.visitor.Visitor;
-import soot.jimple.Stmt;
+import byteback.analysis.body.jimple.syntax.Stmt;
 
 public interface VimpStmtSwitch<T> extends Visitor<Stmt, T> {
 

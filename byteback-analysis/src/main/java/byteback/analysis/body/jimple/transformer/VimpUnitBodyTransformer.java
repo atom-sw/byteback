@@ -1,16 +1,18 @@
 package byteback.analysis.body.jimple.transformer;
 
+import byteback.analysis.body.common.syntax.UnitBox;
+import byteback.analysis.body.common.syntax.Value;
 import byteback.analysis.body.common.transformer.UnitTransformer;
 import byteback.analysis.body.common.visitor.AbstractStmtSwitch;
+import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.SpecificationStmt;
-import byteback.analysis.common.namespace.BBLibNames;
-import byteback.analysis.model.ClassModel;
-import byteback.analysis.model.MethodModel;
+import byteback.analysis.common.naming.BBLibNames;
+import byteback.analysis.model.syntax.ClassModel;
+import byteback.analysis.model.syntax.MethodModel;
 import byteback.common.function.Lazy;
-import soot.*;
-import soot.jimple.InvokeExpr;
-import soot.jimple.InvokeStmt;
+import byteback.analysis.body.jimple.syntax.InvokeExpr;
+import byteback.analysis.body.jimple.syntax.InvokeStmt;
 
 /**
  * Converts BBLib's invoke statements into specification statements.

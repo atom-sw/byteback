@@ -1,9 +1,9 @@
 package byteback.analysis.body.jimple.visitor;
 
 import byteback.analysis.common.visitor.Visitor;
-import soot.Value;
+import byteback.analysis.body.common.syntax.Value;
 
-public abstract class AbstractJimpleValueSwitch<T> extends soot.jimple.AbstractJimpleValueSwitch<T>
+public abstract class AbstractJimpleValueSwitch<T> extends byteback.analysis.body.jimple.syntax.AbstractJimpleValueSwitch<T>
         implements Visitor<Value, T> {
 
     @Override

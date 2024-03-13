@@ -1,9 +1,9 @@
 package byteback.analysis.body.vimp.syntax;
 
-import soot.Unit;
-import soot.Value;
+import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.Value;
 import soot.grimp.Grimp;
-import soot.jimple.internal.JIfStmt;
+import byteback.analysis.body.jimple.syntax.internal.JIfStmt;
 
 public class LogicIfStmt extends JIfStmt {
 

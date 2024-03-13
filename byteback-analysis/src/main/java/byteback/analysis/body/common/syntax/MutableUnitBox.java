@@ -1,10 +1,8 @@
 package byteback.analysis.body.common.syntax;
 
-import soot.Body;
-import soot.Unit;
-import soot.UnitBox;
-import soot.UnitPrinter;
-import soot.jimple.Stmt;
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.jimple.syntax.Stmt;
 
 /**
  * A Unit box whose contents can be changed in a way that is reflected in the outer Body.
@@ -53,12 +51,4 @@ public class MutableUnitBox implements UnitBox {
     public boolean isBranchTarget() {
         return unit.getBoxesPointingToThis().isEmpty();
     }
-
-    @Override
-    public void toString(final UnitPrinter up) {
-        up.startUnitBox(this);
-        up.unitRef(unit, isBranchTarget());
-        up.endUnitBox(this);
-    }
-
 }

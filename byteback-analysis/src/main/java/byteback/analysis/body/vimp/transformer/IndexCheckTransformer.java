@@ -4,12 +4,12 @@ import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.common.function.Lazy;
 import soot.Scene;
-import soot.Unit;
-import soot.Value;
-import soot.jimple.ArrayRef;
-import soot.jimple.AssignStmt;
-import soot.jimple.IntConstant;
-import soot.jimple.Jimple;
+import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.jimple.syntax.ArrayRef;
+import byteback.analysis.body.jimple.syntax.AssignStmt;
+import byteback.analysis.body.jimple.syntax.IntConstant;
+import byteback.analysis.body.jimple.syntax.Jimple;
 
 import java.util.Optional;
 

@@ -1,12 +1,12 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.jimple.syntax.*;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.common.function.Lazy;
 import soot.Scene;
-import soot.Unit;
-import soot.Value;
-import soot.jimple.*;
+import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.Value;
 
 import java.util.Optional;
 

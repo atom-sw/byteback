@@ -2,10 +2,10 @@ package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
 import soot.UnitPrinter;
-import soot.Value;
-import soot.ValueBox;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
 import soot.grimp.Precedence;
-import soot.jimple.internal.AbstractBinopExpr;
+import byteback.analysis.body.jimple.syntax.internal.AbstractBinopExpr;
 
 public abstract class AbstractLogicBinopExpr extends AbstractBinopExpr implements LogicExpr, Precedence {
 

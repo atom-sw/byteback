@@ -1,9 +1,13 @@
 package byteback.analysis.body.vimp.syntax;
 
+import byteback.analysis.body.common.syntax.Immediate;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.visitor.SpecialExprSwitch;
+import byteback.analysis.model.syntax.type.Type;
 import soot.*;
-import soot.jimple.internal.AbstractUnopExpr;
+import byteback.analysis.body.jimple.syntax.internal.AbstractUnopExpr;
 import soot.util.Switch;
 
 public class OldExpr extends AbstractUnopExpr implements Immediate {

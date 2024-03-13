@@ -1,8 +1,9 @@
 package byteback.analysis.body.common;
 
+import byteback.analysis.common.syntax.Chain;
+import byteback.analysis.common.syntax.HashChain;
 import byteback.common.function.Lazy;
-import soot.Body;
-import soot.Local;
+import byteback.analysis.body.common.syntax.Local;
 import soot.util.Chain;
 import soot.util.HashChain;
 

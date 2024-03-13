@@ -1,10 +1,10 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.EqExpr;
-import soot.jimple.ExprSwitch;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.EqExpr;
+import byteback.analysis.body.jimple.syntax.ExprSwitch;
 import soot.util.Switch;
 
 public class LogicEqExpr extends AbstractLogicBinopExpr implements EqExpr {

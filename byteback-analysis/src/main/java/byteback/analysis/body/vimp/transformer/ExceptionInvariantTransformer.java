@@ -2,7 +2,7 @@ package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.common.function.Lazy;
-import soot.Body;
+import byteback.analysis.body.common.Body;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 

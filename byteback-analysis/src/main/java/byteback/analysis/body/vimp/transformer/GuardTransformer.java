@@ -1,16 +1,20 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.common.syntax.Local;
+import byteback.analysis.body.common.syntax.Trap;
+import byteback.analysis.body.common.syntax.Value;
 import byteback.analysis.body.common.transformer.BodyTransformer;
+import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.common.collection.ListHashMap;
 import byteback.common.collection.Stacks;
 import byteback.common.function.Lazy;
-import soot.*;
 import soot.grimp.Grimp;
-import soot.jimple.AssignStmt;
-import soot.jimple.CaughtExceptionRef;
-import soot.jimple.ThrowStmt;
+import byteback.analysis.body.jimple.syntax.AssignStmt;
+import byteback.analysis.body.jimple.syntax.CaughtExceptionRef;
+import byteback.analysis.body.jimple.syntax.ThrowStmt;
 import soot.util.Chain;
 
 import java.util.HashSet;
@@ -31,13 +35,13 @@ public class GuardTransformer extends BodyTransformer {
 
     @Override
     public void transformBody(final Body body) {
-        final Chain<Unit> units = body.getUnits();
+        final Chain<byteback.analysis.body.jimple.syntax.Unit> units = body.getUnits();
         final Chain<Trap> traps = body.getTraps();
-        final ListHashMap<Unit, Trap> startToTraps = new ListHashMap<>();
-        final ListHashMap<Unit, Trap> endToTraps = new ListHashMap<>();
-        final HashSet<Unit> trapHandlers = new HashSet<>();
+        final ListHashMap<byteback.analysis.body.jimple.syntax.Unit, Trap> startToTraps = new ListHashMap<>();
+        final ListHashMap<byteback.analysis.body.jimple.syntax.Unit, Trap> endToTraps = new ListHashMap<>();
+        final HashSet<byteback.analysis.body.jimple.syntax.Unit> trapHandlers = new HashSet<>();
         final Stack<Trap> activeTraps = new Stack<>();
-        final Iterator<Unit> unitIterator = units.snapshotIterator();
+        final Iterator<byteback.analysis.body.jimple.syntax.Unit> unitIterator = units.snapshotIterator();
         units.addFirst(Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v()));
 
         for (final Trap trap : traps) {
@@ -46,7 +50,7 @@ public class GuardTransformer extends BodyTransformer {
             trapHandlers.add(trap.getHandlerUnit());
         }
 
-        for (final Unit handler : trapHandlers) {
+        for (final byteback.analysis.body.jimple.syntax.Unit handler : trapHandlers) {
             assert handler instanceof AssignStmt assign && assign.getLeftOp() instanceof Local
                     && assign.getRightOp() instanceof CaughtExceptionRef;
 
@@ -55,7 +59,7 @@ public class GuardTransformer extends BodyTransformer {
         }
 
         while (unitIterator.hasNext()) {
-            final Unit unit = unitIterator.next();
+            final byteback.analysis.body.jimple.syntax.Unit unit = unitIterator.next();
             final List<Trap> startedTraps = startToTraps.get(unit);
             final List<Trap> endedTraps = endToTraps.get(unit);
 
@@ -68,13 +72,13 @@ public class GuardTransformer extends BodyTransformer {
             }
 
             if (unit instanceof ThrowStmt throwUnit) {
-                final Unit retUnit = Grimp.v().newReturnVoidStmt();
+                final byteback.analysis.body.jimple.syntax.Unit retUnit = Grimp.v().newReturnVoidStmt();
 
                 units.insertBefore(retUnit, throwUnit);
                 throwUnit.redirectJumpsToThisTo(retUnit);
                 units.remove(throwUnit);
 
-                final Unit assignUnit;
+                final byteback.analysis.body.jimple.syntax.Unit assignUnit;
 
                 if (throwUnit.getOp() instanceof CaughtExceptionRef) {
                     assignUnit = units.getPredOf(retUnit);
@@ -84,7 +88,7 @@ public class GuardTransformer extends BodyTransformer {
                     retUnit.redirectJumpsToThisTo(assignUnit);
                 }
 
-                Unit indexUnit = assignUnit;
+                byteback.analysis.body.jimple.syntax.Unit indexUnit = assignUnit;
 
                 if (throwUnit.getOp().getType() instanceof RefType) {
                     for (int i = activeTraps.size() - 1; i >= 0; --i) {

@@ -1,9 +1,9 @@
 package byteback.analysis.body.common.transformer;
 
 import byteback.analysis.body.common.syntax.MutableUnitBox;
-import soot.Body;
-import soot.Unit;
-import soot.UnitBox;
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.UnitBox;
 
 import java.util.Iterator;
 

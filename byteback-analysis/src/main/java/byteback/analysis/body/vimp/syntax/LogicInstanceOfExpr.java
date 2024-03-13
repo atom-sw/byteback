@@ -1,10 +1,10 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
-import soot.Type;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.internal.AbstractInstanceOfExpr;
+import byteback.analysis.model.syntax.type.Type;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.internal.AbstractInstanceOfExpr;
 
 public class LogicInstanceOfExpr extends AbstractInstanceOfExpr implements LogicExpr {
 

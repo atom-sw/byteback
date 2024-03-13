@@ -5,12 +5,12 @@ import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpValues;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.common.function.Lazy;
-import soot.Body;
-import soot.Unit;
-import soot.Value;
-import soot.ValueBox;
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
 import soot.grimp.Grimp;
-import soot.jimple.CaughtExceptionRef;
+import byteback.analysis.body.jimple.syntax.CaughtExceptionRef;
 import soot.util.Chain;
 
 import java.util.Iterator;

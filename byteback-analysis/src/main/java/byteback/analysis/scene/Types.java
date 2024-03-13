@@ -1,5 +1,7 @@
 package byteback.analysis.scene;
 
+import byteback.analysis.model.syntax.type.IntType;
+import byteback.analysis.model.syntax.type.Type;
 import byteback.common.function.Lazy;
 import soot.*;
 

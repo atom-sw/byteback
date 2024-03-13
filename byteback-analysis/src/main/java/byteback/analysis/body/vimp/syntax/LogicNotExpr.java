@@ -1,9 +1,9 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.NegExpr;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.NegExpr;
 import soot.util.Switch;
 
 public class LogicNotExpr extends AbstractLogicUnopExpr implements LogicExpr, NegExpr {

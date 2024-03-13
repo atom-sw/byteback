@@ -2,11 +2,11 @@ package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.common.function.Lazy;
-import soot.Body;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.DynamicInvokeExpr;
-import soot.jimple.Jimple;
+import byteback.analysis.body.common.Body;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.DynamicInvokeExpr;
+import byteback.analysis.body.jimple.syntax.Jimple;
 
 public class DynamicInvokeResolver extends BodyTransformer {
 

@@ -2,12 +2,12 @@ package byteback.analysis.body.jimple.transformer;
 
 import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.common.namespace.BBLibNames;
+import byteback.analysis.common.naming.BBLibNames;
 import byteback.common.function.Lazy;
-import byteback.analysis.model.MethodModel;
-import soot.ValueBox;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InvokeExpr;
+import byteback.analysis.model.syntax.MethodModel;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.InstanceInvokeExpr;
+import byteback.analysis.body.jimple.syntax.InvokeExpr;
 
 import java.util.ArrayList;
 

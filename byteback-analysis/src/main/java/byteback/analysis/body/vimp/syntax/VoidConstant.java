@@ -2,9 +2,9 @@ package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.visitor.SpecialExprSwitch;
 import byteback.common.function.Lazy;
-import soot.Type;
+import byteback.analysis.model.syntax.type.Type;
 import soot.VoidType;
-import soot.jimple.Constant;
+import byteback.analysis.body.jimple.syntax.Constant;
 import soot.util.Switch;
 
 public class VoidConstant extends Constant {

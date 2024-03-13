@@ -2,10 +2,10 @@ package byteback.analysis.body.vimp;
 
 import byteback.analysis.body.vimp.syntax.CallExpr;
 import byteback.common.function.Lazy;
-import soot.Value;
-import soot.jimple.InvokeExpr;
-import soot.jimple.NewArrayExpr;
-import soot.jimple.NewExpr;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.jimple.syntax.InvokeExpr;
+import byteback.analysis.body.jimple.syntax.NewArrayExpr;
+import byteback.analysis.body.jimple.syntax.NewExpr;
 
 /**
  * Additional functions that operate on Soot Values.

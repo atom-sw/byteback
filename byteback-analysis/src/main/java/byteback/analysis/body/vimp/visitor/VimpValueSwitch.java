@@ -2,7 +2,7 @@ package byteback.analysis.body.vimp.visitor;
 
 import byteback.analysis.body.vimp.syntax.*;
 import byteback.analysis.common.visitor.Visitor;
-import soot.Value;
+import byteback.analysis.body.common.syntax.Value;
 
 public interface VimpValueSwitch<T> extends Visitor<Value, T> {
 

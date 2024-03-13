@@ -1,9 +1,9 @@
 package byteback.analysis.body.common.visitor;
 
 import byteback.analysis.common.visitor.Visitor;
-import soot.jimple.Stmt;
+import byteback.analysis.body.jimple.syntax.Stmt;
 
-public abstract class AbstractStmtSwitch<R> extends soot.jimple.AbstractStmtSwitch<R> implements Visitor<Stmt, R> {
+public abstract class AbstractStmtSwitch<R> extends byteback.analysis.body.jimple.syntax.AbstractStmtSwitch<R> implements Visitor<Stmt, R> {
 
     @Override
     public void defaultCase(final Object object) {

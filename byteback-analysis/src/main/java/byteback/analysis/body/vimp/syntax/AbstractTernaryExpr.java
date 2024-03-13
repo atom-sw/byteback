@@ -1,9 +1,9 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.scene.Types;
-import soot.Type;
-import soot.ValueBox;
-import soot.jimple.Expr;
+import byteback.analysis.model.syntax.type.Type;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.Expr;
 
 import java.util.ArrayList;
 import java.util.List;

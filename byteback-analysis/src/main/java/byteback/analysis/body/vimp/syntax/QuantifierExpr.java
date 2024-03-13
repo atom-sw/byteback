@@ -1,10 +1,10 @@
 package byteback.analysis.body.vimp.syntax;
 
-import soot.Local;
+import byteback.analysis.body.common.syntax.Local;
 import soot.UnitPrinter;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.Jimple;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.Jimple;
 import soot.util.Chain;
 import soot.util.HashChain;
 

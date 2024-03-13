@@ -1,10 +1,9 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.common.syntax.InlineUnitPrinter;
 import byteback.analysis.body.vimp.Vimp;
-import soot.Value;
-import soot.ValueBox;
-import soot.jimple.internal.AbstractStmt;
+import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.internal.AbstractStmt;
 
 import java.util.ArrayList;
 import java.util.List;

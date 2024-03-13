@@ -1,9 +1,9 @@
 package byteback.analysis.scene;
 
 import byteback.common.function.Lazy;
-import soot.Local;
-import byteback.analysis.model.MethodModel;
-import soot.jimple.internal.JimpleLocal;
+import byteback.analysis.body.common.syntax.Local;
+import byteback.analysis.model.syntax.MethodModel;
+import byteback.analysis.body.jimple.syntax.internal.JimpleLocal;
 
 import java.util.ArrayList;
 import java.util.List;
