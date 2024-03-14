@@ -3,7 +3,6 @@ package byteback.analysis.body.common.syntax;
 import byteback.analysis.body.common.Body;
 import byteback.analysis.common.syntax.Chain;
 import byteback.analysis.model.syntax.type.*;
-import byteback.analysis.body.jimple.syntax.Jimple;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +20,7 @@ public class DefaultLocalGenerator extends LocalGenerator {
     private int tempLong = -1;
     private int tempDouble = -1;
     private int tempFloat = -1;
-    private int tempRefLikeType = -1;
+    private int tempArray = -1;
     private int tempByte = -1;
     private int tempShort = -1;
     private int tempChar = -1;
@@ -33,7 +32,7 @@ public class DefaultLocalGenerator extends LocalGenerator {
         this.expectedModCount = -1;// init with invalid mod count
     }
 
-    public Local generateLocal(Type type) {
+    public Local generateLocal(final Type type) {
         Supplier<String> nameGen;
         if (type instanceof IntType) {
             nameGen = this::nextIntName;
@@ -67,6 +66,7 @@ public class DefaultLocalGenerator extends LocalGenerator {
         {
             Chain<Local> locs = this.locals;
             long modCount = locs.getModificationCount();
+
             if (this.expectedModCount != modCount) {
                 this.expectedModCount = modCount;
                 this.names = localNames = new HashSet<>(locs.size());
@@ -74,6 +74,7 @@ public class DefaultLocalGenerator extends LocalGenerator {
                     localNames.add(l.getName());
                 }
             }
+
             assert (localNames != null);
         }
 
@@ -122,7 +123,7 @@ public class DefaultLocalGenerator extends LocalGenerator {
     }
 
     private String nextArrayName() {
-        return "$r" + (++tempRefLikeType);
+        return "$r" + (++tempArray);
     }
 
     private String nextUnknownTypeName() {
@@ -130,17 +131,17 @@ public class DefaultLocalGenerator extends LocalGenerator {
     }
 
     // this should be used for generated locals only
-    protected Local createLocal(String name, Type sootType) {
-        assert (expectedModCount == locals.getModificationCount());// pre-condition
-        assert (!names.contains(name));// pre-condition
+    protected Local createLocal(final String name, final Type type) {
+        assert (expectedModCount == locals.getModificationCount());
+        assert (!names.contains(name));
 
-        Local sootLocal = Jimple.v().newLocal(name, sootType);
+        final Local sootLocal = new Local(name, type);
         locals.add(sootLocal);
         expectedModCount++;
         names.add(name);
 
-        assert (expectedModCount == locals.getModificationCount());// post-condition
-        assert (names.contains(name));// post-condition
+        assert (expectedModCount == locals.getModificationCount());
+        assert (names.contains(name));
 
         return sootLocal;
     }

@@ -1,13 +1,13 @@
 package byteback.analysis.body.vimp.syntax;
 
+import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.jimple.syntax.ExprSwitch;
 import byteback.analysis.body.jimple.syntax.GeExpr;
 import soot.util.Switch;
 
-public class LogicGeExpr extends AbstractLogicBinopExpr implements GeExpr {
+public class LogicGeExpr extends LogicBinopExpr implements GeExpr {
 
     public LogicGeExpr(final Value op1, final Value op2) {
         super(op1, op2);
@@ -26,15 +26,4 @@ public class LogicGeExpr extends AbstractLogicBinopExpr implements GeExpr {
     public LogicGeExpr clone() {
         return new LogicGeExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
     }
-
-    @Override
-    public void apply(final Switch visitor) {
-        ((ExprSwitch) visitor).caseGeExpr(this);
-    }
-
-    @Override
-    public int getPrecedence() {
-        return 600;
-    }
-
 }

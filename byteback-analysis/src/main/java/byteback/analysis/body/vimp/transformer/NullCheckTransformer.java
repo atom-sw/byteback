@@ -1,11 +1,15 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.jimple.syntax.*;
+import byteback.analysis.body.common.syntax.Unit;
+import byteback.analysis.body.jimple.syntax.expr.ArrayRef;
+import byteback.analysis.body.jimple.syntax.expr.InstanceFieldRef;
+import byteback.analysis.body.jimple.syntax.expr.InstanceInvokeExpr;
+import byteback.analysis.body.jimple.syntax.expr.Ref;
+import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
+import byteback.analysis.body.jimple.syntax.stmt.InvokeStmt;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.common.function.Lazy;
-import soot.Scene;
-import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.body.common.syntax.Value;
 
 import java.util.Optional;

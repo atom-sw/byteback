@@ -22,10 +22,9 @@ package byteback.analysis.body.common.syntax;
  * #L%
  */
 
-import byteback.analysis.body.jimple.syntax.GotoStmt;
-import byteback.analysis.body.jimple.syntax.Jimple;
-import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.jimple.syntax.stmt.GotoStmt;
 import byteback.analysis.common.syntax.Chain;
+import byteback.analysis.common.syntax.PatchingChain;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -52,7 +51,7 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
      * @param point_src the source point of an edge in CFG
      * @param point_tgt the target point of an edge
      */
-    public void insertOnEdge(Collection<? extends byteback.analysis.body.jimple.syntax.Unit> toInsert, byteback.analysis.body.jimple.syntax.Unit point_src, byteback.analysis.body.jimple.syntax.Unit point_tgt) {
+    public void insertOnEdge(Collection<? extends Unit> toInsert, Unit point_src, Unit point_tgt) {
         if (toInsert == null) {
             throw new RuntimeException("Tried to insert a null Collection into the Chain!");
         }
@@ -68,7 +67,7 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
         // Insert 'toInsert' before 'target' point in chain if the source point is null
         if (point_src == null) {
             assert (point_tgt != null);
-            byteback.analysis.body.jimple.syntax.Unit firstInserted = toInsert.iterator().next();
+            Unit firstInserted = toInsert.iterator().next();
             point_tgt.redirectJumpsToThisTo(firstInserted);
             innerChain.insertBefore(toInsert, point_tgt);
             return;
@@ -86,12 +85,14 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
         // (source->target) ==> (source->toInsert[0])
         // 2- Insert 'toInsert' after 'source' in Chain
         if (getSuccOf(point_src) == point_tgt) {
-            byteback.analysis.body.jimple.syntax.Unit firstInserted = toInsert.iterator().next();
+            Unit firstInserted = toInsert.iterator().next();
+
             for (UnitBox box : point_src.getUnitBoxes()) {
                 if (box.getUnit() == point_tgt) {
                     box.setUnit(firstInserted);
                 }
             }
+
             innerChain.insertAfter(toInsert, point_src);
             return;
         }
@@ -104,20 +105,20 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
         // 2- Insert 'toInsert' before 'target' in Chain
         // 3- If required, add a 'goto target' statement so that no other edge
         // executes 'toInsert'
-        final byteback.analysis.body.jimple.syntax.Unit firstInserted = toInsert.iterator().next();
+        final Unit firstInserted = toInsert.iterator().next();
         boolean validEdgeFound = false;
-        byteback.analysis.body.jimple.syntax.Unit originalPred = this.getPredOf(point_tgt);
+        Unit originalPred = this.getPredOf(point_tgt);
         for (UnitBox box : point_src.getUnitBoxes()) {
             if (box.getUnit() == point_tgt) {
                 if (point_src instanceof GotoStmt) {
                     box.setUnit(firstInserted);
                     innerChain.insertAfter(toInsert, point_src);
 
-                    byteback.analysis.body.jimple.syntax.Unit goto_unit = Jimple.v().newGotoStmt(point_tgt);
-                    if (toInsert instanceof List<? extends byteback.analysis.body.jimple.syntax.Unit> l) {
+                    Unit goto_unit = new GotoStmt(point_tgt);
+                    if (toInsert instanceof List<? extends Unit> l) {
                         innerChain.insertAfter(goto_unit, l.get(l.size() - 1));
                     } else {
-                        innerChain.insertAfter(goto_unit, (byteback.analysis.body.jimple.syntax.Unit) toInsert.toArray()[toInsert.size() - 1]);
+                        innerChain.insertAfter(goto_unit, (Unit) toInsert.toArray()[toInsert.size() - 1]);
                     }
                     return;
                 }
@@ -134,7 +135,7 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
                     return;
                 }
 
-                byteback.analysis.body.jimple.syntax.Unit goto_unit = Jimple.v().newGotoStmt(point_tgt);
+                Unit goto_unit = new GotoStmt(point_tgt);
                 innerChain.insertBefore(Collections.singletonList(goto_unit), firstInserted);
             }
             return;
@@ -145,7 +146,8 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
         // So, an edge [src --> tgt] becomes [src -> goto tgt -> tgt].
         // When this happens, the original edge [src -> tgt] ceases to exist.
         // The following code handles such scenarios.
-        final byteback.analysis.body.jimple.syntax.Unit succ = getSuccOf(point_src);
+        final Unit succ = getSuccOf(point_src);
+
         if (succ instanceof GotoStmt) {
             if (succ.getUnitBoxes().get(0).getUnit() == point_tgt) {
                 succ.redirectJumpsToThisTo(firstInserted);
@@ -168,8 +170,8 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
      * @param point_src the source point of an edge in CFG
      * @param point_tgt the target point of an edge
      */
-    public void insertOnEdge(List<byteback.analysis.body.jimple.syntax.Unit> toInsert, byteback.analysis.body.jimple.syntax.Unit point_src, byteback.analysis.body.jimple.syntax.Unit point_tgt) {
-        insertOnEdge((Collection<byteback.analysis.body.jimple.syntax.Unit>) toInsert, point_src, point_tgt);
+    public void insertOnEdge(List<Unit> toInsert, Unit point_src, Unit point_tgt) {
+        insertOnEdge((Collection<Unit>) toInsert, point_src, point_tgt);
     }
 
     /**
@@ -180,8 +182,8 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
      * @param point_src the source point of an edge in CFG
      * @param point_tgt the target point of an edge
      */
-    public void insertOnEdge(Chain<byteback.analysis.body.jimple.syntax.Unit> toInsert, byteback.analysis.body.jimple.syntax.Unit point_src, byteback.analysis.body.jimple.syntax.Unit point_tgt) {
-        insertOnEdge((Collection<byteback.analysis.body.jimple.syntax.Unit>) toInsert, point_src, point_tgt);
+    public void insertOnEdge(Chain<Unit> toInsert, Unit point_src, Unit point_tgt) {
+        insertOnEdge((Collection<Unit>) toInsert, point_src, point_tgt);
     }
 
     /**
@@ -192,7 +194,7 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
      * @param point_src the source point of an edge in CFG
      * @param point_tgt the target point of an edge
      */
-    public void insertOnEdge(byteback.analysis.body.jimple.syntax.Unit toInsert, byteback.analysis.body.jimple.syntax.Unit point_src, Unit point_tgt) {
+    public void insertOnEdge(Unit toInsert, Unit point_src, Unit point_tgt) {
         insertOnEdge(Collections.singleton(toInsert), point_src, point_tgt);
     }
 }

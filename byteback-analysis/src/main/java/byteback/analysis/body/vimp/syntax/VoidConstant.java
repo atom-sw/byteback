@@ -1,11 +1,9 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.visitor.SpecialExprSwitch;
+import byteback.analysis.body.jimple.syntax.expr.Constant;
+import byteback.analysis.model.syntax.type.VoidType;
 import byteback.common.function.Lazy;
 import byteback.analysis.model.syntax.type.Type;
-import soot.VoidType;
-import byteback.analysis.body.jimple.syntax.Constant;
-import soot.util.Switch;
 
 public class VoidConstant extends Constant {
 
@@ -21,13 +19,6 @@ public class VoidConstant extends Constant {
     @Override
     public Type getType() {
         return VoidType.v();
-    }
-
-    @Override
-    public void apply(Switch visitor) {
-        if (visitor instanceof SpecialExprSwitch<?> specialExprSwitch) {
-            specialExprSwitch.caseVoidConstant(this);
-        }
     }
 
     @Override

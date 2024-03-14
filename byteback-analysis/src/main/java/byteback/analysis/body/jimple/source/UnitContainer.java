@@ -22,13 +22,9 @@ package byteback.analysis.body.jimple.source;
  * #L%
  */
 
-import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.Unit;
 import byteback.analysis.body.common.syntax.UnitBox;
-import soot.UnitPrinter;
 import byteback.analysis.body.common.syntax.ValueBox;
-import soot.tag.Host;
-import soot.tag.Tag;
-import soot.util.Switch;
 
 import java.util.List;
 
@@ -37,7 +33,7 @@ import java.util.List;
  *
  * @author Aaloan Miftah
  */
-class UnitContainer implements Unit {
+class UnitContainer extends Unit {
 
     final Unit[] units;
 
@@ -60,10 +56,6 @@ class UnitContainer implements Unit {
 
     @Override
     public Object clone() {
-        throw new UnsupportedOperationException();
-    }
-
-    public void apply(Switch sw) {
         throw new UnsupportedOperationException();
     }
 
@@ -135,21 +127,7 @@ class UnitContainer implements Unit {
         throw new UnsupportedOperationException();
     }
 
-    public void toString(UnitPrinter up) {
-        throw new UnsupportedOperationException();
-    }
-
     public void redirectJumpsToThisTo(Unit newLocation) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int getJavaSourceStartLineNumber() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int getJavaSourceStartColumnNumber() {
         throw new UnsupportedOperationException();
     }
 }

@@ -22,6 +22,7 @@ package byteback.analysis.body.common.syntax;
  * #L%
  */
 
+import byteback.analysis.common.syntax.EquivTo;
 import byteback.analysis.model.syntax.type.Type;
 
 import java.io.Serializable;
@@ -32,7 +33,7 @@ import java.util.List;
  * <p>
  * Values are typed, clonable and must declare which other Values they use (contain).
  */
-public interface Value extends Serializable {
+public interface Value extends Serializable, EquivTo {
 
     /**
      * Returns a List of boxes corresponding to Values which are used by (ie contained within) this Value.
@@ -43,9 +44,4 @@ public interface Value extends Serializable {
      * Returns the Soot type of this Value.
      */
     Type getType();
-
-    /**
-     * Returns a clone of this Value.
-     */
-    Object clone();
 }

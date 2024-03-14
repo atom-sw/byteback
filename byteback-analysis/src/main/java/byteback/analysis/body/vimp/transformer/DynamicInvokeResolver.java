@@ -4,7 +4,6 @@ import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.common.function.Lazy;
 import byteback.analysis.body.common.Body;
 import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.jimple.syntax.DynamicInvokeExpr;
 import byteback.analysis.body.jimple.syntax.Jimple;
 

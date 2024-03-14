@@ -2,11 +2,15 @@ package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.Body;
 import byteback.analysis.body.common.syntax.Local;
+import byteback.analysis.body.common.syntax.Unit;
 import byteback.analysis.body.common.syntax.Value;
 import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.common.transformer.ValueTransformer;
-import byteback.analysis.body.jimple.syntax.*;
 import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.jimple.syntax.expr.CastExpr;
+import byteback.analysis.body.jimple.syntax.expr.InvokeExpr;
+import byteback.analysis.body.jimple.syntax.expr.StaticInvokeExpr;
+import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.QuantifierExpr;
 import byteback.analysis.common.naming.BBLibNames;

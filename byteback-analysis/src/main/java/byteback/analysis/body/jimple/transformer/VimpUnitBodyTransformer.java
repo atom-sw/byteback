@@ -1,5 +1,6 @@
 package byteback.analysis.body.jimple.transformer;
 
+import byteback.analysis.body.common.syntax.Unit;
 import byteback.analysis.body.common.syntax.UnitBox;
 import byteback.analysis.body.common.syntax.Value;
 import byteback.analysis.body.common.transformer.UnitTransformer;
@@ -11,7 +12,7 @@ import byteback.analysis.common.naming.BBLibNames;
 import byteback.analysis.model.syntax.ClassModel;
 import byteback.analysis.model.syntax.MethodModel;
 import byteback.common.function.Lazy;
-import byteback.analysis.body.jimple.syntax.InvokeExpr;
+import byteback.analysis.body.jimple.syntax.expr.InvokeExpr;
 import byteback.analysis.body.jimple.syntax.InvokeStmt;
 
 /**

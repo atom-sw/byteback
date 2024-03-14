@@ -1,12 +1,12 @@
 package byteback.analysis.body.vimp.syntax;
 
+import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.model.syntax.type.Type;
 import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
-import byteback.analysis.body.jimple.syntax.internal.AbstractInstanceOfExpr;
+import byteback.analysis.body.jimple.syntax.expr.InstanceOfExpr;
 
-public class LogicInstanceOfExpr extends AbstractInstanceOfExpr implements LogicExpr {
+public class LogicInstanceOfExpr extends InstanceOfExpr implements LogicExpr {
 
     public LogicInstanceOfExpr(final Value op, final Type type) {
         super(Vimp.v().newArgBox(op), type);

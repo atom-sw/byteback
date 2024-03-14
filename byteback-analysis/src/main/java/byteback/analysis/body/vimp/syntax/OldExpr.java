@@ -7,10 +7,10 @@ import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.visitor.SpecialExprSwitch;
 import byteback.analysis.model.syntax.type.Type;
 import soot.*;
-import byteback.analysis.body.jimple.syntax.internal.AbstractUnopExpr;
+import byteback.analysis.body.jimple.syntax.stmt.UnopExpr;
 import soot.util.Switch;
 
-public class OldExpr extends AbstractUnopExpr implements Immediate {
+public class OldExpr extends UnopExpr implements Immediate {
 
     public OldExpr(final Value v) {
         super(Vimp.v().newArgBox(v));
@@ -18,21 +18,6 @@ public class OldExpr extends AbstractUnopExpr implements Immediate {
 
     public OldExpr(final ValueBox vbox) {
         super(vbox);
-    }
-
-    @Override
-    public void toString(final UnitPrinter printer) {
-        printer.literal("old");
-        printer.literal("(");
-        getOp().toString(printer);
-        printer.literal(")");
-    }
-
-    @Override
-    public void apply(final Switch visitor) {
-        if (visitor instanceof SpecialExprSwitch<?> specialExprSwitch) {
-            specialExprSwitch.caseOldExpr(this);
-        }
     }
 
     @Override

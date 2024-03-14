@@ -1,9 +1,11 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.common.syntax.Local;
+import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.common.syntax.Chain;
+import byteback.analysis.common.syntax.HashChain;
 import soot.UnitPrinter;
 import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.jimple.syntax.Jimple;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -58,30 +60,6 @@ public abstract class QuantifierExpr implements LogicExpr {
     }
 
     protected abstract String getSymbol();
-
-    @Override
-    public void toString(final UnitPrinter printer) {
-        final Iterator<Local> freeIt = bindings.iterator();
-        printer.literal("(");
-        printer.literal(getSymbol());
-        printer.literal(" ");
-
-        while (freeIt.hasNext()) {
-            final Local local = freeIt.next();
-            printer.type(local.getType());
-            printer.literal(" ");
-            local.toString(printer);
-
-            if (freeIt.hasNext()) {
-                printer.literal(", ");
-            }
-        }
-
-        printer.literal(" :: ");
-        getValue().toString(printer);
-        printer.literal(")");
-    }
-
     @Override
     public List<ValueBox> getUseBoxes() {
         return Collections.singletonList(valueBox);

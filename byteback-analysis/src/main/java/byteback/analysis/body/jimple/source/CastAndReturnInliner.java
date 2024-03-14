@@ -23,18 +23,14 @@ package byteback.analysis.body.jimple.source;
  */
 
 import byteback.analysis.body.common.Body;
-import byteback.analysis.body.common.syntax.Local;
-import byteback.analysis.body.common.syntax.Trap;
-import byteback.analysis.body.common.syntax.UnitBox;
-import byteback.analysis.body.common.syntax.UnitPatchingChain;
+import byteback.analysis.body.common.syntax.*;
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.jimple.syntax.*;
-import byteback.analysis.body.jimple.syntax.Unit;
-import soot.*;
+import byteback.analysis.body.jimple.syntax.expr.CastExpr;
+import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
+import byteback.analysis.body.jimple.syntax.stmt.GotoStmt;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Transformers that inlines returns that cast and return an object. We take a = .. goto l0;

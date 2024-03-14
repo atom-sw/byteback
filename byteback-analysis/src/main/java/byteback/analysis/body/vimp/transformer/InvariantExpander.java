@@ -1,15 +1,17 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.syntax.Unit;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.AssertStmt;
 import byteback.analysis.body.vimp.syntax.InvariantStmt;
+import byteback.analysis.common.syntax.Chain;
 import byteback.common.function.Lazy;
 import byteback.analysis.body.common.Body;
 import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.body.common.syntax.Value;
 import byteback.analysis.body.jimple.syntax.IfStmt;
-import byteback.analysis.body.jimple.syntax.Stmt;
+import byteback.analysis.body.jimple.syntax.stmt.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.util.Chain;

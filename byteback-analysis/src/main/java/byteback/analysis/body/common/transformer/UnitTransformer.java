@@ -2,7 +2,7 @@ package byteback.analysis.body.common.transformer;
 
 import byteback.analysis.body.common.syntax.MutableUnitBox;
 import byteback.analysis.body.common.Body;
-import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.Unit;
 import byteback.analysis.body.common.syntax.UnitBox;
 
 import java.util.Iterator;

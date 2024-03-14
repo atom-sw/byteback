@@ -4,17 +4,13 @@ import byteback.analysis.body.common.syntax.Immediate;
 import byteback.analysis.body.common.syntax.Value;
 import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
-import soot.*;
-import byteback.analysis.body.jimple.syntax.internal.AbstractInvokeExpr;
-import soot.util.Switch;
+import byteback.analysis.body.jimple.syntax.expr.InvokeExpr;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class CallExpr extends AbstractInvokeExpr implements Immediate {
+public class CallExpr extends InvokeExpr implements Immediate {
 
     public CallExpr(final SootMethodRef methodRef, final List<Value> args) {
         super(methodRef, new ValueBox[args.size()]);
@@ -22,13 +18,6 @@ public class CallExpr extends AbstractInvokeExpr implements Immediate {
         for (final ListIterator<Value> valueIterator = args.listIterator(); valueIterator.hasNext(); ) {
             final Value value = valueIterator.next();
             this.argBoxes[valueIterator.previousIndex()] = Vimp.v().newImmediateBox(value);
-        }
-    }
-
-    @Override
-    public void apply(final Switch visitor) {
-        if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-            vimpValueSwitch.caseCallExpr(this);
         }
     }
 
@@ -71,32 +60,4 @@ public class CallExpr extends AbstractInvokeExpr implements Immediate {
     public int equivHashCode() {
         return getMethod().equivHashCode() * 17;
     }
-
-    @Override
-    public void toString(final UnitPrinter printer) {
-        printer.literal("(");
-        printer.literal(methodRef.getName());
-        printer.literal(" ");
-        final Iterator<Value> argIterator = getArgs().iterator();
-
-        while (argIterator.hasNext()) {
-            final Value arg = argIterator.next();
-            arg.toString(printer);
-
-            if (argIterator.hasNext()) {
-                printer.literal(" ");
-            }
-        }
-
-        printer.literal(")");
-    }
-
-    @Override
-    public String toString() {
-        final var unitPrinter = new InlineUnitPrinter();
-        toString(unitPrinter);
-
-        return unitPrinter.toString();
-    }
-
 }

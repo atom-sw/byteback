@@ -1,125 +1,109 @@
 package byteback.analysis.body.common.syntax;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1997 - 1999 Raja Vallee-Rai
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import byteback.analysis.body.common.syntax.UnitBox;
-import byteback.analysis.body.common.syntax.UnitBoxOwner;
-import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.model.syntax.ClassModel;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * A trap (exception catcher), used within Body classes. Intermediate representations must use an implementation of Trap to
- * describe caught exceptions.
+ * Partial implementation of trap (exception catcher), used within Body classes.
  */
-public interface Trap extends UnitBoxOwner {
+public class Trap implements Serializable {
 
     /**
-     * <p>
-     * Returns the first trapped unit, unless this <code>Trap</code> does not trap any units at all.
-     * </p>
-     *
-     * <p>
-     * If this is a degenerate <code>Trap</code> which traps no units (which can occur if all the units originally trapped by
-     * the exception handler have been optimized away), returns an untrapped unit. The returned unit will likely be the first
-     * unit remaining after the point where the trapped units were once located, but the only guarantee provided is that for
-     * such an empty trap, <code>getBeginUnit()</code> will return the same value as {@link #getEndUnit()}.
-     * </p>
+     * The exception being caught.
      */
-    byteback.analysis.body.jimple.syntax.Unit getBeginUnit();
+    protected transient ClassModel exception;
 
     /**
-     * <p>
-     * Returns the unit following the last trapped unit (that is, the first succeeding untrapped unit in the underlying
-     * <Code>Chain</code>), unless this <code>Trap</code> does not trap any units at all.
-     * </p>
-     *
-     * <p>
-     * In the case of a degenerate <code>Trap</code> which traps no units, returns the same untrapped unit as
-     * <code>getBeginUnit()</code>
-     * </p>
-     *
-     * <p>
-     * Note that a weakness of marking the end of the trapped region with the first untrapped unit is that Soot has no good
-     * mechanism for describing a <code>Trap</code> which traps the last unit in a method.
-     * </p>
+     * The first unit being trapped.
      */
-    byteback.analysis.body.jimple.syntax.Unit getEndUnit();
+    protected UnitBox beginUnitBox;
 
     /**
-     * Returns the unit handling the exception being trapped.
+     * The unit just before the last unit being trapped.
      */
-    byteback.analysis.body.jimple.syntax.Unit getHandlerUnit();
+    protected UnitBox endUnitBox;
 
     /**
-     * Returns the box holding the unit returned by {@link #getBeginUnit()}.
+     * The unit to which execution flows after the caught exception is triggered.
      */
-    UnitBox getBeginUnitBox();
+    protected UnitBox handlerUnitBox;
 
     /**
-     * Returns the box holding the unit returned by {@link #getEndUnit()}.
+     * The list of UnitBoxes referred to in this Trap (begin, end, and handler).
      */
-    UnitBox getEndUnitBox();
+    protected List<UnitBox> unitBoxes;
 
     /**
-     * Returns the box holding the exception handler unit.
+     * Creates an AbstractTrap with the given exception, handler, begin, and end units.
      */
-    UnitBox getHandlerUnitBox();
+    protected Trap(ClassModel exception, UnitBox beginUnitBox, UnitBox endUnitBox, UnitBox handlerUnitBox) {
+        this.exception = exception;
+        this.beginUnitBox = beginUnitBox;
+        this.endUnitBox = endUnitBox;
+        this.handlerUnitBox = handlerUnitBox;
+        this.unitBoxes = Collections.unmodifiableList(Arrays.asList(beginUnitBox, endUnitBox, handlerUnitBox));
+    }
 
-    /**
-     * Returns the boxes for first, last, and handler units.
-     */
+    public Unit getBeginUnit() {
+        return beginUnitBox.getUnit();
+    }
+
+    public Unit getEndUnit() {
+        return endUnitBox.getUnit();
+    }
+
+    public Unit getHandlerUnit() {
+        return handlerUnitBox.getUnit();
+    }
+
+    public UnitBox getHandlerUnitBox() {
+        return handlerUnitBox;
+    }
+
+    public UnitBox getBeginUnitBox() {
+        return beginUnitBox;
+    }
+
+    public UnitBox getEndUnitBox() {
+        return endUnitBox;
+    }
+
+    public List<UnitBox> getUnitBoxes() {
+        return unitBoxes;
+    }
+
+    public void clearUnitBoxes() {
+        for (UnitBox box : getUnitBoxes()) {
+            box.setUnit(null);
+        }
+    }
+
+    public ClassModel getException() {
+        return exception;
+    }
+
+    public void setBeginUnit(final Unit beginUnit) {
+        beginUnitBox.setUnit(beginUnit);
+    }
+
+    public void setEndUnit(final Unit endUnit) {
+        endUnitBox.setUnit(endUnit);
+    }
+
+    public void setHandlerUnit(Unit handlerUnit) {
+        handlerUnitBox.setUnit(handlerUnit);
+    }
+
+    public void setException(ClassModel exception) {
+        this.exception = exception;
+    }
+
     @Override
-    List<UnitBox> getUnitBoxes();
-
-    /**
-     * Returns the exception being caught.
-     */
-    ClassModel getException();
-
-    /**
-     * Sets the value to be returned by {@link #getBeginUnit()} to <code>beginUnit</code>.
-     */
-    void setBeginUnit(byteback.analysis.body.jimple.syntax.Unit beginUnit);
-
-    /**
-     * Sets the value to be returned by {@link #getEndUnit()} to <code>endUnit</code>.
-     */
-    void setEndUnit(byteback.analysis.body.jimple.syntax.Unit endUnit);
-
-    /**
-     * Sets the unit handling the exception to <code>handlerUnit</code>.
-     */
-    void setHandlerUnit(Unit handlerUnit);
-
-    /**
-     * Sets the exception being caught to <code>exception</code>.
-     */
-    void setException(ClassModel exception);
-
-    /**
-     * Performs a shallow clone of this trap.
-     */
-    Object clone();
+    public Object clone() {
+        throw new RuntimeException();
+    }
 }

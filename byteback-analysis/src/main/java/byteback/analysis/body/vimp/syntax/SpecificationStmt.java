@@ -1,14 +1,14 @@
 package byteback.analysis.body.vimp.syntax;
 
+import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
-import byteback.analysis.body.jimple.syntax.internal.AbstractStmt;
+import byteback.analysis.body.jimple.syntax.stmt.Stmt;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SpecificationStmt extends AbstractStmt {
+public abstract class SpecificationStmt extends Stmt {
 
     private final ValueBox conditionBox;
 
@@ -41,14 +41,6 @@ public abstract class SpecificationStmt extends AbstractStmt {
         useBoxes.addAll(conditionBox.getValue().getUseBoxes());
 
         return useBoxes;
-    }
-
-    @Override
-    public String toString() {
-        final InlineUnitPrinter printer = new InlineUnitPrinter();
-        toString(printer);
-
-        return printer.toString();
     }
 
 }

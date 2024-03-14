@@ -1,13 +1,13 @@
 package byteback.analysis.body.vimp.syntax;
 
+import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.jimple.syntax.OrExpr;
 import soot.util.Switch;
 
-public class LogicOrExpr extends AbstractLogicBinopExpr implements OrExpr {
+public class LogicOrExpr extends LogicBinopExpr implements OrExpr {
 
     public LogicOrExpr(final Value op1, final Value op2) {
         super(op1, op2);
@@ -20,21 +20,4 @@ public class LogicOrExpr extends AbstractLogicBinopExpr implements OrExpr {
     public String getSymbol() {
         return " ∨ ";
     }
-
-    public LogicOrExpr clone() {
-        return new LogicOrExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
-    }
-
-    @Override
-    public void apply(final Switch visitor) {
-        if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-            vimpValueSwitch.caseLogicOrExpr(this);
-        }
-    }
-
-    @Override
-    public int getPrecedence() {
-        return 500;
-    }
-
 }

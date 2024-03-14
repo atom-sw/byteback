@@ -4,6 +4,7 @@ import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import byteback.analysis.body.common.syntax.Local;
 import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.common.syntax.Chain;
 import soot.util.Chain;
 import soot.util.Switch;
 
@@ -17,17 +18,4 @@ public class ForallExpr extends QuantifierExpr {
     protected String getSymbol() {
         return "∀";
     }
-
-    @Override
-    public void apply(final Switch visitor) {
-        if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-            vimpValueSwitch.caseLogicForallExpr(this);
-        }
-    }
-
-    @Override
-    public ForallExpr clone() {
-        return new ForallExpr(cloneBindings(), Vimp.cloneIfNecessary(getValue()));
-    }
-
 }

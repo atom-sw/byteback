@@ -2,8 +2,10 @@ package byteback.analysis.body.jimple.source;
 
 import byteback.analysis.body.common.Body;
 import byteback.analysis.body.common.syntax.*;
-import byteback.analysis.body.jimple.syntax.*;
 import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.jimple.syntax.expr.*;
+import byteback.analysis.body.jimple.syntax.stmt.DefinitionStmt;
+import byteback.analysis.body.jimple.syntax.stmt.UnopExpr;
 import byteback.analysis.model.syntax.ClassModel;
 import byteback.analysis.model.syntax.MethodModel;
 import byteback.analysis.model.syntax.signature.FieldSignature;

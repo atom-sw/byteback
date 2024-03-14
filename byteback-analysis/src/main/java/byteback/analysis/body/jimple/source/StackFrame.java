@@ -24,12 +24,14 @@ package byteback.analysis.body.jimple.source;
 
 import byteback.analysis.body.asm.AsmUtil;
 import byteback.analysis.body.common.syntax.Local;
-import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.Unit;
 import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.body.jimple.syntax.AssignStmt;
-import byteback.analysis.body.jimple.syntax.DefinitionStmt;
+import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
+import byteback.analysis.body.jimple.syntax.stmt.DefinitionStmt;
 import byteback.analysis.body.jimple.syntax.Jimple;
-import byteback.analysis.body.jimple.syntax.internal.JNopStmt;
+import byteback.analysis.body.jimple.syntax.stmt.NopStmt;
 
 import java.util.ArrayList;
 
@@ -182,7 +184,7 @@ final class StackFrame {
                         src.setUnit(newOp.insn, as);
                     } else {
                         Unit u = src.getUnit(newOp.insn);
-                        if (!(u instanceof JNopStmt)) {
+                        if (!(u instanceof NopStmt)) {
                             DefinitionStmt as = (DefinitionStmt) (u instanceof UnitContainer ? ((UnitContainer) u).getFirstUnit() : u);
                             ValueBox lvb = as.getLeftOpBox();
                             assert lvb.getValue() == newOp.stack : "Invalid stack local!";

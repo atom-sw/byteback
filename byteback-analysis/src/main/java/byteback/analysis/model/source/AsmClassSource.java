@@ -23,12 +23,15 @@ package byteback.analysis.model.source;
  */
 
 import byteback.analysis.body.common.source.ClassSource;
-import byteback.analysis.body.common.source.Dependencies;
 import byteback.analysis.model.syntax.ClassModel;
+import byteback.analysis.model.syntax.type.ClassType;
+import byteback.analysis.model.syntax.type.Type;
 import org.objectweb.asm.ClassReader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * ASM class source implementation.
@@ -45,13 +48,13 @@ public class AsmClassSource extends ClassSource {
     }
 
     @Override
-    public Dependencies resolve(final ClassModel classModel) {
+    public Set<ClassType> resolve(final ClassModel classModel) {
         try (inputStream) {
             final ClassReader classReader = new ClassReader(inputStream);
             final ClassModelBuilder classModelBuilder = new ClassModelBuilder(classModel);
             classReader.accept(classModelBuilder, ClassReader.SKIP_FRAMES);
-            final Dependencies dependencies = new Dependencies();
-            dependencies.typesToSignature.addAll(classModelBuilder.typeDependencies);
+            final var dependencies = new HashSet<Type>();
+            dependencies.addAll(classModelBuilder.typeDependencies);
 
             return dependencies;
         } catch (IOException e) {

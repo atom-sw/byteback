@@ -1,21 +1,35 @@
 package byteback.analysis.body.common.syntax;
 
-import byteback.analysis.body.jimple.syntax.Unit;
+public abstract class UnitBox {
 
-import java.io.Serializable;
+    protected Unit unit;
 
-/**
- * A box which can contain units.
- *
- * @see byteback.analysis.body.jimple.syntax.Unit
- */
-public interface UnitBox extends Serializable {
+    public abstract boolean canContainUnit(final Unit unit);
 
-    void setUnit(Unit u);
+    public boolean isBranchTarget() {
+        return true;
+    }
 
-    Unit getUnit();
+    public void setUnit(Unit unit) {
+        if (!canContainUnit(unit)) {
+            throw new RuntimeException("attempting to put invalid unit in UnitBox");
+        }
 
-    boolean canContainUnit(Unit u);
+        // Remove this from set of back pointers.
+        if (this.unit != null) {
+            this.unit.removeBoxPointingToThis(this);
+        }
 
-    boolean isBranchTarget();
+        // Perform link
+        this.unit = unit;
+
+        // Add this to back pointers
+        if (this.unit != null) {
+            this.unit.addBoxPointingToThis(this);
+        }
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
 }

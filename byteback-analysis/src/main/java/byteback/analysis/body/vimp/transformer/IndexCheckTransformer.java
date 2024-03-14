@@ -1,5 +1,8 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.syntax.Unit;
+import byteback.analysis.body.jimple.syntax.expr.ArrayRef;
+import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
 import byteback.common.function.Lazy;

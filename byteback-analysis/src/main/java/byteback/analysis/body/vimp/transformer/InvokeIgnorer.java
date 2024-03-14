@@ -1,6 +1,8 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.syntax.Unit;
 import byteback.analysis.body.common.transformer.BodyTransformer;
+import byteback.analysis.body.jimple.syntax.stmt.InvokeStmt;
 import byteback.analysis.common.Hosts;
 import byteback.analysis.common.naming.BBLibNames;
 import byteback.common.function.Lazy;

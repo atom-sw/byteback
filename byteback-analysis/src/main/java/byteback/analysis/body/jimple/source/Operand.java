@@ -22,10 +22,10 @@ package byteback.analysis.body.jimple.source;
  * #L%
  */
 
+import byteback.analysis.body.common.syntax.ValueBox;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import byteback.analysis.body.common.syntax.Local;
 import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,9 @@
 package byteback.analysis.body.vimp.syntax;
 
+import byteback.analysis.body.common.syntax.ValueBox;
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
-import byteback.analysis.body.jimple.syntax.NegExpr;
+import byteback.analysis.body.jimple.syntax.expr.NegExpr;
 import soot.util.Switch;
 
 public class LogicNotExpr extends AbstractLogicUnopExpr implements LogicExpr, NegExpr {
@@ -34,17 +34,4 @@ public class LogicNotExpr extends AbstractLogicUnopExpr implements LogicExpr, Ne
 
         return false;
     }
-
-    @Override
-    public void apply(final Switch visitor) {
-        if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-            vimpValueSwitch.caseLogicNotExpr(this);
-        }
-    }
-
-    @Override
-    public Object clone() {
-        return new LogicNotExpr(getOp());
-    }
-
 }

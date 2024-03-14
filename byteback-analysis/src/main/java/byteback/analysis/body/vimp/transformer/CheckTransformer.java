@@ -3,18 +3,15 @@ package byteback.analysis.body.vimp.transformer;
 import byteback.analysis.body.common.Body;
 import byteback.analysis.body.common.syntax.Local;
 import byteback.analysis.body.common.syntax.LocalGenerator;
+import byteback.analysis.body.common.syntax.Unit;
 import byteback.analysis.body.common.syntax.Value;
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.jimple.syntax.Unit;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
+import byteback.analysis.common.syntax.Chain;
+import byteback.analysis.common.syntax.HashChain;
 import byteback.analysis.model.syntax.ClassModel;
-import soot.*;
-import soot.grimp.Grimp;
-import byteback.analysis.body.jimple.syntax.Jimple;
-import byteback.analysis.body.jimple.syntax.SpecialInvokeExpr;
-import soot.util.Chain;
-import soot.util.HashChain;
+import byteback.analysis.body.jimple.syntax.expr.SpecialInvokeExpr;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -31,8 +28,8 @@ public abstract class CheckTransformer extends BodyTransformer {
 
     public abstract Optional<Value> makeUnitCheck(final VimpExprFactory builder, final byteback.analysis.body.jimple.syntax.Unit unit);
 
-    public Chain<byteback.analysis.body.jimple.syntax.Unit> makeThrowUnits(final Supplier<Local> exceptionLocalSupplier) {
-        final Chain<byteback.analysis.body.jimple.syntax.Unit> units = new HashChain<>();
+    public Chain<Unit> makeThrowUnits(final Supplier<Local> exceptionLocalSupplier) {
+        final Chain<Unit> units = new HashChain<>();
         final Local local = exceptionLocalSupplier.get();
         final byteback.analysis.body.jimple.syntax.Unit initUnit = Grimp.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getClassType()));
         units.addLast(initUnit);
@@ -49,20 +46,20 @@ public abstract class CheckTransformer extends BodyTransformer {
 
     @Override
     public void transformBody(final Body body) {
-        final Chain<byteback.analysis.body.jimple.syntax.Unit> units = body.getUnits();
-        final Iterator<byteback.analysis.body.jimple.syntax.Unit> unitIterator = body.getUnits().snapshotIterator();
+        final Chain<Unit> units = body.getUnits();
+        final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
         final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
         final Supplier<Local> exceptionLocalSupplier = () ->
                 localGenerator.generateLocal(exceptionClass.getClassType());
         final VimpExprFactory builder = new VimpExprFactory(localGenerator);
 
         while (unitIterator.hasNext()) {
-            final byteback.analysis.body.jimple.syntax.Unit unit = unitIterator.next();
+            final Unit unit = unitIterator.next();
             final Optional<Value> unitCheckOption = makeUnitCheck(builder, unit);
 
             if (unitCheckOption.isPresent()) {
                 final Value unitCheck = unitCheckOption.get();
-                final Chain<byteback.analysis.body.jimple.syntax.Unit> throwStmts = makeThrowUnits(exceptionLocalSupplier);
+                final Chain<Unit> throwStmts = makeThrowUnits(exceptionLocalSupplier);
                 units.insertBefore(throwStmts, unit);
                 final Unit checkStmt = Vimp.v().newIfStmt(unitCheck, unit);
                 units.insertBefore(checkStmt, throwStmts.getFirst());

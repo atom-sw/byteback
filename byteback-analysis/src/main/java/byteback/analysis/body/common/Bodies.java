@@ -4,8 +4,6 @@ import byteback.analysis.common.syntax.Chain;
 import byteback.analysis.common.syntax.HashChain;
 import byteback.common.function.Lazy;
 import byteback.analysis.body.common.syntax.Local;
-import soot.util.Chain;
-import soot.util.HashChain;
 
 import java.util.Optional;
 
