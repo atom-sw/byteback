@@ -1,33 +1,38 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.model.syntax.signature.MethodSignature;
 import byteback.analysis.model.syntax.type.Type;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class InvokeExpr implements Expr {
+public abstract class InvokeExpr extends MethodRef implements Expr {
 
-    protected SootMethodRef methodRef;
+    protected static ValueBox[] boxArgs(final List<Value> args) {
+        final int size = args.size();
+        final var argBoxes = new ValueBox[args.size()];
+
+        for (int i = 0; i < size; ++i) {
+            argBoxes[i] = new ImmediateBox(args.get(i));
+        }
+
+        return argBoxes;
+    }
+
     protected final ValueBox[] argBoxes;
 
-    protected InvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes) {
-        this.methodRef = methodRef;
-        this.argBoxes = argBoxes.length == 0 ? null : argBoxes;
+    protected InvokeExpr(final MethodSignature methodSignature, final ValueBox[] argBoxes) {
+        super(methodSignature);
+        this.argBoxes = argBoxes;
     }
 
-    public void setMethodRef(SootMethodRef methodRef) {
-        this.methodRef = methodRef;
+    protected InvokeExpr(final MethodSignature methodSignature, List<Value> args) {
+        super(methodSignature);
+        this.argBoxes = boxArgs(args);
     }
-
-    public SootMethodRef getMethodRef() {
-        return methodRef;
-    }
-
-    @Override
-    public abstract Object clone();
 
     public Value getArg(int index) {
         if (argBoxes == null) {
@@ -41,36 +46,27 @@ public abstract class InvokeExpr implements Expr {
 
     public List<Value> getArgs() {
         final ValueBox[] boxes = this.argBoxes;
-        final List<Value> r;
+        final List<Value> arguments;
 
         if (boxes == null) {
-            r = new ArrayList<>(0);
+            arguments = new ArrayList<>(0);
         } else {
-            r = new ArrayList<>(boxes.length);
+            arguments = new ArrayList<>(boxes.length);
 
-            for (ValueBox element : boxes) {
-                r.add(element == null ? null : element.getValue());
+            for (final ValueBox valueBox : boxes) {
+                arguments.add(valueBox == null ? null : valueBox.getValue());
             }
         }
 
-        return r;
+        return arguments;
     }
 
     public int getArgCount() {
         return argBoxes == null ? 0 : argBoxes.length;
     }
 
-    public void setArg(int index, Value arg) {
-        argBoxes[index].setValue(arg);
-    }
-
     public ValueBox getArgBox(int index) {
         return argBoxes[index];
-    }
-
-    @Override
-    public Type getType() {
-        return methodRef.getReturnType();
     }
 
     @Override
@@ -89,5 +85,10 @@ public abstract class InvokeExpr implements Expr {
         }
 
         return list;
+    }
+
+    @Override
+    public Type getType() {
+        return getReturnType();
     }
 }

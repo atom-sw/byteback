@@ -1,11 +1,17 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.common.Body;
-import byteback.analysis.body.common.syntax.*;
+import byteback.analysis.body.common.syntax.Body;
+import byteback.analysis.body.common.syntax.expr.Immediate;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.body.common.syntax.graph.*;
+import byteback.analysis.body.common.syntax.stmt.Unit;
 import byteback.analysis.body.common.transformer.BodyTransformer;
+import byteback.analysis.body.jimple.syntax.expr.Local;
+import byteback.analysis.body.jimple.syntax.expr.Ref;
 import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
-import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpValues;
+import byteback.analysis.body.vimp.syntax.NestedExpr;
 import byteback.analysis.common.syntax.Chain;
 import byteback.analysis.common.syntax.HashChain;
 import byteback.common.collection.SetHashMap;
@@ -64,7 +70,7 @@ public abstract class ExprFolder extends BodyTransformer {
             if (assignStmt.getLeftOp() instanceof Local local) {
                 localToSubstitution.put(local, assignStmt);
             } else if (assignStmt.getLeftOp() instanceof Ref dependency) {
-                final Set<Local> dependentLocals = dependencyToLocals.get(new CachedEquivalentValue(dependency));
+                final Set<Local> dependentLocals = dependencyToLocals.get(dependency);
 
                 if (dependentLocals != null) {
                     for (final Local dependentLocal : dependentLocals) {
@@ -94,7 +100,7 @@ public abstract class ExprFolder extends BodyTransformer {
                         if (substitution.getRightOp() instanceof Immediate immediate) {
                             valueBox.setValue(immediate);
                         } else {
-                            valueBox.setValue(Vimp.v().newNestedExpr(substitution));
+                            valueBox.setValue(new NestedExpr(substitution));
                         }
 
                         units.remove(substitution);

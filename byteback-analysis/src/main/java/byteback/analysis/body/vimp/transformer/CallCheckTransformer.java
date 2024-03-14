@@ -1,14 +1,18 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.common.syntax.Unit;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.body.common.syntax.stmt.Unit;
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.jimple.syntax.expr.CaughtExceptionRef;
+import byteback.analysis.body.jimple.syntax.expr.EqExpr;
+import byteback.analysis.body.jimple.syntax.stmt.IfStmt;
+import byteback.analysis.body.jimple.syntax.stmt.ThrowStmt;
 import byteback.analysis.body.vimp.VimpValues;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.analysis.common.syntax.Chain;
 import byteback.common.function.Lazy;
-import byteback.analysis.body.common.Body;
-import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.Body;
+import byteback.analysis.body.common.syntax.expr.Value;
 
 import java.util.Iterator;
 
@@ -35,10 +39,10 @@ public class CallCheckTransformer extends BodyTransformer {
                 final Value value = valueBox.getValue();
 
                 if (VimpValues.v().isStatefulInvoke(value)) {
-                    final Unit throwUnit = Grimp.v().newThrowStmt(Vimp.v().newCaughtExceptionRef());
+                    final Unit throwUnit = new ThrowStmt(CaughtExceptionRef.v());
                     units.insertAfter(throwUnit, unit);
                     final Unit elseBranch = units.getSuccOf(throwUnit);
-                    final Unit ifUnit = Vimp.v().newIfStmt(makeCheckExpr(), elseBranch);
+                    final Unit ifUnit = new IfStmt(makeCheckExpr(), elseBranch);
                     units.insertAfter(ifUnit, unit);
                 }
             }
@@ -46,8 +50,8 @@ public class CallCheckTransformer extends BodyTransformer {
     }
 
     public Value makeCheckExpr() {
-        final CaughtExceptionRef caughtExceptionRef = Vimp.v().newCaughtExceptionRef();
-        return Grimp.v().newEqExpr(caughtExceptionRef, VoidConstant.v());
+        final CaughtExceptionRef caughtExceptionRef = CaughtExceptionRef.v();
+        return new EqExpr(caughtExceptionRef, VoidConstant.v());
     }
 
 }

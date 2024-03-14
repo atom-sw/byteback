@@ -1,7 +1,7 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.model.syntax.type.ArrayType;
 import byteback.analysis.model.syntax.type.Type;
 
@@ -20,23 +20,6 @@ public abstract class NewArrayExpr implements Expr {
 
     @Override
     public abstract Object clone();
-
-    @Override
-    public boolean equivTo(Object o) {
-        if (o instanceof NewArrayExpr ae) {
-            return this.sizeBox.getValue().equivTo(ae.sizeBox.getValue()) && this.baseType.equals(ae.baseType);
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns a hash code for this object, consistent with structural equality.
-     */
-    @Override
-    public int equivHashCode() {
-        return sizeBox.getValue().equivHashCode() * 101 + baseType.hashCode() * 17;
-    }
 
     @Override
     public String toString() {
@@ -61,10 +44,6 @@ public abstract class NewArrayExpr implements Expr {
 
     public Value getSize() {
         return sizeBox.getValue();
-    }
-
-    public void setSize(final Value size) {
-        sizeBox.setValue(size);
     }
 
     @Override

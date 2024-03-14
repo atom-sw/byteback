@@ -1,9 +1,9 @@
 package byteback.analysis.body.common.transformer;
 
-import byteback.analysis.body.common.Body;
-import byteback.analysis.body.common.syntax.UnitBox;
-import byteback.analysis.body.common.syntax.ValueBox;
-import byteback.analysis.body.jimple.syntax.Unit;
+import byteback.analysis.body.common.syntax.Body;
+import byteback.analysis.body.common.syntax.stmt.Unit;
+import byteback.analysis.body.common.syntax.stmt.UnitBox;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 
 /**
  * Body transformer that applies a transformation to each value.
@@ -29,5 +29,4 @@ public abstract class ValueTransformer extends UnitTransformer {
             transformValue(useBox);
         }
     }
-
 }

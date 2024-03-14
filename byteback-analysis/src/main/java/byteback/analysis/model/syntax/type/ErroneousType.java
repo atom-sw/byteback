@@ -1,6 +1,5 @@
 package byteback.analysis.model.syntax.type;
 
-import byteback.analysis.model.syntax.type.visitor.TypeSwitch;
 import byteback.common.function.Lazy;
 
 public class ErroneousType extends Type implements PrimitiveType {
@@ -21,10 +20,5 @@ public class ErroneousType extends Type implements PrimitiveType {
     @Override
     public String toString() {
         return "<error>";
-    }
-
-    @Override
-    public void apply(final TypeSwitch<?> typeSwitch) {
-        typeSwitch.caseErroneousType(this);
     }
 }

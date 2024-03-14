@@ -22,8 +22,8 @@ package byteback.analysis.body.jimple.syntax.stmt;
  * #L%
  */
 
-import byteback.analysis.body.common.syntax.ValueBox;
-import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
 import byteback.analysis.body.jimple.syntax.expr.ImmediateBox;
 
 public class ReturnStmt extends OpStmt {

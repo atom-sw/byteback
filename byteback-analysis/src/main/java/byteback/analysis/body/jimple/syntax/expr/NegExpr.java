@@ -1,6 +1,6 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.body.jimple.syntax.stmt.UnopExpr;
 import byteback.analysis.model.syntax.type.*;
 
@@ -8,26 +8,6 @@ public abstract class NegExpr extends UnopExpr {
 
     protected NegExpr(final ValueBox opBox) {
         super(opBox);
-    }
-
-    /**
-     * Compares the specified object with this one for structural equality.
-     */
-    @Override
-    public boolean equivTo(Object o) {
-        if (o instanceof NegExpr) {
-            return this.opBox.getValue().equivTo(((NegExpr) o).opBox.getValue());
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns a hash code for this object, consistent with structural equality.
-     */
-    @Override
-    public int equivHashCode() {
-        return opBox.getValue().equivHashCode();
     }
 
     @Override

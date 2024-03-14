@@ -1,9 +1,9 @@
 package byteback.analysis.body.common.transformer;
 
-import byteback.analysis.body.common.syntax.MutableUnitBox;
-import byteback.analysis.body.common.Body;
-import byteback.analysis.body.common.syntax.Unit;
-import byteback.analysis.body.common.syntax.UnitBox;
+import byteback.analysis.body.common.syntax.stmt.MutableUnitBox;
+import byteback.analysis.body.common.syntax.Body;
+import byteback.analysis.body.common.syntax.stmt.Unit;
+import byteback.analysis.body.common.syntax.stmt.UnitBox;
 
 import java.util.Iterator;
 
@@ -25,5 +25,4 @@ public abstract class UnitTransformer extends BodyTransformer {
     }
 
     public abstract void transformUnit(UnitBox unitBox);
-
 }

@@ -1,7 +1,6 @@
 package byteback.analysis.model.syntax.type;
 
 import byteback.analysis.model.syntax.signature.ClassSignature;
-import byteback.analysis.model.syntax.type.visitor.TypeSwitch;
 
 public class ClassType extends Type implements ClassSignature, Comparable<ClassType> {
 
@@ -33,10 +32,5 @@ public class ClassType extends Type implements ClassSignature, Comparable<ClassT
     @Override
     public int compareTo(ClassType t) {
         return this.toString().compareTo(t.toString());
-    }
-
-    @Override
-    public void apply(final TypeSwitch<?> typeSwitch) {
-        typeSwitch.caseClassType(this);
     }
 }

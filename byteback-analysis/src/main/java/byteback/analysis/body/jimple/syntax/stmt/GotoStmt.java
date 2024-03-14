@@ -1,7 +1,9 @@
 package byteback.analysis.body.jimple.syntax.stmt;
 
-import byteback.analysis.body.common.syntax.Unit;
-import byteback.analysis.body.common.syntax.UnitBox;
+import byteback.analysis.body.common.syntax.stmt.Stmt;
+import byteback.analysis.body.common.syntax.stmt.StmtBox;
+import byteback.analysis.body.common.syntax.stmt.Unit;
+import byteback.analysis.body.common.syntax.stmt.UnitBox;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,28 +23,16 @@ public class GotoStmt extends Stmt {
     }
 
     @Override
-    public Object clone() {
-        return new GotoStmt(getTarget());
-    }
-
-    @Override
     public String toString() {
         Unit t = getTarget();
         String target = t.branches() ? "(branch)" : t.toString();
-        return Jimple.GOTO + " [?= " + target + "]";
+        return "goto [?= " + target + "]";
     }
 
-    @Override
     public Unit getTarget() {
         return targetBox.getUnit();
     }
 
-    @Override
-    public void setTarget(Unit target) {
-        targetBox.setUnit(target);
-    }
-
-    @Override
     public UnitBox getTargetBox() {
         return targetBox;
     }

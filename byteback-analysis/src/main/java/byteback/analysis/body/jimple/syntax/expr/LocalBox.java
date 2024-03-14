@@ -1,17 +1,16 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.Local;
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 
 public class LocalBox extends ValueBox {
 
-    public LocalBox(Value value) {
+    public LocalBox(final Value value) {
         setValue(value);
     }
 
     @Override
-    public boolean canContainValue(Value value) {
+    public boolean canContainValue(final Value value) {
         return value instanceof Local;
     }
 }

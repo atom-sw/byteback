@@ -2,27 +2,26 @@ package byteback.analysis.model.syntax;
 
 import byteback.analysis.common.syntax.Chain;
 import byteback.analysis.common.syntax.HashChain;
-import byteback.analysis.model.syntax.type.ClassType;
 
 import java.util.Optional;
 
-public class ClassModel extends Model<ClassType> {
+public class ClassModel extends Model<byteback.analysis.model.syntax.type.ClassType> {
 
-    protected ClassType type;
+    protected byteback.analysis.model.syntax.type.ClassType type;
 
     protected final Chain<FieldModel> fieldModels;
 
     protected final Chain<MethodModel> methodModels;
 
-    protected final Chain<ClassType> implementedTypes;
+    protected final Chain<byteback.analysis.model.syntax.type.ClassType> implementedTypes;
 
-    protected ClassType superType;
+    protected byteback.analysis.model.syntax.type.ClassType superType;
 
-    public ClassModel(final ClassType classType) {
+    public ClassModel(final byteback.analysis.model.syntax.type.ClassType classType) {
         this(classType, 0);
     }
 
-    public ClassModel(final ClassType classType, int modifiers) {
+    public ClassModel(final byteback.analysis.model.syntax.type.ClassType classType, int modifiers) {
         super(modifiers, classType);
         this.type = classType;
         this.fieldModels = new HashChain<>();
@@ -30,19 +29,23 @@ public class ClassModel extends Model<ClassType> {
         this.implementedTypes = new HashChain<>();
     }
 
-    public ClassType getType() {
+    public byteback.analysis.model.syntax.type.ClassType getType() {
         return type;
     }
 
-    public void setType(final ClassType type) {
+    public String getName() {
+        return type.getName();
+    }
+
+    public void setType(final byteback.analysis.model.syntax.type.ClassType type) {
         this.type = type;
     }
 
-    public Optional<ClassType> getSuperType() {
+    public Optional<byteback.analysis.model.syntax.type.ClassType> getSuperType() {
         return Optional.ofNullable(superType);
     }
 
-    public void setSuperType(final ClassType superType) {
+    public void setSuperType(final byteback.analysis.model.syntax.type.ClassType superType) {
         this.superType = superType;
     }
 
@@ -54,7 +57,7 @@ public class ClassModel extends Model<ClassType> {
         return methodModels;
     }
 
-    public Chain<ClassType> getImplementedTypes() {
+    public Chain<byteback.analysis.model.syntax.type.ClassType> getImplementedTypes() {
         return implementedTypes;
     }
 }

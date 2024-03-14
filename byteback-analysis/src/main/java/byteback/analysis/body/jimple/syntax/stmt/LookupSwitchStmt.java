@@ -1,13 +1,17 @@
 package byteback.analysis.body.jimple.syntax.stmt;
 
-import byteback.analysis.body.common.syntax.Unit;
-import byteback.analysis.body.common.syntax.UnitBox;
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.stmt.StmtBox;
+import byteback.analysis.body.common.syntax.stmt.Unit;
+import byteback.analysis.body.common.syntax.stmt.UnitBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.body.jimple.syntax.expr.ImmediateBox;
+import byteback.analysis.body.jimple.syntax.expr.IntConstant;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 public class LookupSwitchStmt extends SwitchStmt {
     /**
@@ -27,7 +31,7 @@ public class LookupSwitchStmt extends SwitchStmt {
      */
     public LookupSwitchStmt(Value key, List<IntConstant> lookupValues, List<? extends UnitBox> targets,
                             UnitBox defaultTarget) {
-        this(Jimple.v().newImmediateBox(key), lookupValues, targets.toArray(new UnitBox[targets.size()]), defaultTarget);
+        this(new ImmediateBox(key), lookupValues, targets.toArray(new UnitBox[0]), defaultTarget);
     }
 
     protected LookupSwitchStmt(ValueBox keyBox, List<IntConstant> lookupValues, UnitBox[] targetBoxes,
@@ -37,30 +41,21 @@ public class LookupSwitchStmt extends SwitchStmt {
     }
 
     @Override
-    public Object clone() {
-        List<IntConstant> clonedLookupValues = new ArrayList<IntConstant>(lookupValues.size());
-        for (IntConstant c : lookupValues) {
-            clonedLookupValues.add(IntConstant.v(c.value));
-        }
-        return new LookupSwitchStmt(getKey(), clonedLookupValues, getTargets(), getDefaultTarget());
-    }
-
-    @Override
     public String toString() {
         final char endOfLine = ' ';
-        StringBuilder buf = new StringBuilder(Jimple.LOOKUPSWITCH + "(");
+        StringBuilder buf = new StringBuilder("lookupswitch (");
 
         buf.append(keyBox.getValue().toString()).append(')').append(endOfLine);
         buf.append('{').append(endOfLine);
 
         for (ListIterator<IntConstant> it = lookupValues.listIterator(); it.hasNext(); ) {
             IntConstant c = it.next();
-            buf.append("    " + Jimple.CASE + " ").append(c).append(": " + Jimple.GOTO + " ");
+            buf.append("    case ").append(c).append(": goto ");
             Unit target = getTarget(it.previousIndex());
             buf.append(target == this ? "self" : target).append(';').append(endOfLine);
         }
         {
-            buf.append("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " ");
+            buf.append("    default: goto ");
             Unit target = getDefaultTarget();
             buf.append(target == this ? "self" : target).append(';').append(endOfLine);
         }
@@ -69,30 +64,25 @@ public class LookupSwitchStmt extends SwitchStmt {
         return buf.toString();
     }
 
-    @Override
     public void setLookupValues(List<IntConstant> lookupValues) {
-        this.lookupValues = new ArrayList<IntConstant>(lookupValues);
+        this.lookupValues = new ArrayList<>(lookupValues);
     }
 
-    @Override
     public void setLookupValue(int index, int value) {
         lookupValues.set(index, IntConstant.v(value));
     }
 
-    @Override
     public int getLookupValue(int index) {
-        return lookupValues.get(index).value;
+        return lookupValues.get(index).getValue();
     }
 
-    @Override
     public List<IntConstant> getLookupValues() {
         return Collections.unmodifiableList(lookupValues);
     }
 
-    @Override
-    public Unit getTargetForValue(int value) {
+    public Unit getTargetForValue(final int value) {
         for (int i = 0; i < lookupValues.size(); i++) {
-            if (lookupValues.get(i).value == value) {
+            if (lookupValues.get(i).getValue() == value) {
                 return getTarget(i);
             }
         }

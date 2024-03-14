@@ -1,9 +1,11 @@
 package byteback.analysis.body.jimple.syntax.stmt;
 
-import byteback.analysis.body.common.syntax.Unit;
-import byteback.analysis.body.common.syntax.UnitBox;
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.stmt.Stmt;
+import byteback.analysis.body.common.syntax.stmt.StmtBox;
+import byteback.analysis.body.common.syntax.stmt.Unit;
+import byteback.analysis.body.common.syntax.stmt.UnitBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.body.jimple.syntax.expr.ConditionExprBox;
 
 import java.util.ArrayList;
@@ -16,11 +18,11 @@ public class IfStmt extends Stmt {
     protected final UnitBox targetBox;
     protected final List<UnitBox> targetBoxes;
 
-    public IfStmt(Value condition, Unit target) {
+    public IfStmt(final Value condition, final Unit target) {
         this(condition, new StmtBox(target));
     }
 
-    public IfStmt(Value condition, UnitBox target) {
+    public IfStmt(final Value condition, final UnitBox target) {
         this(new ConditionExprBox(condition), target);
     }
 
@@ -34,7 +36,7 @@ public class IfStmt extends Stmt {
     public String toString() {
         Unit t = getTarget();
         String target = t.branches() ? "(branch)" : t.toString();
-        return Jimple.IF + " " + getCondition().toString() + " " + Jimple.GOTO + " " + target;
+        return "if " + getCondition().toString() + " goto " + target;
     }
 
     public Value getCondition() {

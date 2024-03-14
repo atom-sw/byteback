@@ -1,7 +1,7 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.model.syntax.type.Type;
 
 import java.util.ArrayList;
@@ -23,22 +23,6 @@ public abstract class CastExpr implements Expr {
     protected CastExpr(final ValueBox opBox, final Type type) {
         this.opBox = opBox;
         this.type = type;
-    }
-
-    @Override
-    public boolean equivTo(Object o) {
-        if (o instanceof CastExpr ace) {
-            return this.opBox.getValue().equivTo(ace.opBox.getValue()) && this.type.equals(ace.type);
-        }
-        return false;
-    }
-
-    /**
-     * Returns a hash code for this object, consistent with structural equality.
-     */
-    @Override
-    public int equivHashCode() {
-        return opBox.getValue().equivHashCode() * 101 + type.hashCode() + 17;
     }
 
     @Override

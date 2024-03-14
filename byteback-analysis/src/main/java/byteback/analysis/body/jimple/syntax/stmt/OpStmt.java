@@ -22,8 +22,9 @@ package byteback.analysis.body.jimple.syntax.stmt;
  * #L%
  */
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.body.common.syntax.stmt.Stmt;
 
 import java.util.ArrayList;
 import java.util.List;

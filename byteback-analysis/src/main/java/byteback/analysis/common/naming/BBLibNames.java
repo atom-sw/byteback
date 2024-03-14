@@ -1,5 +1,7 @@
 package byteback.analysis.common.naming;
 
+import byteback.analysis.model.syntax.signature.MethodSignature;
+import byteback.analysis.model.syntax.type.ClassType;
 import byteback.common.function.Lazy;
 import byteback.analysis.model.syntax.ClassModel;
 
@@ -77,20 +79,24 @@ public class BBLibNames {
     private BBLibNames() {
     }
 
-    public boolean isContractClass(final ClassModel classModel) {
-        return classModel.getName().equals(CONTRACT_CLASS_NAME);
+    public boolean isContractClass(final ClassType classType) {
+        return classType.getName().equals(CONTRACT_CLASS_NAME);
     }
 
-    public boolean isQuantifierClass(final ClassModel classModel) {
-        return classModel.getName().equals(QUANTIFIER_CLASS_NAME);
+    public boolean isQuantifierClass(final ClassType classType) {
+        return classType.getName().equals(QUANTIFIER_CLASS_NAME);
     }
 
-    public boolean isSpecialClass(final ClassModel classModel) {
+    public boolean isSpecialClass(final ClassType classModel) {
         return classModel.getName().equals(SPECIAL_CLASS_NAME);
     }
 
-    public boolean isBindingClass(final ClassModel classModel) {
+    public boolean isBindingClass(final ClassType classModel) {
         return classModel.getName().equals(BINDING_CLASS_NAME);
+    }
+
+    public boolean isFunctionMethod(final MethodSignature methodSignature) {
+        return false;
     }
 
 }

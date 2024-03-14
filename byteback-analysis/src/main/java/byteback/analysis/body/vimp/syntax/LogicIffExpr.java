@@ -1,9 +1,6 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
-import byteback.analysis.body.common.syntax.Value;
-import soot.util.Switch;
+import byteback.analysis.body.common.syntax.expr.Value;
 
 public class LogicIffExpr extends LogicBinopExpr {
 
@@ -14,10 +11,5 @@ public class LogicIffExpr extends LogicBinopExpr {
     @Override
     public String getSymbol() {
         return " ↔ ";
-    }
-
-    @Override
-    public LogicIffExpr clone() {
-        return new LogicIffExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
     }
 }

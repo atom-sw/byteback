@@ -1,15 +1,14 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
-import byteback.analysis.body.common.syntax.Local;
+import byteback.analysis.body.jimple.syntax.expr.Local;
 import byteback.analysis.model.syntax.type.Type;
-import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.expr.Value;
 
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class NestedExpr extends JimpleLocal {
+public class NestedExpr extends Local {
 
     private final AssignStmt definition;
 
@@ -56,17 +55,7 @@ public class NestedExpr extends JimpleLocal {
     }
 
     @Override
-    public boolean isStackLocal() {
-        return getLocal().isStackLocal();
-    }
-
-    @Override
     public Type getType() {
         return getLocal().getType();
-    }
-
-    @Override
-    public int equivHashCode() {
-        return definition.getLeftOp().equivHashCode() * 101 + definition.getRightOp().equivHashCode() * 17;
     }
 }

@@ -1,6 +1,5 @@
 package byteback.analysis.model.syntax.type;
 
-import byteback.analysis.model.syntax.type.visitor.TypeSwitch;
 import byteback.common.function.Lazy;
 
 public class NullType extends Type {
@@ -23,10 +22,5 @@ public class NullType extends Type {
     @Override
     public String toString() {
         return "null_type";
-    }
-
-    @Override
-    public void apply(final TypeSwitch<?> typeSwitch) {
-        typeSwitch.caseNullType(this);
     }
 }

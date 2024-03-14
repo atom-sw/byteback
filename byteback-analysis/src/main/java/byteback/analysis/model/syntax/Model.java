@@ -4,9 +4,9 @@ import byteback.analysis.model.syntax.signature.Signature;
 
 public abstract class Model<T extends Signature> {
 
-    private int modifiers;
+    protected int modifiers;
 
-    private T signature;
+    protected T signature;
 
     public Model(final int modifiers, final T signature) {
         this.modifiers = modifiers;

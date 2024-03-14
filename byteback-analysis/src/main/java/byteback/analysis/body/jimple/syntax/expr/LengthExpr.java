@@ -1,14 +1,19 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.body.jimple.syntax.stmt.UnopExpr;
 import byteback.analysis.model.syntax.type.IntType;
 import byteback.analysis.model.syntax.type.Type;
 
-public abstract class LengthExpr extends UnopExpr {
+public class LengthExpr extends UnopExpr {
 
-    protected LengthExpr(final ValueBox opBox) {
+    public LengthExpr(final ValueBox opBox) {
         super(opBox);
+    }
+
+    public LengthExpr(final Value op) {
+        this(new LocalBox(op));
     }
 
     @Override

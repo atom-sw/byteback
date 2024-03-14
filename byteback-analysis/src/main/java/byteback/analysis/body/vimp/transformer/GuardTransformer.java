@@ -1,15 +1,20 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.common.Body;
-import byteback.analysis.body.common.syntax.Local;
-import byteback.analysis.body.common.syntax.Trap;
-import byteback.analysis.body.common.syntax.Unit;
-import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.Body;
+import byteback.analysis.body.jimple.syntax.expr.CaughtExceptionRef;
+import byteback.analysis.body.jimple.syntax.expr.InstanceOfExpr;
+import byteback.analysis.body.jimple.syntax.expr.Local;
+import byteback.analysis.body.common.syntax.stmt.Trap;
+import byteback.analysis.body.common.syntax.stmt.Unit;
+import byteback.analysis.body.common.syntax.expr.Value;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
-import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.jimple.syntax.stmt.IfStmt;
+import byteback.analysis.body.jimple.syntax.stmt.ThrowStmt;
+import byteback.analysis.body.jimple.syntax.stmt.ReturnVoidStmt;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.analysis.common.syntax.Chain;
+import byteback.analysis.model.syntax.type.ClassType;
 import byteback.common.collection.ListHashMap;
 import byteback.common.collection.Stacks;
 import byteback.common.function.Lazy;
@@ -39,7 +44,7 @@ public class GuardTransformer extends BodyTransformer {
         final HashSet<Unit> trapHandlers = new HashSet<>();
         final Stack<Trap> activeTraps = new Stack<>();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
-        units.addFirst(Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v()));
+        units.addFirst(new AssignStmt(CaughtExceptionRef.v(), VoidConstant.v()));
 
         for (final Trap trap : traps) {
             startToTraps.add(trap.getBeginUnit(), trap);
@@ -51,7 +56,7 @@ public class GuardTransformer extends BodyTransformer {
             assert handler instanceof AssignStmt assign && assign.getLeftOp() instanceof Local
                     && assign.getRightOp() instanceof CaughtExceptionRef;
 
-            final AssignStmt newUnit = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
+            final AssignStmt newUnit = new AssignStmt(CaughtExceptionRef.v(), VoidConstant.v());
             units.insertAfter(newUnit, handler);
         }
 
@@ -69,7 +74,7 @@ public class GuardTransformer extends BodyTransformer {
             }
 
             if (unit instanceof ThrowStmt throwUnit) {
-                final Unit retUnit = Grimp.v().newReturnVoidStmt();
+                final Unit retUnit = new ReturnVoidStmt();
 
                 units.insertBefore(retUnit, throwUnit);
                 throwUnit.redirectJumpsToThisTo(retUnit);
@@ -80,19 +85,19 @@ public class GuardTransformer extends BodyTransformer {
                 if (throwUnit.getOp() instanceof CaughtExceptionRef) {
                     assignUnit = units.getPredOf(retUnit);
                 } else {
-                    assignUnit = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), throwUnit.getOp());
+                    assignUnit = new AssignStmt(CaughtExceptionRef.v(), throwUnit.getOp());
                     units.insertBefore(assignUnit, retUnit);
                     retUnit.redirectJumpsToThisTo(assignUnit);
                 }
 
                 Unit indexUnit = assignUnit;
 
-                if (throwUnit.getOp().getType() instanceof RefType) {
+                if (throwUnit.getOp().getType() instanceof ClassType) {
                     for (int i = activeTraps.size() - 1; i >= 0; --i) {
                         final Trap activeTrap = activeTraps.get(i);
-                        final RefType trapType = activeTrap.getException().getClassType();
-                        final Value condition = Vimp.v().newInstanceOfExpr(Vimp.v().newCaughtExceptionRef(), trapType);
-                        final Unit ifUnit = Vimp.v().newIfStmt(condition, activeTrap.getHandlerUnit());
+                        final ClassType trapType = activeTrap.getException().getType();
+                        final Value condition = new InstanceOfExpr(CaughtExceptionRef.v(), trapType);
+                        final Unit ifUnit = new IfStmt(condition, activeTrap.getHandlerUnit());
                         units.insertAfter(ifUnit, indexUnit);
                         indexUnit = ifUnit;
                     }

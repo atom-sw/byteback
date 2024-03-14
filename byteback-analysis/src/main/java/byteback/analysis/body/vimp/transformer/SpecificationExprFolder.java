@@ -1,10 +1,9 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.common.syntax.Unit;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.stmt.Unit;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.body.vimp.syntax.SpecificationStmt;
 import byteback.common.function.Lazy;
-import byteback.analysis.body.jimple.syntax.Unit;
 
 public class SpecificationExprFolder extends ExprFolder {
 

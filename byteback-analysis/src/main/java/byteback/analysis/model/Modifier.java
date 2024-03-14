@@ -1,27 +1,5 @@
 package byteback.analysis.model;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1997 - 1999 Raja Vallee-Rai
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
 /**
  * A class that provides static methods and constants to represent and work with with Java modifiers (ie public, final,...)
  * Represents Java modifiers as int constants that can be packed and combined by bitwise operations and methods to query
@@ -42,18 +20,6 @@ public class Modifier {
     public static final int STRICTFP = 0x0800;
     public static final int ANNOTATION = 0x2000;
     public static final int ENUM = 0x4000;
-
-    // dex specifific modifiers
-    public static final int SYNTHETIC = 0x1000;
-    public static final int CONSTRUCTOR = 0x10000;
-    public static final int DECLARED_SYNCHRONIZED = 0x20000;
-    // add
-
-    // modifier for java 9 modules
-    public static final int REQUIRES_TRANSITIVE = 0x0020;
-    public static final int REQUIRES_STATIC = 0x0040;
-    public static final int REQUIRES_SYNTHETIC = 0x1000;
-    public static final int REQUIRES_MANDATED = 0x8000;
 
     private Modifier() {
     }
@@ -114,76 +80,58 @@ public class Modifier {
         return (m & ENUM) != 0;
     }
 
-    public static boolean isSynthetic(int m) {
-        return (m & SYNTHETIC) != 0;
-    }
-
-    public static boolean isConstructor(int m) {
-        return (m & CONSTRUCTOR) != 0;
-    }
-
-    public static boolean isDeclaredSynchronized(int m) {
-        return (m & DECLARED_SYNCHRONIZED) != 0;
-    }
-
-    /**
-     * Converts the given modifiers to their string representation, in canonical form.
-     *
-     * @param m a modifier set
-     * @return a textual representation of the modifiers.
-     */
-    public static String toString(int m) {
+    public static String format(int modifiers) {
         StringBuilder buffer = new StringBuilder();
 
-        if (isPublic(m)) {
+        if (isPublic(modifiers)) {
             buffer.append("public ");
-        } else if (isPrivate(m)) {
+        } else if (isPrivate(modifiers)) {
             buffer.append("private ");
-        } else if (isProtected(m)) {
+        } else if (isProtected(modifiers)) {
             buffer.append("protected ");
         }
 
-        if (isAbstract(m)) {
+        if (isAbstract(modifiers)) {
             buffer.append("abstract ");
         }
 
-        if (isStatic(m)) {
+        if (isStatic(modifiers)) {
             buffer.append("static ");
         }
 
-        if (isFinal(m)) {
+        if (isFinal(modifiers)) {
             buffer.append("final ");
         }
 
-        if (isSynchronized(m)) {
+        if (isSynchronized(modifiers)) {
             buffer.append("synchronized ");
         }
 
-        if (isNative(m)) {
+        if (isNative(modifiers)) {
             buffer.append("native ");
         }
 
-        if (isTransient(m)) {
+        if (isTransient(modifiers)) {
             buffer.append("transient ");
         }
 
-        if (isVolatile(m)) {
+        if (isVolatile(modifiers)) {
             buffer.append("volatile ");
         }
 
-        if (isStrictFP(m)) {
+        if (isStrictFP(modifiers)) {
             buffer.append("strictfp ");
         }
 
-        if (isAnnotation(m)) {
+        if (isAnnotation(modifiers)) {
             buffer.append("annotation ");
         }
 
-        if (isEnum(m)) {
+        if (isEnum(modifiers)) {
             buffer.append("enum ");
         }
 
-        if (isInterface(m)) {
+        if (isInterface(modifiers)) {
             buffer.append("interface ");
         }
 

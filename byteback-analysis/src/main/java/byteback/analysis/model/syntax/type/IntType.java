@@ -1,6 +1,5 @@
 package byteback.analysis.model.syntax.type;
 
-import byteback.analysis.model.syntax.type.visitor.TypeSwitch;
 import byteback.common.function.Lazy;
 
 public class IntType extends Type implements PrimitiveType, IntegerType {
@@ -24,10 +23,5 @@ public class IntType extends Type implements PrimitiveType, IntegerType {
     @Override
     public String toString() {
         return "int";
-    }
-
-    @Override
-    public void apply(final TypeSwitch<?> typeSwitch) {
-        typeSwitch.caseIntType(this);
     }
 }

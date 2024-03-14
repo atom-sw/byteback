@@ -1,5 +1,7 @@
 package byteback.analysis.body.jimple.syntax.stmt;
 
+import byteback.analysis.body.common.syntax.stmt.Stmt;
+
 public class NopStmt extends Stmt {
 
     public NopStmt() {

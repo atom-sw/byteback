@@ -1,11 +1,12 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.body.common.transformer.BodyTransformer;
+import byteback.analysis.body.jimple.syntax.expr.DynamicInvokeExpr;
+import byteback.analysis.body.jimple.syntax.expr.StaticInvokeExpr;
 import byteback.common.function.Lazy;
-import byteback.analysis.body.common.Body;
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.jimple.syntax.DynamicInvokeExpr;
-import byteback.analysis.body.jimple.syntax.Jimple;
+import byteback.analysis.body.common.syntax.Body;
+import byteback.analysis.body.common.syntax.expr.Value;
 
 public class DynamicInvokeResolver extends BodyTransformer {
 
@@ -24,7 +25,7 @@ public class DynamicInvokeResolver extends BodyTransformer {
             final Value value = valueBox.getValue();
 
             if (value instanceof DynamicInvokeExpr invokeDynamicExpr) {
-                valueBox.setValue(Jimple.v().newStaticInvokeExpr(invokeDynamicExpr.getMethodRef(), invokeDynamicExpr.getArgs()));
+                valueBox.setValue(new StaticInvokeExpr(invokeDynamicExpr.getSignature(), invokeDynamicExpr.getArgs()));
             }
         }
     }

@@ -1,7 +1,7 @@
 package byteback.analysis.body.jimple.syntax.stmt;
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.body.jimple.syntax.expr.LocalBox;
 
 public class IdentityStmt extends DefinitionStmt {

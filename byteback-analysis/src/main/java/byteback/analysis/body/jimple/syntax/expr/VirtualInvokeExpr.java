@@ -1,29 +1,19 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.model.syntax.signature.MethodSignature;
 
 public abstract class VirtualInvokeExpr extends InstanceInvokeExpr {
 
-    protected VirtualInvokeExpr(ValueBox baseBox, SootMethodRef methodRef, ValueBox[] argBoxes) {
-        super(methodRef, baseBox, argBoxes);
-        if (methodRef.isStatic()) {
-            throw new RuntimeException("wrong static-ness");
-        }
-    }
-
-    /**
-     * Returns a hash code for this object, consistent with structural equality.
-     */
-    @Override
-    public int equivHashCode() {
-        return baseBox.getValue().equivHashCode() * 101 + getMethod().equivHashCode() * 17;
+    protected VirtualInvokeExpr(final MethodSignature signature, final ValueBox baseBox, ValueBox[] argBoxes) {
+        super(signature, baseBox, argBoxes);
     }
 
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder("virtualinvoke ");
 
-        buf.append(baseBox.getValue().toString()).append('.').append(methodRef.getSignature()).append('(');
+        buf.append(baseBox.getValue().toString()).append('.').append(signature).append('(');
         if (argBoxes != null) {
             for (int i = 0, e = argBoxes.length; i < e; i++) {
                 if (i != 0) {

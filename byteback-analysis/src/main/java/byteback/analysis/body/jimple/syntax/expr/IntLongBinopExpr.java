@@ -1,7 +1,6 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.ValueBox;
-import byteback.analysis.body.jimple.syntax.expr.BinopExpr;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.model.syntax.type.*;
 
 public abstract class IntLongBinopExpr extends BinopExpr {

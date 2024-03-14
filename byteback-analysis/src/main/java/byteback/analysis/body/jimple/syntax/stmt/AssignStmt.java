@@ -1,28 +1,8 @@
 package byteback.analysis.body.jimple.syntax.stmt;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1999 Patrick Lam
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import byteback.analysis.body.common.syntax.*;
+import byteback.analysis.body.common.syntax.expr.Immediate;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.body.jimple.syntax.expr.AssigneeBox;
 import byteback.analysis.body.jimple.syntax.expr.VariableBox;
 
@@ -85,24 +65,15 @@ public class AssignStmt extends DefinitionStmt {
         }
     }
 
-    protected AssignStmt(ValueBox variableBox, ValueBox rvalueBox) {
-        super(variableBox, rvalueBox);
+    protected AssignStmt(final ValueBox assigneeBox, final ValueBox assignedBox) {
+        super(assigneeBox, assignedBox);
+
         if (leftBox instanceof LinkedVariableBox) {
             ((LinkedVariableBox) leftBox).setOtherBox(rightBox);
         }
+
         if (rightBox instanceof LinkedAssigneeBox) {
             ((LinkedAssigneeBox) rightBox).setOtherBox(leftBox);
-        }
-    }
-
-    @Override
-    public List<UnitBox> getUnitBoxes() {
-        // handle possible PhiExpr's
-        Value rValue = rightBox.getValue();
-        if (rValue instanceof UnitBoxOwner) {
-            return ((UnitBoxOwner) rValue).getUnitBoxes();
-        } else {
-            return super.getUnitBoxes();
         }
     }
 
@@ -110,13 +81,4 @@ public class AssignStmt extends DefinitionStmt {
     public String toString() {
         return leftBox.getValue().toString() + " = " + rightBox.getValue().toString();
     }
-
-    public void setLeftOp(Value variable) {
-        getLeftOpBox().setValue(variable);
-    }
-
-    public void setRightOp(Value rvalue) {
-        getRightOpBox().setValue(rvalue);
-    }
-
 }

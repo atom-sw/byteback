@@ -1,14 +1,13 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.common.syntax.Unit;
+import byteback.analysis.body.common.syntax.stmt.Unit;
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
+import byteback.analysis.body.vimp.syntax.AssumeStmt;
+import byteback.analysis.model.Modifier;
 import byteback.common.function.Lazy;
-import byteback.analysis.body.common.Body;
-import byteback.analysis.body.jimple.syntax.Unit;
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.jimple.syntax.NullConstant;
+import byteback.analysis.body.common.syntax.Body;
+import byteback.analysis.body.common.syntax.expr.Value;
 
 public class ThisAssumptionTransformer extends BodyTransformer {
 
@@ -23,14 +22,14 @@ public class ThisAssumptionTransformer extends BodyTransformer {
 
     @Override
     public void transformBody(final Body body) {
-        if (!body.getMethodModel().isStatic()) {
+        if (!Modifier.isStatic(body.getMethodModel().getModifiers())) {
             final Unit unit = body.getThisUnit();
             final Value condition = new VimpExprFactory(body).binary(
-                    Vimp.v()::newNeExpr,
+                    NeExpr::new,
                     body.getThisLocal(),
                     NullConstant.v()
             );
-            final Unit assumption = Vimp.v().newAssumeStmt(condition);
+            final Unit assumption = new AssumeStmt(condition);
             body.getUnits().insertAfter(assumption, unit);
         }
     }

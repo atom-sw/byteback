@@ -1,7 +1,7 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.model.syntax.type.*;
 
 import java.util.ArrayList;
@@ -56,23 +56,6 @@ public abstract class BinopExpr implements Expr {
         list.add(op2Box);
 
         return list;
-    }
-
-    @Override
-    public boolean equivTo(Object o) {
-        if (o instanceof BinopExpr abe) {
-          return this.op1Box.getValue().equivTo(abe.op1Box.getValue()) && this.op2Box.getValue().equivTo(abe.op2Box.getValue())
-                    && this.getSymbol().equals(abe.getSymbol());
-        }
-        return false;
-    }
-
-    /**
-     * Returns a hash code for this object, consistent with structural equality.
-     */
-    @Override
-    public int equivHashCode() {
-        return op1Box.getValue().equivHashCode() * 101 + op2Box.getValue().equivHashCode() + 17 ^ getSymbol().hashCode();
     }
 
     @Override

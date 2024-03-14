@@ -1,18 +1,14 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.common.syntax.Unit;
+import byteback.analysis.body.common.syntax.stmt.Unit;
 import byteback.analysis.body.jimple.syntax.expr.ArrayRef;
+import byteback.analysis.body.jimple.syntax.expr.IntConstant;
+import byteback.analysis.body.jimple.syntax.expr.LengthExpr;
 import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
-import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
+import byteback.analysis.model.syntax.type.ClassType;
 import byteback.common.function.Lazy;
-import soot.Scene;
-import byteback.analysis.body.jimple.syntax.Unit;
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.jimple.syntax.ArrayRef;
-import byteback.analysis.body.jimple.syntax.AssignStmt;
-import byteback.analysis.body.jimple.syntax.IntConstant;
-import byteback.analysis.body.jimple.syntax.Jimple;
+import byteback.analysis.body.common.syntax.expr.Value;
 
 import java.util.Optional;
 
@@ -21,7 +17,7 @@ public class IndexCheckTransformer extends CheckTransformer {
     private static final Lazy<IndexCheckTransformer> instance = Lazy.from(IndexCheckTransformer::new);
 
     private IndexCheckTransformer() {
-        super(Scene.v().loadClassAndSupport("java.lang.IndexOutOfBoundsException"));
+        super(new ClassType("java.lang.IndexOutOfBoundsException"));
     }
 
     public static IndexCheckTransformer v() {
@@ -34,15 +30,15 @@ public class IndexCheckTransformer extends CheckTransformer {
             final Value indexValue = arrayRef.getIndex();
             final Value arrayBase = arrayRef.getBase();
             final Value conditionExpr =
-                    builder.binary(Vimp.v()::newLogicAndExpr,
+                    builder.binary(AndExpr::new,
                             builder.binary(
-                                    Vimp.v()::newLeExpr,
+                                    LeExpr::new,
                                     IntConstant.v(0),
                                     indexValue),
                             builder.binary(
-                                    Vimp.v()::newLtExpr,
+                                    LtExpr::new,
                                     indexValue,
-                                    Jimple.v().newLengthExpr(arrayBase)));
+                                    new LengthExpr(arrayBase)));
 
             return Optional.of(conditionExpr);
         }

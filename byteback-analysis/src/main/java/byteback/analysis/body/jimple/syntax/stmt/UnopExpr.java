@@ -1,7 +1,7 @@
 package byteback.analysis.body.jimple.syntax.stmt;
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.body.jimple.syntax.expr.Expr;
 
 import java.util.ArrayList;
@@ -14,9 +14,6 @@ public abstract class UnopExpr implements Expr {
     protected UnopExpr(final ValueBox opBox) {
         this.opBox = opBox;
     }
-
-    @Override
-    public abstract Object clone();
 
     public Value getOp() {
         return opBox.getValue();

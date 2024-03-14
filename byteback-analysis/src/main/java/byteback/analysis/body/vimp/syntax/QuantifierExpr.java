@@ -1,17 +1,12 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.common.syntax.Local;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.jimple.syntax.expr.ImmediateBox;
+import byteback.analysis.body.jimple.syntax.expr.Local;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.common.syntax.Chain;
-import byteback.analysis.common.syntax.HashChain;
-import soot.UnitPrinter;
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.jimple.syntax.Jimple;
-import soot.util.Chain;
-import soot.util.HashChain;
+import byteback.analysis.body.common.syntax.expr.Value;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class QuantifierExpr implements LogicExpr {
@@ -26,7 +21,7 @@ public abstract class QuantifierExpr implements LogicExpr {
     }
 
     public QuantifierExpr(final Chain<Local> bindings, final Value value) {
-        this(bindings, Jimple.v().newImmediateBox(value));
+        this(bindings, new ImmediateBox(value));
     }
 
     public Value getValue() {
@@ -49,39 +44,9 @@ public abstract class QuantifierExpr implements LogicExpr {
         this.bindings = bindings;
     }
 
-    protected Chain<Local> cloneBindings() {
-        final Chain<Local> locals = new HashChain<>();
-
-        for (Local local : getBindings()) {
-            locals.add((Local) local.clone());
-        }
-
-        return locals;
-    }
-
     protected abstract String getSymbol();
     @Override
     public List<ValueBox> getUseBoxes() {
         return Collections.singletonList(valueBox);
     }
-
-    @Override
-    public boolean equivTo(final Object object) {
-        return object instanceof QuantifierExpr quantifierExpr && getValue().equivTo(quantifierExpr.getValue());
-    }
-
-    @Override
-    public int equivHashCode() {
-        int hashCode = 17 ^ getSymbol().hashCode();
-
-        for (Local local : bindings) {
-            hashCode += local.equivHashCode();
-        }
-
-        return hashCode + (getValue().equivHashCode() * 101);
-    }
-
-    @Override
-    public abstract Object clone();
-
 }

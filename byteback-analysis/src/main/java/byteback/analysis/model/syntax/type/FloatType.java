@@ -1,6 +1,5 @@
 package byteback.analysis.model.syntax.type;
 
-import byteback.analysis.model.syntax.type.visitor.TypeSwitch;
 import byteback.common.function.Lazy;
 
 public class FloatType extends Type implements PrimitiveType {
@@ -23,10 +22,5 @@ public class FloatType extends Type implements PrimitiveType {
     @Override
     public String toString() {
         return "float";
-    }
-
-    @Override
-    public void apply(final TypeSwitch<?> typeSwitch) {
-        typeSwitch.caseFloatType(this);
     }
 }

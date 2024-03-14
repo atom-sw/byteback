@@ -1,8 +1,7 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.Local;
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.model.syntax.type.NullType;
 import byteback.analysis.model.syntax.type.Type;
 import byteback.analysis.model.syntax.type.UnknownType;
@@ -15,28 +14,13 @@ public class ArrayRef implements Ref {
     protected final ValueBox baseBox;
     protected final ValueBox indexBox;
 
-    public ArrayRef(Value base, Value index) {
+    public ArrayRef(final Value base, final Value index) {
         this(new LocalBox(base), new ImmediateBox(index));
     }
 
     protected ArrayRef(final ValueBox baseBox, final ValueBox indexBox) {
         this.baseBox = baseBox;
         this.indexBox = indexBox;
-    }
-
-    @Override
-    public boolean equivTo(Object o) {
-        if (o instanceof ArrayRef arrayRef) {
-            return this.getBase().equivTo(arrayRef.getBase()) && this.getIndex().equivTo(arrayRef.getIndex());
-        }
-
-        return false;
-    }
-
-    /** Returns a hash code for this object, consistent with structural equality. */
-    @Override
-    public int equivHashCode() {
-        return getBase().equivHashCode() * 101 + getIndex().equivHashCode() + 17;
     }
 
     @Override
@@ -48,20 +32,12 @@ public class ArrayRef implements Ref {
         return baseBox.getValue();
     }
 
-    public void setBase(Local base) {
-        baseBox.setValue(base);
-    }
-
     public ValueBox getBaseBox() {
         return baseBox;
     }
 
     public Value getIndex() {
         return indexBox.getValue();
-    }
-
-    public void setIndex(Value index) {
-        indexBox.setValue(index);
     }
 
     public ValueBox getIndexBox() {
@@ -83,7 +59,7 @@ public class ArrayRef implements Ref {
 
     @Override
     public Type getType() {
-        Type type = baseBox.getValue().getType();
+        final Type type = baseBox.getValue().getType();
 
         if (UnknownType.v().equals(type)) {
             return UnknownType.v();

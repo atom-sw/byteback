@@ -1,30 +1,26 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.model.syntax.signature.MethodSignature;
+import byteback.analysis.model.syntax.type.Type;
 
-public abstract class SpecialInvokeExpr extends InstanceInvokeExpr {
+import java.util.List;
 
-    protected SpecialInvokeExpr(ValueBox baseBox, SootMethodRef methodRef, ValueBox[] argBoxes) {
-        super(methodRef, baseBox, argBoxes);
+public class SpecialInvokeExpr extends InstanceInvokeExpr {
 
-        if (methodRef.isStatic()) {
-            throw new RuntimeException("wrong static-ness");
-        }
+    public SpecialInvokeExpr(final MethodSignature signature, final ValueBox baseBox, ValueBox[] argBoxes) {
+        super(signature, baseBox, argBoxes);
     }
 
-    /**
-     * Returns a hash code for this object, consistent with structural equality.
-     */
-    @Override
-    public int equivHashCode() {
-        return baseBox.getValue().equivHashCode() * 101 + getMethod().equivHashCode() * 17;
+    public SpecialInvokeExpr(final MethodSignature signature, final Value value, final List<Value> args) {
+        super(signature, value, args);
     }
 
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder("specialinvoke ");
-
-        builder.append(baseBox.getValue().toString()).append('.').append(methodRef.getSignature()).append('(');
+        builder.append(baseBox.getValue().toString()).append('.').append(getSignature()).append('(');
 
         if (argBoxes != null) {
             for (int i = 0, e = argBoxes.length; i < e; i++) {

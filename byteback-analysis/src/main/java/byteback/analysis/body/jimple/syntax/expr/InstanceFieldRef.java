@@ -1,28 +1,25 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.model.syntax.signature.FieldSignature;
 import byteback.analysis.model.syntax.type.Type;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class InstanceFieldRef implements Ref {
-    protected SootFieldRef fieldRef;
+public abstract class InstanceFieldRef extends FieldRef {
     final ValueBox baseBox;
 
-    protected InstanceFieldRef(final ValueBox baseBox, SootFieldRef fieldRef) {
-        if (fieldRef.isStatic()) {
-            throw new RuntimeException("wrong static-ness");
-        }
+    protected InstanceFieldRef(final ValueBox baseBox, final FieldSignature signature) {
+        super(signature);
         this.baseBox = baseBox;
-        this.fieldRef = fieldRef;
     }
 
     public abstract Object clone();
 
     public String toString() {
-        return baseBox.getValue().toString() + "." + fieldRef.getSignature();
+        return baseBox.getValue().toString() + "." + getSignature();
     }
 
     public Value getBase() {
@@ -33,16 +30,8 @@ public abstract class InstanceFieldRef implements Ref {
         return baseBox;
     }
 
-    public void setBase(Value base) {
+    public void setBase(final Value base) {
         baseBox.setValue(base);
-    }
-
-    public SootFieldRef getFieldRef() {
-        return fieldRef;
-    }
-
-    public void setFieldRef(SootFieldRef fieldRef) {
-        this.fieldRef = fieldRef;
     }
 
     @Override
@@ -53,24 +42,5 @@ public abstract class InstanceFieldRef implements Ref {
         useBoxes.add(baseBox);
 
         return useBoxes;
-    }
-
-    public Type getType() {
-        return fieldRef.type();
-    }
-
-    public boolean equivTo(Object o) {
-        if (o instanceof InstanceFieldRef fr) {
-            fr.baseBox.getValue().equivTo(baseBox.getValue());
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns a hash code for this object, consistent with structural equality.
-     */
-    public int equivHashCode() {
-        return fieldRef.equivHashCode() * 101 + baseBox.getValue().equivHashCode() + 17;
     }
 }

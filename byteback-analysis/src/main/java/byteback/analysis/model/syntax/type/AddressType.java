@@ -1,6 +1,5 @@
 package byteback.analysis.model.syntax.type;
 
-import byteback.analysis.model.syntax.type.visitor.TypeSwitch;
 import byteback.common.function.Lazy;
 
 public class AddressType extends Type {
@@ -23,10 +22,5 @@ public class AddressType extends Type {
     @Override
     public String toString() {
         return "address";
-    }
-
-    @Override
-    public void apply(final TypeSwitch<?> typeSwitch) {
-        typeSwitch.caseAddressType(this);
     }
 }

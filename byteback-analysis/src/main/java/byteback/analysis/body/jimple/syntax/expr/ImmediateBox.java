@@ -1,8 +1,8 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.ValueBox;
-import byteback.analysis.body.common.syntax.Immediate;
-import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Immediate;
+import byteback.analysis.body.common.syntax.expr.Value;
 
 public class ImmediateBox extends ValueBox {
 

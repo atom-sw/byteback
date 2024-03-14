@@ -1,10 +1,9 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
+import byteback.analysis.body.common.transformer.Loop;
 import byteback.common.function.Lazy;
-import byteback.analysis.body.common.Body;
-import soot.jimple.toolkits.annotation.logic.Loop;
-import soot.jimple.toolkits.annotation.logic.LoopFinder;
+import byteback.analysis.body.common.syntax.Body;
 
 import java.util.Set;
 

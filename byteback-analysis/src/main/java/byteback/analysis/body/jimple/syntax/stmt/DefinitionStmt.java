@@ -1,7 +1,8 @@
 package byteback.analysis.body.jimple.syntax.stmt;
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
+import byteback.analysis.body.common.syntax.stmt.Stmt;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +41,7 @@ public abstract class DefinitionStmt extends Stmt {
 
     public List<ValueBox> getUseBoxes() {
         final var list = new ArrayList<ValueBox>();
+
         list.addAll(getLeftOp().getUseBoxes());
         list.add(rightBox);
         list.addAll(getRightOp().getUseBoxes());

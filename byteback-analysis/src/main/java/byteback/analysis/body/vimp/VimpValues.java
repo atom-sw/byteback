@@ -2,7 +2,7 @@ package byteback.analysis.body.vimp;
 
 import byteback.analysis.body.vimp.syntax.CallExpr;
 import byteback.common.function.Lazy;
-import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.expr.Value;
 import byteback.analysis.body.jimple.syntax.expr.InvokeExpr;
 import byteback.analysis.body.jimple.syntax.expr.NewArrayExpr;
 import byteback.analysis.body.jimple.syntax.expr.NewExpr;

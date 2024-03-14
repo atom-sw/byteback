@@ -29,13 +29,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import byteback.analysis.body.common.syntax.Unit;
+import byteback.analysis.body.common.syntax.stmt.Unit;
 
 /**
  * An implementation of a Chain which can contain only Units, and handles patching to deal with element insertions and
  * removals. This is done by calling Unit.redirectJumpsToThisTo at strategic times.
  */
-@SuppressWarnings("serial")
 public class PatchingChain<E extends Unit> extends AbstractCollection<E> implements Chain<E> {
 
     protected final Chain<E> innerChain;

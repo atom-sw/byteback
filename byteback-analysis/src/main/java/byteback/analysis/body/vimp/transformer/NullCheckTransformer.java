@@ -1,16 +1,16 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.common.syntax.Unit;
+import byteback.analysis.body.common.syntax.stmt.Unit;
 import byteback.analysis.body.jimple.syntax.expr.ArrayRef;
 import byteback.analysis.body.jimple.syntax.expr.InstanceFieldRef;
 import byteback.analysis.body.jimple.syntax.expr.InstanceInvokeExpr;
 import byteback.analysis.body.jimple.syntax.expr.Ref;
 import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
 import byteback.analysis.body.jimple.syntax.stmt.InvokeStmt;
-import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.VimpExprFactory;
+import byteback.analysis.model.syntax.type.ClassType;
 import byteback.common.function.Lazy;
-import byteback.analysis.body.common.syntax.Value;
+import byteback.analysis.body.common.syntax.expr.Value;
 
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public class NullCheckTransformer extends CheckTransformer {
     private static final Lazy<NullCheckTransformer> instance = Lazy.from(NullCheckTransformer::new);
 
     private NullCheckTransformer() {
-        super(Scene.v().loadClassAndSupport("java.lang.NullPointerException"));
+        super(new ClassType("java.lang.NullPointerException"));
     }
 
     public static NullCheckTransformer v() {
@@ -41,7 +41,7 @@ public class NullCheckTransformer extends CheckTransformer {
                 base = invokeExpr.getBase();
             }
         } else if (unit instanceof InvokeStmt invokeStmt) {
-            if (invokeStmt instanceof InstanceInvokeExpr invokeExpr) {
+            if (invokeStmt.getInvokeExpr() instanceof InstanceInvokeExpr invokeExpr) {
                 base = invokeExpr.getBase();
             }
         }

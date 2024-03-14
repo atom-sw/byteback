@@ -1,6 +1,5 @@
 package byteback.analysis.model.syntax.type;
 
-import byteback.analysis.model.syntax.type.visitor.TypeSwitch;
 import byteback.common.function.Lazy;
 
 public class UnknownType extends Type {
@@ -19,10 +18,4 @@ public class UnknownType extends Type {
     public String toString() {
         return "unknown";
     }
-
-    @Override
-    public void apply(final TypeSwitch<?> typeSwitch) {
-        typeSwitch.caseUnknownType(this);
-    }
-
 }

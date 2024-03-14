@@ -1,13 +1,13 @@
 package byteback.analysis.body.vimp;
 
-import byteback.analysis.body.common.Body;
-import byteback.analysis.body.common.syntax.Immediate;
-import byteback.analysis.body.common.syntax.Local;
-import byteback.analysis.body.common.syntax.LocalGenerator;
-import byteback.analysis.body.common.syntax.Value;
-import soot.*;
-import byteback.analysis.body.jimple.syntax.AssignStmt;
-import byteback.analysis.body.jimple.syntax.Jimple;
+import byteback.analysis.body.common.syntax.Body;
+import byteback.analysis.body.common.syntax.expr.Immediate;
+import byteback.analysis.body.jimple.syntax.expr.SimpleLocalGenerator;
+import byteback.analysis.body.jimple.syntax.expr.Local;
+import byteback.analysis.body.jimple.syntax.expr.LocalGenerator;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.jimple.syntax.stmt.AssignStmt;
+import byteback.analysis.body.vimp.syntax.NestedExpr;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -21,7 +21,7 @@ public class VimpExprFactory {
     }
 
     public VimpExprFactory(final Body body) {
-        this.localGenerator = Scene.v().createLocalGenerator(body);
+        this.localGenerator = new SimpleLocalGenerator(body);
     }
 
     public Immediate nestIfNeeded(final Value value) {
@@ -29,9 +29,9 @@ public class VimpExprFactory {
             return immediate;
         } else {
             final Local local = localGenerator.generateLocal(value.getType());
-            final AssignStmt assignStmt = Jimple.v().newAssignStmt(local, value);
+            final AssignStmt assignStmt = new AssignStmt(local, value);
 
-            return Vimp.v().newNestedExpr(assignStmt);
+            return new NestedExpr(assignStmt);
         }
     }
 

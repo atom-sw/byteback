@@ -1,7 +1,7 @@
 package byteback.analysis.body.jimple.syntax.expr;
 
-import byteback.analysis.body.common.syntax.Value;
-import byteback.analysis.body.common.syntax.ValueBox;
+import byteback.analysis.body.common.syntax.expr.Value;
+import byteback.analysis.body.common.syntax.expr.ValueBox;
 import byteback.analysis.model.syntax.type.ArrayType;
 import byteback.analysis.model.syntax.type.Type;
 
@@ -23,36 +23,20 @@ public abstract class NewMultiArrayExpr implements Expr {
     public abstract Object clone();
 
     @Override
-    public boolean equivTo(final Object object) {
-        if (object instanceof NewMultiArrayExpr newMultiArrayExpr) {
-            return baseType.equals(newMultiArrayExpr.baseType)
-                    && (this.sizeBoxes.length == newMultiArrayExpr.sizeBoxes.length);
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns a hash code for this object, consistent with structural equality.
-     */
-    @Override
-    public int equivHashCode() {
-        return baseType.hashCode();
-    }
-
-    @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder("newarray (");
+        StringBuilder stringBuilder = new StringBuilder("newarray (");
 
-        buf.append(baseType.baseType).append(')');
+        stringBuilder.append(baseType.baseType).append(')');
+
         for (ValueBox element : sizeBoxes) {
-            buf.append('[').append(element.getValue().toString()).append(']');
-        }
-        for (int i = 0, e = baseType.dimensions - sizeBoxes.length; i < e; i++) {
-            buf.append("[]");
+            stringBuilder.append('[').append(element.getValue().toString()).append(']');
         }
 
-        return buf.toString();
+        for (int i = 0, e = baseType.dimensions - sizeBoxes.length; i < e; i++) {
+            stringBuilder.append("[]");
+        }
+
+        return stringBuilder.toString();
     }
 
     public ArrayType getBaseType() {
