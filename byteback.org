@@ -1,0 +1,92 @@
+#+title: ByteBack
+#+author: Marco Paganoni
+#+PROPERTY: header-args :comments link
+
+* Development Plan
+*** TODO Implement ternary operator and related transformations
+*** TODO Implement encoding
+**** TODO Implement hierarchy encoding
+**** TODO Implement method encoding
+*** TODO Implement 
+
+* Project Structure
+** Gradle Setup
+This project uses the Gradle build system, if you do not use the [[file:gradlew][Gradle wrapper included]] make sure that your gradle distribution is at least version 7.
+#+begin_src sh :output verbatim
+  gradle --version | grep -i "Gradle" 
+#+end_src
+
+#+RESULTS:
+: Gradle 7.6.3
+
+** Subprojects
+The project is organized into subprojects, each tackling a different part of ByteBack's functionalities.
+
+#+begin_src groovy :tangle ./settings.gradle
+	rootProject.name = 'byteback'
+
+	includeBuild('./conventions')
+
+	include(
+			':byteback-common',
+			':byteback-tool',
+			':byteback-analysis',
+			':byteback-encoder:boogie-encoder',
+			':byteback-specification',
+			':byteback-test',
+			':byteback-test:test-scala-2.13.8',
+			':byteback-test:test-java-8',
+			':byteback-test:test-java-17',
+			':byteback-test:test-kotlin-1.8.0'
+	)
+#+end_src
+
+- ~:byteback-common~ :: is the main utility library of ByteBack, which contains general data structures and operations with the Java standard library.
+- ~:byteback-tool~ :: is the main CLI to ByteBack's underlying analysis and conversions.
+- ~:byteback-analysis~ :: provides the main ByteBack's integration to the Soot framework. Implements analysis and transformations on Soot objects.
+- ~:byteback-encoder~ :: provides the encoders for the Soot intermediate representation into an intermediate representation. For now the only encoding implemented is to the Boogie IVL version 3.0.0.
+- ~:byteback-specification~ :: contains the definition of BBLib, which is ByteBack's specification library that persists after compilation.
+- ~:byteback-test~ :: provides regression tests and experiments that exercise ByteBack on some concrete verification tasks.
+
+* Analysis
+This subproject contains the main analysis performed by ByteBack leveraging the Soot static analysis framework. It includes transformations that linearize the encoding of bytecode into IVL.
+
+#+begin_src groovy :tangle ./byteback-analysis/build.gradle
+	plugins {
+			id 'java'
+			id 'byteback.java-common-conventions'
+			id 'byteback.java-integration-conventions'
+	}
+
+	dependencies {
+			implementation project(':byteback-common')
+			implementation 'org.soot-oss:soot:4.3.0'
+			implementation 'org.slf4j:slf4j-simple:1.6.1'
+			implementation 'com.beust:jcommander:1.+'
+	}
+#+end_src
+
+** Transformation Packs
+Analysis Packs are transformations that can be applied to method bodies or the whole scene.
+
+*** Body Transformers
+
+#+name: body-transformer
+#+begin_src java :tangle "./byteback-analysis/src/main/java/byteback/analysis/body/common/transformer"
+	package byteback.analysis.body.common.transformer;
+
+	import soot.Body;
+
+	import java.util.Map;
+
+	public abstract class BodyTransformer extends soot.BodyTransformer {
+
+		@Override
+		public final void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+			transformBody(body);
+		}
+
+		public abstract void transformBody(final Body body);
+
+	}
+#+end_src
