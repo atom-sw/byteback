@@ -88,7 +88,8 @@ public abstract class QuantifierExpr implements LogicExpr {
 
 	@Override
 	public boolean equivTo(final Object object) {
-		return object instanceof QuantifierExpr quantifierExpr && getValue().equivTo(quantifierExpr.getValue());
+		return object instanceof final QuantifierExpr quantifierExpr
+				&& getValue().equivTo(quantifierExpr.getValue());
 	}
 
 	@Override

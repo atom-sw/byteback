@@ -9,6 +9,10 @@ import soot.Value;
 import soot.ValueBox;
 import soot.jimple.internal.AbstractStmt;
 
+/**
+ * Base specification statement.
+ * @author paganma
+ */
 public abstract class SpecificationStmt extends AbstractStmt {
 
 	private final ValueBox conditionBox;

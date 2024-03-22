@@ -3,6 +3,11 @@ package byteback.analysis.common.visitor;
 import soot.util.Switch;
 import soot.util.Switchable;
 
+/**
+ * Base visitor interface.
+ * @param <T> The type of the visitable (or switchable) instance.
+ * @param <R> The type of the result obtained.
+ */
 public interface Visitor<T extends Switchable, R> extends Switch {
 
 	default R getResult() {

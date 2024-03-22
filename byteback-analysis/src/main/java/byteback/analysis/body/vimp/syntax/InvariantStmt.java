@@ -6,10 +6,14 @@ import soot.UnitPrinter;
 import soot.Value;
 import soot.util.Switch;
 
+/**
+ * A statement for declaring loop invariants.
+ * @author paganma
+ */
 public class InvariantStmt extends SpecificationStmt {
 
-	public InvariantStmt(final Value condition) {
-		super(condition);
+	public InvariantStmt(final Value behaviorValue) {
+		super(behaviorValue);
 	}
 
 	@Override

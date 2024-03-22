@@ -6,6 +6,10 @@ import soot.UnitPrinter;
 import soot.Value;
 import soot.util.Switch;
 
+/**
+ * A statement for declaring intermediate assumptions.
+ * @author paganma
+ */
 public class AssumeStmt extends SpecificationStmt {
 
 	public AssumeStmt(final Value condition) {

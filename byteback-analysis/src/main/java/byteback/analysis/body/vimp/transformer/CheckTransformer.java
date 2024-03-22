@@ -1,8 +1,7 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.VimpExprFactory;
-import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.ImmediateConstructor;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -10,12 +9,16 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import soot.*;
-import soot.grimp.Grimp;
 import soot.jimple.Jimple;
 import soot.jimple.SpecialInvokeExpr;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+/**
+ * Transformer adding explicit checks for implicit exceptional behavior. The resulting effect of this transformation is:
+ * If before executing a statement certain conditions for exceptional behavior hold, throw an exception.
+ * @author paganma
+ */
 public abstract class CheckTransformer extends BodyTransformer {
 
     public final SootClass exceptionClass;
@@ -24,19 +27,22 @@ public abstract class CheckTransformer extends BodyTransformer {
         this.exceptionClass = exceptionClass;
     }
 
-    public abstract Optional<Value> makeUnitCheck(final VimpExprFactory builder, final Unit unit);
+    public abstract Optional<Value> makeUnitCheck(final ImmediateConstructor builder, final Unit unit);
 
     public Chain<Unit> makeThrowUnits(final Supplier<Local> exceptionLocalSupplier) {
         final Chain<Unit> units = new HashChain<>();
         final Local local = exceptionLocalSupplier.get();
-        final Unit initUnit = Grimp.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getType()));
+        final Unit initUnit = Jimple.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getType()));
         units.addLast(initUnit);
-        final SootMethodRef constructorRef = exceptionClass.getMethod("<init>", Collections.emptyList()).makeRef();
-        final SpecialInvokeExpr invokeExpr = Grimp.v().newSpecialInvokeExpr(local, constructorRef,
+        // For now, we just assume that the constructor will be invoked without any argument.
+        // TODO consider adding an option to generate the exception's constructor arguments in the subclasses of
+        //  CheckTransformer.
+        final SootMethodRef constructorRef = Scene.v().makeConstructorRef(exceptionClass, Collections.emptyList());
+        final SpecialInvokeExpr invokeExpr = Jimple.v().newSpecialInvokeExpr(local, constructorRef,
                 Collections.emptyList());
-        final Unit constructorUnit = Grimp.v().newInvokeStmt(invokeExpr);
+        final Unit constructorUnit = Jimple.v().newInvokeStmt(invokeExpr);
         units.addLast(constructorUnit);
-        final Unit throwUnit = Grimp.v().newThrowStmt(local);
+        final Unit throwUnit = Jimple.v().newThrowStmt(local);
         units.addLast(throwUnit);
 
         return units;
@@ -49,7 +55,7 @@ public abstract class CheckTransformer extends BodyTransformer {
         final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
         final Supplier<Local> exceptionLocalSupplier = () ->
                 localGenerator.generateLocal(exceptionClass.getType());
-        final VimpExprFactory builder = new VimpExprFactory(localGenerator);
+        final ImmediateConstructor builder = new ImmediateConstructor(localGenerator);
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
@@ -59,7 +65,7 @@ public abstract class CheckTransformer extends BodyTransformer {
                 final Value unitCheck = unitCheckOption.get();
                 final Chain<Unit> throwStmts = makeThrowUnits(exceptionLocalSupplier);
                 units.insertBefore(throwStmts, unit);
-                final Unit checkStmt = Vimp.v().newIfStmt(unitCheck, unit);
+                final Unit checkStmt = Jimple.v().newIfStmt(unitCheck, unit);
                 units.insertBefore(checkStmt, throwStmts.getFirst());
             }
         }

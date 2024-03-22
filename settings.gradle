@@ -6,11 +6,11 @@ include(
 		':byteback-common',
 		':byteback-tool',
 		':byteback-analysis',
+		':byteback-encoder:boogie-encoder',
 		':byteback-specification',
 		':byteback-test',
 		':byteback-test:test-scala-2.13.8',
 		':byteback-test:test-java-8',
 		':byteback-test:test-java-17',
-		':byteback-test:test-kotlin-1.8.0',
-		':byteback-encoder:boogie-encoder'
+		':byteback-test:test-kotlin-1.8.0'
 )

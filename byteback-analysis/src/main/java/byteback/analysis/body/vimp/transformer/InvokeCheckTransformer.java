@@ -7,21 +7,27 @@ import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.common.function.Lazy;
 
 import java.util.Iterator;
-import java.util.Map;
 
 import soot.*;
 import soot.grimp.Grimp;
 import soot.jimple.CaughtExceptionRef;
+import soot.jimple.Jimple;
 import soot.util.Chain;
 
-public class CallCheckTransformer extends BodyTransformer {
+/**
+ * Introduces explicit guards checking if the method that was just invoked threw an exception. The effect introduced by
+ * this transformation is: if after invoking a method @caughtexception is not @void, @caughtexception must be thrown
+ * again, otherwise execution can resume as normal.
+ * @author paganma
+ */
+public class InvokeCheckTransformer extends BodyTransformer {
 
-    private static final Lazy<CallCheckTransformer> instance = Lazy.from(CallCheckTransformer::new);
+    private static final Lazy<InvokeCheckTransformer> instance = Lazy.from(InvokeCheckTransformer::new);
 
-    private CallCheckTransformer() {
+    private InvokeCheckTransformer() {
     }
 
-    public static CallCheckTransformer v() {
+    public static InvokeCheckTransformer v() {
         return instance.get();
     }
 
@@ -37,10 +43,10 @@ public class CallCheckTransformer extends BodyTransformer {
                 final Value value = valueBox.getValue();
 
                 if (VimpValues.v().isStatefulInvoke(value)) {
-                    final Unit throwUnit = Grimp.v().newThrowStmt(Vimp.v().newCaughtExceptionRef());
-                    units.insertAfter(throwUnit, unit);
-                    final Unit elseBranch = units.getSuccOf(throwUnit);
-                    final Unit ifUnit = Vimp.v().newIfStmt(makeCheckExpr(), elseBranch);
+                    final Unit thenBranch = Grimp.v().newThrowStmt(Vimp.v().newCaughtExceptionRef());
+                    units.insertAfter(thenBranch, unit);
+                    final Unit elseBranch = units.getSuccOf(thenBranch);
+                    final Unit ifUnit = Jimple.v().newIfStmt(makeCheckExpr(), elseBranch);
                     units.insertAfter(ifUnit, unit);
                 }
             }

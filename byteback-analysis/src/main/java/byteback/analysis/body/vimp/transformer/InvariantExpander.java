@@ -16,8 +16,42 @@ import soot.jimple.IfStmt;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
+import soot.toolkits.graph.LoopNestTree;
 import soot.util.Chain;
 
+/**
+ * Expands loop invariants into a set of assertions and assumptions.
+ * The criteria used is as follows:
+ * ``` java
+ * HEAD:
+ *   ...
+ *   invariant e;
+ *   ...
+ *   if (c) goto EXIT;
+ *   ...
+ *   goto HEAD;
+ *   ...
+ * EXIT:
+ *   ...
+ * ```
+ * is transformed into:
+ * ``` java
+ *   assert e;
+ * HEAD:
+ *   assume e;
+ *   ...
+ *   assert e;
+ *   if (c) goto EXIT;
+ *   ...
+ *   assert e;
+ *   goto HEAD;
+ *   ...
+ * EXIT:
+ *   assume e
+ *   ...
+ * ```
+ * @author paganma
+ */
 public class InvariantExpander extends BodyTransformer {
 
     private static final Lazy<InvariantExpander> instance = Lazy.from(InvariantExpander::new);
@@ -32,76 +66,41 @@ public class InvariantExpander extends BodyTransformer {
     @Override
     public void transformBody(final Body body) {
         final Chain<Unit> units = body.getUnits();
-        final Iterator<Unit> unitIterator = units.snapshotIterator();
-        final LoopFinder loopFinder = new LoopFinder();
-        final Set<Loop> loops = loopFinder.getLoops(body);
+        final LoopNestTree loopTree = new LoopNestTree(body);
 
-        final var startToLoop = new HashMap<Unit, Loop>();
-        final var endToLoop = new HashMap<Unit, Loop>();
-        final var invariantStmts = new HashSet<InvariantStmt>();
-        final var activeLoops = new ArrayDeque<Loop>();
+        for (final Loop loop : loopTree) {
+            for (final Unit unit : loop.getLoopStatements()) {
+                if (unit instanceof InvariantStmt invariantUnit) {
+                    final Value condition = invariantUnit.getCondition();
 
-        for (final Loop loop : loops) {
-            final List<Stmt> loopStatements = loop.getLoopStatements();
-            if (loopStatements.size() > 1) {
-                startToLoop.put(loopStatements.get(0), loop);
-                endToLoop.put(loopStatements.get(loopStatements.size() - 1), loop);
-            }
-        }
+                    final Supplier<AssertStmt> assertionSupplier = () -> {
+                        final AssertStmt assertionUnit = Vimp.v().newAssertStmt(condition);
+                        assertionUnit.addAllTagsOf(invariantUnit);
 
-        while (unitIterator.hasNext()) {
-            final Unit unit = unitIterator.next();
-            final Loop startedLoop = startToLoop.get(unit);
-            final Loop endedLoop = endToLoop.get(unit);
+                        return assertionUnit;
+                    };
 
-            if (startedLoop != null) {
-                activeLoops.push(startToLoop.get(unit));
-            }
+                    units.insertBefore(assertionSupplier.get(), loop.getHead());
 
-            if (endedLoop != null) {
-                assert activeLoops.peek() == endedLoop;
-                activeLoops.pop();
-            }
+                    if (loop.getHead() instanceof IfStmt) {
+                        units.insertAfter(assertionSupplier.get(), loop.getHead());
+                    }
 
-            if (unit instanceof InvariantStmt invariantUnit) {
-                if (activeLoops.isEmpty()) {
-                    throw new RuntimeException("Invariant " + invariantUnit + "cannot be expanded");
+                    units.insertBefore(assertionSupplier.get(), loop.getBackJumpStmt());
+
+                    final HashSet<Unit> exitTargets = new HashSet<>();
+
+                    for (final Stmt exit : loop.getLoopExits()) {
+                        exitTargets.addAll(loop.targetsOfLoopExit(exit));
+                    }
+
+                    for (final Unit exitTarget : exitTargets) {
+                        units.insertBefore(assertionSupplier.get(), exitTarget);
+                    }
+
+                    units.remove(invariantUnit);
                 }
-
-                final Loop loop = activeLoops.peek();
-                final Value condition = invariantUnit.getCondition();
-
-                final Supplier<AssertStmt> assertionUnitSupplier = () -> {
-                    final AssertStmt assertionUnit = Vimp.v().newAssertStmt(condition);
-                    assertionUnit.addAllTagsOf(invariantUnit);
-
-                    return assertionUnit;
-                };
-
-                units.insertBefore(assertionUnitSupplier.get(), loop.getHead());
-
-                if (loop.getHead() instanceof IfStmt) {
-                    units.insertAfter(assertionUnitSupplier.get(), loop.getHead());
-                }
-
-                units.insertBefore(assertionUnitSupplier.get(), loop.getBackJumpStmt());
-
-                final HashSet<Unit> exitTargets = new HashSet<>();
-
-                for (final Stmt exit : loop.getLoopExits()) {
-                    exitTargets.addAll(loop.targetsOfLoopExit(exit));
-                }
-
-                for (final Unit exitTarget : exitTargets) {
-                    units.insertBefore(assertionUnitSupplier.get(), exitTarget);
-                }
-
-                invariantStmts.add(invariantUnit);
             }
-        }
-
-        for (final InvariantStmt invariantStmt : invariantStmts) {
-            units.remove(invariantStmt);
         }
     }
 

@@ -8,6 +8,11 @@ import soot.SootMethod;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 
+/**
+ * Transforms invocations to byteback.specification.Special.old into the `old` operator, which can refer to the
+ * pre-state in a postcondition.
+ * @author paganma
+ */
 public class OldExprTransformer extends ValueTransformer {
 
     private static final Lazy<OldExprTransformer> instance = Lazy.from(OldExprTransformer::new);

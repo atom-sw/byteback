@@ -6,10 +6,14 @@ import soot.UnitPrinter;
 import soot.Value;
 import soot.util.Switch;
 
+/**
+ * A statement for declaring intermediate assertions.
+ * @author paganma
+ */
 public class AssertStmt extends SpecificationStmt {
 
-	public AssertStmt(final Value condition) {
-		super(condition);
+	public AssertStmt(final Value behaviorValue) {
+		super(behaviorValue);
 	}
 
 	@Override

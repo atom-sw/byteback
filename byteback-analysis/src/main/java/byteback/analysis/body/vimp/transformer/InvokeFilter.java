@@ -6,18 +6,23 @@ import byteback.analysis.common.Hosts;
 import byteback.common.function.Lazy;
 
 import java.util.Iterator;
-import java.util.Map;
 
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.InvokeStmt;
 
-public class InvokeIgnorer extends BodyTransformer {
+/**
+ * Filters invocations to methods annotated with the @Ignore annotation. More precisely, if a unit contains an
+ * invocation to an ignored method, it is removed from the body.
+ * @see BBLibNames
+ * @author paganma
+ */
+public class InvokeFilter extends BodyTransformer {
 
-    private static final Lazy<InvokeIgnorer> instance = Lazy.from(InvokeIgnorer::new);
+    private static final Lazy<InvokeFilter> instance = Lazy.from(InvokeFilter::new);
 
-    public static InvokeIgnorer v() {
+    public static InvokeFilter v() {
         return instance.get();
     }
 

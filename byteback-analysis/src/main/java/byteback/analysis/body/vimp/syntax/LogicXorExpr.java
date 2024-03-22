@@ -7,6 +7,11 @@ import soot.ValueBox;
 import soot.jimple.XorExpr;
 import soot.util.Switch;
 
+/**
+ * Logic equivalent of LeExpr.
+ * @see soot.jimple.internal.JLeExpr
+ * @author paganma
+ */
 public class LogicXorExpr extends AbstractLogicBinopExpr implements XorExpr {
 
 	public LogicXorExpr(final Value op1, final Value op2) {

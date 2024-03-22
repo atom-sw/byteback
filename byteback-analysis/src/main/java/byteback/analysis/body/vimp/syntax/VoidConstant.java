@@ -7,6 +7,10 @@ import soot.VoidType;
 import soot.jimple.Constant;
 import soot.util.Switch;
 
+/**
+ * A void constant, representing the absence of a value.
+ * @author paganma
+ */
 public class VoidConstant extends Constant {
 
     private static final Lazy<VoidConstant> instance = Lazy.from(VoidConstant::new);

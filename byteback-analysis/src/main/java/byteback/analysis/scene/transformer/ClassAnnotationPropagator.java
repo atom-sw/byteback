@@ -8,7 +8,6 @@ import byteback.analysis.common.Hosts;
 import byteback.common.function.Lazy;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +28,7 @@ public class ClassAnnotationPropagator extends SceneTransformer {
 
     @Override
     protected void internalTransform(final String phaseName, final Map<String, String> options) {
-        final Iterator<SootClass> classIterator = Scene.v().getClasses().snapshotIterator();
-
-        while (classIterator.hasNext()) {
-            final SootClass attachedClass = classIterator.next();
+        for (final SootClass attachedClass : Scene.v().getClasses()) {
             final AnnotationTag annotation;
             final AnnotationElem element;
             final String value;
@@ -40,16 +36,16 @@ public class ClassAnnotationPropagator extends SceneTransformer {
             if (Hosts.v().hasAnnotation(attachedClass, BBLibNames.ATTACH_ANNOTATION)) {
                 annotation = Hosts.v().getAnnotation(attachedClass, BBLibNames.ATTACH_ANNOTATION).orElseThrow();
                 element = Annotations.v().getElem(annotation, "value").orElseThrow();
-                value = AnnotationElems.v().new ClassElemExtractor().visit(element).orElseThrow();
+                value = new AnnotationElems.ClassElemExtractor().visit(element).orElseThrow();
             } else if (Hosts.v().hasAnnotation(attachedClass, BBLibNames.ATTACH_LABEL_ANNOTATION)) {
                 annotation = Hosts.v().getAnnotation(attachedClass, BBLibNames.ATTACH_LABEL_ANNOTATION).orElseThrow();
                 element = Annotations.v().getElem(annotation, "value").orElseThrow();
-                value = AnnotationElems.v().new StringElemExtractor().visit(element).orElseThrow();
+                value = new AnnotationElems.StringElemExtractor().visit(element).orElseThrow();
             } else {
                 continue;
             }
 
-            final SootClass hostClass = Scene.v().loadClassAndSupport(ClassNames.stripDescriptor(value));
+            final SootClass hostClass = Scene.v().getSootClass(ClassNames.stripDescriptor(value));
             final List<SootMethod> methodsSnapshot = new ArrayList<>(attachedClass.getMethods());
 
             for (final SootMethod attachedMethod : methodsSnapshot) {

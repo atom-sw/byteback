@@ -8,6 +8,10 @@ import soot.SootMethod;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 
+/**
+ * Transforms invocation to the byteback.specification.Special.condition method into the ternary operator.
+ * @author paganma
+ */
 public class ConditionalExprTransformer extends ValueTransformer {
 
     private static final Lazy<ConditionalExprTransformer> instance = Lazy.from(ConditionalExprTransformer::new);

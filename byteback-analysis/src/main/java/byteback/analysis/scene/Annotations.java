@@ -1,6 +1,6 @@
 package byteback.analysis.scene;
 
-import byteback.analysis.scene.visitor.AbstractAnnotationElemSwitch;
+import byteback.analysis.scene.visitor.AbstractAnnotationElemTypeSwitch;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -10,6 +10,10 @@ import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 
+/**
+ * Utility classes to work with annotations.
+ * @author paganma
+ */
 public class Annotations {
 
 	private static final Lazy<Annotations> instance = Lazy.from(Annotations::new);
@@ -32,7 +36,7 @@ public class Annotations {
 	}
 
 	private void getAnnotations(final Stream.Builder<AnnotationTag> builder, final AnnotationElem element) {
-		element.apply(new AbstractAnnotationElemSwitch<>() {
+		element.apply(new AbstractAnnotationElemTypeSwitch<>() {
 
 			@Override
 			public void caseAnnotationArrayElem(final AnnotationArrayElem element) {

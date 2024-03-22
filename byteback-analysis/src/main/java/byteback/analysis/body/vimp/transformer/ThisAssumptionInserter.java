@@ -1,7 +1,7 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.VimpExprFactory;
+import byteback.analysis.body.vimp.ImmediateConstructor;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.function.Lazy;
 import soot.Body;
@@ -9,22 +9,26 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.NullConstant;
 
-public class ThisAssumptionTransformer extends BodyTransformer {
+/**
+ * Explicitly introduces the basic assumption that @this != null.
+ * @author paganma
+ */
+public class ThisAssumptionInserter extends BodyTransformer {
 
-    private static final Lazy<ThisAssumptionTransformer> instance = Lazy.from(ThisAssumptionTransformer::new);
+    private static final Lazy<ThisAssumptionInserter> instance = Lazy.from(ThisAssumptionInserter::new);
 
-    public static ThisAssumptionTransformer v() {
+    public static ThisAssumptionInserter v() {
         return instance.get();
     }
 
-    private ThisAssumptionTransformer() {
+    private ThisAssumptionInserter() {
     }
 
     @Override
     public void transformBody(final Body body) {
         if (!body.getMethod().isStatic()) {
             final Unit unit = body.getThisUnit();
-            final Value condition = new VimpExprFactory(body).binary(
+            final Value condition = new ImmediateConstructor(body).make(
                     Vimp.v()::newNeExpr,
                     body.getThisLocal(),
                     NullConstant.v()

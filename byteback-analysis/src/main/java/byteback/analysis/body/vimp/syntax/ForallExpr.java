@@ -7,6 +7,10 @@ import soot.Value;
 import soot.util.Chain;
 import soot.util.Switch;
 
+/**
+ * Universal quantifier expression.
+ * @author paganma
+ */
 public class ForallExpr extends QuantifierExpr {
 
 	public ForallExpr(final Chain<Local> freeLocals, final Value value) {

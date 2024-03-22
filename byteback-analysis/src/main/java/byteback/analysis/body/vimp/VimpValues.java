@@ -20,6 +20,7 @@ public class VimpValues {
     }
 
     /**
+     *
      * @param value A Soot value.
      * @return `true` if `value` may have side effects, false` otherwise.
      */

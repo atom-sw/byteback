@@ -5,6 +5,10 @@ import byteback.common.function.Lazy;
 import soot.Unit;
 import soot.ValueBox;
 
+/**
+ * Folder for the specification expressions that appear in the body of a procedural method.
+ * @author paganma
+ */
 public class SpecificationExprFolder extends ExprFolder {
 
     private static final Lazy<SpecificationExprFolder> instance = Lazy.from(SpecificationExprFolder::new);

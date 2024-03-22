@@ -7,7 +7,6 @@ import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.common.function.Lazy;
 
 import java.util.Iterator;
-import java.util.Map;
 
 import soot.Body;
 import soot.Local;
@@ -20,6 +19,9 @@ import soot.jimple.*;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+/**
+ * Transforms BBLib's quantifier expressions.
+ */
 public class QuantifierValueTransformer extends ValueTransformer {
 
     private static final Lazy<QuantifierValueTransformer> instance = Lazy.from(QuantifierValueTransformer::new);

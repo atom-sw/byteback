@@ -5,26 +5,30 @@ import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.Value;
 import soot.util.Switch;
 
-public class LogicIffExpr extends AbstractLogicBinopExpr {
+/**
+ * Boolean implication expression.
+ * @author paganma
+ */
+public class ImpliesExpr extends AbstractLogicBinopExpr {
 
-	public LogicIffExpr(final Value op1, final Value op2) {
+	public ImpliesExpr(final Value op1, final Value op2) {
 		super(op1, op2);
 	}
 
 	@Override
 	public String getSymbol() {
-		return " ↔ ";
+		return " → ";
 	}
 
 	@Override
-	public LogicIffExpr clone() {
-		return new LogicIffExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+	public ImpliesExpr clone() {
+		return new ImpliesExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
 	}
 
 	@Override
 	public void apply(final Switch visitor) {
 		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicIffExpr(this);
+			vimpValueSwitch.caseLogicImpliesExpr(this);
 		}
 	}
 

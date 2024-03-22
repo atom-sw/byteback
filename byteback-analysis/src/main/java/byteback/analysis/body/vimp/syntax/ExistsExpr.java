@@ -7,6 +7,10 @@ import soot.Value;
 import soot.util.Chain;
 import soot.util.Switch;
 
+/**
+ * Existential quantification expression.
+ * @author paganma
+ */
 public class ExistsExpr extends QuantifierExpr {
 
 	public ExistsExpr(final Chain<Local> freeLocals, final Value value) {

@@ -1,6 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.vimp.VimpExprFactory;
+import byteback.analysis.body.vimp.ImmediateConstructor;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.function.Lazy;
 
@@ -9,12 +9,16 @@ import java.util.Optional;
 import soot.*;
 import soot.jimple.*;
 
+/**
+ * Introduces explicit index checks before every array dereference.
+ * @author paganma
+ */
 public class NullCheckTransformer extends CheckTransformer {
 
     private static final Lazy<NullCheckTransformer> instance = Lazy.from(NullCheckTransformer::new);
 
     private NullCheckTransformer() {
-        super(Scene.v().loadClassAndSupport("java.lang.NullPointerException"));
+        super(Scene.v().getSootClass("java.lang.NullPointerException"));
     }
 
     public static NullCheckTransformer v() {
@@ -22,7 +26,7 @@ public class NullCheckTransformer extends CheckTransformer {
     }
 
     @Override
-    public Optional<Value> makeUnitCheck(final VimpExprFactory factory, final Unit unit) {
+    public Optional<Value> makeUnitCheck(final ImmediateConstructor checkConstructor, final Unit unit) {
         Value base = null;
 
         if (unit instanceof AssignStmt assignStmt) {
@@ -42,7 +46,7 @@ public class NullCheckTransformer extends CheckTransformer {
         }
 
         if (base != null) {
-            final Value conditionExpr = factory.binary(
+            final Value conditionExpr = checkConstructor.make(
                     Vimp.v()::newNeExpr,
                     base,
                     NullConstant.v()

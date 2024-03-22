@@ -7,6 +7,11 @@ import soot.jimple.ExprSwitch;
 import soot.jimple.GeExpr;
 import soot.util.Switch;
 
+/**
+ * Logic equivalent of GeExpr.
+ * @see soot.jimple.internal.JGeExpr
+ * @author paganma
+ */
 public class LogicGeExpr extends AbstractLogicBinopExpr implements GeExpr {
 
 	public LogicGeExpr(final Value op1, final Value op2) {
@@ -29,7 +34,9 @@ public class LogicGeExpr extends AbstractLogicBinopExpr implements GeExpr {
 
 	@Override
 	public void apply(final Switch visitor) {
-		((ExprSwitch) visitor).caseGeExpr(this);
+		if (visitor instanceof ExprSwitch exprSwitch) {
+			exprSwitch.caseGeExpr(this);
+		}
 	}
 
 	@Override

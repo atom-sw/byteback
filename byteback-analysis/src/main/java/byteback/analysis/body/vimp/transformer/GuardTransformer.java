@@ -1,30 +1,33 @@
 package byteback.analysis.body.vimp.transformer;
 
+import byteback.analysis.body.common.syntax.TrapRangeMap;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.common.function.Lazy;
-import byteback.common.collection.ListHashMap;
-import byteback.common.collection.Stacks;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import soot.Body;
-import soot.Local;
 import soot.RefType;
 import soot.Trap;
 import soot.Unit;
 import soot.Value;
 import soot.grimp.Grimp;
-import soot.jimple.AssignStmt;
-import soot.jimple.CaughtExceptionRef;
-import soot.jimple.ThrowStmt;
+import soot.jimple.*;
 import soot.util.Chain;
 
+/**
+ * Transforms throw instructions into explicit branching instructions.
+ * Given a statement `throw e`, the transformation introduces an assignment `@caughtexception := e`.
+ * For each active trap at that point [e, handler], we then introduce an instance check:
+ * ``` java
+ * if (@caughtexception instanceof e) goto handler;
+ * ```
+ * At the end of these checks, we simply attach a `return` statement, signaling that the method will return without
+ * yielding any value, leaving the caller method to check for eventually thrown exceptions.
+ * @author paganma
+ */
 public class GuardTransformer extends BodyTransformer {
 
     private static final Lazy<GuardTransformer> instance = Lazy.from(GuardTransformer::new);
@@ -39,40 +42,12 @@ public class GuardTransformer extends BodyTransformer {
     @Override
     public void transformBody(final Body body) {
         final Chain<Unit> units = body.getUnits();
-        final Chain<Trap> traps = body.getTraps();
-        final ListHashMap<Unit, Trap> startToTraps = new ListHashMap<>();
-        final ListHashMap<Unit, Trap> endToTraps = new ListHashMap<>();
-        final HashSet<Unit> trapHandlers = new HashSet<>();
-        final Stack<Trap> activeTraps = new Stack<>();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
+        final var trapRanges = new TrapRangeMap(body);
         units.addFirst(Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v()));
-
-        for (final Trap trap : traps) {
-            startToTraps.add(trap.getBeginUnit(), trap);
-            endToTraps.add(trap.getEndUnit(), trap);
-            trapHandlers.add(trap.getHandlerUnit());
-        }
-
-        for (final Unit handler : trapHandlers) {
-            assert handler instanceof AssignStmt assign && assign.getLeftOp() instanceof Local
-                    && assign.getRightOp() instanceof CaughtExceptionRef;
-
-            final AssignStmt newUnit = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v());
-            units.insertAfter(newUnit, handler);
-        }
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
-            final List<Trap> startedTraps = startToTraps.get(unit);
-            final List<Trap> endedTraps = endToTraps.get(unit);
-
-            if (endedTraps != null) {
-                Stacks.popAll(activeTraps, endToTraps.get(unit));
-            }
-
-            if (startedTraps != null) {
-                Stacks.pushAll(activeTraps, startToTraps.get(unit));
-            }
 
             if (unit instanceof ThrowStmt throwUnit) {
                 final Unit retUnit = Grimp.v().newReturnVoidStmt();
@@ -94,11 +69,13 @@ public class GuardTransformer extends BodyTransformer {
                 Unit indexUnit = assignUnit;
 
                 if (throwUnit.getOp().getType() instanceof RefType) {
-                    for (int i = activeTraps.size() - 1; i >= 0; --i) {
-                        final Trap activeTrap = activeTraps.get(i);
+                    final Trap[] activeTraps = trapRanges.trapsAt(throwUnit).toArray(Trap[]::new);
+
+                    for (int i = activeTraps.length - 1; i >= 0; --i) {
+                        final Trap activeTrap = activeTraps[i];
                         final RefType trapType = activeTrap.getException().getType();
-                        final Value condition = Vimp.v().newInstanceOfExpr(Vimp.v().newCaughtExceptionRef(), trapType);
-                        final Unit ifUnit = Vimp.v().newIfStmt(condition, activeTrap.getHandlerUnit());
+                        final Value behavior = Jimple.v().newInstanceOfExpr(Vimp.v().newCaughtExceptionRef(), trapType);
+                        final Unit ifUnit = Jimple.v().newIfStmt(behavior, activeTrap.getHandlerUnit());
                         units.insertAfter(ifUnit, indexUnit);
                         indexUnit = ifUnit;
                     }

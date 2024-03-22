@@ -12,6 +12,9 @@ import soot.Type;
 import soot.UnknownType;
 import soot.VoidType;
 
+/**
+ * Utility class to work with Soot types.
+ */
 public class Types {
 	
 	private static final Lazy<Types> instance = Lazy.from(Types::new);

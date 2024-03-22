@@ -6,13 +6,18 @@ import soot.ValueBox;
 import soot.jimple.NegExpr;
 import soot.util.Switch;
 
-public class LogicNotExpr extends AbstractLogicUnopExpr implements LogicExpr, NegExpr {
+/**
+ * Logic equivalent of NegExpr.
+ * @see soot.jimple.internal.JNegExpr
+ * @author paganma
+ */
+public class NotExpr extends AbstractLogicUnopExpr implements LogicExpr, NegExpr {
 
-	public LogicNotExpr(final Value v) {
+	public NotExpr(final Value v) {
 		super(v);
 	}
 
-	public LogicNotExpr(final ValueBox vbox) {
+	public NotExpr(final ValueBox vbox) {
 		super(vbox);
 	}
 
@@ -27,24 +32,15 @@ public class LogicNotExpr extends AbstractLogicUnopExpr implements LogicExpr, Ne
 	}
 
 	@Override
-	public boolean equivTo(final Object object) {
-		if (object instanceof AbstractLogicUnopExpr logicUnopExpr) {
-			return getSymbol().equals(logicUnopExpr.getSymbol()) && getOp().equivTo(logicUnopExpr.getOp());
-		}
-
-		return false;
-	}
-
-	@Override
 	public void apply(final Switch visitor) {
 		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicNotExpr(this);
+			vimpValueSwitch.caseNotExpr(this);
 		}
 	}
 
 	@Override
 	public Object clone() {
-		return new LogicNotExpr(getOp());
+		return new NotExpr(getOp());
 	}
 
 }

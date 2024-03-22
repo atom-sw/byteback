@@ -3,14 +3,17 @@ package byteback.analysis.body.vimp.transformer;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.common.function.Lazy;
 
-import java.util.Map;
-
 import soot.Body;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.Jimple;
 
+/**
+ * Converts dynamic invocations into static invocations to the related instance method. This is done to handle the
+ * conversion of invocations to the methods of Soot's soot.dummy.InvokeDynamic class.
+ * @author paganma
+ */
 public class DynamicInvokeResolver extends BodyTransformer {
 
     private static final Lazy<DynamicInvokeResolver> instance = Lazy.from(DynamicInvokeResolver::new);

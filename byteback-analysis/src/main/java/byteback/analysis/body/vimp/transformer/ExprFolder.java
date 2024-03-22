@@ -17,6 +17,10 @@ import soot.util.HashChain;
 
 import java.util.*;
 
+/**
+ * Folds expressions used in the Body as nested expressions based on some condition.
+ * @see byteback.analysis.body.vimp.syntax.NestedExpr
+ */
 public abstract class ExprFolder extends BodyTransformer {
 
     @Override
@@ -39,7 +43,13 @@ public abstract class ExprFolder extends BodyTransformer {
         }
     }
 
-    public boolean canSubstitute(final Unit unit, final ValueBox valueBox) {
+    /**
+     * Whether a value can be substituted at position `valueBox` in `unit`.
+     * @param unit The unit in which the substitution may occur.
+     * @param valueBox The position in the unit in which the substitution may occur.
+     * @return `true` if a value can be inlined in `valueBox`, `false` otherwise.
+     */
+    protected boolean canSubstitute(final Unit unit, final ValueBox valueBox) {
         return true;
     }
 
@@ -63,7 +73,7 @@ public abstract class ExprFolder extends BodyTransformer {
             this.localUses = localUses;
         }
 
-        public void track(final AssignStmt assignStmt) {
+        protected void track(final AssignStmt assignStmt) {
             if (assignStmt.getLeftOp() instanceof Local local) {
                 localToSubstitution.put(local, assignStmt);
             } else if (assignStmt.getLeftOp() instanceof Ref dependency) {
@@ -79,7 +89,7 @@ public abstract class ExprFolder extends BodyTransformer {
             }
         }
 
-        public void substituteFrom(final Unit unit, final ValueBox startingValueBox) {
+        protected void substituteFrom(final Unit unit, final ValueBox startingValueBox) {
             final var nextValueBoxes = new ArrayDeque<ValueBox>();
             nextValueBoxes.add(startingValueBox);
 
@@ -106,7 +116,7 @@ public abstract class ExprFolder extends BodyTransformer {
             }
         }
 
-        public void substituteUses(final Unit unit) {
+        protected void substituteUses(final Unit unit) {
             for (final ValueBox useBox : unit.getUseBoxes()) {
                 if (canSubstitute(unit, useBox)) {
                     substituteFrom(unit, useBox);
@@ -114,7 +124,7 @@ public abstract class ExprFolder extends BodyTransformer {
             }
         }
 
-        public void track(final Unit unit) {
+        protected void track(final Unit unit) {
             if (unit instanceof final AssignStmt assignUnit) {
                 track(assignUnit);
             }
@@ -122,7 +132,7 @@ public abstract class ExprFolder extends BodyTransformer {
             substituteUses(unit);
         }
 
-        public void fold(final Iterable<Unit> block) {
+        protected void fold(final Iterable<Unit> block) {
             for (final Unit unit : block) {
                 track(unit);
             }

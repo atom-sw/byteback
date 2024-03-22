@@ -7,6 +7,7 @@ import soot.SootMethod;
 
 /**
  * Contains the definitions of the names for the BBLib specification.
+ * @author paganma
  */
 public class BBLibNames {
 

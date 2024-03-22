@@ -7,6 +7,10 @@ import soot.ValueBox;
 import soot.grimp.Precedence;
 import soot.jimple.internal.AbstractBinopExpr;
 
+/**
+ * Base-class for logic binary expressions.
+ * @author paganma
+ */
 public abstract class AbstractLogicBinopExpr extends AbstractBinopExpr implements LogicExpr, Precedence {
 
 	public AbstractLogicBinopExpr(final Value op1, final Value op2) {

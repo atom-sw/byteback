@@ -9,6 +9,11 @@ import soot.util.Switch;
 import java.util.ArrayList;
 import java.util.Stack;
 
+/**
+ * An expression that can be nested on multiple levels, breaking the three-address-code form of Jimple. Each
+ * subexpression must be indirectly associated to a Local assignment.
+ * @author paganma
+ */
 public class NestedExpr extends JimpleLocal {
 
     private final AssignStmt definition;

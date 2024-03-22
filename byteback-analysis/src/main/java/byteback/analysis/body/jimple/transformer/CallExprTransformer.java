@@ -11,6 +11,10 @@ import soot.jimple.InvokeExpr;
 
 import java.util.ArrayList;
 
+/**
+ * Transforms invocations to behavioral functions to pure (mathematical) function calls.
+ * @author paganma
+ */
 public class CallExprTransformer extends ValueTransformer {
 
     private static final Lazy<CallExprTransformer> instance = Lazy.from(CallExprTransformer::new);

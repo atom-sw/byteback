@@ -5,15 +5,15 @@ import byteback.analysis.body.jimple.transformer.OldExprTransformer;
 import byteback.analysis.body.jimple.transformer.VimpUnitBodyTransformer;
 import byteback.analysis.body.jimple.transformer.VimpValueBodyTransformer;
 import byteback.analysis.body.vimp.transformer.*;
-import byteback.analysis.scene.properties.MethodPostconditions;
 import com.beust.jcommander.ParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.*;
+import soot.JastAddJ.Opt;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
-import java.util.Map;
+import javax.swing.text.html.Option;
 
 public class Main {
 
@@ -34,20 +34,25 @@ public class Main {
 
         Options.v().set_unfriendly_mode(true);
         Options.v().set_whole_program(true);
-        Options.v().set_allow_phantom_refs(true);
+        Options.v().set_no_bodies_for_excluded(true);
         Options.v().set_output_format(Options.output_format_none);
         Options.v().set_prepend_classpath(true);
+        Options.v().set_drop_bodies_after_load(true);
         Options.v().set_soot_classpath(Arguments.v().formatClassPaths());
-        Options.v().set_no_bodies_for_excluded(true);
+        Options.v().set_throw_analysis(Options.throw_analysis_pedantic);
+        Options.v().set_check_init_throw_analysis(Options.check_init_throw_analysis_pedantic);
         Options.v().classes().addAll(Arguments.v().getStartingClasses());
 
+        Options.v().classes().add("java.lang.IndexOutOfBoundsException");
+
         Options.v().setPhaseOption("jb", "use-original-names:true");
+        Options.v().setPhaseOption("cg", "enabled:true");
         Options.v().setPhaseOption("cg.cha", "apponly:true");
         Options.v().setPhaseOption("jtp", "enabled:true");
 
         final Pack jtpPack = PackManager.v().getPack("jtp");
 
-        jtpPack.add(new Transform("jtp.ii", InvokeIgnorer.v()));
+        jtpPack.add(new Transform("jtp.ii", InvokeFilter.v()));
         jtpPack.add(new Transform("jtp.dir", DynamicInvokeResolver.v()));
         jtpPack.add(new Transform("jtp.vut", VimpUnitBodyTransformer.v()));
         jtpPack.add(new Transform("jtp.vvt", VimpValueBodyTransformer.v()));
@@ -55,25 +60,16 @@ public class Main {
         jtpPack.add(new Transform("jtp.oet", OldExprTransformer.v()));
         jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
         jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-        jtpPack.add(new Transform("jtp.eit", ExceptionInvariantTransformer.v()));
+        jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
         jtpPack.add(new Transform("jtp.ict", IndexCheckTransformer.v()));
         jtpPack.add(new Transform("jtp.nct", NullCheckTransformer.v()));
-        jtpPack.add(new Transform("jtp.cct", CallCheckTransformer.v()));
-        jtpPack.add(new Transform("jtp.tat", ThisAssumptionTransformer.v()));
+        jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
+        jtpPack.add(new Transform("jtp.tat", ThisAssumptionInserter.v()));
         jtpPack.add(new Transform("jtp.gt", GuardTransformer.v()));
         jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
         jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
-        jtpPack.add(new Transform("jtp.bpl", new BodyTransformer() {
 
-            @Override
-            protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-                MethodPostconditions.v().of(b.getMethod());
-            }
-
-        }));
-
-
-        soot.Main.main(new String[]{});
+        soot.Main.v().run(new String[]{});
     }
 
 }

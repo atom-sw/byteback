@@ -8,6 +8,10 @@ import soot.Local;
 import soot.SootMethod;
 import soot.jimple.internal.JimpleLocal;
 
+/**
+ * Utility classes to work with soot methods.
+ * @author paganma
+ */
 public class Methods {
 
 	private static final Lazy<Methods> instance = Lazy.from(Methods::new);

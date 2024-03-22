@@ -1,19 +1,20 @@
 package byteback.analysis.body.vimp;
 
+import byteback.analysis.body.common.syntax.TrapDelimiter;
 import byteback.analysis.body.vimp.syntax.*;
 import byteback.common.function.Lazy;
 import soot.*;
-import soot.grimp.internal.ExprBox;
 import soot.jimple.*;
 import soot.jimple.internal.ImmediateBox;
-import soot.jimple.internal.JimpleLocalBox;
 import soot.util.Chain;
 import soot.util.HashChain;
 
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
+/**
+ * Provides factory methods for Vimp's syntactic constructs.
+ * @author paganma
+ */
 public class Vimp {
 
     private static final Lazy<Vimp> instance = Lazy.from(Vimp::new);
@@ -22,11 +23,11 @@ public class Vimp {
         return instance.get();
     }
 
-    public static Value cloneIfNecessary(final Value v) {
-        if (v instanceof Local || v instanceof Constant) {
-            return v;
+    public static Value cloneIfNecessary(final Value value) {
+        if (value instanceof Local || value instanceof Constant) {
+            return value;
         } else {
-            return (Value) v.clone();
+            return (Value) value.clone();
         }
     }
 
@@ -38,78 +39,74 @@ public class Vimp {
         return new ImmediateBox(value);
     }
 
-    public AssertStmt newAssertStmt(final Value condition) {
-        return new AssertStmt(condition);
+    public AssertStmt newAssertStmt(final Value value) {
+        return new AssertStmt(value);
     }
 
-    public AssumeStmt newAssumeStmt(final Value condition) {
-        return new AssumeStmt(condition);
+    public AssumeStmt newAssumeStmt(final Value value) {
+        return new AssumeStmt(value);
     }
 
-    public InvariantStmt newInvariantStmt(final Value condition) {
-        return new InvariantStmt(condition);
+    public InvariantStmt newInvariantStmt(final Value value) {
+        return new InvariantStmt(value);
     }
 
-    public IfStmt newIfStmt(final Value value, final Unit target) {
-        return new LogicIfStmt(value, target);
+    public ConjExpr newLogicAndExpr(final Value op1, final Value op2) {
+        return new ConjExpr(op1, op2);
     }
 
-    public LogicAndExpr newLogicAndExpr(final Value op1, final Value op2) {
-        return new LogicAndExpr(op1, op2);
+    public ConjExpr newLogicAndExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new ConjExpr(op1box, op2box);
     }
 
-    public LogicAndExpr newLogicAndExpr(final ValueBox op1box, final ValueBox op2box) {
-        return new LogicAndExpr(op1box, op2box);
+    public DisjExpr newLogicOrExpr(final Value op1, final Value op2) {
+        return new DisjExpr(op1, op2);
     }
 
-    public LogicOrExpr newLogicOrExpr(final Value op1, final Value op2) {
-        return new LogicOrExpr(op1, op2);
-    }
-
-    public LogicOrExpr newLogicOrExpr(final ValueBox op1box, final ValueBox op2box) {
-        return new LogicOrExpr(op1box, op2box);
+    public DisjExpr newLogicOrExpr(final ValueBox op1box, final ValueBox op2box) {
+        return new DisjExpr(op1box, op2box);
     }
 
     public LogicXorExpr newLogicXorExpr(final ValueBox op1box, final ValueBox op2box) {
         return new LogicXorExpr(op1box, op2box);
     }
 
-    public LogicIffExpr newLogicIffExpr(final Value op1, final Value op2) {
-        return new LogicIffExpr(op1, op2);
+    public IffExpr newLogicIffExpr(final Value op1, final Value op2) {
+        return new IffExpr(op1, op2);
     }
 
-    public LogicNotExpr newLogicNotExpr(final Value v) {
-        return new LogicNotExpr(v);
+    public NotExpr newLogicNotExpr(final Value v) {
+        return new NotExpr(v);
     }
 
-    public LogicNotExpr newLogicNotExpr(final ValueBox opBox) {
-        return new LogicNotExpr(opBox);
+    public NotExpr newLogicNotExpr(final ValueBox opBox) {
+        return new NotExpr(opBox);
     }
 
-    public LogicImpliesExpr newLogicImpliesExpr(final Value op1, final Value op2) {
-        return new LogicImpliesExpr(op1, op2);
+    public ImpliesExpr newLogicImpliesExpr(final Value op1, final Value op2) {
+        return new ImpliesExpr(op1, op2);
     }
 
     public ForallExpr newLogicForallExpr(final Chain<Local> ls, final Value v) {
         return new ForallExpr(ls, v);
     }
 
-    public ForallExpr newLogicForallExpr(final Local l, final Value v) {
-        final HashChain<Local> ls = new HashChain<>();
-        ls.add(l);
+    public ForallExpr newLogicForallExpr(final Local local, final Value value) {
+        final HashChain<Local> locals = new HashChain<>();
+        locals.add(local);
 
-        return new ForallExpr(ls, v);
+        return new ForallExpr(locals, value);
     }
 
-    public ExistsExpr newLogicExistsExpr(final Chain<Local> ls, final Value v) {
-        return new ExistsExpr(ls, v);
+    public ExistsExpr newLogicExistsExpr(final Chain<Local> locals, final Value value) {
+        return new ExistsExpr(locals, value);
     }
 
-    public ExistsExpr newLogicExistsExpr(final Local l, final Value v) {
+    public ExistsExpr newLogicExistsExpr(final Local local, final Value value) {
         final HashChain<Local> ls = new HashChain<>();
-        ls.add(l);
+        ls.add(local);
 
-        return new ExistsExpr(ls, v);
+        return new ExistsExpr(ls, value);
     }
 
     public GtExpr newGtExpr(final Value op1, final Value op2) {
@@ -160,16 +157,16 @@ public class Vimp {
         return new LogicNeExpr(op1, op2);
     }
 
-    public InstanceOfExpr newInstanceOfExpr(final Value operand, final Type type) {
-        return new LogicInstanceOfExpr(operand, type);
+    public InstanceOfExpr newInstanceOfExpr(final Value value, final Type type) {
+        return new LogicInstanceOfExpr(value, type);
     }
 
     public CaughtExceptionRef newCaughtExceptionRef() {
         return new ConcreteCaughtExceptionRef();
     }
 
-    public OldExpr newOldExpr(final Value operand) {
-        return new OldExpr(operand);
+    public OldExpr newOldExpr(final Value value) {
+        return new OldExpr(value);
     }
 
     public CallExpr newCallExpr(final SootMethodRef methodRef, final List<Value> args) {
@@ -180,8 +177,8 @@ public class Vimp {
         return new OldExpr(opBox);
     }
 
-    public NestedExpr newNestedExpr(final AssignStmt definition) {
-        return new NestedExpr(definition);
+    public NestedExpr newNestedExpr(final AssignStmt def) {
+        return new NestedExpr(def);
     }
 
 }

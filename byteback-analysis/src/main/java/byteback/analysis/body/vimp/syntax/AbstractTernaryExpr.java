@@ -2,12 +2,17 @@ package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.scene.Types;
 import soot.Type;
+import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Expr;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Base class for a ternary expression.
+ * @author paganma
+ */
 public abstract class AbstractTernaryExpr implements Expr {
 
     private final ValueBox op1Box;
@@ -26,12 +31,24 @@ public abstract class AbstractTernaryExpr implements Expr {
         return op1Box;
     }
 
+    public Value getOp1() {
+        return op1Box.getValue();
+    }
+
     public ValueBox getOp2Box() {
         return op2Box;
     }
 
+    public Value getOp2() {
+        return op2Box.getValue();
+    }
+
     public ValueBox getOp3Box() {
         return op3Box;
+    }
+
+    public Value getOp3() {
+        return op2Box.getValue();
     }
 
     @Override
@@ -42,11 +59,6 @@ public abstract class AbstractTernaryExpr implements Expr {
         useBoxes.add(op3Box);
 
         return useBoxes;
-    }
-
-    @Override
-    public Type getType() {
-        return Types.v().join(op2Box.getValue().getType(), op3Box.getValue().getType());
     }
 
     @Override

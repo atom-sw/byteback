@@ -12,6 +12,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+/**
+ * A call expression representing an invocation of a behavioral function.
+ * @author paganma
+ */
 public class CallExpr extends AbstractInvokeExpr implements Immediate {
 
     public CallExpr(final SootMethodRef methodRef, final List<Value> args) {

@@ -6,24 +6,24 @@ import soot.Value;
 
 public interface VimpValueSwitch<T> extends Visitor<Value, T> {
 
-	default void caseLogicAndExpr(final LogicAndExpr logicAndExpr) {
-		defaultCase(logicAndExpr);
+	default void caseConjExpr(final ConjExpr conjExpr) {
+		defaultCase(conjExpr);
 	}
 
-	default void caseLogicOrExpr(final LogicOrExpr logicOrExpr) {
-		defaultCase(logicOrExpr);
+	default void caseDisjExpr(final DisjExpr disjExpr) {
+		defaultCase(disjExpr);
 	}
 
 	default void caseLogicXorExpr(final LogicXorExpr logicXorExpr) {
 		defaultCase(logicXorExpr);
 	}
 
-	default void caseLogicImpliesExpr(final LogicImpliesExpr logicImpliesExpr) {
-		defaultCase(logicImpliesExpr);
+	default void caseLogicImpliesExpr(final ImpliesExpr impliesExpr) {
+		defaultCase(impliesExpr);
 	}
 
-	default void caseLogicIffExpr(final LogicIffExpr logicIffExpr) {
-		defaultCase(logicIffExpr);
+	default void caseLogicIffExpr(final IffExpr iffExpr) {
+		defaultCase(iffExpr);
 	}
 
 	default void caseLogicForallExpr(final ForallExpr forallExpr) {
@@ -34,8 +34,8 @@ public interface VimpValueSwitch<T> extends Visitor<Value, T> {
 		defaultCase(existsExpr);
 	}
 
-	default void caseLogicNotExpr(final LogicNotExpr logicNotExpr) {
-		defaultCase(logicNotExpr);
+	default void caseNotExpr(final NotExpr notExpr) {
+		defaultCase(notExpr);
 	}
 
 	default void caseLogicConstant(final LogicConstant logicConstant) {

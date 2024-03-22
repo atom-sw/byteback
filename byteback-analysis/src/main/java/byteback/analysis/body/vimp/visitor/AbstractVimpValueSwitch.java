@@ -1,22 +1,21 @@
 package byteback.analysis.body.vimp.visitor;
 
 import byteback.analysis.body.jimple.visitor.AbstractJimpleValueSwitch;
-import byteback.analysis.body.vimp.syntax.SpecialExprSwitch;
-import byteback.analysis.body.vimp.syntax.LogicAndExpr;
-import byteback.analysis.body.vimp.syntax.LogicOrExpr;
+import byteback.analysis.body.vimp.syntax.ConjExpr;
+import byteback.analysis.body.vimp.syntax.DisjExpr;
 import byteback.analysis.body.vimp.syntax.LogicXorExpr;
 
 public abstract class AbstractVimpValueSwitch<R> extends AbstractJimpleValueSwitch<R>
-		implements LogicExprSwitch<R>, SpecialExprSwitch<R> {
+		implements LogicExprSwitch<R>, soot.jimple.ExprSwitch, byteback.analysis.body.vimp.visitor.SpecialExprSwitch<R> {
 
 	@Override
-	public void caseLogicAndExpr(final LogicAndExpr logicAndExpr) {
-		caseAndExpr(logicAndExpr);
+	public void caseConjExpr(final ConjExpr conjExpr) {
+		caseAndExpr(conjExpr);
 	}
 
 	@Override
-	public void caseLogicOrExpr(final LogicOrExpr logicOrExpr) {
-		caseOrExpr(logicOrExpr);
+	public void caseDisjExpr(final DisjExpr disjExpr) {
+		caseOrExpr(disjExpr);
 	}
 
 	@Override

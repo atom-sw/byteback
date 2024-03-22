@@ -7,6 +7,11 @@ import soot.jimple.EqExpr;
 import soot.jimple.ExprSwitch;
 import soot.util.Switch;
 
+/**
+ * Logic equivalent of EqExpr.
+ * @see soot.jimple.internal.JEqExpr
+ * @author paganma
+ */
 public class LogicEqExpr extends AbstractLogicBinopExpr implements EqExpr {
 
 	public LogicEqExpr(final Value op1, final Value op2) {
@@ -29,7 +34,9 @@ public class LogicEqExpr extends AbstractLogicBinopExpr implements EqExpr {
 
 	@Override
 	public void apply(final Switch visitor) {
-		((ExprSwitch) visitor).caseEqExpr(this);
+		if (visitor instanceof ExprSwitch exprSwitch) {
+			exprSwitch.caseEqExpr(this);
+		}
 	}
 
 	@Override

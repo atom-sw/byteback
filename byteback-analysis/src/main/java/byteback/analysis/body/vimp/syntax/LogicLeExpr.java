@@ -7,6 +7,11 @@ import soot.jimple.ExprSwitch;
 import soot.jimple.LeExpr;
 import soot.util.Switch;
 
+/**
+ * Logic equivalent of LeExpr.
+ * @see soot.jimple.internal.JLeExpr
+ * @author paganma
+ */
 public class LogicLeExpr extends AbstractLogicBinopExpr implements LeExpr {
 
 	public LogicLeExpr(final Value op1, final Value op2) {
@@ -29,7 +34,9 @@ public class LogicLeExpr extends AbstractLogicBinopExpr implements LeExpr {
 
 	@Override
 	public void apply(final Switch visitor) {
-		((ExprSwitch) visitor).caseLeExpr(this);
+		if (visitor instanceof ExprSwitch exprSwitch) {
+			exprSwitch.caseLeExpr(this);
+		}
 	}
 
 	@Override

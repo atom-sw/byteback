@@ -7,13 +7,18 @@ import soot.ValueBox;
 import soot.jimple.AndExpr;
 import soot.util.Switch;
 
-public class LogicAndExpr extends AbstractLogicBinopExpr implements AndExpr {
+/**
+ * A logical conjunction expression. It replaces bitwise-and operations between booleans.
+ * @see byteback.analysis.body.jimple.transformer.VimpValueBodyTransformer
+ * @author paganma
+ */
+public class ConjExpr extends AbstractLogicBinopExpr implements AndExpr {
 
-	public LogicAndExpr(final Value op1, final Value op2) {
+	public ConjExpr(final Value op1, final Value op2) {
 		super(op1, op2);
 	}
 
-	public LogicAndExpr(final ValueBox op1box, final ValueBox op2box) {
+	public ConjExpr(final ValueBox op1box, final ValueBox op2box) {
 		super(op1box, op2box);
 	}
 
@@ -23,14 +28,14 @@ public class LogicAndExpr extends AbstractLogicBinopExpr implements AndExpr {
 	}
 
 	@Override
-	public LogicAndExpr clone() {
-		return new LogicAndExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+	public ConjExpr clone() {
+		return new ConjExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
 	}
 
 	@Override
 	public void apply(final Switch visitor) {
 		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicAndExpr(this);
+			vimpValueSwitch.caseConjExpr(this);
 		}
 	}
 

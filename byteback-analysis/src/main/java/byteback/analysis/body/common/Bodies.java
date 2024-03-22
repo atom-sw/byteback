@@ -5,6 +5,8 @@ import java.util.*;
 import byteback.common.function.Lazy;
 import soot.Body;
 import soot.Local;
+import soot.Trap;
+import soot.Unit;
 import soot.util.Chain;
 import soot.util.HashChain;
 
