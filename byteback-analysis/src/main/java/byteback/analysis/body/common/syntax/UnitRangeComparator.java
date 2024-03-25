@@ -5,6 +5,10 @@ import soot.util.Chain;
 
 import java.util.Comparator;
 
+/**
+ * Compares two units based on their order in a unit chain.
+ * @author paganma
+ */
 public class UnitRangeComparator implements Comparator<Unit> {
 
     final Chain<Unit> units;
@@ -18,9 +22,9 @@ public class UnitRangeComparator implements Comparator<Unit> {
         if (unit1.equals(unit2)) {
             return 0;
         } else if (units.follows(unit1, unit2)) {
-            return -1;
-        } else {
             return 1;
+        } else {
+            return -1;
         }
     }
 

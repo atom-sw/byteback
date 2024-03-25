@@ -1,7 +1,5 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.scene.Types;
-import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Expr;

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import byteback.analysis.body.vimp.Vimp;
 import soot.*;
 import soot.jimple.Jimple;
 import soot.jimple.SpecialInvokeExpr;
@@ -21,17 +22,24 @@ import soot.util.HashChain;
  */
 public abstract class CheckTransformer extends BodyTransformer {
 
-    public final SootClass exceptionClass;
+    public final String exceptionClassName;
 
-    public CheckTransformer(final SootClass exceptionClass) {
-        this.exceptionClass = exceptionClass;
+    public CheckTransformer(final String exceptionClassName) {
+        this.exceptionClassName = exceptionClassName;
     }
 
     public abstract Optional<Value> makeUnitCheck(final ImmediateConstructor builder, final Unit unit);
 
+    public SootClass getExceptionClass() {
+        assert Scene.v().doneResolving();
+
+        return Scene.v().getSootClass(exceptionClassName);
+    }
+
     public Chain<Unit> makeThrowUnits(final Supplier<Local> exceptionLocalSupplier) {
         final Chain<Unit> units = new HashChain<>();
         final Local local = exceptionLocalSupplier.get();
+        final SootClass exceptionClass = getExceptionClass();
         final Unit initUnit = Jimple.v().newAssignStmt(local, Jimple.v().newNewExpr(exceptionClass.getType()));
         units.addLast(initUnit);
         // For now, we just assume that the constructor will be invoked without any argument.
@@ -54,7 +62,7 @@ public abstract class CheckTransformer extends BodyTransformer {
         final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
         final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
         final Supplier<Local> exceptionLocalSupplier = () ->
-                localGenerator.generateLocal(exceptionClass.getType());
+                localGenerator.generateLocal(getExceptionClass().getType());
         final ImmediateConstructor builder = new ImmediateConstructor(localGenerator);
 
         while (unitIterator.hasNext()) {
@@ -65,7 +73,7 @@ public abstract class CheckTransformer extends BodyTransformer {
                 final Value unitCheck = unitCheckOption.get();
                 final Chain<Unit> throwStmts = makeThrowUnits(exceptionLocalSupplier);
                 units.insertBefore(throwStmts, unit);
-                final Unit checkStmt = Jimple.v().newIfStmt(unitCheck, unit);
+                final Unit checkStmt = Vimp.v().newIfStmt(unitCheck, unit);
                 units.insertBefore(checkStmt, throwStmts.getFirst());
             }
         }

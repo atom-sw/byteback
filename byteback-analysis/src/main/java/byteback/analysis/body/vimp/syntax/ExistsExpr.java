@@ -31,7 +31,7 @@ public class ExistsExpr extends QuantifierExpr {
 
 	@Override
 	public ExistsExpr clone() {
-		return new ExistsExpr(cloneBindings(), Vimp.cloneIfNecessary(getValue()));
+		return new ExistsExpr(cloneBindings(), Vimp.v().cloneIfNecessary(getValue()));
 	}
 
 }

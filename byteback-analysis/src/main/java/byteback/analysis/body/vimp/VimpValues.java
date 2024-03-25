@@ -8,7 +8,7 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 
 /**
- * Additional functions that operate on Soot Values.
+ * Utility functions to work with Vimp Values.
  * @author paganma
  */
 public class VimpValues {
@@ -20,7 +20,6 @@ public class VimpValues {
     }
 
     /**
-     *
      * @param value A Soot value.
      * @return `true` if `value` may have side effects, false` otherwise.
      */

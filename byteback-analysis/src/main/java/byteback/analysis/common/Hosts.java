@@ -7,6 +7,10 @@ import byteback.analysis.scene.Annotations;
 import byteback.common.function.Lazy;
 import soot.tagkit.*;
 
+/**
+ * Utility functions to work with Soot tags.
+ * @author paganma
+ */
 public class Hosts {
 
 	private static final Lazy<Hosts> instance = Lazy.from(Hosts::new);

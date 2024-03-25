@@ -31,7 +31,7 @@ public class ForallExpr extends QuantifierExpr {
 
 	@Override
 	public ForallExpr clone() {
-		return new ForallExpr(cloneBindings(), Vimp.cloneIfNecessary(getValue()));
+		return new ForallExpr(cloneBindings(), Vimp.v().cloneIfNecessary(getValue()));
 	}
 
 }

@@ -9,7 +9,7 @@ import soot.SootMethod;
 import soot.jimple.internal.JimpleLocal;
 
 /**
- * Utility classes to work with soot methods.
+ * Utility methods to work with Soot methods.
  * @author paganma
  */
 public class Methods {

@@ -27,14 +27,13 @@ public class ThisAssumptionInserter extends BodyTransformer {
     @Override
     public void transformBody(final Body body) {
         if (!body.getMethod().isStatic()) {
-            final Unit unit = body.getThisUnit();
             final Value condition = new ImmediateConstructor(body).make(
                     Vimp.v()::newNeExpr,
                     body.getThisLocal(),
                     NullConstant.v()
             );
             final Unit assumption = Vimp.v().newAssumeStmt(condition);
-            body.getUnits().insertAfter(assumption, unit);
+            body.getUnits().addFirst(assumption);
         }
     }
 

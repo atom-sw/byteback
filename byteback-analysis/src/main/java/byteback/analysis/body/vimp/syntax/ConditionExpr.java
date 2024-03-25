@@ -26,9 +26,9 @@ public class ConditionExpr extends AbstractTernaryExpr {
     @Override
     public Object clone() {
         return new ConditionExpr(
-                Vimp.cloneIfNecessary(getOp1()),
-                Vimp.cloneIfNecessary(getOp2()),
-                Vimp.cloneIfNecessary(getOp3())
+                Vimp.v().cloneIfNecessary(getOp1()),
+                Vimp.v().cloneIfNecessary(getOp2()),
+                Vimp.v().cloneIfNecessary(getOp3())
         );
     }
 

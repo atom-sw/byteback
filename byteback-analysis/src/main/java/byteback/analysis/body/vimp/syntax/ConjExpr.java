@@ -29,7 +29,7 @@ public class ConjExpr extends AbstractLogicBinopExpr implements AndExpr {
 
 	@Override
 	public ConjExpr clone() {
-		return new ConjExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new ConjExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override

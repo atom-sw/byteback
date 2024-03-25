@@ -29,7 +29,7 @@ public class LogicLeExpr extends AbstractLogicBinopExpr implements LeExpr {
 
 	@Override
 	public LogicLeExpr clone() {
-		return new LogicLeExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new LogicLeExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class LogicEqExpr extends AbstractLogicBinopExpr implements EqExpr {
 
 	@Override
 	public LogicEqExpr clone() {
-		return new LogicEqExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new LogicEqExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override

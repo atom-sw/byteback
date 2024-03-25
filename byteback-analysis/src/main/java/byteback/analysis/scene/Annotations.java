@@ -11,7 +11,7 @@ import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 
 /**
- * Utility classes to work with annotations.
+ * Utility methods to work with Soot annotations.
  * @author paganma
  */
 public class Annotations {

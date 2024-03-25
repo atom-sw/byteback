@@ -14,6 +14,8 @@ import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 import javax.swing.text.html.Option;
+import java.io.File;
+import java.util.Map;
 
 public class Main {
 
@@ -34,20 +36,17 @@ public class Main {
 
         Options.v().set_unfriendly_mode(true);
         Options.v().set_whole_program(true);
-        Options.v().set_no_bodies_for_excluded(true);
+        Options.v().set_drop_bodies_after_load(true);
         Options.v().set_output_format(Options.output_format_none);
         Options.v().set_prepend_classpath(true);
-        Options.v().set_drop_bodies_after_load(true);
         Options.v().set_soot_classpath(Arguments.v().formatClassPaths());
         Options.v().set_throw_analysis(Options.throw_analysis_pedantic);
         Options.v().set_check_init_throw_analysis(Options.check_init_throw_analysis_pedantic);
         Options.v().classes().addAll(Arguments.v().getStartingClasses());
 
-        Options.v().classes().add("java.lang.IndexOutOfBoundsException");
-
         Options.v().setPhaseOption("jb", "use-original-names:true");
-        Options.v().setPhaseOption("cg", "enabled:true");
-        Options.v().setPhaseOption("cg.cha", "apponly:true");
+        Options.v().setPhaseOption("cg", "enabled:false");
+        Options.v().setPhaseOption("wjtp", "enabled:true");
         Options.v().setPhaseOption("jtp", "enabled:true");
 
         final Pack jtpPack = PackManager.v().getPack("jtp");
@@ -64,10 +63,17 @@ public class Main {
         jtpPack.add(new Transform("jtp.ict", IndexCheckTransformer.v()));
         jtpPack.add(new Transform("jtp.nct", NullCheckTransformer.v()));
         jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
-        jtpPack.add(new Transform("jtp.tat", ThisAssumptionInserter.v()));
+        jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
+        jtpPack.add(new Transform("jtp.cai", CaughtAssumptionInserter.v()));
         jtpPack.add(new Transform("jtp.gt", GuardTransformer.v()));
         jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
         jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
+        jtpPack.add(new Transform("jtp.print", new BodyTransformer() {
+            @Override
+            protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+                System.out.println(b);
+            }
+        }));
 
         soot.Main.v().run(new String[]{});
     }

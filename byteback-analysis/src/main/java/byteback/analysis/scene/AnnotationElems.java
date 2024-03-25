@@ -8,7 +8,7 @@ import soot.tagkit.AnnotationStringElem;
 import java.util.Optional;
 
 /**
- * Utility classes to work with annotation elements.
+ * Utility classes to extract Soot annotation elements.
  * @author paganma
  */
 public class AnnotationElems {

@@ -25,7 +25,7 @@ public class AssertStmt extends SpecificationStmt {
 
 	@Override
 	public AssertStmt clone() {
-		return new AssertStmt(Vimp.cloneIfNecessary(getCondition()));
+		return new AssertStmt(Vimp.v().cloneIfNecessary(getCondition()));
 	}
 
 	@Override

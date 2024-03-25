@@ -23,7 +23,7 @@ public class LogicInstanceOfExpr extends AbstractInstanceOfExpr implements Logic
 
 	@Override
 	public LogicInstanceOfExpr clone() {
-		return new LogicInstanceOfExpr(Vimp.cloneIfNecessary(getOp()), getCheckType());
+		return new LogicInstanceOfExpr(Vimp.v().cloneIfNecessary(getOp()), getCheckType());
 	}
 
 }

@@ -22,7 +22,7 @@ public class ImpliesExpr extends AbstractLogicBinopExpr {
 
 	@Override
 	public ImpliesExpr clone() {
-		return new ImpliesExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new ImpliesExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override

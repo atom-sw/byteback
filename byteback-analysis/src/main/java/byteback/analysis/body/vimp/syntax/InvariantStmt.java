@@ -25,7 +25,7 @@ public class InvariantStmt extends SpecificationStmt {
 
 	@Override
 	public InvariantStmt clone() {
-		return new InvariantStmt(Vimp.cloneIfNecessary(getCondition()));
+		return new InvariantStmt(Vimp.v().cloneIfNecessary(getCondition()));
 	}
 
 	@Override

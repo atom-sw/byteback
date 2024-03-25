@@ -20,7 +20,7 @@ public class IndexCheckTransformer extends CheckTransformer {
     private static final Lazy<IndexCheckTransformer> instance = Lazy.from(IndexCheckTransformer::new);
 
     private IndexCheckTransformer() {
-        super(Scene.v().getSootClass("java.lang.IndexOutOfBoundsException"));
+        super("java.lang.IndexOutOfBoundsException");
     }
 
     public static IndexCheckTransformer v() {

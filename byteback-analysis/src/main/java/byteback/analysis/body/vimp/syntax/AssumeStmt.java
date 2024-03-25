@@ -25,7 +25,7 @@ public class AssumeStmt extends SpecificationStmt {
 
 	@Override
 	public AssumeStmt clone() {
-		return new AssumeStmt(Vimp.cloneIfNecessary(getCondition()));
+		return new AssumeStmt(Vimp.v().cloneIfNecessary(getCondition()));
 	}
 
 	@Override

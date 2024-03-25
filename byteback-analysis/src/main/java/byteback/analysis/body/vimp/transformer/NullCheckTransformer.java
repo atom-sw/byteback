@@ -18,7 +18,7 @@ public class NullCheckTransformer extends CheckTransformer {
     private static final Lazy<NullCheckTransformer> instance = Lazy.from(NullCheckTransformer::new);
 
     private NullCheckTransformer() {
-        super(Scene.v().getSootClass("java.lang.NullPointerException"));
+        super("java.lang.NullPointerException");
     }
 
     public static NullCheckTransformer v() {

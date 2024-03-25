@@ -29,7 +29,7 @@ public class LogicNeExpr extends AbstractLogicBinopExpr implements NeExpr {
 
 	@Override
 	public LogicNeExpr clone() {
-		return new LogicNeExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new LogicNeExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class LogicGtExpr extends AbstractLogicBinopExpr implements GtExpr {
 
 	@Override
 	public LogicGtExpr clone() {
-		return new LogicGtExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new LogicGtExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override

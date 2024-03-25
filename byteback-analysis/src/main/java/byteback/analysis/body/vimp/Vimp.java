@@ -1,6 +1,5 @@
 package byteback.analysis.body.vimp;
 
-import byteback.analysis.body.common.syntax.TrapDelimiter;
 import byteback.analysis.body.vimp.syntax.*;
 import byteback.common.function.Lazy;
 import soot.*;
@@ -23,7 +22,7 @@ public class Vimp {
         return instance.get();
     }
 
-    public static Value cloneIfNecessary(final Value value) {
+    public Value cloneIfNecessary(final Value value) {
         if (value instanceof Local || value instanceof Constant) {
             return value;
         } else {
@@ -179,6 +178,10 @@ public class Vimp {
 
     public NestedExpr newNestedExpr(final AssignStmt def) {
         return new NestedExpr(def);
+    }
+
+    public IfStmt newIfStmt(final Value condition, final Unit target) {
+        return new NestedIfStmt(condition, target);
     }
 
 }

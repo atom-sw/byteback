@@ -45,7 +45,7 @@ public class ClassAnnotationPropagator extends SceneTransformer {
                 continue;
             }
 
-            final SootClass hostClass = Scene.v().getSootClass(ClassNames.stripDescriptor(value));
+            final SootClass hostClass = Scene.v().getSootClass(ClassNames.v().stripDescriptor(value));
             final List<SootMethod> methodsSnapshot = new ArrayList<>(attachedClass.getMethods());
 
             for (final SootMethod attachedMethod : methodsSnapshot) {

@@ -40,7 +40,7 @@ public class CallExpr extends AbstractInvokeExpr implements Immediate {
         List<Value> clonedArgs = new ArrayList<>(count);
 
         for (int i = 0; i < count; i++) {
-            clonedArgs.add(Vimp.cloneIfNecessary(getArg(i)));
+            clonedArgs.add(Vimp.v().cloneIfNecessary(getArg(i)));
         }
 
         return new CallExpr(methodRef, clonedArgs);

@@ -29,7 +29,7 @@ public class LogicXorExpr extends AbstractLogicBinopExpr implements XorExpr {
 
 	@Override
 	public LogicXorExpr clone() {
-		return new LogicXorExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new LogicXorExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override

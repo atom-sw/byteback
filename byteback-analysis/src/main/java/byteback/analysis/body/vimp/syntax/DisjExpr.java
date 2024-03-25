@@ -22,7 +22,7 @@ public class DisjExpr extends AbstractLogicBinopExpr implements OrExpr {
 	}
 
 	public DisjExpr clone() {
-		return new DisjExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new DisjExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override

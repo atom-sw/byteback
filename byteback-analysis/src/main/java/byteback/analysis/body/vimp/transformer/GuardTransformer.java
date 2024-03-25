@@ -1,9 +1,8 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.common.syntax.TrapRangeMap;
+import byteback.analysis.body.common.syntax.TrapNestTree;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.common.function.Lazy;
 
 import java.util.*;
@@ -43,42 +42,22 @@ public class GuardTransformer extends BodyTransformer {
     public void transformBody(final Body body) {
         final Chain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
-        final var trapRanges = new TrapRangeMap(body);
-        units.addFirst(Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), VoidConstant.v()));
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
 
             if (unit instanceof ThrowStmt throwUnit) {
-                final Unit retUnit = Grimp.v().newReturnVoidStmt();
+                final Unit baseUnit = Grimp.v().newReturnVoidStmt();
 
-                units.insertBefore(retUnit, throwUnit);
-                throwUnit.redirectJumpsToThisTo(retUnit);
+                units.insertBefore(baseUnit, throwUnit);
+                throwUnit.redirectJumpsToThisTo(baseUnit);
                 units.remove(throwUnit);
 
-                final Unit assignUnit;
-
-                if (throwUnit.getOp() instanceof CaughtExceptionRef) {
-                    assignUnit = units.getPredOf(retUnit);
-                } else {
-                    assignUnit = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), throwUnit.getOp());
-                    units.insertBefore(assignUnit, retUnit);
-                    retUnit.redirectJumpsToThisTo(assignUnit);
-                }
-
-                Unit indexUnit = assignUnit;
-
-                if (throwUnit.getOp().getType() instanceof RefType) {
-                    final Trap[] activeTraps = trapRanges.trapsAt(throwUnit).toArray(Trap[]::new);
-
-                    for (int i = activeTraps.length - 1; i >= 0; --i) {
-                        final Trap activeTrap = activeTraps[i];
-                        final RefType trapType = activeTrap.getException().getType();
-                        final Value behavior = Jimple.v().newInstanceOfExpr(Vimp.v().newCaughtExceptionRef(), trapType);
-                        final Unit ifUnit = Jimple.v().newIfStmt(behavior, activeTrap.getHandlerUnit());
-                        units.insertAfter(ifUnit, indexUnit);
-                        indexUnit = ifUnit;
-                    }
+                // If we are throwing the current @caughtexception, then there is no need to assign it.
+                if (!(throwUnit.getOp() instanceof CaughtExceptionRef)) {
+                    final Unit assignUnit = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), throwUnit.getOp());
+                    units.insertBefore(assignUnit, baseUnit);
+                    baseUnit.redirectJumpsToThisTo(assignUnit);
                 }
             }
         }

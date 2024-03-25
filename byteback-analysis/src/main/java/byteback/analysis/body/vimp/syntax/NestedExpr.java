@@ -78,11 +78,6 @@ public class NestedExpr extends JimpleLocal {
     }
 
     @Override
-    public NestedExpr clone() {
-        return new NestedExpr((AssignStmt) definition.clone());
-    }
-
-    @Override
     public boolean equivTo(final Object object) {
         return object instanceof final NestedExpr assignStmt
                 && assignStmt.getDefinition().getLeftOp().equivTo(definition.getLeftOp())

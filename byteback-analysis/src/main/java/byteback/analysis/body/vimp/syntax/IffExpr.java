@@ -18,7 +18,7 @@ public class IffExpr extends AbstractLogicBinopExpr {
 
 	@Override
 	public IffExpr clone() {
-		return new IffExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new IffExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class LogicGeExpr extends AbstractLogicBinopExpr implements GeExpr {
 
 	@Override
 	public LogicGeExpr clone() {
-		return new LogicGeExpr(Vimp.cloneIfNecessary(getOp1()), Vimp.cloneIfNecessary(getOp2()));
+		return new LogicGeExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
 	}
 
 	@Override
