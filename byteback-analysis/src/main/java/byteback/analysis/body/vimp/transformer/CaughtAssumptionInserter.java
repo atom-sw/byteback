@@ -1,7 +1,7 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.ImmediateConstructor;
+import byteback.analysis.body.vimp.NestedExprConstructor;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
 import byteback.common.function.Lazy;
@@ -27,13 +27,13 @@ public class CaughtAssumptionInserter extends BodyTransformer {
 
     @Override
     public void transformBody(final Body body) {
-        final Value condition = new ImmediateConstructor(body).make(
+        final Value condition = new NestedExprConstructor(body).make(
                 Vimp.v()::newEqExpr,
                 Vimp.v().newCaughtExceptionRef(),
                 VoidConstant.v()
         );
-        final Unit assumption = Vimp.v().newAssumeStmt(condition);
-        body.getUnits().addFirst(assumption);
+        final Unit assertUnit = Vimp.v().newAssertStmt(condition);
+        body.getUnits().addFirst(assertUnit);
     }
 
 }

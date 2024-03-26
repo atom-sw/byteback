@@ -1,6 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.vimp.ImmediateConstructor;
+import byteback.analysis.body.vimp.NestedExprConstructor;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.function.Lazy;
 import soot.*;
@@ -28,7 +28,7 @@ public class IndexCheckTransformer extends CheckTransformer {
     }
 
     @Override
-    public Optional<Value> makeUnitCheck(final ImmediateConstructor checkConstructor, final Unit unit) {
+    public Optional<Value> makeUnitCheck(final NestedExprConstructor checkConstructor, final Unit unit) {
         if (unit instanceof AssignStmt assignStmt && assignStmt.getLeftOp() instanceof ArrayRef arrayRef) {
             final Value indexValue = arrayRef.getIndex();
             final Value arrayBase = arrayRef.getBase();

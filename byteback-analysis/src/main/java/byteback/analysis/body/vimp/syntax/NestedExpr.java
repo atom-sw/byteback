@@ -11,7 +11,11 @@ import java.util.Stack;
 
 /**
  * An expression that can be nested on multiple levels, breaking the three-address-code form of Jimple. Each
- * subexpression must be indirectly associated to a Local assignment.
+ * subexpression must be indirectly associated to an assignment to a local variable.
+ * Nested expressions can be treated as locals in a way that does not break the three-address-code form of the
+ * representation. It is always possible given a nested expression to extract an equivalent sequence of local
+ * assignments, and hence they can be considered as a convenient mean to creating more complex and idiomatic
+ * expressions.
  * @author paganma
  */
 public class NestedExpr extends JimpleLocal {
@@ -30,11 +34,17 @@ public class NestedExpr extends JimpleLocal {
         this.definition = definition;
     }
 
-    public AssignStmt getDefinition() {
+    /**
+     * @return The definition associated to this expression.
+     */
+    public AssignStmt getDef() {
         return definition;
     }
 
-    public final ArrayList<AssignStmt> getInnerDefinitions() {
+    /**
+     * @return The chain of definitions associated to this expression.
+     */
+    public final ArrayList<AssignStmt> getInnerDefs() {
         final var innerDefinitions = new ArrayList<AssignStmt>();
         final var nextNestedExprs = new Stack<NestedExpr>();
 
@@ -44,7 +54,7 @@ public class NestedExpr extends JimpleLocal {
             final NestedExpr nestedExpr = nextNestedExprs.pop();
 
             if (nestedExpr.getValue() instanceof NestedExpr subExpr) {
-                innerDefinitions.add(subExpr.getDefinition());
+                innerDefinitions.add(subExpr.getDef());
                 nextNestedExprs.add(subExpr);
             }
         }
@@ -80,8 +90,8 @@ public class NestedExpr extends JimpleLocal {
     @Override
     public boolean equivTo(final Object object) {
         return object instanceof final NestedExpr assignStmt
-                && assignStmt.getDefinition().getLeftOp().equivTo(definition.getLeftOp())
-                && assignStmt.getDefinition().getRightOp().equivTo(definition.getRightOp());
+                && assignStmt.getDef().getLeftOp().equivTo(definition.getLeftOp())
+                && assignStmt.getDef().getRightOp().equivTo(definition.getRightOp());
     }
 
     @Override

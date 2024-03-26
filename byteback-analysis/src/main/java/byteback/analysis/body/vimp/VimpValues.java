@@ -20,7 +20,7 @@ public class VimpValues {
     }
 
     /**
-     * @param value A Soot value.
+     * @param value A Vimp value.
      * @return `true` if `value` may have side effects, false` otherwise.
      */
     public boolean hasSideEffects(final Value value) {
@@ -30,7 +30,7 @@ public class VimpValues {
     }
 
     /**
-     * @param value A Soot value.
+     * @param value A Vimp value.
      * @return `true` if `value` is an invoke expression and may have side effects, false` otherwise.
      */
     public boolean isStatefulInvoke(final Value value) {

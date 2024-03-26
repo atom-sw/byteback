@@ -14,14 +14,14 @@ import soot.jimple.Jimple;
  * conversion of invocations to the methods of Soot's soot.dummy.InvokeDynamic class.
  * @author paganma
  */
-public class DynamicInvokeResolver extends BodyTransformer {
+public class DynamicInvokeToStaticResolver extends BodyTransformer {
 
-    private static final Lazy<DynamicInvokeResolver> instance = Lazy.from(DynamicInvokeResolver::new);
+    private static final Lazy<DynamicInvokeToStaticResolver> instance = Lazy.from(DynamicInvokeToStaticResolver::new);
 
-    private DynamicInvokeResolver() {
+    private DynamicInvokeToStaticResolver() {
     }
 
-    public static DynamicInvokeResolver v() {
+    public static DynamicInvokeToStaticResolver v() {
         return instance.get();
     }
 
@@ -31,7 +31,8 @@ public class DynamicInvokeResolver extends BodyTransformer {
             final Value value = valueBox.getValue();
 
             if (value instanceof DynamicInvokeExpr invokeDynamicExpr) {
-                valueBox.setValue(Jimple.v().newStaticInvokeExpr(invokeDynamicExpr.getMethodRef(), invokeDynamicExpr.getArgs()));
+                valueBox.setValue(Jimple.v().newStaticInvokeExpr(invokeDynamicExpr.getMethodRef(),
+                        invokeDynamicExpr.getArgs()));
             }
         }
     }

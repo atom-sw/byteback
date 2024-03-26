@@ -2,6 +2,7 @@ plugins {
     id 'byteback.java-common-conventions'
     id 'byteback.java-integration-conventions'
     id 'application'
+    id 'org.graalvm.buildtools.native' version '0.10.1'
 }
 
 dependencies {
@@ -15,4 +16,20 @@ dependencies {
 
 application {
     mainClass = 'byteback.tool.Main'
+}
+
+graalvmNative {
+    binaries {
+        main {
+            imageName = "byteback-fast"
+            mainClass = "byteback.tool.Main"
+            buildArgs.add("-O4")
+        }
+        test {
+            buildArgs.add("-O0")
+        }
+    }
+    binaries.all {
+        buildArgs.add("--verbose")
+    }
 }

@@ -3,6 +3,7 @@ package byteback.analysis.common;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import byteback.analysis.common.tag.LocationTag;
 import byteback.analysis.scene.Annotations;
 import byteback.common.function.Lazy;
 import soot.tagkit.*;

@@ -1,6 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.vimp.ImmediateConstructor;
+import byteback.analysis.body.vimp.NestedExprConstructor;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.function.Lazy;
 
@@ -26,7 +26,7 @@ public class NullCheckTransformer extends CheckTransformer {
     }
 
     @Override
-    public Optional<Value> makeUnitCheck(final ImmediateConstructor checkConstructor, final Unit unit) {
+    public Optional<Value> makeUnitCheck(final NestedExprConstructor checkConstructor, final Unit unit) {
         Value base = null;
 
         if (unit instanceof AssignStmt assignStmt) {

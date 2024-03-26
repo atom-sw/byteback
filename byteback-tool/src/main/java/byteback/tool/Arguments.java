@@ -23,7 +23,7 @@ public class Arguments {
     @Parameter(names = "--help", help = true)
     private boolean help;
 
-    @Parameter(names = {"-cp", "--classpath"}, description = "Classpath to be converted", required = true)
+    @Parameter(names = {"-cp", "--classpath"}, description = "Conversion classpath", required = true)
     private List<Path> classPaths;
 
     @Parameter(names = {"-c", "--class"}, description = "Starting class for the conversion", required = true)

@@ -1,7 +1,7 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.ImmediateConstructor;
+import byteback.analysis.body.vimp.NestedExprConstructor;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.function.Lazy;
 import soot.Body;
@@ -27,7 +27,7 @@ public class ThisAssumptionInserter extends BodyTransformer {
     @Override
     public void transformBody(final Body body) {
         if (!body.getMethod().isStatic()) {
-            final Value condition = new ImmediateConstructor(body).make(
+            final Value condition = new NestedExprConstructor(body).make(
                     Vimp.v()::newNeExpr,
                     body.getThisLocal(),
                     NullConstant.v()

@@ -32,7 +32,7 @@ public class ConditionalExprTransformer extends ValueTransformer {
                 final SootMethod method = invokeExpr.getMethod();
 
                 if (method.getName().equals("condition")) {
-                    valueBox.setValue(Vimp.v().newOldExpr(invokeExpr.getArg(0)));
+                    /* TODO */
                 }
             }
         }

@@ -1,7 +1,7 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
-import byteback.analysis.body.vimp.ImmediateConstructor;
+import byteback.analysis.body.vimp.NestedExprConstructor;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -28,7 +28,7 @@ public abstract class CheckTransformer extends BodyTransformer {
         this.exceptionClassName = exceptionClassName;
     }
 
-    public abstract Optional<Value> makeUnitCheck(final ImmediateConstructor builder, final Unit unit);
+    public abstract Optional<Value> makeUnitCheck(final NestedExprConstructor builder, final Unit unit);
 
     public SootClass getExceptionClass() {
         assert Scene.v().doneResolving();
@@ -63,7 +63,7 @@ public abstract class CheckTransformer extends BodyTransformer {
         final LocalGenerator localGenerator = Scene.v().createLocalGenerator(body);
         final Supplier<Local> exceptionLocalSupplier = () ->
                 localGenerator.generateLocal(getExceptionClass().getType());
-        final ImmediateConstructor builder = new ImmediateConstructor(localGenerator);
+        final NestedExprConstructor builder = new NestedExprConstructor(localGenerator);
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();

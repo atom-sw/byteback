@@ -3,7 +3,7 @@
 pkgs.mkShell {
 
   buildInputs = [
-    pkgs.openjdk17
+    pkgs.graalvm-ce
     (pkgs.python3.withPackages(
       packages: with packages; [pandas lit filecheck click]
     ))

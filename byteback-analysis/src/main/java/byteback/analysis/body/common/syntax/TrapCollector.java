@@ -8,7 +8,11 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class TrapTracker implements Iterator<Unit> {
+/**
+ * Wraps a unit iterator to provide information on which traps are active at the current unit.
+ * @author paganma
+ */
+public class TrapCollector implements Iterator<Unit> {
 
 
     private final Iterator<Unit> unitIterator;
@@ -19,7 +23,7 @@ public class TrapTracker implements Iterator<Unit> {
 
     private final HashMap<Unit, ArrayDeque<Trap>> endToTraps;
 
-    public TrapTracker(final Iterator<Unit> unitIterator, final Iterable<Trap> traps) {
+    public TrapCollector(final Iterator<Unit> unitIterator, final Iterable<Trap> traps) {
         this.unitIterator = unitIterator;
         this.activeTraps = new ArrayDeque<>();
         this.startToTraps = new HashMap<>();
