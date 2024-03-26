@@ -46,7 +46,6 @@ public class Main {
 
         Options.v().setPhaseOption("jb", "use-original-names:true");
         Options.v().setPhaseOption("cg", "enabled:false");
-        Options.v().setPhaseOption("wjtp", "enabled:true");
         Options.v().setPhaseOption("jtp", "enabled:true");
 
         final Pack jtpPack = PackManager.v().getPack("jtp");

@@ -1,6 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.common.syntax.TrapNestTree;
+import byteback.analysis.body.common.syntax.TrapTracker;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.common.function.Lazy;
@@ -23,8 +23,8 @@ import soot.util.Chain;
  * ``` java
  * if (@caughtexception instanceof e) goto handler;
  * ```
- * At the end of these checks, we simply attach a `return` statement, signaling that the method will return without
- * yielding any value, leaving the caller method to check for eventually thrown exceptions.
+ * At the end of these checks, we simply append a `return` statement, signaling that the method will return without
+ * yielding any value, leaving the caller method to check for the exceptions that were unchecked in the called method.
  * @author paganma
  */
 public class GuardTransformer extends BodyTransformer {
@@ -41,7 +41,7 @@ public class GuardTransformer extends BodyTransformer {
     @Override
     public void transformBody(final Body body) {
         final Chain<Unit> units = body.getUnits();
-        final Iterator<Unit> unitIterator = units.snapshotIterator();
+        final var unitIterator = new TrapTracker(units.snapshotIterator(), body.getTraps());
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
@@ -52,6 +52,8 @@ public class GuardTransformer extends BodyTransformer {
                 units.insertBefore(baseUnit, throwUnit);
                 throwUnit.redirectJumpsToThisTo(baseUnit);
                 units.remove(throwUnit);
+
+                System.out.println(unitIterator.getActiveTraps());
 
                 // If we are throwing the current @caughtexception, then there is no need to assign it.
                 if (!(throwUnit.getOp() instanceof CaughtExceptionRef)) {
