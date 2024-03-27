@@ -1,77 +1,146 @@
 package byteback.tool;
 
-import byteback.analysis.body.jimple.transformer.CallExprTransformer;
-import byteback.analysis.body.jimple.transformer.OldExprTransformer;
-import byteback.analysis.body.jimple.transformer.VimpValueBodyTransformer;
+import byteback.analysis.body.jimple.transformer.*;
 import byteback.analysis.body.vimp.transformer.*;
-import com.beust.jcommander.ParameterException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import soot.*;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
-public class Main {
+@Command(name = "byteback", mixinStandardHelpOptions = true, description = "")
+public class Main implements Callable<Integer> {
 
-    public static final Logger log = LoggerFactory.getLogger(Main.class);
+	@Option(names = "--help", help = true)
+	private boolean help;
 
-    public static void main(final String[] args) {
-        final long startTime = System.currentTimeMillis();
+	@Option(names = {"-cp", "--classpath"}, description = "Conversion classpath", required = true)
+	private List<Path> classPaths;
 
-        Arguments.v().parse(args);
+	@Option(names = {"-c", "--class"}, description = "Starting class for the conversion", required = true)
+	private List<String> startingClasses;
 
-        try {
-            if (Arguments.v().getHelp()) {
-                Arguments.v().getJCommander().usage();
-                return;
-            }
-        } catch (final ParameterException exception) {
-            log.error("Error while parsing program arguments: {}", exception.getMessage());
-            exception.getJCommander().usage();
-        }
+	@Option(names = {"-p", "--prelude"}, description = "Path to the prelude file")
+	private Path preludePath;
 
-        Options.v().set_unfriendly_mode(true);
-        Options.v().set_whole_program(true);
-        Options.v().set_no_bodies_for_excluded(true);
-        Options.v().set_drop_bodies_after_load(true);
-        Options.v().set_output_format(Options.output_format_none);
-        Options.v().set_prepend_classpath(true);
-        Options.v().set_soot_classpath(Arguments.v().formatClassPaths());
-        Options.v().set_throw_analysis(Options.throw_analysis_pedantic);
-        Options.v().set_check_init_throw_analysis(Options.check_init_throw_analysis_pedantic);
-        Options.v().classes().addAll(Arguments.v().getStartingClasses());
+	@Option(names = {"--npe"}, description = "Models implicit NullPointerExceptions")
+	public boolean transformNullCheck = false;
 
-        Options.v().setPhaseOption("jb", "use-original-names:true");
-        Options.v().setPhaseOption("cg", "enabled:false");
-        Options.v().setPhaseOption("jtp", "enabled:true");
+	@Option(names = {"--iobe"}, description = "Models implicit IndexOutOfBoundsExceptions")
+	public boolean transformArrayCheck = false;
 
-        final Pack jtpPack = PackManager.v().getPack("jtp");
+	@Option(names = {"-o", "--output"}, description = "Path to the output verification conditions")
+	private Path outputPath;
 
-        jtpPack.add(new Transform("jtp.ii", InvokeFilter.v()));
-        jtpPack.add(new Transform("jtp.dir", DynamicInvokeToStaticResolver.v()));
-        jtpPack.add(new Transform("jtp.vvt", VimpValueBodyTransformer.v()));
-        jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
-        jtpPack.add(new Transform("jtp.oet", OldExprTransformer.v()));
-        jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
-        jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-        jtpPack.add(new Transform("jtp.btg", BehaviorMethodTagger.v()));
-        jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
-        jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
-        jtpPack.add(new Transform("jtp.ict", IndexCheckTransformer.v()));
-        jtpPack.add(new Transform("jtp.nct", NullCheckTransformer.v()));
-        jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
-        jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
-        jtpPack.add(new Transform("jtp.cai", CaughtAssumptionInserter.v()));
-        jtpPack.add(new Transform("jtp.gt", GuardTransformer.v()));
-        jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
-        jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
+	public boolean getHelp() {
+		return help;
+	}
 
-        soot.Main.v().run(new String[]{});
+	public List<Path> getClassPaths() {
+		return classPaths;
+	}
 
-        final long endTime = System.currentTimeMillis();
+	public String formatClassPaths() {
+		StringBuilder finalClassPath = new StringBuilder();
 
-        System.out.println("Precise time (ms): ");
-        System.out.println(endTime - startTime);
-    }
+		for (final Path cp : getClassPaths()) {
+			finalClassPath.append(File.pathSeparator).append(cp);
+		}
+
+		return finalClassPath.toString();
+	}
+
+	public List<String> getStartingClasses() {
+		return startingClasses;
+	}
+
+	public Path getPreludePath() {
+		return preludePath;
+	}
+
+	public Path getOutputPath() {
+		return outputPath;
+	}
+
+	public boolean getTransformNullCheck() {
+		return transformNullCheck;
+	}
+
+	public boolean getTransformArrayCheck() {
+		return transformArrayCheck;
+	}
+
+	public Integer call() throws Exception {
+		final long startTime = System.currentTimeMillis();
+
+		// We will add the classes using Options.v().classes, instead of using the Soot main.
+		Options.v().set_unfriendly_mode(true);
+		Options.v().classes().addAll(getStartingClasses());
+
+		// For now ByteBack will not produce any output. Especially since we still haven't defined how Vimp should be
+		// compiled.
+		Options.v().set_output_format(Options.output_format_none);
+
+		// By default, Soot includes the $CLASSPATH env variable. To this we append the classpath specified by the
+		// user.
+		Options.v().set_prepend_classpath(true);
+		Options.v().set_soot_classpath(formatClassPaths());
+
+		// Keeping the original names makes debugging the output simpler (though it is not strictly necessary).
+		Options.v().setPhaseOption("jb", "use-original-names:true");
+
+		// We will put most of the transformations needed before the conversion to the IVL in this pack.
+		Options.v().setPhaseOption("jtp", "enabled:true");
+
+		final Pack jtpPack = PackManager.v().getPack("jtp");
+
+		jtpPack.add(new Transform("jtp.ii", InvokeFilter.v()));
+		jtpPack.add(new Transform("jtp.dir", DynamicInvokeToStaticResolver.v()));
+		jtpPack.add(new Transform("jtp.vvt", VimpValueBodyTransformer.v()));
+		jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
+		jtpPack.add(new Transform("jtp.oet", OldExprTransformer.v()));
+		jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
+		jtpPack.add(new Transform("jtp.cot", ConditionalExprTransformer.v()));
+		jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
+		jtpPack.add(new Transform("jtp.btg", BehaviorMethodTagger.v()));
+		jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
+		jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
+		jtpPack.add(new Transform("jtp.ict", IndexCheckTransformer.v()));
+		jtpPack.add(new Transform("jtp.nct", NullCheckTransformer.v()));
+		jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
+		jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
+		jtpPack.add(new Transform("jtp.cai", CaughtAssumptionInserter.v()));
+		jtpPack.add(new Transform("jtp.gt", GuardTransformer.v()));
+		jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
+		jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
+		jtpPack.add(new Transform("jtp.rel", ReturnEliminator.v()));
+
+		jtpPack.add((new Transform("jtp.print", new BodyTransformer() {
+			@Override
+			protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+				System.out.println(body);
+			}
+		})));
+
+		soot.Main.v().run(new String[]{});
+
+		final long endTime = System.currentTimeMillis();
+
+		System.out.println("Precise time (ms): ");
+		System.out.println(endTime - startTime);
+
+		return 0;
+	}
+
+	public static void main(final String... args) {
+		int exitCode = new CommandLine(new Main()).execute(args);
+		System.exit(exitCode);
+	}
 
 }

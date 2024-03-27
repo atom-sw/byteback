@@ -1,6 +1,7 @@
 package byteback.analysis.body.vimp.visitor;
 
 import byteback.analysis.body.vimp.syntax.ConditionExpr;
+import byteback.analysis.body.vimp.syntax.ReturnRef;
 import byteback.analysis.common.visitor.Visitor;
 import byteback.analysis.body.vimp.syntax.OldExpr;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
@@ -16,8 +17,12 @@ public interface SpecialExprSwitch<T> extends Visitor<Value, T> {
 		defaultCase(v);
 	}
 
-	default void caseConditionExpr(final ConditionExpr conditionExpr) {
+	default void caseConditionalExpr(final ConditionExpr conditionExpr) {
 		defaultCase(conditionExpr);
+	}
+
+	default void caseReturnRef(final ReturnRef returnRef) {
+		defaultCase(returnRef);
 	}
 
 }

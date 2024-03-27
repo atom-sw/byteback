@@ -58,7 +58,7 @@ public class ConditionExpr extends AbstractTernaryExpr {
     @Override
     public void apply(final Switch visitor) {
         if (visitor instanceof SpecialExprSwitch<?> specialExprSwitch) {
-            specialExprSwitch.caseConditionExpr(this);
+            specialExprSwitch.caseConditionalExpr(this);
         }
     }
 }

@@ -13,6 +13,7 @@ import byteback.common.function.Lazy;
 import java.util.Set;
 
 import soot.Body;
+import soot.Scene;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.CaughtExceptionRef;
@@ -58,7 +59,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
                 final AssertStmt assertUnit = Vimp.v().newAssertStmt(behaviorValue);
                 final Unit target;
 
-                // The `getTarget()` method for IfStmt is different to that of GotoStmt, hence the two pattern matches.
+                // The `getTarget()` method for IfStmt is different to that of GotoStmt, hence the two matches.
                 if (loopExit instanceof IfStmt ifExit) {
                     target = ifExit.getTarget();
                 } else if (loopExit instanceof GotoStmt gotoStmt) {

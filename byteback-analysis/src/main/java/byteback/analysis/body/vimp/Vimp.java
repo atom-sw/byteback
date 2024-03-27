@@ -1,6 +1,7 @@
 package byteback.analysis.body.vimp;
 
 import byteback.analysis.body.vimp.syntax.*;
+import byteback.analysis.body.vimp.syntax.ConditionExpr;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.*;
@@ -174,6 +175,10 @@ public class Vimp {
 
     public OldExpr newOldExpr(final ValueBox opBox) {
         return new OldExpr(opBox);
+    }
+
+    public ConditionExpr newConditionExpr(final Value op1, final Value op2, final Value op3) {
+        return new ConditionExpr(op1, op2, op3);
     }
 
     public NestedExpr newNestedExpr(final AssignStmt def) {

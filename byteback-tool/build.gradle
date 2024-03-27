@@ -2,7 +2,7 @@ plugins {
     id 'byteback.java-common-conventions'
     id 'byteback.java-integration-conventions'
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.10.1'
+    //id 'org.graalvm.buildtools.native' version '0.10.1'
 }
 
 dependencies {
@@ -10,26 +10,31 @@ dependencies {
     implementation project(':byteback-analysis')
     implementation project(':byteback-encoder:boogie-encoder')
     implementation 'org.soot-oss:soot:4.3.0'
-    implementation 'com.beust:jcommander:1.+'
-    implementation 'org.slf4j:slf4j-simple:1.6.1'
+		implementation 'info.picocli:picocli:4.7.5'
+		annotationProcessor 'info.picocli:picocli-codegen:4.7.5'
+}
+
+
+compileJava {
+    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
 }
 
 application {
     mainClass = 'byteback.tool.Main'
 }
 
-graalvmNative {
-    binaries {
-        main {
-            imageName = "byteback-fast"
-            mainClass = "byteback.tool.Main"
-            buildArgs.add("-O4")
-        }
-        test {
-            buildArgs.add("-O0")
-        }
-    }
-    binaries.all {
-        buildArgs.add("--verbose")
-    }
-}
+//graalvmNative {
+//    binaries {
+//        main {
+//            imageName = "byteback-fast"
+//            mainClass = "byteback.tool.Main"
+//            buildArgs.add("-O4")
+//        }
+//        test {
+//            buildArgs.add("-O0")
+//        }
+//    }
+//    binaries.all {
+//        buildArgs.add("--verbose")
+//    }
+//}

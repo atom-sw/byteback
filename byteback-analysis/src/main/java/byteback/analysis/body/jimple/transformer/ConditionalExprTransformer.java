@@ -5,6 +5,7 @@ import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.common.namespace.BBLibNames;
 import byteback.common.function.Lazy;
 import soot.SootMethod;
+import soot.SootMethodRef;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 
@@ -26,15 +27,22 @@ public class ConditionalExprTransformer extends ValueTransformer {
     @Override
     public void transformValue(final ValueBox valueBox) {
         if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
-            final SootMethod invokedMethod = invokeExpr.getMethod();
+            final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
 
-            if (BBLibNames.v().isSpecialClass(invokedMethod.getDeclaringClass())) {
-                final SootMethod method = invokeExpr.getMethod();
-
-                if (method.getName().equals("condition")) {
-                    /* TODO */
+            if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {
+                if (invokedMethodRef.getName().equals("conditional")) {
+                    assert invokeExpr.getArgs().size() == 3
+                            : "BBLib's definition of conditional takes only 3 arguments";
+                    valueBox.setValue(
+                            Vimp.v().newConditionExpr(
+                                    invokeExpr.getArg(0),
+                                    invokeExpr.getArg(1),
+                                    invokeExpr.getArg(2)
+                            )
+                    );
                 }
             }
         }
     }
+
 }
