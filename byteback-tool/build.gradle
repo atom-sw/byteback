@@ -21,6 +21,7 @@ compileJava {
 
 application {
     mainClass = 'byteback.tool.Main'
+    applicationDefaultJvmArgs = ['-XX:ActiveProcessorCount=2']
 }
 
 //graalvmNative {

@@ -1,6 +1,5 @@
 package byteback.analysis.common.tag;
 
-import byteback.analysis.common.Hosts;
 import soot.tagkit.*;
 
 import java.util.Optional;
@@ -26,18 +25,14 @@ public class LocationTag implements Tag {
 
         for (final Host host : hosts) {
             if (path == null) {
-                final Optional<SourceFileTag> sourceTagOptional  =
-                    Hosts.v().getTag(host, "SourceFileTag")
-                            .map(SourceFileTag.class::cast);
+                final Optional<SourceFileTag> sourceTagOptional  = SourceFileReader.v().get(host);
 
                 if (sourceTagOptional.isPresent()) {
                     path = sourceTagOptional.get().getAbsolutePath();
                 }
             }
 
-            final Optional<LineNumberTag> lineNumberTagOptional =
-                    Hosts.v().getTag(host, "LineNumberTag")
-                            .map(LineNumberTag.class::cast);
+            final Optional<LineNumberTag> lineNumberTagOptional = LineNumberReader.v().get(host);
 
             if (lineNumberTagOptional.isPresent()) {
                 final int newLine = lineNumberTagOptional.get().getLineNumber();

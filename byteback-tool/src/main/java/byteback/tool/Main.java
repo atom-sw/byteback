@@ -108,7 +108,7 @@ public class Main implements Callable<Integer> {
 		jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
 		jtpPack.add(new Transform("jtp.cot", ConditionalExprTransformer.v()));
 		jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-		jtpPack.add(new Transform("jtp.btg", BehaviorMethodTagger.v()));
+		jtpPack.add(new Transform("jtp.btg", BehaviorMethodValidator.v()));
 		jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
 		jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
 		jtpPack.add(new Transform("jtp.ict", IndexCheckTransformer.v()));
@@ -120,13 +120,16 @@ public class Main implements Callable<Integer> {
 		jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
 		jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
 		jtpPack.add(new Transform("jtp.rel", ReturnEliminator.v()));
-		
-		jtpPack.add((new Transform("jtp.print", new BodyTransformer() {
-			@Override
-			protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-				System.out.println(body);
-			}
-		})));
+		jtpPack.add(new Transform("jtp.fcf", FrameConditionFinder.v()));
+
+		//jtpPack.add((new Transform("jtp.print", new BodyTransformer() {
+
+		//	@Override
+		//	protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+		//		System.out.println(body);
+		//	}
+
+		//})));
 
 		soot.Main.v().run(new String[]{});
 
@@ -138,7 +141,8 @@ public class Main implements Callable<Integer> {
 		return 0;
 	}
 
-	public static void main(final String... args) {
+	public static void main(final String... args) throws Exception {
+		// Thread.sleep(10000L); For attaching the visualvm
 		int exitCode = new CommandLine(new Main()).execute(args);
 		System.exit(exitCode);
 	}

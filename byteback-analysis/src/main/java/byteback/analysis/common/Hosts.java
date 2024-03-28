@@ -3,7 +3,7 @@ package byteback.analysis.common;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import byteback.analysis.common.tag.LocationTag;
+import byteback.analysis.common.tag.VisibilityAnnotationReader;
 import byteback.analysis.scene.Annotations;
 import byteback.common.function.Lazy;
 import soot.tagkit.*;
@@ -24,22 +24,9 @@ public class Hosts {
 	private Hosts() {
 	}
 
-	public Optional<Tag> getTag(final Host host, final String name) {
-		return Optional.ofNullable(host.getTag(name));
-	}
-
-	public boolean hasTag(final Host host, final String name) {
-		return getTag(host, name)
-				.isPresent();
-	}
-
 	public Stream<AnnotationTag> getAnnotations(final Host host) {
-		if (getTag(host, "VisibilityAnnotationTag").orElse(null)
-				instanceof final VisibilityAnnotationTag tag) {
-			return tag.getAnnotations().stream();
-		} else {
-			return Stream.empty();
-		}
+		return VisibilityAnnotationReader.v().get(host).stream()
+				.flatMap((visibilityAnnotationTag) -> visibilityAnnotationTag.getAnnotations().stream());
 	}
 
 	public Optional<AnnotationTag> getAnnotation(final Host host, final String name) {

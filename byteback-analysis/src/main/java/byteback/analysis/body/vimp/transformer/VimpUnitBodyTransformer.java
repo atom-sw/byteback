@@ -1,4 +1,4 @@
-package byteback.analysis.body.jimple.transformer;
+package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.UnitTransformer;
 import byteback.analysis.body.common.visitor.AbstractStmtSwitch;

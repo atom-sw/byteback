@@ -4,7 +4,7 @@ import byteback.analysis.body.common.syntax.TrapCollector;
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.NestedExprConstructor;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.tag.ExceptionalBranchTag;
+import byteback.analysis.body.vimp.tag.ExceptionalTargetFlagger;
 import byteback.common.function.Lazy;
 import soot.Body;
 import soot.Immediate;
@@ -72,7 +72,7 @@ public class GuardTransformer extends BodyTransformer {
                             trap.getException().getType()
                     ));
                     final Unit branchUnit = Vimp.v().newIfStmt(checkValue, trap.getHandlerUnit());
-                    branchUnit.addTag(ExceptionalBranchTag.v());
+                    ExceptionalTargetFlagger.v().flag(branchUnit);
                     units.insertBefore(branchUnit, baseUnit);
                 }
 

@@ -9,17 +9,17 @@ import soot.tagkit.Tag;
  *
  * @author paganma
  */
-public class ExceptionalBranchTag implements Tag {
+public class ExceptionalTargetTag implements Tag {
 
-    public static String NAME = "ExceptionalExitTag";
+    public static String NAME = "ExceptionalTargetTag";
 
-    private static final Lazy<ExceptionalBranchTag> instance = Lazy.from(ExceptionalBranchTag::new);
+    private static final Lazy<ExceptionalTargetTag> instance = Lazy.from(ExceptionalTargetTag::new);
 
-    public static ExceptionalBranchTag v() {
+    public static ExceptionalTargetTag v() {
         return instance.get();
     }
 
-    private ExceptionalBranchTag() {
+    private ExceptionalTargetTag() {
     }
 
     @Override

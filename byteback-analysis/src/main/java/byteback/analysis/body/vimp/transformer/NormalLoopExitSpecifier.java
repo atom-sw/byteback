@@ -4,16 +4,13 @@ import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.NestedExprConstructor;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.syntax.AssertStmt;
-import byteback.analysis.body.vimp.syntax.AssumeStmt;
 import byteback.analysis.body.vimp.syntax.VoidConstant;
-import byteback.analysis.body.vimp.tag.ExceptionalBranchTag;
-import byteback.analysis.common.Hosts;
+import byteback.analysis.body.vimp.tag.ExceptionalTargetFlagger;
 import byteback.common.function.Lazy;
 
 import java.util.Set;
 
 import soot.Body;
-import soot.Scene;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.CaughtExceptionRef;
@@ -69,7 +66,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
                     continue;
                 }
 
-                if (!Hosts.v().hasTag(target, ExceptionalBranchTag.NAME)) {
+                if (ExceptionalTargetFlagger.v().get(target).isEmpty()) {
                     units.insertBefore(assertUnit, target);
                     target.redirectJumpsToThisTo(assertUnit);
                 }

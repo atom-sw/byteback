@@ -1,4 +1,4 @@
-package byteback.analysis.body.jimple.transformer;
+package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.syntax.ReturnRef;

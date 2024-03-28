@@ -1,10 +1,9 @@
-package byteback.analysis.body.jimple.transformer;
+package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.ValueTransformer;
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.common.namespace.BBLibNames;
 import byteback.common.function.Lazy;
-import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;

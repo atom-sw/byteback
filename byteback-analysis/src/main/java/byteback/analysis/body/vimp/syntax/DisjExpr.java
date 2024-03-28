@@ -1,6 +1,7 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.transformer.VimpValueBodyTransformer;
 import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.Value;
 import soot.ValueBox;
@@ -9,7 +10,7 @@ import soot.util.Switch;
 
 /**
  * A logical disjunction expression. It replaces bitwise-and operations between booleans.
- * @see byteback.analysis.body.jimple.transformer.VimpValueBodyTransformer
+ * @see VimpValueBodyTransformer
  *
  * @author paganma
  */

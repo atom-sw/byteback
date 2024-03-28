@@ -1,4 +1,4 @@
-package byteback.analysis.body.vimp.transformer;
+package byteback.analysis.body.jimple.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.common.namespace.BBLibNames;

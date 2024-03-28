@@ -2,7 +2,7 @@ package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.common.transformer.BodyTransformer;
 import byteback.analysis.body.vimp.VimpValues;
-import byteback.analysis.body.vimp.tag.BehaviorMethodTag;
+import byteback.analysis.body.vimp.tag.BehaviorBodyFlagger;
 import byteback.analysis.common.Hosts;
 import byteback.analysis.common.namespace.BBLibNames;
 import byteback.analysis.common.tag.LocationTag;
@@ -23,14 +23,14 @@ import java.util.function.Supplier;
  *
  * @author paganma
  */
-public class BehaviorMethodTagger extends BodyTransformer {
+public class BehaviorMethodValidator extends BodyTransformer {
 
-    private static final Lazy<BehaviorMethodTagger> instance = Lazy.from(BehaviorMethodTagger::new);
+    private static final Lazy<BehaviorMethodValidator> instance = Lazy.from(BehaviorMethodValidator::new);
 
-    private BehaviorMethodTagger() {
+    private BehaviorMethodValidator() {
     }
 
-    public static BehaviorMethodTagger v() {
+    public static BehaviorMethodValidator v() {
         return instance.get();
     }
 
@@ -63,7 +63,7 @@ public class BehaviorMethodTagger extends BodyTransformer {
                 }
             }
 
-            sootMethod.addTag(BehaviorMethodTag.v());
+            BehaviorBodyFlagger.v().flag(body);
         }
     }
 

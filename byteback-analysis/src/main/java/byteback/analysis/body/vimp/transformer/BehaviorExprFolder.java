@@ -1,7 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
-import byteback.analysis.body.vimp.tag.BehaviorMethodTag;
-import byteback.analysis.common.Hosts;
+import byteback.analysis.body.vimp.tag.BehaviorBodyFlagger;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.ReturnStmt;
@@ -26,7 +25,7 @@ public class BehaviorExprFolder extends ExprFolder {
 
     @Override
     public void transformBody(final Body body) {
-        if (Hosts.v().hasTag(body.getMethod(), BehaviorMethodTag.NAME)) {
+        if (BehaviorBodyFlagger.v().isTagged(body.getMethod())) {
             super.transformBody(body);
         }
     }

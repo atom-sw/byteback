@@ -9,17 +9,17 @@ import soot.tagkit.Tag;
  *
  * @author paganma
  */
-public class BehaviorMethodTag implements Tag {
+public class BehaviorBodyTag implements Tag {
 
     public static String NAME = "ExceptionalExitTag";
 
-    private static final Lazy<BehaviorMethodTag> instance = Lazy.from(BehaviorMethodTag::new);
+    private static final Lazy<BehaviorBodyTag> instance = Lazy.from(BehaviorBodyTag::new);
 
-    public static BehaviorMethodTag v() {
+    public static BehaviorBodyTag v() {
         return instance.get();
     }
 
-    private BehaviorMethodTag() {
+    private BehaviorBodyTag() {
     }
 
     @Override
