@@ -24,13 +24,6 @@ public class ForallExpr extends QuantifierExpr {
 	}
 
 	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicForallExpr(this);
-		}
-	}
-
-	@Override
 	public ForallExpr clone() {
 		return new ForallExpr(cloneBindings(), Vimp.v().cloneIfNecessary(getValue()));
 	}

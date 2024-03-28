@@ -27,13 +27,6 @@ public class IffExpr extends AbstractLogicBinopExpr {
 	}
 
 	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicIffExpr(this);
-		}
-	}
-
-	@Override
 	public int getPrecedence() {
 		return 500;
 	}

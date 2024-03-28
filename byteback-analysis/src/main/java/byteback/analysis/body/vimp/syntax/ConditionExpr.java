@@ -1,12 +1,10 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.visitor.SpecialExprSwitch;
 import byteback.analysis.scene.Types;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
-import soot.util.Switch;
 
 /**
  * A ternary conditional expression.
@@ -56,10 +54,4 @@ public class ConditionExpr extends AbstractTernaryExpr {
         return 31 * getOp1().equivHashCode() + getOp2().equivHashCode() + getOp3().equivHashCode();
     }
 
-    @Override
-    public void apply(final Switch visitor) {
-        if (visitor instanceof SpecialExprSwitch<?> specialExprSwitch) {
-            specialExprSwitch.caseConditionalExpr(this);
-        }
-    }
 }

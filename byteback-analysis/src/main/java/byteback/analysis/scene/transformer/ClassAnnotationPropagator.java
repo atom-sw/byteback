@@ -2,7 +2,6 @@ package byteback.analysis.scene.transformer;
 
 import byteback.analysis.common.namespace.BBLibNames;
 import byteback.analysis.common.namespace.ClassNames;
-import byteback.analysis.scene.AnnotationElems;
 import byteback.analysis.scene.Annotations;
 import byteback.analysis.common.Hosts;
 import byteback.common.function.Lazy;
@@ -15,7 +14,9 @@ import soot.Scene;
 import soot.SceneTransformer;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationElem;
+import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 
 /**
@@ -41,11 +42,8 @@ public class ClassAnnotationPropagator extends SceneTransformer {
             if (Hosts.v().hasAnnotation(attachedClass, BBLibNames.ATTACH_ANNOTATION)) {
                 annotation = Hosts.v().getAnnotation(attachedClass, BBLibNames.ATTACH_ANNOTATION).orElseThrow();
                 element = Annotations.v().getElem(annotation, "value").orElseThrow();
-                value = new AnnotationElems.ClassElemExtractor().visit(element).orElseThrow();
-            } else if (Hosts.v().hasAnnotation(attachedClass, BBLibNames.ATTACH_LABEL_ANNOTATION)) {
-                annotation = Hosts.v().getAnnotation(attachedClass, BBLibNames.ATTACH_LABEL_ANNOTATION).orElseThrow();
-                element = Annotations.v().getElem(annotation, "value").orElseThrow();
-                value = new AnnotationElems.StringElemExtractor().visit(element).orElseThrow();
+                // TODO: Better error reporting if the element type is not what we expect
+                value = ((AnnotationClassElem) element).getDesc();
             } else {
                 continue;
             }

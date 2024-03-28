@@ -1,10 +1,8 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.internal.JimpleLocal;
-import soot.util.Switch;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -79,13 +77,6 @@ public class NestedExpr extends JimpleLocal {
     @Override
     public Type getType() {
         return getLocal().getType();
-    }
-
-    @Override
-    public void apply(final Switch visitor) {
-        if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-            vimpValueSwitch.caseNestedExpr(this);
-        }
     }
 
     @Override

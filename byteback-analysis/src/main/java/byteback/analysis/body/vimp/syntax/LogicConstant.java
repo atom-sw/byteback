@@ -1,9 +1,7 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.UnitPrinter;
 import soot.jimple.Constant;
-import soot.util.Switch;
 
 /**
  * A boolean constant.
@@ -32,13 +30,6 @@ public class LogicConstant extends Constant implements LogicExpr {
 			printer.literal("true");
 		} else {
 			printer.literal("false");
-		}
-	}
-
-	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicConstant(this);
 		}
 	}
 

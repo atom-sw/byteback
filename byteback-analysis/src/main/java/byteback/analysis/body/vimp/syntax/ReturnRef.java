@@ -1,12 +1,10 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.visitor.SpecialExprSwitch;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.jimple.ConcreteRef;
 import soot.jimple.IdentityRef;
-import soot.util.Switch;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.List;
  *
  * @author paganma
  */
-public class ReturnRef implements ConcreteRef, IdentityRef {
+public class ReturnRef implements ConcreteRef, IdentityRef, Unswitchable {
 
     final Type type;
 
@@ -52,13 +50,6 @@ public class ReturnRef implements ConcreteRef, IdentityRef {
     @Override
     public int equivHashCode() {
         return 155809;
-    }
-
-    @Override
-    public void apply(final Switch visitor) {
-        if (visitor instanceof SpecialExprSwitch<?> specialExprSwitch) {
-            specialExprSwitch.caseReturnRef(this);
-        }
     }
 
 }

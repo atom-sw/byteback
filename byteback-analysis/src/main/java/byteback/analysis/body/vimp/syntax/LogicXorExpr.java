@@ -1,11 +1,9 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.XorExpr;
-import soot.util.Switch;
 
 /**
  * Logic equivalent of LeExpr.
@@ -31,13 +29,6 @@ public class LogicXorExpr extends AbstractLogicBinopExpr implements XorExpr {
 	@Override
 	public LogicXorExpr clone() {
 		return new LogicXorExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
-	}
-
-	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseLogicXorExpr(this);
-		}
 	}
 
 	@Override

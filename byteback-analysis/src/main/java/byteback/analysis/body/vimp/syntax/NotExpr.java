@@ -1,10 +1,8 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.NegExpr;
-import soot.util.Switch;
 
 /**
  * Logic equivalent of NegExpr.
@@ -30,13 +28,6 @@ public class NotExpr extends AbstractLogicUnopExpr implements LogicExpr, NegExpr
 	@Override
 	public int equivHashCode() {
 		return getOp().equivHashCode() * 101 + 17 ^ getSymbol().hashCode();
-	}
-
-	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseNotExpr(this);
-		}
 	}
 
 	@Override

@@ -2,8 +2,8 @@ package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.common.syntax.InlineUnitPrinter;
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.*;
+import soot.jimple.JimpleValueSwitch;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.util.Switch;
 
@@ -17,7 +17,7 @@ import java.util.ListIterator;
  *
  * @author paganma
  */
-public class CallExpr extends AbstractInvokeExpr implements Immediate {
+public class CallExpr extends AbstractInvokeExpr implements Immediate, Unswitchable {
 
     public CallExpr(final SootMethodRef methodRef, final List<Value> args) {
         super(methodRef, new ValueBox[args.size()]);
@@ -25,13 +25,6 @@ public class CallExpr extends AbstractInvokeExpr implements Immediate {
         for (final ListIterator<Value> valueIterator = args.listIterator(); valueIterator.hasNext();) {
             final Value value = valueIterator.next();
             this.argBoxes[valueIterator.previousIndex()] = Vimp.v().newImmediateBox(value);
-        }
-    }
-
-    @Override
-    public void apply(final Switch visitor) {
-        if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-            vimpValueSwitch.caseCallExpr(this);
         }
     }
 

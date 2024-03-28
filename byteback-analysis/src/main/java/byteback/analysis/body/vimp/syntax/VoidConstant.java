@@ -1,18 +1,16 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.visitor.SpecialExprSwitch;
 import byteback.common.function.Lazy;
 import soot.Type;
 import soot.VoidType;
 import soot.jimple.Constant;
-import soot.util.Switch;
 
 /**
  * A void constant, representing the absence of a value.
  *
  * @author paganma
  */
-public class VoidConstant extends Constant {
+public class VoidConstant extends Constant implements Unswitchable {
 
     private static final Lazy<VoidConstant> instance = Lazy.from(VoidConstant::new);
 
@@ -26,13 +24,6 @@ public class VoidConstant extends Constant {
     @Override
     public Type getType() {
         return VoidType.v();
-    }
-
-    @Override
-    public void apply(Switch visitor) {
-        if (visitor instanceof SpecialExprSwitch<?> specialExprSwitch) {
-            specialExprSwitch.caseVoidConstant(this);
-        }
     }
 
     @Override

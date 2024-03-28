@@ -2,11 +2,9 @@ package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
 import byteback.analysis.body.vimp.transformer.VimpValueBodyTransformer;
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.AndExpr;
-import soot.util.Switch;
 
 /**
  * A logical conjunction expression. It replaces bitwise-and operations between booleans.
@@ -32,13 +30,6 @@ public class ConjExpr extends AbstractLogicBinopExpr implements AndExpr {
 	@Override
 	public ConjExpr clone() {
 		return new ConjExpr(Vimp.v().cloneIfNecessary(getOp1()), Vimp.v().cloneIfNecessary(getOp2()));
-	}
-
-	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof VimpValueSwitch<?> vimpValueSwitch) {
-			vimpValueSwitch.caseConjExpr(this);
-		}
 	}
 
 	@Override

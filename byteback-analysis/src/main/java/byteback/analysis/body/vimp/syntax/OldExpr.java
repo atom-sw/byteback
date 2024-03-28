@@ -1,17 +1,15 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.visitor.SpecialExprSwitch;
 import soot.*;
 import soot.jimple.internal.AbstractUnopExpr;
-import soot.util.Switch;
 
 /**
  * An expression to access the pre-state of a method.
  *
  * @author paganma
  */
-public class OldExpr extends AbstractUnopExpr implements Immediate {
+public class OldExpr extends AbstractUnopExpr implements Immediate, Unswitchable {
 
 	public OldExpr(final Value v) {
 		super(Vimp.v().newArgBox(v));
@@ -27,13 +25,6 @@ public class OldExpr extends AbstractUnopExpr implements Immediate {
 		printer.literal("(");
 		getOp().toString(printer);
 		printer.literal(")");
-	}
-
-	@Override
-	public void apply(final Switch visitor) {
-		if (visitor instanceof SpecialExprSwitch<?> specialExprSwitch) {
-			specialExprSwitch.caseOldExpr(this);
-		}
 	}
 
 	@Override

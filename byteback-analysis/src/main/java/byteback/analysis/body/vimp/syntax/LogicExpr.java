@@ -9,7 +9,7 @@ import soot.jimple.Expr;
  *
  * @author paganma
  */
-public interface LogicExpr extends Expr {
+public interface LogicExpr extends Expr, Unswitchable {
 
     @Override
     default Type getType() {

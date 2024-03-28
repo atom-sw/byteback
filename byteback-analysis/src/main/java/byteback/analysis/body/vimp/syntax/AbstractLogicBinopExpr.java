@@ -12,7 +12,7 @@ import soot.jimple.internal.AbstractBinopExpr;
  *
  * @author paganma
  */
-public abstract class AbstractLogicBinopExpr extends AbstractBinopExpr implements LogicExpr, Precedence {
+public abstract class AbstractLogicBinopExpr extends AbstractBinopExpr implements LogicExpr, Precedence, Unswitchable {
 
 	public AbstractLogicBinopExpr(final Value op1, final Value op2) {
 		super(Vimp.v().newArgBox(op1), Vimp.v().newArgBox(op2));
