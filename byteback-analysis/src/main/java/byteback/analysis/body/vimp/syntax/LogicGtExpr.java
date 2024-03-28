@@ -10,6 +10,7 @@ import soot.util.Switch;
 /**
  * Logic equivalent of GtExpr.
  * @see soot.jimple.internal.JGtExpr
+ *
  * @author paganma
  */
 public class LogicGtExpr extends AbstractLogicBinopExpr implements GtExpr {

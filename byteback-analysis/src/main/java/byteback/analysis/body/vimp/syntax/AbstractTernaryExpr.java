@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Base class for a ternary expression.
+ *
  * @author paganma
  */
 public abstract class AbstractTernaryExpr implements Expr {

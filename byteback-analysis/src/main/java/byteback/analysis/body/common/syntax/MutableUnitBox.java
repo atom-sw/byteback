@@ -8,6 +8,7 @@ import soot.jimple.Stmt;
 
 /**
  * A Unit box whose contents can be changed in a way that is reflected in the outer Body.
+ *
  * @author paganma
  */
 public class MutableUnitBox implements UnitBox {

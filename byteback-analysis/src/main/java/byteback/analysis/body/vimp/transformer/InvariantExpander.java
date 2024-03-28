@@ -50,6 +50,7 @@ import soot.util.Chain;
  *   assume e
  *   ...
  * ```
+ *
  * @author paganma
  */
 public class InvariantExpander extends BodyTransformer {

@@ -20,6 +20,8 @@ import java.util.*;
 /**
  * Folds expressions used in the Body as nested expressions based on some condition.
  * @see byteback.analysis.body.vimp.syntax.NestedExpr
+ *
+ * @author paganma
  */
 public abstract class ExprFolder extends BodyTransformer {
 

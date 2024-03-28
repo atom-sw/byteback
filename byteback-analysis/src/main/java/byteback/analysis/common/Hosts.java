@@ -10,6 +10,7 @@ import soot.tagkit.*;
 
 /**
  * Utility functions to work with Soot tags.
+ *
  * @author paganma
  */
 public class Hosts {

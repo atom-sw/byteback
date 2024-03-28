@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Provides factory methods for Vimp's syntactic constructs.
+ *
  * @author paganma
  */
 public class Vimp {

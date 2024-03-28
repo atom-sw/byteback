@@ -13,6 +13,7 @@ import soot.jimple.InvokeStmt;
 /**
  * Converts BBLib's invoke statements into specification statements, corresponding to assertions, assumptions,
  * and invariants.
+ *
  * @author paganma
  */
 public class VimpUnitBodyTransformer extends UnitTransformer {

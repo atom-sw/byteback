@@ -9,6 +9,7 @@ import soot.jimple.NewExpr;
 
 /**
  * Utility functions to work with Vimp Values.
+ *
  * @author paganma
  */
 public class VimpValues {

@@ -7,6 +7,11 @@ import soot.jimple.Jimple;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * Factory for creating nested expression.
+ *
+ * @author paganma
+ */
 public class NestedExprConstructor {
 
     private final LocalGenerator localGenerator;

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 /**
  * Utility classes to extract Soot annotation elements.
+ *
  * @author paganma
  */
 public class AnnotationElems {

@@ -7,6 +7,7 @@ import java.util.Comparator;
 
 /**
  * Compares two units based on their order in a unit chain.
+ *
  * @author paganma
  */
 public class UnitRangeComparator implements Comparator<Unit> {

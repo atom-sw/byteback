@@ -8,6 +8,7 @@ import soot.util.Switch;
 
 /**
  * A statement for declaring intermediate assumptions.
+ *
  * @author paganma
  */
 public class AssumeStmt extends SpecificationStmt {

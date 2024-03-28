@@ -10,6 +10,7 @@ import soot.util.HashChain;
 
 /**
  * Additional functions that operate on Soot bodies.
+ *
  * @author paganma
  */
 public class Bodies {

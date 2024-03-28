@@ -16,6 +16,7 @@ import soot.jimple.InvokeStmt;
  * Filters invocations to methods annotated with the @Ignore annotation. More precisely, if a unit contains an
  * invocation to an ignored method, it is removed from the body.
  * @see BBLibNames
+ *
  * @author paganma
  */
 public class InvokeFilter extends BodyTransformer {

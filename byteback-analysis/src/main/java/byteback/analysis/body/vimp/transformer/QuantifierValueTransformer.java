@@ -21,6 +21,8 @@ import soot.util.HashChain;
 
 /**
  * Transforms BBLib's quantifier expressions.
+ *
+ * @author paganma
  */
 public class QuantifierValueTransformer extends ValueTransformer {
 

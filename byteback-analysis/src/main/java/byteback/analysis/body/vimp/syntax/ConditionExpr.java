@@ -10,6 +10,7 @@ import soot.util.Switch;
 
 /**
  * A ternary conditional expression.
+ *
  * @author paganma
  */
 public class ConditionExpr extends AbstractTernaryExpr {

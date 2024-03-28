@@ -8,6 +8,11 @@ import soot.util.HashChain;
 
 import java.util.*;
 
+/**
+ * Utility function to work with Soot traps.
+ *
+ * @author paganma
+ */
 public class Traps {
 
     private static final Lazy<Traps> instance = Lazy.from(Traps::new);

@@ -9,6 +9,7 @@ import soot.jimple.internal.AbstractBinopExpr;
 
 /**
  * Base-class for logic binary expressions.
+ *
  * @author paganma
  */
 public abstract class AbstractLogicBinopExpr extends AbstractBinopExpr implements LogicExpr, Precedence {

@@ -18,6 +18,11 @@ import soot.SootMethod;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 
+/**
+ * Propagates method implementations through the @Attach annotation.
+ *
+ * @author paganma
+ */
 public class ClassAnnotationPropagator extends SceneTransformer {
 
     private static final Lazy<ClassAnnotationPropagator> instance = Lazy.from(ClassAnnotationPropagator::new);

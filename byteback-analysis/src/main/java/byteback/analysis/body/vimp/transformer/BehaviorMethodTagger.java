@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 
 /**
  * Ensures the validity of methods annotated with @Behavior, and tags them accordingly.
+ *
  * @author paganma
  */
 public class BehaviorMethodTagger extends BodyTransformer {

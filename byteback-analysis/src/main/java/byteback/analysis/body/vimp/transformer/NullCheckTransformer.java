@@ -11,6 +11,7 @@ import soot.jimple.*;
 
 /**
  * Introduces explicit index checks before every array dereference.
+ *
  * @author paganma
  */
 public class NullCheckTransformer extends CheckTransformer {

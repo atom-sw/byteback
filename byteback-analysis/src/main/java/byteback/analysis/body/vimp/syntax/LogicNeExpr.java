@@ -10,6 +10,7 @@ import soot.util.Switch;
 /**
  * Logic equivalent of LeExpr.
  * @see soot.jimple.internal.JLeExpr
+ *
  * @author paganma
  */
 public class LogicNeExpr extends AbstractLogicBinopExpr implements NeExpr {

@@ -5,6 +5,11 @@ import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.Value;
 import soot.util.Switch;
 
+/**
+ * Logical equivalence expression.
+ *
+ * @author paganma
+ */
 public class IffExpr extends AbstractLogicBinopExpr {
 
 	public IffExpr(final Value op1, final Value op2) {

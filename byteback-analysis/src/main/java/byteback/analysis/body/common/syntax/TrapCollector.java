@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 /**
  * Wraps a unit iterator to provide information on which traps are active at the current unit.
+ *
  * @author paganma
  */
 public class TrapCollector implements Iterator<Unit> {

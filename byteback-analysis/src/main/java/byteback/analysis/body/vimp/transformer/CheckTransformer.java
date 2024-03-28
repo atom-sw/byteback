@@ -18,6 +18,7 @@ import soot.util.HashChain;
 /**
  * Transformer adding explicit checks for implicit exceptional behavior. The resulting effect of this transformation is:
  * If before executing a statement certain conditions for exceptional behavior hold, throw an exception.
+ *
  * @author paganma
  */
 public abstract class CheckTransformer extends BodyTransformer {

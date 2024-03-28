@@ -7,6 +7,7 @@ import java.util.Optional;
 
 /**
  * Represents a location in a file.
+ *
  * @author paganma
  */
 public class LocationTag implements Tag {

@@ -32,8 +32,8 @@ public class CaughtAssumptionInserter extends BodyTransformer {
                 Vimp.v().newCaughtExceptionRef(),
                 VoidConstant.v()
         );
-        final Unit assertUnit = Vimp.v().newAssertStmt(condition);
-        body.getUnits().addFirst(assertUnit);
+        final Unit assumeUnit = Vimp.v().newAssumeStmt(condition);
+        body.getUnits().addFirst(assumeUnit);
     }
 
 }
