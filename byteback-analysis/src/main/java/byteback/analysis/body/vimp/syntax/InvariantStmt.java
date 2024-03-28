@@ -8,6 +8,7 @@ import soot.util.Switch;
 
 /**
  * A statement for declaring loop invariants.
+ *
  * @author paganma
  */
 public class InvariantStmt extends SpecificationStmt {

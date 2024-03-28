@@ -9,6 +9,7 @@ import soot.util.Switch;
 
 /**
  * A void constant, representing the absence of a value.
+ *
  * @author paganma
  */
 public class VoidConstant extends Constant {

@@ -26,6 +26,7 @@ import soot.util.Chain;
 /**
  * Specifies non-exceptional loop exits as such, by adding `assume @caughtexception == @void` at every non-exceptional
  * loop exit.
+ *
  * @author paganma
  */
 public class NormalLoopExitSpecifier extends BodyTransformer {

@@ -8,7 +8,8 @@ import soot.jimple.ThisRef;
 
 /**
  * A Unit printer that does not require a Body as the outer context. Can be used to implement `toString` in syntax
- * components, .
+ * components.
+ *
  * @author paganma
  */
 public class InlineUnitPrinter extends AbstractUnitPrinter {

@@ -13,6 +13,7 @@ import java.util.Optional;
 
 /**
  * Introduces explicit index checks before every array dereference.
+ *
  * @author paganma
  */
 public class IndexCheckTransformer extends CheckTransformer {

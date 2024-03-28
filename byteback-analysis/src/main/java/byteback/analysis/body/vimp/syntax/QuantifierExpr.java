@@ -11,6 +11,11 @@ import soot.jimple.Jimple;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+/**
+ * Base type for a quantifier expression.
+ *
+ * @author paganma
+ */
 public abstract class QuantifierExpr implements LogicExpr {
 
 	private Chain<Local> bindings;

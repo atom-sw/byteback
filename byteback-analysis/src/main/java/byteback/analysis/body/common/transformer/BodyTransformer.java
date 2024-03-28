@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  * Base class for the transformer of a body of a method.
+ *
  * @author paganma
  */
 public abstract class BodyTransformer extends soot.BodyTransformer {

@@ -8,6 +8,7 @@ import soot.jimple.internal.AbstractUnopExpr;
 
 /**
  * Base class for a logic unary expression.
+ *
  * @author paganma
  */
 public abstract class AbstractLogicUnopExpr extends AbstractUnopExpr {

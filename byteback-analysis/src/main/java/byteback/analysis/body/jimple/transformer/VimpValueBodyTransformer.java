@@ -18,6 +18,7 @@ import java.util.function.Function;
  * Converts bytecode boolean expressions into logic boolean expressions. Unlike bytecode boolean expressions, logic
  * boolean expressions cannot evaluate to an integer. If the result of a boolean expression needs to be used in an int
  * context, this transformation will cast it explicitly.
+ *
  * @author paganma
  */
 public class VimpValueBodyTransformer extends BodyTransformer {

@@ -9,6 +9,7 @@ import soot.util.Switch;
 /**
  * Logic equivalent of NegExpr.
  * @see soot.jimple.internal.JNegExpr
+ *
  * @author paganma
  */
 public class NotExpr extends AbstractLogicUnopExpr implements LogicExpr, NegExpr {

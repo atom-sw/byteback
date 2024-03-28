@@ -7,6 +7,7 @@ import soot.util.Switch;
 
 /**
  * A boolean constant.
+ *
  * @author paganma
  */
 public class LogicConstant extends Constant implements LogicExpr {

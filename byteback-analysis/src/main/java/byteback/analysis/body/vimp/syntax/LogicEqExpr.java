@@ -10,6 +10,7 @@ import soot.util.Switch;
 /**
  * Logic equivalent of EqExpr.
  * @see soot.jimple.internal.JEqExpr
+ *
  * @author paganma
  */
 public class LogicEqExpr extends AbstractLogicBinopExpr implements EqExpr {

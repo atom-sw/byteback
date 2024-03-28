@@ -98,20 +98,20 @@ public class Contract {
 	}
 
 	public @interface Attach {
-		public Class<?> value();
+		Class<?> value();
 	}
 
 	public @interface AttachLabel {
-		public String value();
+		String value();
 	}
 
-	public static void assertion(boolean condition) {
+	public static void assertion(boolean behavior) {
 	}
 
-	public static void assumption(boolean condition) {
+	public static void assumption(boolean behavior) {
 	}
 
-	public static void invariant(boolean condition) {
+	public static void invariant(boolean behavior) {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)

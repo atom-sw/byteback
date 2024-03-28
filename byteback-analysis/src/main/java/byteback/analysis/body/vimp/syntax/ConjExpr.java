@@ -10,6 +10,7 @@ import soot.util.Switch;
 /**
  * A logical conjunction expression. It replaces bitwise-and operations between booleans.
  * @see byteback.analysis.body.jimple.transformer.VimpValueBodyTransformer
+ *
  * @author paganma
  */
 public class ConjExpr extends AbstractLogicBinopExpr implements AndExpr {

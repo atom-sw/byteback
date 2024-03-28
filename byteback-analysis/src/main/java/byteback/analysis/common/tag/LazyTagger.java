@@ -3,8 +3,18 @@ package byteback.analysis.common.tag;
 import soot.tagkit.Host;
 import soot.tagkit.Tag;
 
+/**
+ * Computes a tag lazily.
+ * @param <K> Type of the host.
+ * @param <V> Type of the tag.
+ *
+ * @author paganma
+ */
 public abstract class LazyTagger<K extends Host, V extends Tag> {
 
+    /**
+     * @return The name of the tag.
+     */
     public abstract String getTagName();
 
     protected abstract V compute(Host host);

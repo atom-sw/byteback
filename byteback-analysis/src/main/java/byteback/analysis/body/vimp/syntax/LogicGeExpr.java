@@ -10,6 +10,7 @@ import soot.util.Switch;
 /**
  * Logic equivalent of GeExpr.
  * @see soot.jimple.internal.JGeExpr
+ *
  * @author paganma
  */
 public class LogicGeExpr extends AbstractLogicBinopExpr implements GeExpr {

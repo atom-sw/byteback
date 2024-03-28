@@ -18,6 +18,7 @@ import soot.util.Chain;
  * Introduces explicit guards checking if the method that was just invoked threw an exception. The effect introduced by
  * this transformation is: if after invoking a method @caughtexception is not @void, @caughtexception must be thrown
  * again, otherwise execution can resume as normal.
+ *
  * @author paganma
  */
 public class InvokeCheckTransformer extends BodyTransformer {

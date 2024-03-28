@@ -12,6 +12,7 @@ import soot.jimple.Jimple;
 /**
  * Converts dynamic invocations into static invocations to the related instance method. This is done to handle the
  * conversion of invocations to the methods of Soot's soot.dummy.InvokeDynamic class.
+ *
  * @author paganma
  */
 public class DynamicInvokeToStaticResolver extends BodyTransformer {

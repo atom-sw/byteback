@@ -14,6 +14,7 @@ import soot.VoidType;
 
 /**
  * Utility class to work with Soot types.
+ *
  * @author paganma
  */
 public class Types {

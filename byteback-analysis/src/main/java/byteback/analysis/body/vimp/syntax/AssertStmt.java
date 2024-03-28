@@ -8,6 +8,7 @@ import soot.util.Switch;
 
 /**
  * A statement for declaring intermediate assertions.
+ *
  * @author paganma
  */
 public class AssertStmt extends SpecificationStmt {

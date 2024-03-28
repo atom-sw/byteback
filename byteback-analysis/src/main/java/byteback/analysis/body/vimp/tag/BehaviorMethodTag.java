@@ -6,6 +6,7 @@ import soot.tagkit.Tag;
 
 /**
  * Tag used to annotate a behavioral method.
+ *
  * @author paganma
  */
 public class BehaviorMethodTag implements Tag {

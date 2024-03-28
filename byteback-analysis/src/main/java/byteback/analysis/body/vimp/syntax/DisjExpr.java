@@ -7,6 +7,12 @@ import soot.ValueBox;
 import soot.jimple.OrExpr;
 import soot.util.Switch;
 
+/**
+ * A logical disjunction expression. It replaces bitwise-and operations between booleans.
+ * @see byteback.analysis.body.jimple.transformer.VimpValueBodyTransformer
+ *
+ * @author paganma
+ */
 public class DisjExpr extends AbstractLogicBinopExpr implements OrExpr {
 
 	public DisjExpr(final Value op1, final Value op2) {

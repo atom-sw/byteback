@@ -8,6 +8,7 @@ import soot.jimple.internal.JIfStmt;
 
 /**
  * An if stmt that admits an immediate expression as its condition.
+ *
  * @author paganma
  */
 public class NestedIfStmt extends JIfStmt {

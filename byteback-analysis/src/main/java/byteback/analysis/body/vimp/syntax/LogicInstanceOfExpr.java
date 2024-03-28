@@ -9,6 +9,7 @@ import soot.jimple.internal.AbstractInstanceOfExpr;
 /**
  * Logic equivalent of InstanceOfExpr.
  * @see soot.jimple.internal.JInstanceOfExpr
+ *
  * @author paganma
  */
 public class LogicInstanceOfExpr extends AbstractInstanceOfExpr implements LogicExpr {

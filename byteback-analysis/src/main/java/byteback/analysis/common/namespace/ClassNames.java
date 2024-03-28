@@ -4,6 +4,8 @@ import byteback.common.function.Lazy;
 
 /**
  * Contains utility methods for working with class names.
+ *
+ * @author paganma
  */
 public class ClassNames {
 

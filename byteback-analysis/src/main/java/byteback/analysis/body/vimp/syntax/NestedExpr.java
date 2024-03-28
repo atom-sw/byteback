@@ -16,6 +16,7 @@ import java.util.Stack;
  * representation. It is always possible given a nested expression to extract an equivalent sequence of local
  * assignments, and hence they can be considered as a convenient mean to creating more complex and idiomatic
  * expressions.
+ *
  * @author paganma
  */
 public class NestedExpr extends JimpleLocal {

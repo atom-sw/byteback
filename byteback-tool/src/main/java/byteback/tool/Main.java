@@ -120,7 +120,7 @@ public class Main implements Callable<Integer> {
 		jtpPack.add(new Transform("jtp.ie", InvariantExpander.v()));
 		jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
 		jtpPack.add(new Transform("jtp.rel", ReturnEliminator.v()));
-
+		
 		jtpPack.add((new Transform("jtp.print", new BodyTransformer() {
 			@Override
 			protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {

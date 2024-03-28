@@ -11,6 +11,7 @@ import soot.jimple.internal.AbstractStmt;
 
 /**
  * Base specification statement.
+ *
  * @author paganma
  */
 public abstract class SpecificationStmt extends AbstractStmt {

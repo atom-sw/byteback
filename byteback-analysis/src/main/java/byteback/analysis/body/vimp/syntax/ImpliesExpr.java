@@ -7,6 +7,7 @@ import soot.util.Switch;
 
 /**
  * Boolean implication expression.
+ *
  * @author paganma
  */
 public class ImpliesExpr extends AbstractLogicBinopExpr {

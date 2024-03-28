@@ -13,6 +13,7 @@ import java.util.Iterator;
 /**
  * Converts BBLib's invoke statements into specification statements, corresponding to assertions, assumptions,
  * and invariants.
+ *
  * @author paganma
  */
 public class ReturnEliminator extends BodyTransformer {

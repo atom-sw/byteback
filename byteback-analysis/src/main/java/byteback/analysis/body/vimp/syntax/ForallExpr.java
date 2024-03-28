@@ -9,6 +9,7 @@ import soot.util.Switch;
 
 /**
  * Universal quantifier expression.
+ *
  * @author paganma
  */
 public class ForallExpr extends QuantifierExpr {

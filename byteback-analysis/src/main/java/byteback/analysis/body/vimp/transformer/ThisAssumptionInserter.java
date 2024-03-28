@@ -11,6 +11,7 @@ import soot.jimple.NullConstant;
 
 /**
  * Explicitly introduces the basic assumption that @this != null.
+ *
  * @author paganma
  */
 public class ThisAssumptionInserter extends BodyTransformer {

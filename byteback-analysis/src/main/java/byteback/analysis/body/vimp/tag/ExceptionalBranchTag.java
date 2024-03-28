@@ -6,6 +6,7 @@ import soot.tagkit.Tag;
 
 /**
  * Tag used to annotate a branch associated with an exception handler.
+ *
  * @author paganma
  */
 public class ExceptionalBranchTag implements Tag {
