@@ -23,4 +23,7 @@ public abstract class LazyTagger<K extends Host, V extends Tag> {
         // the name specified in `getTagName()` has a type that is not a subclass of `V`.
         return (V) tag;
     }
+
+    public V
+
 }
