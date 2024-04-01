@@ -5,7 +5,8 @@ import soot.tagkit.*;
 import java.util.Optional;
 
 /**
- * Represents a location in a file.
+ * Tag representing a location in a file.
+ * It's supposed to pack together the information provided by LineNumberTag and SourceFileTag.
  *
  * @author paganma
  */
@@ -14,6 +15,7 @@ public class LocationTag implements Tag {
     public static final String NAME = "LocationTag";
 
     /**
+     * TODO: Understand what exactly contains this tag and change the method's parameters accordingly.
      * Reconstructs a position from multiple hosts. If more than one host has position information, it takes the
      * information from the latter.
      * @param hosts The hosts from which to extract the position information.

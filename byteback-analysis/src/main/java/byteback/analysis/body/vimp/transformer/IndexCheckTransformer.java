@@ -34,14 +34,14 @@ public class IndexCheckTransformer extends CheckTransformer {
             final Value indexValue = arrayRef.getIndex();
             final Value arrayBase = arrayRef.getBase();
             final Value conditionExpr =
-                    checkConstructor.make(Vimp.v()::newLogicAndExpr,
+                    checkConstructor.make(Jimple.v()::newAndExpr,
                             checkConstructor.make(
-                                    Vimp.v()::newLeExpr,
+                                    Jimple.v()::newLeExpr,
                                     IntConstant.v(0),
                                     indexValue
                             ),
                             checkConstructor.make(
-                                    Vimp.v()::newLtExpr,
+                                    Jimple.v()::newLtExpr,
                                     indexValue,
                                     Jimple.v().newLengthExpr(arrayBase)
                             )

@@ -1,5 +1,7 @@
 package byteback.analysis.body.vimp.syntax;
 
+import soot.BooleanType;
+import soot.Type;
 import soot.UnitPrinter;
 import soot.jimple.Constant;
 
@@ -8,7 +10,7 @@ import soot.jimple.Constant;
  *
  * @author paganma
  */
-public class LogicConstant extends Constant implements LogicExpr {
+public class LogicConstant extends Constant implements UnswitchableExpr {
 
 	public final boolean value;
 
@@ -24,6 +26,10 @@ public class LogicConstant extends Constant implements LogicExpr {
 		return value ? trueConstant : falseConstant;
 	}
 
+	public boolean getValue() {
+		return value;
+	}
+
 	@Override
 	public void toString(final UnitPrinter printer) {
 		if (value) {
@@ -33,8 +39,9 @@ public class LogicConstant extends Constant implements LogicExpr {
 		}
 	}
 
-	public boolean getValue() {
-		return value;
+	@Override
+	public Type getType() {
+		return BooleanType.v();
 	}
 
 }

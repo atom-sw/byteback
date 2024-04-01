@@ -1,6 +1,5 @@
 package byteback.analysis.body.vimp.syntax;
 
-import soot.Immediate;
 import soot.jimple.ConcreteRef;
 import soot.jimple.internal.JCaughtExceptionRef;
 
@@ -11,5 +10,5 @@ import soot.jimple.internal.JCaughtExceptionRef;
  *
  * @author paganma
  */
-public class ConcreteCaughtExceptionRef extends JCaughtExceptionRef implements ConcreteRef, Immediate {
+public class ConcreteCaughtExceptionRef extends JCaughtExceptionRef implements ConcreteRef {
 }

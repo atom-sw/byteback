@@ -1,17 +1,19 @@
 package byteback.analysis.body.vimp.syntax;
 
 import byteback.analysis.body.vimp.Vimp;
+import byteback.analysis.body.vimp.VimpTypeInterpreter;
 import byteback.analysis.scene.Types;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
+import soot.jimple.Jimple;
 
 /**
  * A ternary conditional expression.
  *
  * @author paganma
  */
-public class ConditionExpr extends AbstractTernaryExpr {
+public class ConditionExpr extends TernaryExpr {
 
     public ConditionExpr(final Value conditionValue, final Value thenValue, final Value elseValue) {
         super(Vimp.v().newArgBox(conditionValue), Vimp.v().newImmediateBox(thenValue), Vimp.v().newImmediateBox(elseValue));
@@ -19,15 +21,15 @@ public class ConditionExpr extends AbstractTernaryExpr {
 
     @Override
     public Type getType() {
-        return Types.v().join(getOp2().getType(), getOp3().getType());
+        return VimpTypeInterpreter.v().join(getOp2().getType(), getOp3().getType());
     }
 
     @Override
     public Object clone() {
         return new ConditionExpr(
-                Vimp.v().cloneIfNecessary(getOp1()),
-                Vimp.v().cloneIfNecessary(getOp2()),
-                Vimp.v().cloneIfNecessary(getOp3())
+                Jimple.cloneIfNecessary(getOp1()),
+                Jimple.cloneIfNecessary(getOp2()),
+                Jimple.cloneIfNecessary(getOp3())
         );
     }
 

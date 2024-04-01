@@ -3,6 +3,11 @@ package byteback.analysis.common.tag;
 import soot.tagkit.Host;
 import soot.tagkit.Tag;
 
+/**
+ * Manages tags in a given host.
+ * @param <K> The type of the hosts.
+ * @param <V> The type of the tags.
+ */
 public abstract class TagManager<K extends Host, V extends Tag> extends TagReader<K, V> {
 
     public TagManager(final String tagName) {

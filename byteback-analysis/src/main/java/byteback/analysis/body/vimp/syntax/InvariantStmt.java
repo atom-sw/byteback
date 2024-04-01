@@ -3,6 +3,7 @@ package byteback.analysis.body.vimp.syntax;
 import byteback.analysis.body.vimp.Vimp;
 import soot.UnitPrinter;
 import soot.Value;
+import soot.jimple.Jimple;
 
 /**
  * A statement for declaring loop invariants.
@@ -17,7 +18,7 @@ public class InvariantStmt extends SpecificationStmt {
 
 	@Override
 	public InvariantStmt clone() {
-		return new InvariantStmt(Vimp.v().cloneIfNecessary(getCondition()));
+		return new InvariantStmt(Jimple.cloneIfNecessary(getCondition()));
 	}
 
 	@Override

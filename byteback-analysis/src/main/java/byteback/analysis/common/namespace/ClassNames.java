@@ -28,4 +28,5 @@ public class ClassNames {
     public String stripLabelDescriptor(final String descriptor) {
         return stripDescriptor(descriptor.substring(1));
     }
+
 }

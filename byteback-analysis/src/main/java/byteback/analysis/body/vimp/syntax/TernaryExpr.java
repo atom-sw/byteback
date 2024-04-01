@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author paganma
  */
-public abstract class AbstractTernaryExpr implements Expr, Unswitchable {
+public abstract class TernaryExpr implements Expr, UnswitchableExpr {
 
     private final ValueBox op1Box;
 
@@ -20,7 +20,7 @@ public abstract class AbstractTernaryExpr implements Expr, Unswitchable {
 
     private final ValueBox op3Box;
 
-    public AbstractTernaryExpr(final ValueBox op1Box, final ValueBox op2Box, final ValueBox op3Box) {
+    public TernaryExpr(final ValueBox op1Box, final ValueBox op2Box, final ValueBox op3Box) {
         this.op1Box = op1Box;
         this.op2Box = op2Box;
         this.op3Box = op3Box;

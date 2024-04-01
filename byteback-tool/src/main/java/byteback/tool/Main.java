@@ -102,7 +102,8 @@ public class Main implements Callable<Integer> {
 
 		jtpPack.add(new Transform("jtp.ii", InvokeFilter.v()));
 		jtpPack.add(new Transform("jtp.dir", DynamicInvokeToStaticResolver.v()));
-		jtpPack.add(new Transform("jtp.vvt", VimpValueBodyTransformer.v()));
+		jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
+		jtpPack.add(new Transform("jtp.vvt", LogicValueTransformer.v()));
 		jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
 		jtpPack.add(new Transform("jtp.oet", OldExprTransformer.v()));
 		jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
@@ -122,14 +123,15 @@ public class Main implements Callable<Integer> {
 		jtpPack.add(new Transform("jtp.rel", ReturnEliminator.v()));
 		jtpPack.add(new Transform("jtp.fcf", FrameConditionFinder.v()));
 
-		//jtpPack.add((new Transform("jtp.print", new BodyTransformer() {
 
-		//	@Override
-		//	protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-		//		System.out.println(body);
-		//	}
+		jtpPack.add((new Transform("jtp.print", new BodyTransformer() {
 
-		//})));
+			@Override
+			protected void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+				System.out.println(body);
+			}
+
+		})));
 
 		soot.Main.v().run(new String[]{});
 

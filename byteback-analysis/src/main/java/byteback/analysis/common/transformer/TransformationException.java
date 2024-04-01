@@ -12,4 +12,5 @@ public class TransformationException extends RuntimeException {
     public TransformationException(final String message, final LocationTag locationTag) {
         super(locationTag + " : " + message);
     }
+
 }

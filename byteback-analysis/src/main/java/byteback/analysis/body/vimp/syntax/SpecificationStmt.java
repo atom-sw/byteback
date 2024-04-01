@@ -7,6 +7,7 @@ import byteback.analysis.body.common.syntax.InlineUnitPrinter;
 import byteback.analysis.body.vimp.Vimp;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractStmt;
 
 /**
@@ -19,7 +20,7 @@ public abstract class SpecificationStmt extends AbstractStmt {
 	private final ValueBox conditionBox;
 
 	public SpecificationStmt(final Value condition) {
-		this.conditionBox = Vimp.v().newArgBox(condition);
+		this.conditionBox = Jimple.v().newArgBox(condition);
 	}
 
 	public ValueBox getConditionBox() {

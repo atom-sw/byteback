@@ -5,6 +5,11 @@ import soot.tagkit.Tag;
 
 import java.util.Optional;
 
+/**
+ * Reads a tag from a host.
+ * @param <K> The type of the hosts.
+ * @param <V> The type of the tags.
+ */
 public abstract class TagReader<K extends Host, V extends Tag> {
 
 

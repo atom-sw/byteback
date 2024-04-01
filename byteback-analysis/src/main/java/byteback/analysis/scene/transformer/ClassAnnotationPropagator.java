@@ -16,7 +16,6 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 
 /**

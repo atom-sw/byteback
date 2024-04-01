@@ -1,8 +1,8 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.Vimp;
 import soot.UnitPrinter;
 import soot.Value;
+import soot.jimple.Jimple;
 
 /**
  * A statement for declaring intermediate assertions.
@@ -17,7 +17,7 @@ public class AssertStmt extends SpecificationStmt {
 
 	@Override
 	public AssertStmt clone() {
-		return new AssertStmt(Vimp.v().cloneIfNecessary(getCondition()));
+		return new AssertStmt(Jimple.cloneIfNecessary(getCondition()));
 	}
 
 	@Override

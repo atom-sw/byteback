@@ -8,6 +8,7 @@ import byteback.common.function.Lazy;
 import soot.Body;
 import soot.Unit;
 import soot.Value;
+import soot.jimple.Jimple;
 
 /**
  * Explicitly introduces the basic assumption that @Caught != null.
@@ -28,7 +29,7 @@ public class CaughtAssumptionInserter extends BodyTransformer {
     @Override
     public void transformBody(final Body body) {
         final Value condition = new NestedExprConstructor(body).make(
-                Vimp.v()::newEqExpr,
+                Jimple.v()::newEqExpr,
                 Vimp.v().newCaughtExceptionRef(),
                 VoidConstant.v()
         );

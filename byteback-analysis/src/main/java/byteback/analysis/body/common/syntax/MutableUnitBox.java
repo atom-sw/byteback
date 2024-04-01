@@ -13,7 +13,7 @@ import soot.jimple.Stmt;
  */
 public class MutableUnitBox implements UnitBox {
 
-	private Unit unit;
+	private volatile Unit unit;
 
 	final Body body;
 

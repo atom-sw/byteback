@@ -3,6 +3,7 @@ package byteback.analysis.body.vimp.syntax;
 import byteback.analysis.body.vimp.Vimp;
 import soot.UnitPrinter;
 import soot.Value;
+import soot.jimple.Jimple;
 
 /**
  * A statement for declaring intermediate assumptions.
@@ -17,7 +18,7 @@ public class AssumeStmt extends SpecificationStmt {
 
 	@Override
 	public AssumeStmt clone() {
-		return new AssumeStmt(Vimp.v().cloneIfNecessary(getCondition()));
+		return new AssumeStmt(Jimple.cloneIfNecessary(getCondition()));
 	}
 
 	@Override

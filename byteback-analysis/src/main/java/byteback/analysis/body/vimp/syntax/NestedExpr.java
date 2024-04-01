@@ -35,6 +35,8 @@ public class NestedExpr extends JimpleLocal {
 
     /**
      * @return The definition associated to this expression.
+     *
+     * @author paganma
      */
     public AssignStmt getDef() {
         return definition;
@@ -42,6 +44,8 @@ public class NestedExpr extends JimpleLocal {
 
     /**
      * @return The chain of definitions associated to this expression.
+     *
+     * @author paganma
      */
     public final ArrayList<AssignStmt> getInnerDefs() {
         final var innerDefinitions = new ArrayList<AssignStmt>();

@@ -16,6 +16,7 @@ import soot.Value;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
+import soot.jimple.Jimple;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.util.Chain;
@@ -50,7 +51,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
                 final VoidConstant voidConstant = VoidConstant.v();
                 final Value behaviorValue =
                         exprConstructor.make(
-                                Vimp.v()::newEqExpr,
+                                Jimple.v()::newEqExpr,
                                 exceptionRef,
                                 voidConstant
                         );
@@ -66,6 +67,8 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
                     continue;
                 }
 
+                // Insert the assumption only if exit target is not an exceptional target
+                // (as tagged by GuardTransformer).
                 if (ExceptionalTargetFlagger.v().get(target).isEmpty()) {
                     units.insertBefore(assertUnit, target);
                     target.redirectJumpsToThisTo(assertUnit);

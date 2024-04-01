@@ -7,6 +7,7 @@ import byteback.common.function.Lazy;
 import soot.Body;
 import soot.Unit;
 import soot.Value;
+import soot.jimple.Jimple;
 import soot.jimple.NullConstant;
 
 /**
@@ -29,7 +30,7 @@ public class ThisAssumptionInserter extends BodyTransformer {
     public void transformBody(final Body body) {
         if (!body.getMethod().isStatic()) {
             final Value condition = new NestedExprConstructor(body).make(
-                    Vimp.v()::newNeExpr,
+                    Jimple.v()::newNeExpr,
                     body.getThisLocal(),
                     NullConstant.v()
             );

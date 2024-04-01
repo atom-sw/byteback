@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author paganma
  */
-public class ReturnRef implements ConcreteRef, IdentityRef, Unswitchable {
+public class ReturnRef implements ConcreteRef, IdentityRef, UnswitchableExpr {
 
     final Type type;
 

@@ -1,12 +1,16 @@
 package byteback.analysis.body.vimp.tag;
 
-import byteback.analysis.body.vimp.syntax.LogicExpr;
+import soot.Value;
 
 import java.util.List;
 
-public abstract class ConditionsTag extends ValuesTag<LogicExpr> {
+/**
+ * TODO: Conditional tags should only contain conditional expressions. Hence we should consider creating a new Box type
+ * specific for conditional expressions and use it to parametrize the Tag.
+ */
+public abstract class ConditionsTag extends ValuesTag<Value> {
 
-    public ConditionsTag(final List<LogicExpr> values) {
+    public ConditionsTag(final List<Value> values) {
         super(values);
     }
 

@@ -20,6 +20,7 @@ public class NestedExprConstructor {
         this.localGenerator = localGenerator;
     }
 
+    // TODO: Remove this dependency to Scene.v(), and instead construct this using the previous constructor.
     public NestedExprConstructor(final Body body) {
         this.localGenerator = Scene.v().createLocalGenerator(body);
     }

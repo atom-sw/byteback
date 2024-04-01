@@ -1,18 +1,16 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.Vimp;
-import byteback.analysis.body.vimp.visitor.VimpValueSwitch;
 import soot.Local;
 import soot.Value;
+import soot.jimple.Jimple;
 import soot.util.Chain;
-import soot.util.Switch;
 
 /**
  * Universal quantifier expression.
  *
  * @author paganma
  */
-public class ForallExpr extends QuantifierExpr {
+public class ForallExpr extends QuantifierExpr implements UnswitchableExpr {
 
 	public ForallExpr(final Chain<Local> freeLocals, final Value value) {
 		super(freeLocals, value);
@@ -25,7 +23,7 @@ public class ForallExpr extends QuantifierExpr {
 
 	@Override
 	public ForallExpr clone() {
-		return new ForallExpr(cloneBindings(), Vimp.v().cloneIfNecessary(getValue()));
+		return new ForallExpr(cloneBindings(), Jimple.cloneIfNecessary(getValue()));
 	}
 
 }

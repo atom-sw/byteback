@@ -1,7 +1,6 @@
 package byteback.analysis.body.vimp.transformer;
 
 import byteback.analysis.body.vimp.NestedExprConstructor;
-import byteback.analysis.body.vimp.Vimp;
 import byteback.common.function.Lazy;
 
 import java.util.Optional;
@@ -48,7 +47,7 @@ public class NullCheckTransformer extends CheckTransformer {
 
         if (base != null) {
             final Value conditionExpr = checkConstructor.make(
-                    Vimp.v()::newNeExpr,
+                    Jimple.v()::newNeExpr,
                     base,
                     NullConstant.v()
             );

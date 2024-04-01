@@ -1,17 +1,16 @@
 package byteback.analysis.body.vimp.syntax;
 
-import byteback.analysis.body.vimp.Vimp;
 import soot.Local;
 import soot.Value;
+import soot.jimple.Jimple;
 import soot.util.Chain;
-import soot.util.Switch;
 
 /**
  * Existential quantification expression.
  *
  * @author paganma
  */
-public class ExistsExpr extends QuantifierExpr {
+public class ExistsExpr extends QuantifierExpr implements UnswitchableExpr {
 
 	public ExistsExpr(final Chain<Local> freeLocals, final Value value) {
 		super(freeLocals, value);
@@ -24,7 +23,7 @@ public class ExistsExpr extends QuantifierExpr {
 
 	@Override
 	public ExistsExpr clone() {
-		return new ExistsExpr(cloneBindings(), Vimp.v().cloneIfNecessary(getValue()));
+		return new ExistsExpr(cloneBindings(), Jimple.cloneIfNecessary(getValue()));
 	}
 
 }

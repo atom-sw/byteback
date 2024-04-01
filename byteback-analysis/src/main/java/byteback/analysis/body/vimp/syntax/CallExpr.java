@@ -3,9 +3,8 @@ package byteback.analysis.body.vimp.syntax;
 import byteback.analysis.body.common.syntax.InlineUnitPrinter;
 import byteback.analysis.body.vimp.Vimp;
 import soot.*;
-import soot.jimple.JimpleValueSwitch;
+import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractInvokeExpr;
-import soot.util.Switch;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,7 +16,7 @@ import java.util.ListIterator;
  *
  * @author paganma
  */
-public class CallExpr extends AbstractInvokeExpr implements Immediate, Unswitchable {
+public class CallExpr extends AbstractInvokeExpr implements Immediate, UnswitchableExpr {
 
     public CallExpr(final SootMethodRef methodRef, final List<Value> args) {
         super(methodRef, new ValueBox[args.size()]);
@@ -34,7 +33,7 @@ public class CallExpr extends AbstractInvokeExpr implements Immediate, Unswitcha
         List<Value> clonedArgs = new ArrayList<>(count);
 
         for (int i = 0; i < count; i++) {
-            clonedArgs.add(Vimp.v().cloneIfNecessary(getArg(i)));
+            clonedArgs.add(Jimple.cloneIfNecessary(getArg(i)));
         }
 
         return new CallExpr(methodRef, clonedArgs);

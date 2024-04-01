@@ -12,6 +12,7 @@ import soot.Trap;
 import soot.Unit;
 import soot.grimp.Grimp;
 import soot.jimple.CaughtExceptionRef;
+import soot.jimple.Jimple;
 import soot.jimple.ThrowStmt;
 import soot.util.Chain;
 
@@ -67,10 +68,12 @@ public class GuardTransformer extends BodyTransformer {
                 // been opened, hence making the jumps semantically equivalent to the control flow specified by the
                 // exception table.
                 for (final Trap trap : unitIterator.getActiveTraps()) {
-                    final Immediate checkValue = exprConstructor.make(Vimp.v().newInstanceOfExpr(
-                            Vimp.v().newCaughtExceptionRef(),
-                            trap.getException().getType()
-                    ));
+                    final Immediate checkValue = exprConstructor.make(
+                            Jimple.v().newInstanceOfExpr(
+                                    Vimp.v().newCaughtExceptionRef(),
+                                    trap.getException().getType()
+                            )
+                    );
                     final Unit branchUnit = Vimp.v().newIfStmt(checkValue, trap.getHandlerUnit());
                     ExceptionalTargetFlagger.v().flag(branchUnit);
                     units.insertBefore(branchUnit, baseUnit);

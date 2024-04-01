@@ -15,7 +15,6 @@ import java.util.Iterator;
  */
 public class TrapCollector implements Iterator<Unit> {
 
-
     private final Iterator<Unit> unitIterator;
 
     private final ArrayDeque<Trap> activeTraps;
@@ -66,4 +65,5 @@ public class TrapCollector implements Iterator<Unit> {
 
         return nextUnit;
     }
+
 }

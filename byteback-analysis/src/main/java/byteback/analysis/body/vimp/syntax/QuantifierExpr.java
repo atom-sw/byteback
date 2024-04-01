@@ -3,10 +3,9 @@ package byteback.analysis.body.vimp.syntax;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import soot.Local;
-import soot.UnitPrinter;
-import soot.Value;
-import soot.ValueBox;
+
+import soot.*;
+import soot.jimple.Expr;
 import soot.jimple.Jimple;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -16,7 +15,7 @@ import soot.util.HashChain;
  *
  * @author paganma
  */
-public abstract class QuantifierExpr implements LogicExpr {
+public abstract class QuantifierExpr implements Expr {
 
 	private Chain<Local> bindings;
 
@@ -110,5 +109,10 @@ public abstract class QuantifierExpr implements LogicExpr {
 
 	@Override
 	public abstract Object clone();
+
+	@Override
+	public Type getType() {
+		return BooleanType.v();
+	}
 
 }

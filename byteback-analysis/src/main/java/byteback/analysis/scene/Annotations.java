@@ -10,6 +10,7 @@ import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 
 /**
+ * TODO: Maybe we can move this to VisibilityAnnotationReader?
  * Utility class to work with Soot annotations.
  *
  * @author paganma
@@ -27,6 +28,7 @@ public class Annotations {
 
 	public static final String VALUE_IDENTIFIER = "value";
 
+	// TODO: Not sure if this is needed.
 	public Optional<AnnotationElem> getValue(final AnnotationTag annotationTag) {
 		return getElem(annotationTag, VALUE_IDENTIFIER);
 	}
@@ -36,21 +38,22 @@ public class Annotations {
 	}
 
 	private void getAnnotations(final Stream.Builder<AnnotationTag> builder, final AnnotationElem annotationElement) {
-		switch (annotationElement) {
-			case AnnotationArrayElem annotationArrayElement -> {
-				for (AnnotationElem value : annotationArrayElement.getValues()) {
-					getAnnotations(builder, value);
-				}
+		if (annotationElement instanceof AnnotationArrayElem annotationArrayElement) {
+			for (AnnotationElem value : annotationArrayElement.getValues()) {
+				getAnnotations(builder, value);
 			}
-			case AnnotationAnnotationElem annotationAnnotationElement -> {
-				final AnnotationTag tag = annotationAnnotationElement.getValue();
-				builder.accept(tag);
-				getValue(tag).ifPresent((elem) -> getAnnotations(builder, elem));
-			}
-			default -> {}
+		} else if (annotationElement instanceof AnnotationAnnotationElem annotationAnnotationElement) {
+			final AnnotationTag tag = annotationAnnotationElement.getValue();
+			builder.accept(tag);
+			getValue(tag).ifPresent((elem) -> getAnnotations(builder, elem));
 		}
 	}
 
+	/**
+	 * Given an annotation tag, it returns all the sub-annotations in depth-first pre-order.
+	 * @param annotationTag The annotation tag to scan.
+	 * @return The sub-annotation tags.
+	 */
 	public Stream<AnnotationTag> getAnnotations(final AnnotationTag annotationTag) {
 		final Stream.Builder<AnnotationTag> builder = Stream.builder();
 		builder.add(annotationTag);

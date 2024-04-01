@@ -9,7 +9,7 @@ import soot.jimple.internal.AbstractUnopExpr;
  *
  * @author paganma
  */
-public class OldExpr extends AbstractUnopExpr implements Immediate, Unswitchable {
+public class OldExpr extends AbstractUnopExpr implements Immediate, UnswitchableExpr {
 
 	public OldExpr(final Value v) {
 		super(Vimp.v().newArgBox(v));
