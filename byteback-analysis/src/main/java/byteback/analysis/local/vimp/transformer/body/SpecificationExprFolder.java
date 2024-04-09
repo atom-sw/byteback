@@ -19,7 +19,7 @@ public class SpecificationExprFolder extends ExprFolder {
     }
 
     @Override
-    public boolean canSubstitute(final Unit unit, final ValueBox valueBox) {
+    public boolean canSubstituteUse(final Unit unit, final ValueBox valueBox) {
         return unit instanceof SpecificationStmt;
     }
 

@@ -1,7 +1,8 @@
 package byteback.tool;
 
 import byteback.analysis.local.jimple.transformer.DynamicInvokeToStaticTransformer;
-import byteback.analysis.local.jimple.transformer.InvokeFilter;
+import byteback.analysis.local.jimple.transformer.body.InvokeFilter;
+import byteback.analysis.local.jimple.transformer.body.SwitchEliminator;
 import byteback.analysis.local.vimp.transformer.body.*;
 import byteback.analysis.local.vimp.transformer.unit.LogicConstantTransformer;
 import byteback.analysis.local.vimp.transformer.unit.SpecificationStmtTransformer;
@@ -114,7 +115,12 @@ public class Main implements Callable<Integer> {
 
         // - Vimp transformations
         // Basic flow transformations
+        jtpPack.add(new Transform("jtp.swe", SwitchEliminator.v()));
         jtpPack.add(new Transform("jtp.rel", ReturnEliminator.v()));
+
+        // Removes subexpressions in if conditions
+        jtpPack.add(new Transform("jtp.i2j", IfConditionExtractor.v()));
+        jtpPack.add(new Transform("jtp.etc", ExplicitTypeCaster.v()));
 
         // First introduce the new Vimp expression types
         jtpPack.add(new Transform("jtp.vvt", LogicConstantTransformer.v()));
@@ -123,24 +129,40 @@ public class Main implements Callable<Integer> {
         jtpPack.add(new Transform("jtp.cot", ConditionalExprTransformer.v()));
         jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
 
-        // Validate and format behavior methods
+        // - Transformations targeting behavioral methods
         jtpPack.add(new Transform("jtp.btg", BehaviorMethodValidator.v()));
         jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
 
-        // Transformations only for procedural methods
+        // - Transformations targeting procedural methods
+        // Create the specification statements and expressions
         jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
         jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-        jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
-        jtpPack.add(new Transform("jtp.ict", IndexCheckTransformer.v()));
-        jtpPack.add(new Transform("jtp.nct", NullCheckTransformer.v()));
-        jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
+
+        // Create initial assumptions.
         jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
         jtpPack.add(new Transform("jtp.cai", CaughtAssumptionInserter.v()));
+
+        // - Transformations of the exceptional control flow
+        // Create explicit checks for implicit exceptions
+        if (getTransformArrayCheck()) {
+            jtpPack.add(new Transform("jtp.ict", IndexCheckTransformer.v()));
+        }
+
+        if (getTransformNullCheck()) {
+            jtpPack.add(new Transform("jtp.nct", NullCheckTransformer.v()));
+        }
+
+        jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
+        jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
         jtpPack.add(new Transform("jtp.gat", GuardTransformer.v()));
         jtpPack.add(new Transform("jtp.ine", InvariantExpander.v()));
+
+        // Cleanup the output
         jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
         jtpPack.add(new Transform("jtp.lns", LocalNameStandardizer.v()));
-        jtpPack.add(new Transform("jtp.fcf", FrameConditionFinder.v()));
+
+        // Assign local specification
+        jtpPack.add(new Transform("jtp.lif", FrameConditionFinder.v()));
 
         Scene.v().loadBasicClasses();
         Scene.v().loadNecessaryClasses();

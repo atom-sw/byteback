@@ -1,6 +1,7 @@
 package byteback.analysis.local.vimp.transformer.body;
 
 import byteback.analysis.local.common.transformer.body.BodyTransformer;
+import byteback.analysis.local.vimp.syntax.Vimp;
 import byteback.analysis.local.vimp.syntax.value.ReturnRef;
 import byteback.common.function.Lazy;
 import soot.*;
@@ -11,8 +12,8 @@ import soot.util.Chain;
 import java.util.Iterator;
 
 /**
- * Converts BBLib's invoke statements into specification statements, corresponding to assertions, assumptions,
- * and invariants.
+ * Removes return statements and replaces them to an assignment to the @return reference followed by a `yield`
+ * statement.
  *
  * @author paganma
  */
@@ -43,7 +44,7 @@ public class ReturnEliminator extends BodyTransformer {
                     units.insertBefore(returnAssignUnit, returnUnit);
                     returnUnit.redirectJumpsToThisTo(returnAssignUnit);
                     returnAssignUnit.addAllTagsOf(returnUnit);
-                    units.swapWith(returnUnit, Jimple.v().newReturnVoidStmt());
+                    units.swapWith(returnUnit, Vimp.v().newYieldStmt());
                 }
             }
         }

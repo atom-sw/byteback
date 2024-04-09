@@ -112,8 +112,6 @@ public class VimpTypeInterpreter implements TypeInterpreter<Value> {
             if (binopExpr instanceof AbstractIntBinopExpr || binopExpr instanceof AbstractIntLongBinopExpr) {
                 return join(typeOf(binopExpr.getOp1()), typeOf(binopExpr.getOp2()));
             }
-        } else if(value instanceof InstanceOfExpr || value instanceof LengthExpr) {
-            return BooleanType.v();
         } else if (value instanceof QuantifierExpr) {
             // Quantifier expressions are always boolean.
             return BooleanType.v();

@@ -49,16 +49,16 @@ public class GuardTransformer extends BodyTransformer {
             final Unit unit = unitIterator.next();
 
             if (unit instanceof ThrowStmt throwUnit) {
-                final Unit baseUnit = Grimp.v().newReturnVoidStmt();
+                final Unit baseUnit = Vimp.v().newYieldStmt();
                 units.insertBefore(baseUnit, throwUnit);
 
                 // If we are throwing the current @caughtexception, then there is no need to assign it.
                 if (!(throwUnit.getOp() instanceof CaughtExceptionRef)) {
-                    final Unit assignUnit = Grimp.v().newAssignStmt(Vimp.v().newCaughtExceptionRef(), throwUnit.getOp());
+                    final CaughtExceptionRef caughtExceptionRef = Vimp.v().newCaughtExceptionRef();
+                    final Unit assignUnit = Jimple.v().newAssignStmt(caughtExceptionRef, throwUnit.getOp());
                     units.insertBefore(assignUnit, baseUnit);
                     baseUnit.redirectJumpsToThisTo(assignUnit);
                 }
-
 
                 // Traps are collected in the same order in which they are opened. This means that the first element
                 // of the queue is the innermost trap at the current statement. This means that the active traps are

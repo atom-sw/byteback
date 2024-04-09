@@ -5,6 +5,7 @@ import soot.tagkit.Tag;
 
 /**
  * Lazily computes and assigns tags to hosts.
+ *
  * @param <K> The type of the hosts.
  * @param <V> The type of the tags.
  */

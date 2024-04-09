@@ -1,16 +1,17 @@
 package byteback.analysis.local.vimp.transformer.unit;
 
 import byteback.analysis.local.common.transformer.unit.UnitTransformer;
+import byteback.analysis.local.vimp.analyzer.value.VimpTypeInterpreter;
 import byteback.analysis.local.vimp.syntax.unit.SpecificationStmt;
 import byteback.analysis.local.vimp.syntax.value.LogicConstant;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.*;
+import soot.jimple.internal.JGotoStmt;
+import soot.jimple.internal.JReturnVoidStmt;
 
 /**
- * Converts bytecode boolean expressions into logic boolean expressions. Unlike bytecode boolean expressions, logic
- * boolean expressions cannot evaluate to an integer. If the result of a boolean expression needs to be used in an int
- * context, this transformation will cast it explicitly.
+ * Introduces logic constants (true, false) wherever appropriate.
  *
  * @author paganma
  */
@@ -41,8 +42,6 @@ public class LogicConstantTransformer extends UnitTransformer {
         } else if (unit instanceof SpecificationStmt specificationStmt) {
             final ValueBox conditionValueBox = specificationStmt.getConditionBox();
             transformValueOfType(BooleanType.v(), conditionValueBox);
-        } else if (unit instanceof ReturnStmt) {
-            throw new IllegalArgumentException("Unable to transform expressions in return statements");
         }
     }
 
@@ -50,13 +49,12 @@ public class LogicConstantTransformer extends UnitTransformer {
         final Value value = valueBox.getValue();
 
         if (value instanceof BinopExpr binopExpr) {
-            if (value instanceof AndExpr || value instanceof OrExpr || value instanceof XorExpr) {
-                // Handles the case for boolean connectives (if the expected type is boolean).
-                transformValueOfType(expectedType, binopExpr.getOp1Box());
-                transformValueOfType(expectedType, binopExpr.getOp2Box());
-            }
-        } else if (value instanceof UnopExpr unopExpr) {
-            transformValueOfType(expectedType, unopExpr.getOpBox());
+            final Type type1 = VimpTypeInterpreter.v().typeOf(binopExpr.getOp1());
+            final Type type2 = VimpTypeInterpreter.v().typeOf(binopExpr.getOp2());
+            final Type type = VimpTypeInterpreter.v().join(type1, type2);
+
+            transformValueOfType(type, binopExpr.getOp1Box());
+            transformValueOfType(type, binopExpr.getOp2Box());
         } else if (value instanceof InvokeExpr invokeExpr) {
             for (int i = 0; i < invokeExpr.getArgCount(); ++i) {
                 final ValueBox argBox = invokeExpr.getArgBox(i);
@@ -67,4 +65,5 @@ public class LogicConstantTransformer extends UnitTransformer {
             valueBox.setValue(LogicConstant.v(intConstant.value > 0));
         }
     }
+
 }

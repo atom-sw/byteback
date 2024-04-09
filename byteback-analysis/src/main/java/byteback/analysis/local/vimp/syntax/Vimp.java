@@ -1,12 +1,9 @@
 package byteback.analysis.local.vimp.syntax;
 
 import byteback.analysis.local.vimp.analyzer.value.VimpTypeInterpreter;
-import byteback.analysis.local.vimp.syntax.unit.AssertStmt;
-import byteback.analysis.local.vimp.syntax.unit.InvariantStmt;
-import byteback.analysis.local.vimp.syntax.unit.JumpStmt;
+import byteback.analysis.local.vimp.syntax.unit.*;
 import byteback.analysis.local.vimp.syntax.value.*;
 import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
-import byteback.analysis.local.vimp.syntax.unit.AssumeStmt;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.*;
@@ -109,6 +106,10 @@ public class Vimp {
 
     public IfStmt newIfStmt(final Value condition, final Unit target) {
         return new JumpStmt(condition, target);
+    }
+
+    public YieldStmt newYieldStmt() {
+        return new YieldStmt();
     }
 
 }

@@ -52,7 +52,7 @@ public abstract class ExprFolder extends BodyTransformer {
      * @param valueBox The position in the unit in which the substitution may occur.
      * @return `true` if a value can be inlined in `valueBox`, `false` otherwise.
      */
-    protected boolean canSubstitute(final Unit unit, final ValueBox valueBox) {
+    protected boolean canSubstituteUse(final Unit unit, final ValueBox valueBox) {
         return true;
     }
 
@@ -125,7 +125,7 @@ public abstract class ExprFolder extends BodyTransformer {
 
         protected void substituteUses(final Unit unit) {
             for (final ValueBox useBox : unit.getUseBoxes()) {
-                if (canSubstitute(unit, useBox)) {
+                if (canSubstituteUse(unit, useBox)) {
                     substituteFrom(unit, useBox);
                 }
             }

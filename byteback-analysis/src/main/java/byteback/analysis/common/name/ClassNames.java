@@ -15,7 +15,8 @@ public class ClassNames {
         return instance.get();
     }
 
-    private ClassNames() {}
+    private ClassNames() {
+		}
 
     public String stripConstantDescriptor(final String descriptor) {
         return stripDescriptor(descriptor.replace("[", "").replace("]", ""));

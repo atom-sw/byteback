@@ -1,14 +1,12 @@
 package byteback.analysis.local.vimp.transformer.body;
 
 import byteback.analysis.local.vimp.syntax.value.ReturnRef;
-import byteback.analysis.local.vimp.tag.body.BehaviorFlagger;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.AssignStmt;
-import soot.jimple.ReturnStmt;
 
 /**
- * Folder for the expressions in a behavior method.
+ * Folds the expressions in a behavior method.
  *
  * @author paganma
  */
@@ -21,8 +19,8 @@ public class BehaviorExprFolder extends ExprFolder {
     }
 
     @Override
-    public boolean canSubstitute(final Unit unit, final ValueBox valueBox) {
-        return unit instanceof ReturnStmt;
+    public boolean canSubstituteUse(final Unit unit, final ValueBox valueBox) {
+        return unit instanceof final AssignStmt assignStmt && assignStmt.getLeftOp() instanceof ReturnRef;
     }
 
 }
