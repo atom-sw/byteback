@@ -1,6 +1,7 @@
 package byteback.analysis.local.vimp.syntax.value;
 
 import byteback.analysis.local.common.syntax.value.DefaultCaseValue;
+import soot.Immediate;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @author paganma
  */
-public class ReturnRef implements ConcreteRef, IdentityRef, DefaultCaseValue {
+public class ReturnRef implements ConcreteRef, IdentityRef, Immediate, DefaultCaseValue {
 
     final Type type;
 

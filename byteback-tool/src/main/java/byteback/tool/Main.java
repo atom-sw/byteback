@@ -1,8 +1,10 @@
 package byteback.tool;
 
-import byteback.analysis.local.jimple.transformer.DynamicInvokeToStaticTransformer;
 import byteback.analysis.local.jimple.transformer.body.InvokeFilter;
 import byteback.analysis.local.jimple.transformer.body.SwitchEliminator;
+import byteback.analysis.local.jimple.transformer.value.DynamicInvokeToStaticTransformer;
+import byteback.analysis.local.vimp.tag.body.PostconditionsProvider;
+import byteback.analysis.local.vimp.tag.body.PreconditionsProvider;
 import byteback.analysis.local.vimp.transformer.body.*;
 import byteback.analysis.local.vimp.transformer.unit.LogicConstantTransformer;
 import byteback.analysis.local.vimp.transformer.unit.SpecificationStmtTransformer;
@@ -163,6 +165,8 @@ public class Main implements Callable<Integer> {
 
         // Assign local specification
         jtpPack.add(new Transform("jtp.lif", FrameConditionFinder.v()));
+        jtpPack.add(new Transform("jtp.pcf", PreconditionsFinder.v()));
+        jtpPack.add(new Transform("jtp.psf", PostconditionsFinder.v()));
 
         Scene.v().loadBasicClasses();
         Scene.v().loadNecessaryClasses();
@@ -174,7 +178,7 @@ public class Main implements Callable<Integer> {
             final SootClass sootClass = classIterator.next();
 
             for (final SootMethod method : sootClass.getMethods()) {
-                System.out.println(method.retrieveActiveBody());
+                final Body body = method.retrieveActiveBody();
             }
         }
 
@@ -187,7 +191,7 @@ public class Main implements Callable<Integer> {
     }
 
     public static void main(final String... args) throws Exception {
-        // Thread.sleep(10000L); For attaching the visualvm
+        // Thread.sleep(10000L); // For attaching the visualvm
         int exitCode = new CommandLine(new Main()).execute(args);
         System.exit(exitCode);
     }

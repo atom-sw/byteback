@@ -1,5 +1,6 @@
 package byteback.analysis.local.common.transformer.value;
 
+import soot.Body;
 import soot.Unit;
 import soot.UnitBox;
 import soot.ValueBox;
@@ -12,11 +13,11 @@ import soot.ValueBox;
 public abstract class DefValueTransformer extends ValueTransformer {
 
     @Override
-    public void transformUnit(final UnitBox unitBox) {
+    public void transformUnit(final Body body, final UnitBox unitBox) {
         final Unit unit = unitBox.getUnit();
 
         for (final ValueBox useBox : unit.getDefBoxes()) {
-            transformValue(useBox);
+            transformValue(body, unitBox, useBox);
         }
     }
 

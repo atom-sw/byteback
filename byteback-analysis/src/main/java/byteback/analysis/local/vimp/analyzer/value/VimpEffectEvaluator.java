@@ -1,4 +1,4 @@
-package byteback.analysis.local.vimp.syntax.query;
+package byteback.analysis.local.vimp.analyzer.value;
 
 import byteback.analysis.local.vimp.syntax.value.CallExpr;
 import byteback.common.function.Lazy;

@@ -27,7 +27,7 @@ public class LogicConstantTransformer extends UnitTransformer {
     }
 
     @Override
-    public void transformUnit(final UnitBox unitBox) {
+    public void transformUnit(final Body body, final UnitBox unitBox) {
         final Unit unit = unitBox.getUnit();
 
         if (unit instanceof AssignStmt assignStmt) {

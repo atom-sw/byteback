@@ -1,7 +1,7 @@
 package byteback.analysis.local.vimp.transformer.body;
 
 import byteback.analysis.local.common.transformer.body.BodyTransformer;
-import byteback.analysis.local.vimp.syntax.query.VimpEffectEvaluator;
+import byteback.analysis.local.vimp.analyzer.value.VimpEffectEvaluator;
 import byteback.analysis.local.vimp.syntax.Vimp;
 import byteback.analysis.local.vimp.syntax.value.VoidConstant;
 import byteback.common.function.Lazy;

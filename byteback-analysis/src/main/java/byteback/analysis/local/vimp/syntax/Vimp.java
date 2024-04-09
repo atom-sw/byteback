@@ -100,6 +100,10 @@ public class Vimp {
         return new ConditionalExpr(op1, op2, op3);
     }
 
+    public ReturnRef newReturnRef(final Type type) {
+        return new ReturnRef(type);
+    }
+
     public NestedExpr newNestedExpr(final AssignStmt def) {
         return new NestedExpr(def);
     }

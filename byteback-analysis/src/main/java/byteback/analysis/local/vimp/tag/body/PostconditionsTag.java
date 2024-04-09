@@ -4,11 +4,11 @@ import soot.Value;
 
 import java.util.List;
 
-public class PostconditionTag extends ConditionsTag {
+public class PostconditionsTag extends ConditionsTag {
 
-    public static final String NAME = "PreconditionsTag";
+    public static final String NAME = "PostconditionsTag";
 
-    public PostconditionTag(final List<Value> values) {
+    public PostconditionsTag(final List<Value> values) {
         super(values);
     }
 

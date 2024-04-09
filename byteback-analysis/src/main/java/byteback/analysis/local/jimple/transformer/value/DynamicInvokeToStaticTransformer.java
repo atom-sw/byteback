@@ -1,11 +1,9 @@
-package byteback.analysis.local.jimple.transformer;
+package byteback.analysis.local.jimple.transformer.value;
 
 import byteback.analysis.local.common.transformer.value.UseValueTransformer;
 import byteback.common.function.Lazy;
 
-import soot.SootMethodRef;
-import soot.Value;
-import soot.ValueBox;
+import soot.*;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.StaticInvokeExpr;
@@ -30,7 +28,7 @@ public class DynamicInvokeToStaticTransformer extends UseValueTransformer {
     }
 
     @Override
-    public void transformValue(final ValueBox valueBox) {
+    public void transformValue(final Body body, final UnitBox unitBox, final ValueBox valueBox) {
         final Value value = valueBox.getValue();
 
         if (value instanceof DynamicInvokeExpr invokeDynamicExpr) {

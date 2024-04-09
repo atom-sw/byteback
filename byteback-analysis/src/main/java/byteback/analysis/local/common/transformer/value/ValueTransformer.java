@@ -1,5 +1,6 @@
 package byteback.analysis.local.common.transformer.value;
 
+import byteback.analysis.local.common.syntax.unit.MutableUnitBox;
 import byteback.analysis.local.common.transformer.unit.UnitTransformer;
 import soot.Body;
 import soot.Unit;
@@ -15,25 +16,21 @@ public abstract class ValueTransformer extends UnitTransformer {
 
 	@Override
 	public void transformBody(final Body body) {
-		for (final ValueBox useBox : body.getUseBoxes()) {
-			transformValue(useBox);
+
+		for (final Unit unit : body.getUnits()) {
+			transformUnit(body, new MutableUnitBox(unit, body));
 		}
 	}
 
 	@Override
-	public void transformUnit(final UnitBox unitBox) {
+	public void transformUnit(final Body body, final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 
-		for (final ValueBox useBox : unit.getUseAndDefBoxes()) {
-			transformValue(useBox);
+		for (final ValueBox valueBox : unit.getUseAndDefBoxes()) {
+			transformValue(body, unitBox, valueBox);
 		}
 	}
 
-	/**
-	 * Defines a transformation on a particular value.
-	 * @param valueBox The box that contains the value to be transformed. The result of the transformation must be
-	 *                 placed in this same box.
-	 */
-	public abstract void transformValue(ValueBox valueBox);
+	public abstract void transformValue(final Body body, final UnitBox unitBox, final ValueBox valueBox);
 
 }

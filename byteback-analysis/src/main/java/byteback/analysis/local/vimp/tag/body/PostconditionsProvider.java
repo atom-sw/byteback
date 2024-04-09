@@ -6,10 +6,10 @@ import soot.Body;
 
 import java.util.ArrayList;
 
-public class PostconditionsProvider extends TagProvider<Body, PreconditionsTag> {
+public class PostconditionsProvider extends TagProvider<Body, PostconditionsTag> {
 
     private static final Lazy<PostconditionsProvider> instance =
-            Lazy.from(()  -> new PostconditionsProvider(InferredLocalFramesTag.NAME));
+            Lazy.from(()  -> new PostconditionsProvider(PostconditionsTag.NAME));
 
     public static PostconditionsProvider v() {
         return instance.get();
@@ -20,8 +20,8 @@ public class PostconditionsProvider extends TagProvider<Body, PreconditionsTag> 
     }
 
     @Override
-    public PreconditionsTag compute(final Body body) {
-        return new PreconditionsTag(new ArrayList<>());
+    public PostconditionsTag compute(final Body body) {
+        return new PostconditionsTag(new ArrayList<>());
     }
 
 }

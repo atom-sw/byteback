@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class PreconditionsProvider extends TagProvider<Body, PreconditionsTag> {
 
     private static final Lazy<PreconditionsProvider> instance =
-            Lazy.from(()  -> new PreconditionsProvider(InferredLocalFramesTag.NAME));
+            Lazy.from(()  -> new PreconditionsProvider(PreconditionsTag.NAME));
 
     public static PreconditionsProvider v() {
         return instance.get();

@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 
 /**
  * Reads the VisibilityAnnotationTag from a given host.
+ *
+ * @author paganma
  */
 public class AnnotationReader extends TagReader<Host, VisibilityAnnotationTag> {
 
@@ -33,11 +35,11 @@ public class AnnotationReader extends TagReader<Host, VisibilityAnnotationTag> {
     }
 
     private void getAnnotations(final Stream.Builder<AnnotationTag> builder, final AnnotationElem annotationElement) {
-        if (annotationElement instanceof AnnotationArrayElem annotationArrayElement) {
+        if (annotationElement instanceof final AnnotationArrayElem annotationArrayElement) {
             for (AnnotationElem value : annotationArrayElement.getValues()) {
                 getAnnotations(builder, value);
             }
-        } else if (annotationElement instanceof AnnotationAnnotationElem annotationAnnotationElement) {
+        } else if (annotationElement instanceof final AnnotationAnnotationElem annotationAnnotationElement) {
             final AnnotationTag tag = annotationAnnotationElement.getValue();
             builder.accept(tag);
             getValue(tag).ifPresent((elem) -> getAnnotations(builder, elem));
@@ -56,7 +58,9 @@ public class AnnotationReader extends TagReader<Host, VisibilityAnnotationTag> {
 
     public Stream<AnnotationTag> getAnnotations(final Host host) {
         return get(host).stream()
-                .flatMap((visibilityAnnotationTag) -> visibilityAnnotationTag.getAnnotations().stream());
+                .flatMap((visibilityAnnotationTag) ->
+                        visibilityAnnotationTag.getAnnotations().stream()
+                                .flatMap(this::getAnnotations));
     }
 
     public Optional<AnnotationTag> getAnnotation(final Host host, final String name) {

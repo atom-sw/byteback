@@ -25,15 +25,16 @@ public abstract class UnitTransformer extends BodyTransformer {
 
         while (iterator.hasNext()) {
             final Unit unit = iterator.next();
-            transformUnit(new MutableUnitBox(unit, body));
+            transformUnit(body, new MutableUnitBox(unit, body));
         }
     }
 
     /**
      * Defines a transformation on a particular unit.
+     * @param body The body surrounding the unit.
      * @param unitBox The box that contains the unit to be transformed. The result of the transformation must be placed
      *                in this same box.
      */
-    public abstract void transformUnit(UnitBox unitBox);
+    public abstract void transformUnit(Body body, UnitBox unitBox);
 
 }

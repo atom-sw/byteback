@@ -3,8 +3,11 @@ package byteback.analysis.local.vimp.transformer.value;
 import byteback.analysis.local.common.transformer.value.ValueTransformer;
 import byteback.analysis.local.vimp.syntax.Vimp;
 import byteback.analysis.common.name.BBLibNames;
+import byteback.analysis.local.vimp.tag.body.TwoStateFlagger;
 import byteback.common.function.Lazy;
+import soot.Body;
 import soot.SootMethod;
+import soot.UnitBox;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 
@@ -26,7 +29,7 @@ public class OldExprTransformer extends ValueTransformer {
     }
 
     @Override
-    public void transformValue(final ValueBox valueBox) {
+    public void transformValue(final Body body, final UnitBox unitBox, final ValueBox valueBox) {
         if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
             final SootMethod invokedMethod = invokeExpr.getMethod();
 
@@ -35,6 +38,7 @@ public class OldExprTransformer extends ValueTransformer {
 
                 if (method.getName().equals("old")) {
                     valueBox.setValue(Vimp.v().newOldExpr(invokeExpr.getArg(0)));
+                    TwoStateFlagger.v().flag(body);
                 }
             }
         }
