@@ -49,6 +49,7 @@ public class BehaviorMethodValidator extends BodyTransformer {
 
                 for (final ValueBox useBox : unit.getUseBoxes()) {
                     final Value value = useBox.getValue();
+
                     if (VimpEffectEvaluator.v().hasSideEffects(value)) {
                         throw new BehaviorValidationException("Impure expression in behavior method: " + value,
                                 locationTagSupplier.get());

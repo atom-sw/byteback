@@ -1,5 +1,7 @@
 package byteback.tool;
 
+import byteback.analysis.global.vimp.transformer.PostconditionsPropagator;
+import byteback.analysis.global.vimp.transformer.PreconditionsPropagator;
 import byteback.analysis.local.jimple.transformer.body.InvokeFilter;
 import byteback.analysis.local.jimple.transformer.body.SwitchEliminator;
 import byteback.analysis.local.jimple.transformer.value.DynamicInvokeToStaticTransformer;
@@ -171,6 +173,9 @@ public class Main implements Callable<Integer> {
         Scene.v().loadBasicClasses();
         Scene.v().loadNecessaryClasses();
         PackManager.v().runBodyPacks();
+
+        PreconditionsPropagator.v().transformScene(Scene.v());
+        PostconditionsPropagator.v().transformScene(Scene.v());
 
         final Iterator<SootClass> classIterator = Scene.v().getApplicationClasses().snapshotIterator();
 

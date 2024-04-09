@@ -6,7 +6,7 @@ import soot.Body;
 
 import java.util.ArrayList;
 
-public class PostconditionsProvider extends TagProvider<Body, PostconditionsTag> {
+public class PostconditionsProvider extends ConditionsProvider<PostconditionsTag> {
 
     private static final Lazy<PostconditionsProvider> instance =
             Lazy.from(()  -> new PostconditionsProvider(PostconditionsTag.NAME));
