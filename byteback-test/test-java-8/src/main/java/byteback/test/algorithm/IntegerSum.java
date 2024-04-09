@@ -9,6 +9,8 @@ import static byteback.specification.Quantifier.*;
 
 import byteback.specification.Binding;
 import byteback.specification.Contract.Ensure;
+import byteback.specification.Contract.Predicate;
+
 
 public class IntegerSum {
 
