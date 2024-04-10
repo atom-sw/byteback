@@ -21,12 +21,12 @@ class ArrayReverse {
 		}
 
 		@Contract.Function
-		@Predicate
+		@Behavior
 		fun `array is not null`(a: IntArray?, i: Int, j: Int): Boolean {
 				return neq(a, null);
 		}
 
-		@Predicate
+		@Behavior
 		fun `swapped elements`(a: IntArray?, i: Int, j: Int): Boolean {
 				return implies(neq(a!!, null), eq(old(a[i]), a[j]) and eq(old(a[j]), a[i]));
 		}
@@ -39,13 +39,13 @@ class ArrayReverse {
 				a[j] = y;
 		}
 
-		@Predicate
+		@Behavior
 		fun `reverses the array`(a: IntArray?): Boolean {
 				return implies(not(`array is null`(a)), `reverse of`(a, old(a)));
 		}
 
 		@Contract.Function
-		@Predicate
+		@Behavior
 		fun `array is null`(a: IntArray?): Boolean {
 				return eq(a, null);
 		}

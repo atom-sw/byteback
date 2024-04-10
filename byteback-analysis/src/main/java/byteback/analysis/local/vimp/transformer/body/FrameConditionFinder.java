@@ -26,12 +26,12 @@ public class FrameConditionFinder extends BodyTransformer {
     @Override
     public void transformBody(final Body body) {
         if (BehaviorFlagger.v().isTagged(body)) {
-            final List<ConcreteRef> inferredFrames = InferredLocalFramesProvider.v().compute(body).getValues();
+            final List<ValueBox> inferredFrames = InferredLocalFramesProvider.v().compute(body).getValueBoxes();
 
             for (final ValueBox valueBox : body.getDefBoxes()) {
                 if (valueBox.getValue() instanceof final ConcreteRef concreteRef) {
                     if (concreteRef instanceof ArrayRef || concreteRef instanceof FieldRef) {
-                        inferredFrames.add(concreteRef);
+                        inferredFrames.add(valueBox);
                     }
                 }
             }

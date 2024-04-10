@@ -2,6 +2,10 @@ package byteback.specification;
 
 public class Special {
 
+	public static Throwable thrown() {
+		return null;
+	}
+
 	public static boolean old(final boolean value) {
 		return value;
 	}

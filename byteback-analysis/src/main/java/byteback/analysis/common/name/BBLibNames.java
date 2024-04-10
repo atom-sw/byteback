@@ -26,9 +26,7 @@ public class BBLibNames {
 
     public static final String PRELUDE_ANNOTATION = "Lbyteback/specification/Contract$Prelude;";
 
-    public static final String BEHAVIOR_ANNOTATION = "Lbyteback/specification/Contract$Function;";
-
-    public static final String PREDICATE_ANNOTATION = "Lbyteback/specification/Contract$Predicate;";
+    public static final String BEHAVIOR_ANNOTATION = "Lbyteback/specification/Contract$Behavior;";
 
     public static final String REQUIRE_ANNOTATION = "Lbyteback/specification/Contract$Require;";
 
@@ -106,7 +104,7 @@ public class BBLibNames {
     }
 
     public boolean isPredicateMethod(final SootMethod method) {
-        return AnnotationReader.v().hasAnnotation(method, PREDICATE_ANNOTATION);
+        return AnnotationReader.v().hasAnnotation(method, BEHAVIOR_ANNOTATION);
     }
 
 }

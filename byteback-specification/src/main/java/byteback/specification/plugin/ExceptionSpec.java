@@ -3,7 +3,7 @@ package byteback.specification.plugin;
 import byteback.specification.Contract.Attach;
 import byteback.specification.Contract.Return;
 
-@Attach(Exception.class)
+@Attach("java.lang.Exception")
 public abstract class ExceptionSpec {
 
 	@Return

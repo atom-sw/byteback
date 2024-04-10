@@ -1,11 +1,9 @@
 package byteback.analysis.local.vimp.transformer.body;
 
 import byteback.analysis.common.name.BBLibNames;
-import byteback.analysis.local.vimp.syntax.Vimp;
-import byteback.analysis.local.vimp.tag.body.PreconditionsProvider;
-import byteback.analysis.local.vimp.tag.body.PreconditionsTag;
+import byteback.analysis.global.vimp.tag.PreconditionsProvider;
+import byteback.analysis.global.vimp.tag.PreconditionsTag;
 import byteback.common.function.Lazy;
-import org.jf.dexlib2.util.Preconditions;
 import soot.*;
 
 import java.util.ArrayList;

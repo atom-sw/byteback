@@ -36,7 +36,7 @@ class PotentialNullDereference {
 				}
 		}
 
-		@Predicate
+		@Behavior
 		fun `a is not null`(a: IntArray?): Boolean {
 				return neq(a, null);
 		}

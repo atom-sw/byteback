@@ -8,7 +8,7 @@ import byteback.specification.Operator.*
 
 class TryFinally {
 
-		@Predicate
+		@Behavior
 		fun always(): Boolean {
 				return true
 		}
@@ -59,7 +59,7 @@ class TryFinally {
 				assertion(false)
 		}
 
-		@Predicate
+		@Behavior
 		fun `returns 2`(returns: Int): Boolean {
 				return eq(returns, 2)
 		}

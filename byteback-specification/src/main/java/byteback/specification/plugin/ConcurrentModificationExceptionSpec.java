@@ -2,9 +2,8 @@ package byteback.specification.plugin;
 
 import byteback.specification.Contract.Attach;
 import byteback.specification.Contract.Return;
-import java.util.ConcurrentModificationException;
 
-@Attach(ConcurrentModificationException.class)
+@Attach("java.util.ConcurrentModificationException")
 public class ConcurrentModificationExceptionSpec {
 
 	@Return

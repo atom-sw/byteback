@@ -8,18 +8,19 @@ import static byteback.specification.Quantifier.forall;
 import static byteback.specification.Operator.*;
 
 import byteback.specification.Binding;
-import byteback.specification.Contract.Function;
+import byteback.specification.Contract;
+import byteback.specification.Contract.Behavior;
 
 public class Basic {
 
-	@Function
+	@Behavior
 	public static boolean universalQuantifier() {
 		int i = Binding.integer();
 
 		return forall(i, eq(i, 0));
 	}
 
-	@Function
+	@Behavior
 	public static boolean existentialQuantifier() {
 		int i = Binding.integer();
 

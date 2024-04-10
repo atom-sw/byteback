@@ -26,7 +26,7 @@ public class TryWithResources {
 		}
 
 		@Function
-		@Predicate
+		@Behavior
 		public boolean isClosed() {
 			return closed;
 		}

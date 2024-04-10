@@ -3,7 +3,7 @@
  */
 package byteback.test.instance;
 
-import byteback.specification.Contract.Function;
+import byteback.specification.Contract.Behavior;
 
 public class FieldAccess {
 
@@ -11,22 +11,22 @@ public class FieldAccess {
 
 	public int field;
 
-	@Function
+	@Behavior
 	public int staticFieldReference() {
 		return staticField;
 	}
 
-	@Function
+	@Behavior
 	public int staticFieldSum() {
 		return staticField + 2;
 	}
 
-	@Function
+	@Behavior
 	public int fieldReference() {
 		return this.field;
 	}
 
-	@Function
+	@Behavior
 	public int fieldSum() {
 		return this.field + 2;
 	}

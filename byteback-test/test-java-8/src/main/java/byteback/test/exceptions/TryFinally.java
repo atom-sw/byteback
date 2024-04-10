@@ -8,7 +8,7 @@ import static byteback.specification.Contract.*;
 
 public class TryFinally {
 
-	@Predicate
+	@Behavior
 	public boolean always() {
 		return true;
 	}
@@ -65,7 +65,7 @@ public class TryFinally {
 		}
 	}
 
-	@Predicate
+	@Behavior
 	public boolean returns_2(int returns) {
 		return eq(returns, 2);
 	}

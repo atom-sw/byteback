@@ -81,12 +81,12 @@ public class NestedExpr extends JimpleLocal {
 
     @Override
     public boolean isStackLocal() {
-        return getLocal().isStackLocal();
+        return local.isStackLocal();
     }
 
     @Override
     public Type getType() {
-        return getLocal().getType();
+        return local.getType();
     }
 
     @Override

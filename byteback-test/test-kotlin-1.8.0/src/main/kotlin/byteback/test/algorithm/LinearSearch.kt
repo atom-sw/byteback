@@ -8,22 +8,22 @@ import byteback.specification.Operator.*
 
 class LinearSearch {
 
-		@Predicate
+		@Behavior
 		fun <T> `array is not null`(a: Array<T>, n: T, left: Int, right: Int): Boolean {
 				return neq(a, null)
 		}
 
-		@Predicate
+		@Behavior
 		fun <T> `array is null`(a: Array<T>, n: Int, left: Int, right: Int): Boolean {
 				return eq(a, null)
 		}
 
-		@Predicate
+		@Behavior
 		fun <T> `bounded indices`(a: Array<T>, n: T, left: Int, right: Int): Boolean {
 				return lte(0, left) and lte(left, right) and lte(right, a.count())
 		}
 
-		@Predicate
+		@Behavior
 		fun <T> `result is index`(a: Array<T>, n: T, left: Int, right: Int, returns: Int): Boolean {
 				return implies(lte(0, returns), eq(a[returns], n));
 		}

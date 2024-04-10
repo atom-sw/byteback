@@ -10,7 +10,7 @@ import byteback.specification.Operator.{eq => equal};
 
 class DefaultComparator {
 
-  @Predicate
+  @Behavior
   def compare_default(a: Int, b: Int, returns: Boolean): Boolean = {
     return returns;
   }
@@ -24,7 +24,7 @@ class DefaultComparator {
 
 class LessThanComparator extends DefaultComparator {
 
-  @Predicate
+  @Behavior
   def compare_less_than(a: Int, b: Int, returns: Boolean): Boolean = {
     return implies(returns, lt(a, b));
   }
@@ -39,7 +39,7 @@ class LessThanComparator extends DefaultComparator {
 
 class GreaterThanComparator extends DefaultComparator {
 
-  @Predicate
+  @Behavior
   def compare_greater_than(a: Int, b: Int, returns: Boolean): Boolean = {
     return implies(returns, gt(a, b));
   }

@@ -3,7 +3,7 @@
  */
 package byteback.test.exceptions;
 
-import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 import static byteback.specification.Operator.*;
@@ -41,7 +41,7 @@ public class PotentialNullDereference {
 		}
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean a_is_not_null(A a) {
 		return neq(a, null);
 	}
@@ -53,7 +53,7 @@ public class PotentialNullDereference {
 		a.method();
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean a_is_null(A a) {
 		return eq(a, null);
 	}
@@ -78,7 +78,7 @@ public class PotentialNullDereference {
 		}
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean a_is_not_null(int[] a) {
 		return neq(a, null);
 	}
@@ -88,7 +88,7 @@ public class PotentialNullDereference {
 		int a_1 = a[1];
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean a_is_null(int[] a) {
 		return eq(a, null);
 	}

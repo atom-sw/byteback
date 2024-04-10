@@ -34,7 +34,7 @@ public class Vimp {
         return newImmediateBox(value);
     }
 
-    public ValueBox newConditionExprBox(final Value value) {
+    public ConditionExprBox newConditionExprBox(final Value value) {
         return new ConditionExprBox(value);
     }
 

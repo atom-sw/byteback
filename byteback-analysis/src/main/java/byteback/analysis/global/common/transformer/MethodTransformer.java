@@ -8,8 +8,10 @@ public abstract class MethodTransformer extends ClassTransformer {
 
     @Override
     public void transformClass(final Scene scene, final SootClass sootClass) {
-        for (final SootMethod sootMethod : sootClass.getMethods()) {
-            transformMethod(scene, sootMethod);
+        if (sootClass.resolvingLevel() >= SootClass.SIGNATURES) {
+            for (final SootMethod sootMethod : sootClass.getMethods()) {
+                transformMethod(scene, sootMethod);
+            }
         }
     }
 

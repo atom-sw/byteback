@@ -10,7 +10,7 @@ import byteback.specification.Operator.*
 
 class Counter {
 
-  @Predicate
+  @Behavior
   fun `sets count`(c: Int): Boolean {
     return eq(count, c);
   }
@@ -20,12 +20,12 @@ class Counter {
 	@get:Contract.Function
   var count: Int = 0;
 
-  @Predicate
+  @Behavior
   fun `increments count by 1`(): Boolean {
     return eq(count, old(count) + 1);
   }
 
-  @Predicate
+  @Behavior
   @Return
   fun `increments count by 10`(): Boolean {
     return eq(count, old(count) + 10);

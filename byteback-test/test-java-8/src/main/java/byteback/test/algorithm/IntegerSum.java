@@ -9,26 +9,24 @@ import static byteback.specification.Quantifier.*;
 
 import byteback.specification.Binding;
 import byteback.specification.Contract.Ensure;
-import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Behavior;
 
 
 public class IntegerSum {
 
-	@Function
+	@Behavior
 	public static boolean positive_arguments(int[] as) {
 		int i = Binding.integer();
 
 		return forall(i, implies(lt(i, as.length), gt(as[i], 0)));
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean array_is_invalid(int[] as) {
 		return eq(as, null);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean positive_arguments_imply_positive_sum(int[] as, int ret) {
 		return implies(not(array_is_invalid(as)), implies(positive_arguments(as), gte(ret, 0)));
 	}

@@ -6,7 +6,7 @@ package byteback.test.examples;
 import java.util.NoSuchElementException;
 
 import byteback.specification.Contract.Ensure;
-import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Function;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
@@ -29,35 +29,35 @@ public class ReadResource {
 		}
 
 		@Function
-		@Predicate
+		@Behavior
 		public boolean is_closed() {
 			return isClosed;
 		}
 
 		@Function
-		@Predicate
+		@Behavior
 		public boolean is_open() {
 			return not(isClosed);
 		}
 
 		@Function
-		@Predicate
+		@Behavior
 		public boolean has_next() {
 			return hasNext;
 		}
 
 		@Function
-		@Predicate
+		@Behavior
 		public boolean has_no_next() {
 			return not(hasNext);
 		}
 
-		@Predicate
+		@Behavior
 		public boolean open_invariant(int returns) {
 			return eq(old(isClosed), isClosed);
 		}
 
-		@Predicate
+		@Behavior
 		public boolean is_open_and_has_next() {
 			return not(isClosed) & hasNext;
 		}
@@ -71,43 +71,43 @@ public class ReadResource {
 	}
 
 	@Function
-	@Predicate
+	@Behavior
 	public static boolean a_is_null(Resource r, int[] a) {
 		return eq(a, null) ;
 	}
 
 	@Function
-	@Predicate
+	@Behavior
 	public static boolean r_is_null(Resource r, int[] a) {
 		return eq(r, null) ;
 	}
 
 	@Function
-	@Predicate
+	@Behavior
 	public static boolean r_and_a_are_not_null(Resource r, int[] a) {
 		return neq(r, null) & neq(a, null);
 	}
 
 	@Function
-	@Predicate
+	@Behavior
 	public static boolean r_or_a_is_null(Resource r, int[] a) {
 		return neq(r, null) | neq(a, null);
 	}
 
 	@Function
-	@Predicate
+	@Behavior
 	public static boolean r_is_open(Resource r, final int[] a) {
 		return implies(neq(r, null), not(r.isClosed));
 	}
 
 	@Function
-	@Predicate
+	@Behavior
 	public static boolean r_is_closed(final Resource r, final int[] a) {
 		return implies(neq(r, null), r.isClosed);
 	}
 
 	@Function
-	@Predicate
+	@Behavior
 	public static boolean a_is_empty(final Resource r, final int[] a, final int n) {
 		return neq(a, null) & eq(a.length, 0);
 	}

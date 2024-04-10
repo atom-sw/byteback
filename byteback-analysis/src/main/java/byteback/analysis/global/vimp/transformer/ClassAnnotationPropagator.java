@@ -35,7 +35,6 @@ public class ClassAnnotationPropagator extends ClassTransformer {
         final AnnotationTag annotation;
         final AnnotationElem element;
         final String value;
-
         final Optional<AnnotationTag> annotationOptional = AnnotationReader.v()
                 .getAnnotation(sootClass, BBLibNames.ATTACH_ANNOTATION);
 

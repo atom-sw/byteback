@@ -1,8 +1,8 @@
-package byteback.analysis.local.vimp.tag.body;
+package byteback.analysis.global.vimp.tag;
 
-import byteback.analysis.common.tag.TagProvider;
 import byteback.common.function.Lazy;
 import soot.Body;
+import soot.SootMethod;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ public class PostconditionsProvider extends ConditionsProvider<PostconditionsTag
     }
 
     @Override
-    public PostconditionsTag compute(final Body body) {
+    public PostconditionsTag compute(final SootMethod sootMethod) {
         return new PostconditionsTag(new ArrayList<>());
     }
 

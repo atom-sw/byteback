@@ -34,7 +34,7 @@ class Basic {
 				}
 		}
 
-		@Predicate
+		@Behavior
 		fun `always throws`(): Boolean {
 				return true;
 		}
@@ -58,7 +58,7 @@ class Basic {
 				}
 		}
 
-		@Predicate
+		@Behavior
 		fun `argument is even`(n: Int): Boolean {
 				return eq(n % 2, 0);
 		}
@@ -79,31 +79,31 @@ class Basic {
 		}
 
 		@Contract.Function
-		@Predicate
+		@Behavior
 		fun `f is 1`(): Boolean {
 				return eq(f, 1)
 		}
 
 		@Contract.Function
-		@Predicate
+		@Behavior
 		fun `f is 2`(): Boolean {
 				return eq(f, 2)
 		}
 
 		@Contract.Function
-		@Predicate
+		@Behavior
 		fun `f is 3`(): Boolean {
 				return eq(f, 3)
 		}
 
 		@Contract.Function
-		@Predicate
+		@Behavior
 		fun `f is 4`(): Boolean {
 				return eq(f, 4)
 		}
 
 		@Contract.Function
-		@Predicate
+		@Behavior
 		fun `f is gt 4`(): Boolean {
 				return gt(f, 4)
 		}

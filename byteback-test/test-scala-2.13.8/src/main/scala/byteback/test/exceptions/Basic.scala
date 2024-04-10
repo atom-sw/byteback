@@ -10,7 +10,7 @@ import byteback.specification.Operator.{eq => equal};
 
 import scala.annotation.meta._;
 
-class Basic(@(Pure @getter) val f: Int) {
+class Basic(@(Behavior @getter) val f: Int) {
 
   def tryCatchBlock(): Unit = {
     try {
@@ -32,7 +32,7 @@ class Basic(@(Pure @getter) val f: Int) {
     }
   }
 
-  @Predicate
+  @Behavior
   def always_throws(): Boolean = {
     return true;
   }
@@ -56,7 +56,7 @@ class Basic(@(Pure @getter) val f: Int) {
     alwaysThrows();
   }
 
-  @Predicate
+  @Behavior
   def argument_is_even(n: Int): Boolean = {
     return equal(n % 2, 0);
   }
@@ -77,32 +77,27 @@ class Basic(@(Pure @getter) val f: Int) {
     }
   }
 
-  @Pure
-  @Predicate
+  @Behavior
   def f_is_1(): Boolean = {
     return equal(f, 1);
   }
 
-  @Pure
-  @Predicate
+  @Behavior
   def f_is_2(): Boolean = {
     return equal(f, 2);
   }
 
-  @Pure
-  @Predicate
+  @Behavior
   def f_is_3(): Boolean = {
     return equal(f, 3);
   }
 
-  @Pure
-  @Predicate
+  @Behavior
   def f_is_4(): Boolean = {
     return equal(f, 4);
   }
 
-  @Pure
-  @Predicate
+  @Behavior
   def f_is_gt_4(): Boolean = {
     return gt(f, 4);
   }

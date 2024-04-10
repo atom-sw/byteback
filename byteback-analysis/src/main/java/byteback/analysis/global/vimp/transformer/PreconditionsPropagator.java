@@ -1,9 +1,12 @@
 package byteback.analysis.global.vimp.transformer;
 
-import byteback.analysis.local.vimp.tag.body.PreconditionsProvider;
-import byteback.analysis.local.vimp.tag.body.PreconditionsTag;
+import byteback.analysis.global.vimp.tag.PreconditionsProvider;
+import byteback.analysis.global.vimp.tag.PreconditionsTag;
+import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
 import byteback.common.function.Lazy;
 import soot.Value;
+import soot.jimple.Jimple;
+import soot.jimple.OrExpr;
 
 import java.util.List;
 
@@ -21,10 +24,14 @@ public class PreconditionsPropagator extends ConditionsPropagator<PreconditionsT
     }
 
     @Override
-    public void combineConditions(final List<Value> originalPreconditions, final List<Value> overridingPreconditions) {
-        for (final Value originalCondition : originalPreconditions) {
-            for (final Value overridingCondition : overridingPreconditions) {
-                // originalCondition || overridingCondition
+    public void combineConditions(final List<ConditionExprBox> originalPreconditionBoxes,
+                                  final List<ConditionExprBox> overridingPreconditionBoxes) {
+        for (final ConditionExprBox originalConditionBox : originalPreconditionBoxes) {
+            for (final ConditionExprBox overridingConditionBox : overridingPreconditionBoxes) {
+                final Value originalCondition = originalConditionBox.getValue();
+                final Value overridingCondition = overridingConditionBox.getValue();
+                final OrExpr weakenedCondition = Jimple.v().newOrExpr(originalCondition, overridingCondition);
+                overridingConditionBox.setValue(weakenedCondition);
             }
         }
     }

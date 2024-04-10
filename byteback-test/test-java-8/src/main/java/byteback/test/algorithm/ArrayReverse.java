@@ -10,11 +10,11 @@ import static byteback.specification.Special.*;
 
 import byteback.specification.Binding;
 
-// Dafny implementation:
+// Taken from the following Dafny implementation:
 // https://gist.github.com/Karneades/cd5f1d283e07be858e833b9463c16ab2
 public class ArrayReverse {
 
-	@Function
+	@Behavior
 	public static boolean reverse_of(final int[] a, final int[] b) {
 		int i = Binding.integer();
 
@@ -23,19 +23,17 @@ public class ArrayReverse {
 																 eq(a[i], b[b.length - 1 - i]))));
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean bounded_index(final int[] a, final int i) {
 		return lte(0, i) & lt(i, a.length);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean bounded_indices(final int[] a, final int i, final int j) {
 		return bounded_index(a, i) & bounded_index(a, j);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean swapped_elements(final int[] a, final int i, final int j) {
 		return eq(old(a[i]), a[j]) & eq(old(a[j]), a[i]);
 	}
@@ -49,13 +47,12 @@ public class ArrayReverse {
 		a[j] = y;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean array_is_null(int[] a) {
 		return eq(a, null);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean reversed(int[] a) {
 		return implies(not(array_is_null(a)), reverse_of(a, old(a)));
 	}
@@ -76,7 +73,6 @@ public class ArrayReverse {
 			invariant(forall(k, implies(lte(i, k) & lt(k, l - i), eq(a[k], old(a[k])))));
 			invariant(lte(0, i) & lte(i, (l + 1) / 2));
 			swap(a, i, l - i);
-
 			++i;
 		}
 	}

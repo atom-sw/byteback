@@ -13,12 +13,7 @@ public class Contract {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public @interface Predicate {
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
-	public @interface Function {
+	public @interface Behavior {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -70,26 +65,26 @@ public class Contract {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Raise {
-		public Class<?> exception();
-		public String when() default "[unassigned]";
+		Class<?> exception();
+		String when() default "[unassigned]";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Raises {
-		public Raise[] value();
+		Raise[] value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Return {
-		public String when() default "[unassigned]";
+		String when() default "[unassigned]";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Returns {
-		public Return[] value();
+		Return[] value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -97,12 +92,15 @@ public class Contract {
 	public @interface Isolated {
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.TYPE})
 	public @interface Attach {
-		Class<?> value();
+		String value();
 	}
 
-	public @interface AttachLabel {
-		String value();
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public @interface Ignore {
 	}
 
 	public static void assertion(boolean behavior) {
@@ -112,26 +110,6 @@ public class Contract {
 	}
 
 	public static void invariant(boolean behavior) {
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
-	public @interface Ignore {
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-	public @interface Invariant {
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
-	public @interface ModelNPE {
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
-	public @interface ModelIOBE {
 	}
 
 }

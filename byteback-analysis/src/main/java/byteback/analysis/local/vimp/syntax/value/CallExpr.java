@@ -72,15 +72,18 @@ public class CallExpr extends AbstractInvokeExpr implements Immediate, DefaultCa
     public void toString(final UnitPrinter printer) {
         printer.literal("(");
         printer.literal(methodRef.getName());
-        printer.literal(" ");
-        final Iterator<Value> argIterator = getArgs().iterator();
 
-        while (argIterator.hasNext()) {
-            final Value arg = argIterator.next();
-            arg.toString(printer);
+        if (getArgCount() > 0) {
+            printer.literal(" ");
+            final Iterator<Value> argIterator = getArgs().iterator();
 
-            if (argIterator.hasNext()) {
-                printer.literal(" ");
+            while (argIterator.hasNext()) {
+                final Value arg = argIterator.next();
+                arg.toString(printer);
+
+                if (argIterator.hasNext()) {
+                    printer.literal(" ");
+                }
             }
         }
 

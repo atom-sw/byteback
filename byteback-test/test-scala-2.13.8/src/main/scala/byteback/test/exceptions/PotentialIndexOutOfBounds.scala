@@ -12,7 +12,7 @@ import byteback.specification.Operator.{eq => equal};
 
 class PotentialIndexOutOfBounds {
 
-		@Predicate
+		@Behavior
 		def a_is_not_null(a: Array[Int]): Boolean = {
 				return neq(a, null);
 		}
@@ -33,7 +33,7 @@ class PotentialIndexOutOfBounds {
 				}
 		}
 
-		@Predicate
+		@Behavior
 		def a_is_not_empty(a: Array[Int]): Boolean = {
 				return gt(a.length, 0)
 		}

@@ -12,12 +12,12 @@ import byteback.specification.Contract.Ensure;
 
 public class DoubleSum {
 
-	@Function
+	@Behavior
 	public static boolean positive_arguments_imply_positive_sum(double[] as, double ret) {
 		return implies(positive_arguments(as), gte(ret, 0));
 	}
 
-	@Function
+	@Behavior
 	public static boolean positive_arguments(double[] as) {
 		int i = Binding.integer();
 

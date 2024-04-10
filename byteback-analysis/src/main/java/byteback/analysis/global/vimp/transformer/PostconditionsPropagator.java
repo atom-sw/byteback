@@ -1,11 +1,12 @@
 package byteback.analysis.global.vimp.transformer;
 
-import byteback.analysis.local.vimp.tag.body.PostconditionsProvider;
-import byteback.analysis.local.vimp.tag.body.PostconditionsTag;
-import byteback.analysis.local.vimp.tag.body.PreconditionsProvider;
-import byteback.analysis.local.vimp.tag.body.PreconditionsTag;
+import byteback.analysis.global.vimp.tag.PostconditionsProvider;
+import byteback.analysis.global.vimp.tag.PostconditionsTag;
+import byteback.analysis.local.vimp.syntax.Vimp;
+import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
 import byteback.common.function.Lazy;
 import soot.Value;
+import soot.ValueBox;
 
 import java.util.List;
 
@@ -23,10 +24,9 @@ public class PostconditionsPropagator extends ConditionsPropagator<Postcondition
     }
 
     @Override
-    public void combineConditions(final List<Value> originalPostconditions,
-                                  final List<Value> overridingPostconditions) {
-
-        overridingPostconditions.addAll(originalPostconditions);
+    public void combineConditions(final List<ConditionExprBox> originalPostconditionBoxes,
+                                  final List<ConditionExprBox> overridingPostconditionBoxes) {
+        overridingPostconditionBoxes.addAll(originalPostconditionBoxes);
     }
 
 }

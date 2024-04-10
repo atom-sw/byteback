@@ -8,17 +8,17 @@ import static byteback.specification.Operator.*;
 
 public class LinearSearch {
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_not_null(int a[], int n, int left, int right) {
 		return neq(a, null);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean bounded_indices(int a[], int n, int left, int right) {
 		return lte(0, left) & lte(left, right) & lte(right, a.length);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean result_is_index(int a[], int n, int left, int right, int returns) {
 		return implies(lte(0, returns), eq(a[returns], n));
 	}
@@ -40,17 +40,17 @@ public class LinearSearch {
 		return -1;
 	}
 
-	@Predicate
+	@Behavior
 	public static <T> boolean array_is_not_null(T a[], T n, int left, int right) {
 		return neq(a, null);
 	}
 
-	@Predicate
+	@Behavior
 	public static <T> boolean bounded_indices(T a[], T n, int left, int right) {
 		return lte(0, left) & lte(left, right) & lte(right, a.length);
 	}
 
-	@Predicate
+	@Behavior
 	public static <T> boolean result_is_index(T a[], T n, int left, int right, int returns) {
 		return implies(lte(0, returns), eq(a[returns], n));
 	}

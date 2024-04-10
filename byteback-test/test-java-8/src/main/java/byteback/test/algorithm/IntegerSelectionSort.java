@@ -13,32 +13,29 @@ import byteback.specification.Contract.Ensure;
 
 public class IntegerSelectionSort {
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean bounded_index(final int[] a, final int i) {
 		return lte(0, i) & lt(i, a.length);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean bounded_indices(final int[] a, final int i, final int j) {
 		return bounded_index(a, i) & bounded_index(a, j);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean bounded_index(final int[] a, final int i, final int m) {
 		return bounded_index(a, m);
 	}
 
-	@Function
+	@Behavior
 	public static boolean is_minimum(final int[] a, final int i, final int j, final int m) {
 		final int k = Binding.integer();
 
 		return forall(k, implies(lte(i, k) & lt(k, j), gte(a[k], a[m])));
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean is_minimum(final int[] a, final int i, final int m) {
 		return is_minimum(a, i, a.length, m);
 	}
@@ -63,14 +60,14 @@ public class IntegerSelectionSort {
 		return m;
 	}
 
-	@Function
+	@Behavior
 	public static boolean sorted(final int[] a, final int i, final int j) {
 		final int k = Binding.integer();
 
 		return forall(k, implies(lt(i, k) & lt(k, j), lte(a[k - 1], a[k])));
 	}
 
-	@Function
+	@Behavior
 	public static boolean partitioned(final int[] a, final int c) {
 		final int k = Binding.integer();
 		final int l = Binding.integer();
@@ -78,27 +75,27 @@ public class IntegerSelectionSort {
 		return forall(k, forall(l, implies(lte(0, k) & lt(k, c) & lte(c, l) & lt(l, a.length), lte(a[k], a[l]))));
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_not_empty(final int[] a) {
 		return gt(a.length, 1);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_sorted(final int[] a) {
 		return sorted(a, 0, a.length);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_not_null(final int[] a) {
 		return neq(a, null);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean swapped_elements(final int[] a, final int i, final int j) {
 		return eq(old(a[i]), a[j]) & eq(old(a[j]), a[i]);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean elements_invariance(final int[] a, final int i, final int j) {
 		final int k = Binding.integer();
 		return  forall(k, implies(lte(0, k) & lt(k, a.length) & neq(k, i) & neq(k, j), eq(k, old(k))));

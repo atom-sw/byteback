@@ -20,13 +20,13 @@ class GCD {
   }
 
   @Contract.Function
-  @Predicate
+  @Behavior
   fun `result is gcd`(a: Int, b: Int, r: Int): Boolean {
     return implies(not(`arguments are negative`(a, b)), eq(r, `gcd recursive`(a, b)));
   }
 
   @Contract.Function
-  @Predicate
+  @Behavior
   fun `arguments are negative`(a: Int, b: Int): Boolean {
     return lte(a, 0) or lte(b, 0)
   }

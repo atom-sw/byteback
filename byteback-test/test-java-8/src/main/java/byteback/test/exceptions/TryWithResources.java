@@ -23,7 +23,7 @@ public class TryWithResources {
 			closed = false;
 		}
 
-		@Predicate
+		@Behavior
 		public boolean otherResourcesAreClosed() {
 			final Resource r = (Resource) Binding.reference();
 
@@ -37,14 +37,12 @@ public class TryWithResources {
 			closed = true;
 		}
 
-		@Function
-		@Predicate
+		@Behavior
 		public boolean isClosed() {
 			return closed;
 		}
 
-		@Function
-		@Predicate
+		@Behavior
 		public boolean isOpen() {
 			return not(closed);
 		}

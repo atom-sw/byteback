@@ -3,7 +3,7 @@ package byteback.specification.plugin;
 import byteback.specification.Contract.Attach;
 import byteback.specification.Contract.Return;
 
-@Attach(IllegalArgumentException.class)
+@Attach("java.lang.IllegalArgumentException")
 public abstract class IllegalArgumentExceptionSpec {
 
 	@Return

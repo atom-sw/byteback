@@ -5,14 +5,13 @@ import byteback.analysis.global.vimp.transformer.PreconditionsPropagator;
 import byteback.analysis.local.jimple.transformer.body.InvokeFilter;
 import byteback.analysis.local.jimple.transformer.body.SwitchEliminator;
 import byteback.analysis.local.jimple.transformer.value.DynamicInvokeToStaticTransformer;
-import byteback.analysis.local.vimp.tag.body.PostconditionsProvider;
-import byteback.analysis.local.vimp.tag.body.PreconditionsProvider;
 import byteback.analysis.local.vimp.transformer.body.*;
 import byteback.analysis.local.vimp.transformer.unit.LogicConstantTransformer;
 import byteback.analysis.local.vimp.transformer.unit.SpecificationStmtTransformer;
 import byteback.analysis.local.vimp.transformer.value.ConditionalExprTransformer;
 import byteback.analysis.local.vimp.transformer.value.OldExprTransformer;
 import byteback.analysis.local.vimp.transformer.value.QuantifierValueTransformer;
+import byteback.analysis.local.vimp.transformer.value.ThrownExprTransformer;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -124,12 +123,13 @@ public class Main implements Callable<Integer> {
 
         // Removes subexpressions in if conditions
         jtpPack.add(new Transform("jtp.i2j", IfConditionExtractor.v()));
-        jtpPack.add(new Transform("jtp.etc", ExplicitTypeCaster.v()));
 
         // First introduce the new Vimp expression types
         jtpPack.add(new Transform("jtp.vvt", LogicConstantTransformer.v()));
+        jtpPack.add(new Transform("jtp.etc", ExplicitTypeCaster.v()));
         jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
         jtpPack.add(new Transform("jtp.oet", OldExprTransformer.v()));
+        jtpPack.add(new Transform("jtp.tet", ThrownExprTransformer.v()));
         jtpPack.add(new Transform("jtp.cot", ConditionalExprTransformer.v()));
         jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
 
@@ -184,6 +184,7 @@ public class Main implements Callable<Integer> {
 
             for (final SootMethod method : sootClass.getMethods()) {
                 final Body body = method.retrieveActiveBody();
+                System.out.println(body);
             }
         }
 

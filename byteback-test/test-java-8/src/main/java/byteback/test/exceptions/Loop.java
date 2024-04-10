@@ -3,7 +3,7 @@
  */
 package byteback.test.exceptions;
 
-import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 
@@ -12,7 +12,7 @@ import static byteback.specification.Operator.*;
 
 public class Loop {
 
-	@Predicate
+	@Behavior
 	public boolean always() {
 		return true;
 	}

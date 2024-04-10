@@ -12,7 +12,7 @@ import scala.annotation.meta._;
 
 class MultiCatch {
 
-  @Predicate
+  @Behavior
   def always_throws_exception1_exception2(e: Throwable): Boolean = {
     return e.isInstanceOf[Exception1] | e.isInstanceOf[Exception2]
   }

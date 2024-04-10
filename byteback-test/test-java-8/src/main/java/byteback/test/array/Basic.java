@@ -8,8 +8,7 @@ import static byteback.specification.Operator.*;
 
 public class Basic {
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean last_element_is_1(int[] as) {
 		return eq(as[as.length - 1], 1);
 	}

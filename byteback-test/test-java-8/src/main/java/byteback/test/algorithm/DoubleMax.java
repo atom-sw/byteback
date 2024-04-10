@@ -11,26 +11,24 @@ import byteback.specification.Binding;
 
 public class DoubleMax {
 
-	@Predicate
-	@Function
+	@Behavior
 	public static boolean array_is_not_null(double[] a) {
 		return neq(a, null);
 	}
 
-	@Predicate
-	@Function
+	@Behavior
 	public static boolean max_in_range(double[] a, double n, int start, int end) {
 		int i = Binding.integer();
 
 		return forall(i, implies(lte(start, i) & lt(i, end), gte(n, a[i])));
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_not_empty(double[] a) {
 		return gt(a.length, 0);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean result_is_max(double[] a, double t) {
 		return max_in_range(a, t, 0, a.length);
 	}

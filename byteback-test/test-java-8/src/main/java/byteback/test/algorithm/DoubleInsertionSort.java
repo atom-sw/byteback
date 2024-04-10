@@ -11,24 +11,24 @@ import byteback.specification.Binding;
 
 public class DoubleInsertionSort {
 
-	@Function
+	@Behavior
 	public static boolean sorted(final double[] a, final int i, final int j) {
 		final int k = Binding.integer();
 
 		return forall(k, implies(lt(i, k) & lt(k, j), lte(a[k - 1], a[k])));
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_not_empty(final double[] a) {
 		return gt(a.length, 0);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_not_null(final double[] a) {
 		return neq(a, null);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_sorted(final double[] a) {
 		return sorted(a, 0, a.length);
 	}

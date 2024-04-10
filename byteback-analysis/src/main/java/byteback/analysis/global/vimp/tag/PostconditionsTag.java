@@ -1,5 +1,6 @@
-package byteback.analysis.local.vimp.tag.body;
+package byteback.analysis.global.vimp.tag;
 
+import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
 import soot.Value;
 
 import java.util.List;
@@ -8,8 +9,8 @@ public class PostconditionsTag extends ConditionsTag {
 
     public static final String NAME = "PostconditionsTag";
 
-    public PostconditionsTag(final List<Value> values) {
-        super(values);
+    public PostconditionsTag(final List<ConditionExprBox> conditionBoxes) {
+        super(conditionBoxes);
     }
 
     @Override

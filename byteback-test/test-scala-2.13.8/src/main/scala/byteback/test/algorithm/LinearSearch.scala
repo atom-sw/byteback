@@ -9,24 +9,24 @@ import byteback.specification.Operator.{eq => equal};
 
 class LinearSearch {
 
-  @Predicate
+  @Behavior
   def array_is_not_null[T <: AnyRef](a: Array[T], n: T, left: Int, right: Int): Boolean = {
     return neq(a, null);
   }
 
-  @Predicate
+  @Behavior
   def array_is_null(a: Array[Int], n: Int, left: Int, right: Int): Boolean = {
     return equal(a, null);
   }
 
-  @Predicate
+  @Behavior
   def bounded_indices[T <: AnyRef](a: Array[T], n: T, left: Int,
     right: Int): Boolean = {
 
     return lte(0, left) & lte(left, right) & lte(right, a.length);
   }
 
-  @Predicate
+  @Behavior
   def result_is_index[T <: AnyRef](a: Array[T], n: T, left: Int, right: Int,
     returns: Int): Boolean = {
 

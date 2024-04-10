@@ -2,8 +2,8 @@ package byteback.analysis.local.vimp.transformer.body;
 
 import byteback.analysis.common.name.BBLibNames;
 import byteback.analysis.local.vimp.syntax.Vimp;
-import byteback.analysis.local.vimp.tag.body.PostconditionsProvider;
-import byteback.analysis.local.vimp.tag.body.PostconditionsTag;
+import byteback.analysis.global.vimp.tag.PostconditionsProvider;
+import byteback.analysis.global.vimp.tag.PostconditionsTag;
 import byteback.common.function.Lazy;
 import soot.*;
 

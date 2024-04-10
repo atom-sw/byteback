@@ -1,8 +1,9 @@
 package byteback.analysis.global.vimp.transformer;
 
 import byteback.analysis.global.common.transformer.MethodTransformer;
-import byteback.analysis.local.vimp.tag.body.ConditionsProvider;
-import byteback.analysis.local.vimp.tag.body.ConditionsTag;
+import byteback.analysis.global.vimp.tag.ConditionsProvider;
+import byteback.analysis.global.vimp.tag.ConditionsTag;
+import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
 import soot.*;
 
 import java.util.ArrayDeque;
@@ -16,18 +17,18 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
         this.conditionsProvider = conditionsProvider;
     }
 
-    public abstract void combineConditions(List<Value> originalConditions, List<Value> overridingConditions);
+    public abstract void combineConditions(final List<ConditionExprBox> originalConditionBoxes,
+                                           final List<ConditionExprBox> overridingConditionBoxes);
 
     @Override
     public void transformMethod(final Scene scene, final SootMethod sootMethod) {
         final SootClass declaringClass = sootMethod.getDeclaringClass();
+        final List<ConditionExprBox> originalConditionBoxes = conditionsProvider.getOrCompute(sootMethod).getValueBoxes();
 
-        if (!sootMethod.hasActiveBody()) {
+        if (originalConditionBoxes.isEmpty()) {
             return;
         }
-        
-        final Body body = sootMethod.getActiveBody();
-        final List<Value> originalConditions = conditionsProvider.getOrCompute(body).getValues();
+
         final Hierarchy hierarchy = scene.getActiveHierarchy();
         final var nextSubClasses = new ArrayDeque<>(hierarchy.getDirectSubclassesOf(declaringClass));
 
@@ -39,10 +40,9 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
                     sootMethod.getReturnType()
             );
 
-            if (overridingMethod != null && overridingMethod.hasActiveBody()) {
-                final Body overridingBody = overridingMethod.getActiveBody();
-                final List<Value> overridingConditions = conditionsProvider.getOrCompute(overridingBody).getValues();
-                combineConditions(originalConditions, overridingConditions);
+            if (overridingMethod != null) {
+                final List<ConditionExprBox> overridingConditions = conditionsProvider.getOrCompute(overridingMethod).getValueBoxes();
+                combineConditions(originalConditionBoxes, overridingConditions);
             }
 
             nextSubClasses.addAll(hierarchy.getDirectSubclassesOf(sootClass));

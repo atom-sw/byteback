@@ -38,7 +38,7 @@ class PotentialNullDereference {
     }
   }
 
-  @Predicate
+  @Behavior
   def a_is_not_null(a: Array[Int]): Boolean = {
     return neq(a, null);
   }

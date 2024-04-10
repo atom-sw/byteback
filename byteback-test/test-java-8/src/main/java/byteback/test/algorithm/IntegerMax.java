@@ -11,24 +11,24 @@ import byteback.specification.Binding;
 
 public class IntegerMax {
 
-	@Function
+	@Behavior
 	public static boolean array_is_not_null(int a[]) {
 		return neq(a, null);
 	}
 
-	@Function
+	@Behavior
 	public static boolean max_in_range(int a[], int n, int start, int end) {
 		int i = Binding.integer();
 
 		return forall(i, implies(lte(start, i) & lt(i, end), gte(n, a[i])));
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_not_empty(int a[]) {
 		return gt(a.length, 0);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean result_is_max(int a[], int t) {
 		return max_in_range(a, t, 0, a.length);
 	}

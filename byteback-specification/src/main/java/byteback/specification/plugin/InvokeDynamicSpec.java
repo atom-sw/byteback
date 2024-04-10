@@ -1,10 +1,10 @@
 package byteback.specification.plugin;
 
-import byteback.specification.Contract.AttachLabel;
+import byteback.specification.Contract.Attach;
 import byteback.specification.Contract.Lemma;
 import byteback.specification.Contract.Return;
 
-@AttachLabel("Lsoot/dummy/InvokeDynamic;")
+@Attach("soot.dummy.InvokeDynamic")
 public abstract class InvokeDynamicSpec {
 
 	@Lemma

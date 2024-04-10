@@ -18,12 +18,12 @@ public class Summary {
 		return exists(i, lte(from, i) & lt(i, to) & eq(as[i], e));
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean values_do_not_contain_1(int[] values) {
 		return not(contains(values, 1, 0, values.length));
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean result_is_nonnegative(int[] values, int result) {
 		return gte(result, 0);
 	}

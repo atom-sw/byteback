@@ -1,6 +1,7 @@
 package byteback.analysis.local.vimp.transformer.body;
 
 import byteback.analysis.local.vimp.syntax.value.ReturnRef;
+import byteback.analysis.local.vimp.tag.body.BehaviorFlagger;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.AssignStmt;
@@ -16,6 +17,13 @@ public class BehaviorExprFolder extends ExprFolder {
 
     public static BehaviorExprFolder v() {
         return instance.get();
+    }
+
+    @Override
+    public void transformBody(final Body body) {
+        if (BehaviorFlagger.v().isTagged(body)) {
+            super.transformBody(body);
+        }
     }
 
     @Override

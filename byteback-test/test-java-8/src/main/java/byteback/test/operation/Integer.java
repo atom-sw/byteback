@@ -6,13 +6,11 @@ package byteback.test.operation;
 import static byteback.specification.Operator.eq;
 import static byteback.specification.Operator.not;
 
-import byteback.specification.Contract.Predicate;
-import byteback.specification.Contract.Function;
+import byteback.specification.Contract.Behavior;
 
 public class Integer {
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int addition(int a, int b) {
 		return a + b;
 	}
@@ -21,8 +19,7 @@ public class Integer {
 		return a + b;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int subtraction(int a, int b) {
 		return a - b;
 	}
@@ -31,8 +28,7 @@ public class Integer {
 		return a - b;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int minus(int a) {
 		return -a;
 	}
@@ -41,8 +37,7 @@ public class Integer {
 		return -a;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int multiplication(int a, int b) {
 		return a * b;
 	}
@@ -51,8 +46,7 @@ public class Integer {
 		return a * b;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int division(int a, int b) {
 		return a / b;
 	}
@@ -61,8 +55,7 @@ public class Integer {
 		return a / b;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int modulo(int a, int b) {
 		return a % b;
 	}
@@ -71,8 +64,7 @@ public class Integer {
 		return a % b;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int square(int a) {
 		return a * a;
 	}
@@ -81,8 +73,7 @@ public class Integer {
 		return a * a;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int squareArea(int a) {
 		return square(a);
 	}
@@ -91,8 +82,7 @@ public class Integer {
 		return square(a);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int rectangleArea(int a, int b) {
 		return multiplication(a, b);
 	}
@@ -101,8 +91,7 @@ public class Integer {
 		return multiplication(a, b);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean even(int a) {
 		return eq(a % 2, 0);
 	}
@@ -111,8 +100,7 @@ public class Integer {
 		return eq(a % 2, 0);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean odd(int a) {
 		return not(even(a));
 	}
@@ -121,8 +109,7 @@ public class Integer {
 		return not(even(a));
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int assignIndirect(int a) {
 		int b = a;
 		int c = b;
@@ -143,8 +130,7 @@ public class Integer {
 		return f;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int assignPlus(int a) {
 		a = a + 1;
 
@@ -157,8 +143,7 @@ public class Integer {
 		return a;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int nestedPlus(int a) {
 		return a + 1 + 2 + 3 + 4 + 5;
 	}
@@ -167,8 +152,7 @@ public class Integer {
 		return a + 1 + 2 + 3 + 4 + 5;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int assignPlusIndirectVariables(int a) {
 		int b = a + 1;
 		int c = b + 2;
@@ -189,8 +173,7 @@ public class Integer {
 		return f;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int commonSubExpressionPlus(int a) {
 		a = a + 1;
 		int b = a + a;
@@ -205,8 +188,7 @@ public class Integer {
 		return b;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int swappingExpressionPlus(int x) {
 		int a = x;
 		int b = x + 1;
@@ -227,8 +209,7 @@ public class Integer {
 		return b;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int returnsOne() {
 		return 1;
 	}
@@ -237,8 +218,7 @@ public class Integer {
 		return 1;
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static int returnsZero() {
 		return 0;
 	}

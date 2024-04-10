@@ -43,7 +43,7 @@ import java.util.Spliterators;
 import java.util.function.Consumer;
 
 import byteback.specification.Contract.Ensure;
-import byteback.specification.Contract.Predicate;
+import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 
@@ -268,7 +268,7 @@ public class LinkedList<E>
 		return element;
 	}
 
-	@Predicate
+	@Behavior
 	public boolean first_is_null() {
 		return eq(first, null);
 	}
@@ -287,7 +287,7 @@ public class LinkedList<E>
 		return f.item;
 	}
 
-	@Predicate
+	@Behavior
 	public boolean last_is_null() {
 		return eq(last, null);
 	}
@@ -437,7 +437,7 @@ public class LinkedList<E>
 	 * @throws NullPointerException if the specified collection is null
 	 */
 
-	@Predicate
+	@Behavior
 	public boolean size_is_invalid(Collection<? extends E> c) {
 		return lt(size, 0);
 	}
@@ -463,7 +463,7 @@ public class LinkedList<E>
 	 * @throws NullPointerException      if the specified collection is null
 	 */
 
-	@Predicate
+	@Behavior
 	public boolean index_is_invalid(int index, Collection<? extends E> c) {
 		return lt(index, 0) | gt(index, size);
 	}
@@ -593,12 +593,12 @@ public class LinkedList<E>
 		return unlink(node(index));
 	}
 
-	@Predicate
+	@Behavior
 	public boolean size_invariant(int index, boolean returns) {
 		return eq(old(this.size), this.size);
 	}
 
-	@Predicate
+	@Behavior
 	public boolean is_element_index(int index, boolean returns) {
 		return iff(returns, gte(index, 0) & lt(index, size));
 	}
@@ -617,7 +617,7 @@ public class LinkedList<E>
 	 * Tells if the argument is the index of a valid position for an
 	 * iterator or an add operation.
 	 */
-	@Predicate
+	@Behavior
 	public boolean is_position_index(int index, boolean returns) {
 		return iff(returns, gte(index, 0) & lte(index, size));
 	}
@@ -640,7 +640,7 @@ public class LinkedList<E>
 		return "Index: " + index + ", Size: " + size;
 	}
 
-	@Predicate
+	@Behavior
 	public boolean index_is_not_element(int index) {
 		return not(lte(0, index) & lt(index, size));
 	}
@@ -651,7 +651,7 @@ public class LinkedList<E>
 			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 	}
 
-	@Predicate
+	@Behavior
 	public boolean index_is_not_position(int index) {
 		return not(lte(0, index) & lte(index, size));
 	}

@@ -4,7 +4,7 @@ import byteback.specification.Contract.Attach;
 import byteback.specification.Contract.Return;
 import java.util.Collection;
 
-@Attach(Collection.class)
+@Attach("java.util.Collection")
 public abstract class CollectionSpec {
 
 	@Return

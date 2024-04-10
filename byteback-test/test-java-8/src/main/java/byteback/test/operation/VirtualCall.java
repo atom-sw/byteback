@@ -3,16 +3,16 @@
  */
 package byteback.test.operation;
 
-import byteback.specification.Contract.Function;
+import byteback.specification.Contract.Behavior;
 
 public class VirtualCall {
 
-	@Function
+	@Behavior
 	public VirtualCall getThis() {
 		return this;
 	}
 
-	@Function
+	@Behavior
 	public VirtualCall getThat(VirtualCall that) {
 		return that.getThis();
 	}

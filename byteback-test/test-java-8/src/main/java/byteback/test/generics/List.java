@@ -5,7 +5,6 @@ package byteback.test.generics;
 
 import static byteback.specification.Contract.*;
 import static byteback.specification.Operator.*;
-import byteback.specification.Contract.Function;
 
 public class List<T> {
 
@@ -13,15 +12,9 @@ public class List<T> {
 
 	private final List<T> tail;
 
-	@Function
-	@Predicate
+	@Behavior
 	public boolean field_values(final T element, final List<T> tail) {
 		return eq(this.element, element) & eq(this.tail, tail);
-	}
-
-	@Predicate
-	public boolean field_values(final T element) {
-		return field_values(element, null);
 	}
 
 	@Ensure("field_values")
@@ -30,17 +23,22 @@ public class List<T> {
 		this.tail = tail;
 	}
 
+	@Behavior
+	public boolean field_values(final T element) {
+		return field_values(element, null);
+	}
+
 	@Ensure("field_values")
 	public List(final T element) {
 		this(element, null);
 	}
 
-	@Function
+	@Behavior
 	public T getElement() {
 		return element;
 	}
 
-	@Function
+	@Behavior
 	public List<T> getTail() {
 		return tail;
 	}

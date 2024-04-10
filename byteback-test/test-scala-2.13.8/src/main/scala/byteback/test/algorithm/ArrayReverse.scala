@@ -12,7 +12,7 @@ import byteback.specification.Quantifier._;
 
 class ArrayReverse {
 
-  @Pure
+  @Behavior
   def reverse_of(a: Array[Int], b: Array[Int]): Boolean = {
     val i: Int = Binding.integer()
 
@@ -20,12 +20,12 @@ class ArrayReverse {
   }
 
 
-  @Predicate
+  @Behavior
   def array_is_not_null(a: Array[Int], i: Int, j: Int): Boolean = {
     return neq(a, null)
   }
 
-  @Predicate
+  @Behavior
   def swapped(a: Array[Int], i: Int, j: Int): Boolean = {
     return implies(neq(a, null), equal(old(a(i)), a(j)) & equal(old(a(j)), a(i)));
   }
@@ -38,13 +38,12 @@ class ArrayReverse {
     a(j) = y
   }
 
-  @Pure
-  @Predicate
+  @Behavior
   def array_is_null(a: Array[Int]): Boolean = {
     return equal(a, null);
   }
 
-  @Predicate
+  @Behavior
   def reversed(a: Array[Int]): Boolean = {
     return implies(not(array_is_null(a)), reverse_of(a, old(a)))
   }

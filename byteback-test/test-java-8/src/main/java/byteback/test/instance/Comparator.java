@@ -10,7 +10,7 @@ public interface Comparator {
 
 	public static class DefaultComparator {
 
-		@Predicate
+		@Behavior
 		public boolean compare_default(int a, int b, boolean returns) {
 			return returns;
 		}
@@ -23,7 +23,7 @@ public interface Comparator {
 
 	public static class LessThanComparator extends DefaultComparator {
 
-		@Predicate
+		@Behavior
 		public boolean compare_less_than(int a, int b, boolean returns) {
 			return implies(returns, lt(a, b));
 		}
@@ -38,7 +38,7 @@ public interface Comparator {
 
 	public static class GreaterThanComparator extends DefaultComparator {
 
-		@Predicate
+		@Behavior
 		public boolean compare_greater_than(int a, int b, boolean returns) {
 			return implies(returns, gt(a, b));
 		}

@@ -36,7 +36,7 @@ public class BehaviorMethodValidator extends BodyTransformer {
         final SootMethod sootMethod = body.getMethod();
 
         if (AnnotationReader.v().hasAnnotation(sootMethod, BBLibNames.BEHAVIOR_ANNOTATION)
-                || AnnotationReader.v().hasAnnotation(sootMethod, BBLibNames.PREDICATE_ANNOTATION)) {
+                || AnnotationReader.v().hasAnnotation(sootMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
 
             for (final Unit unit : body.getUnits()) {
                 final Supplier<LocationTag> locationTagSupplier = () ->

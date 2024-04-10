@@ -12,22 +12,22 @@ import scala.annotation.meta._;
 
 class Counter {
 
-  @Predicate
+  @Behavior
   def sets_count(c: Int): Boolean = {
     return equal(count, c);
   }
 
   @(Ensure @setter)("sets_count")
   @(Return @setter)
-  @(Pure @getter)
+  @(Behavior @getter)
   var count: Int = 0;
 
-  @Predicate
+  @Behavior
   def increments_count_by_1(): Boolean = {
     return equal(count, old(count) + 1);
   }
 
-  @Predicate
+  @Behavior
   @Return
   def increments_count_by_10(): Boolean = {
     return equal(count, old(count) + 10);

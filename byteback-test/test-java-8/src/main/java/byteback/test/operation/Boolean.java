@@ -10,42 +10,42 @@ import byteback.specification.Contract.*;
 
 public class Boolean {
 
-	@Function
+	@Behavior
 	public static boolean or(boolean a, boolean b) {
 		return a | b;
 	}
 
-	@Function
+	@Behavior
 	public static boolean and(boolean a, boolean b) {
 		return a & b;
 	}
 
-	@Function
+	@Behavior
 	public static boolean xor(boolean a, boolean b) {
 		return a ^ b;
 	}
 
-	@Function
+	@Behavior
 	public static boolean returnsTrue() {
 		return true;
 	}
 
-	@Function
+	@Behavior
 	public static boolean returnsFalse() {
 		return false;
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean and_postcondition(boolean a, boolean b, boolean returns) {
 		return implies(a & b, returns);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean or_postcondition(boolean a, boolean b, boolean returns) {
 		return implies(a | b, returns);
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean not_postcondition(boolean a, boolean returns) {
 		return implies(a, not(returns));
 	}

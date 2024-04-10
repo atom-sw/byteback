@@ -4,14 +4,15 @@
 package byteback.test.exceptions;
 
 import static byteback.specification.Contract.*;
+import static byteback.specification.Special.*;
 
 import byteback.test.exceptions.Basic.Exception4;
 
 public class MultiCatch {
 
-	@Predicate
-	public boolean always_throws_exception1_exception2(final Throwable e) {
-		return e instanceof Exception1;
+	@Behavior
+	public boolean always_throws_exception1_exception2() {
+		return thrown() instanceof Exception1;
 	}
 
 	@Ensure("always_throws_exception1_exception2")

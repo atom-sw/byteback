@@ -10,12 +10,12 @@ public class Dice {
 
 	public interface Die {
 
-		@Predicate
+		@Behavior
 		default boolean outcome_is_positive(int max, int outcome) {
 			return lte(1, outcome);
 		}
 
-		@Predicate
+		@Behavior
 		default boolean outcome_is_leq_max(int max, int outcome) {
 			return lte(outcome, max);
 		}
@@ -28,7 +28,7 @@ public class Dice {
 
 	public static class FixedDie implements Die {
 
-		@Predicate
+		@Behavior
 		public boolean result_is_max(int max, int returns) {
 			return eq(max, returns);
 		}

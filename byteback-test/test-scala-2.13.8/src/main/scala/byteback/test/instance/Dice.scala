@@ -10,14 +10,12 @@ import byteback.specification.Operator.{eq => equal};
 
 abstract class Die {
 
-  @Pure
-  @Predicate
+  @Behavior
   def outcome_is_positive(max: Int, outcome: Int): Boolean = {
     return lte(1, outcome);
   }
 
-  @Pure
-  @Predicate
+  @Behavior
   def outcome_is_leq_than_max(max: Int, outcome: Int): Boolean = {
     return lte(outcome, max);
   }
@@ -30,8 +28,7 @@ abstract class Die {
 
 class FixedDie extends Die {
 
-  @Pure
-  @Predicate
+  @Behavior
   def result_is_max(max: Int, returns: Int): Boolean = {
     return equal(max, returns);
   }

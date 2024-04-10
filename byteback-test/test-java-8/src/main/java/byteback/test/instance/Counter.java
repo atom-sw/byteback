@@ -19,7 +19,7 @@ public class Counter {
 
 	int count;
 
-	@Predicate
+	@Behavior
 	public boolean increments_count_by_1() {
     return eq(count, old(count) + 1);
 	}

@@ -10,7 +10,7 @@ import byteback.specification.Operator.{eq => equal};
 
 class TryFinally {
 
-  @Predicate
+  @Behavior
   def always(): Boolean = {
     return true
   }
@@ -69,7 +69,7 @@ class TryFinally {
     assertion(false);
   }
 
-  @Predicate
+  @Behavior
   def returns_2(returns: Int): Boolean = {
     return equal(returns, 2);
   }

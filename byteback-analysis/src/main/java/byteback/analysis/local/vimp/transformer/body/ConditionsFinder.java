@@ -2,10 +2,11 @@ package byteback.analysis.local.vimp.transformer.body;
 
 import byteback.analysis.common.name.BBLibNames;
 import byteback.analysis.common.tag.AnnotationReader;
-import byteback.analysis.common.tag.TagProvider;
+import byteback.analysis.global.vimp.tag.ConditionsProvider;
 import byteback.analysis.local.common.transformer.body.BodyTransformer;
 import byteback.analysis.local.vimp.syntax.Vimp;
-import byteback.analysis.local.vimp.tag.body.ConditionsTag;
+import byteback.analysis.global.vimp.tag.ConditionsTag;
+import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
 import soot.*;
 import soot.tagkit.AnnotationStringElem;
 
@@ -15,9 +16,9 @@ public abstract class ConditionsFinder<T extends ConditionsTag> extends BodyTran
 
     private final String annotationDescriptor;
 
-    private final TagProvider<Body, T> conditionsTagProvider;
+    private final ConditionsProvider<T> conditionsTagProvider;
 
-    public ConditionsFinder(final String annotationDescriptor, final TagProvider<Body, T> conditionsTagProvider) {
+    public ConditionsFinder(final String annotationDescriptor, final ConditionsProvider<T> conditionsTagProvider) {
         this.annotationDescriptor = annotationDescriptor;
         this.conditionsTagProvider = conditionsTagProvider;
     }
@@ -46,7 +47,7 @@ public abstract class ConditionsFinder<T extends ConditionsTag> extends BodyTran
                         );
 
                         if (behaviorMethod != null) {
-                            if (!AnnotationReader.v().hasAnnotation(behaviorMethod, BBLibNames.PREDICATE_ANNOTATION)) {
+                            if (!AnnotationReader.v().hasAnnotation(behaviorMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
                                 throw new SpecificationFormatException(
                                         "Not a behavior method: " + behaviorName,
                                         body
@@ -56,8 +57,8 @@ public abstract class ConditionsFinder<T extends ConditionsTag> extends BodyTran
                             final var behaviorParameters = makeBehaviorParameters(body);
                             final Value behaviorExpression =
                                     Vimp.v().newCallExpr(behaviorMethod.makeRef(), behaviorParameters);
-
-                            conditionsTagProvider.getOrCompute(body).getValues().add(behaviorExpression);
+                            final ConditionExprBox conditionBox = Vimp.v().newConditionExprBox(behaviorExpression);
+                            conditionsTagProvider.getOrCompute(targetMethod).getValueBoxes().add(conditionBox);
                         } else {
                             throw new SpecificationFormatException(
                                     "Could not find behavior method: " + behaviorName,

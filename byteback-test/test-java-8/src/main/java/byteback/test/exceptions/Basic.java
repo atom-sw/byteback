@@ -33,7 +33,7 @@ public class Basic {
 		}
 	}
 
-	@Predicate
+	@Behavior
 	public boolean always_throws() {
 		return true;
 	}
@@ -56,7 +56,7 @@ public class Basic {
 		alwaysThrows();
 	}
 
-	@Predicate
+	@Behavior
 	public boolean argument_is_even(final int n) {
 		return eq(n % 2, 0);
 	}
@@ -78,32 +78,27 @@ public class Basic {
 
 	int f;
 
-	@Function
-	@Predicate
+	@Behavior
 	public boolean f_is_1() {
 		return eq(f, 1);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public boolean f_is_2() {
 		return eq(f, 2);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public boolean f_is_3() {
 		return eq(f, 3);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public boolean f_is_4() {
 		return eq(f, 4);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public boolean f_is_gt_4() {
 		return gt(f, 4);
 	}
@@ -125,20 +120,17 @@ public class Basic {
 		}
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public boolean f_divides_2() {
 		return eq(f % 2, 0);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public boolean f_divides_3() {
 		return eq(f % 3, 0);
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public boolean f_doesnt_divide_2_but_divides_3() {
 		return not(f_divides_2()) & f_divides_3();
 	}

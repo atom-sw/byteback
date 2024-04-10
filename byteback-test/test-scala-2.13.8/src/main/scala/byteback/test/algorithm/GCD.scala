@@ -10,7 +10,7 @@ import byteback.specification.Operator.{eq => equal};
 
 class GCD {
 
-  @Pure
+  @Behavior
   def gcd_recursive(a: Int, b: Int): Int = {
     return conditional(equal(a, b),
       a,
@@ -19,14 +19,12 @@ class GCD {
         gcd_recursive(a, b - a)));
   }
 
-  @Pure
-  @Predicate
+  @Behavior
   def result_is_gcd(a: Int, b: Int, r: Int): Boolean = {
     return implies(not(arguments_are_negative(a, b)), equal(r, gcd_recursive(a, b)));
   }
 
-  @Pure
-  @Predicate
+  @Behavior
   def arguments_are_negative(a: Int, b: Int): Boolean = {
     return lte(a, 0) | lte(b, 0);
   }

@@ -3,8 +3,7 @@
  */
 package byteback.test.exceptions;
 
-import byteback.specification.Contract.Predicate;
-import byteback.specification.Contract.Function;
+import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Require;
 import byteback.specification.Contract.Return;
@@ -29,7 +28,7 @@ public class PotentialIndexOutOfBounds {
 		}
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_not_empty(int[] a) {
 		return gt(a.length, 0);
 	}
@@ -46,7 +45,7 @@ public class PotentialIndexOutOfBounds {
 		}
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_not_empty_and_index_is_in_bounds(int[] a, int i) {
 		return gt(a.length, 0) & lte(0, i) & lt(i, a.length);
 	}
@@ -66,8 +65,7 @@ public class PotentialIndexOutOfBounds {
 		int a_l = a[a.length];
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean array_is_empty(int[] a) {
 		return eq(a.length, 0);
 	}
@@ -77,8 +75,7 @@ public class PotentialIndexOutOfBounds {
 		int a_0 = a[0];
 	}
 
-	@Function
-	@Predicate
+	@Behavior
 	public static boolean index_is_negative(int i) {
 		return lt(i, 0);
 	}
@@ -89,7 +86,7 @@ public class PotentialIndexOutOfBounds {
 		int a_i = a[i];
 	}
 
-	@Predicate
+	@Behavior
 	public static boolean array_is_empty_or_index_is_negative(int[] a, int i) {
 		return array_is_empty(a) | index_is_negative(i);
 	}
