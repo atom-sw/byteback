@@ -1,9 +1,10 @@
 plugins {
     id 'java'
-		id 'byteback.java-common-conventions'
-		id 'byteback.java-integration-conventions'
+	id 'byteback.java-common-conventions'
+	id 'byteback.java-integration-conventions'
 }
 
 dependencies {
-		implementation 'org.soot-oss:soot:4.3.0'
+	implementation project(':byteback-common')
+	implementation project(':byteback-analysis')
 }

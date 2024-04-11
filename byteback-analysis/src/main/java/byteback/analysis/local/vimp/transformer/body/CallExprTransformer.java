@@ -5,10 +5,7 @@ import byteback.analysis.local.common.transformer.value.ValueTransformer;
 import byteback.analysis.local.vimp.syntax.Vimp;
 import byteback.analysis.common.name.BBLibNames;
 import byteback.common.function.Lazy;
-import soot.Body;
-import soot.SootMethod;
-import soot.UnitBox;
-import soot.ValueBox;
+import soot.*;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 
@@ -33,7 +30,8 @@ public class CallExprTransformer extends ValueTransformer {
     @Override
     public void transformValue(final Body body, final UnitBox unitBox, final ValueBox valueBox) {
         if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
-            final SootMethod invokedMethod = invokeExpr.getMethod();
+            final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
+            final SootMethod invokedMethod = invokedMethodRef.resolve();
 
             if (AnnotationReader.v().hasAnnotation(invokedMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
                 final var args = new ArrayList<>(invokeExpr.getArgs());

@@ -1558,21 +1558,6 @@ public class ArrayList<E> extends AbstractList<E>
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void replaceAll(UnaryOperator<E> operator) {
-		Objects.requireNonNull(operator);
-		final int expectedModCount = modCount;
-		final int size = this.size;
-		for (int i = 0; modCount == expectedModCount && i < size; i++) {
-			elementData[i] = operator.apply((E) elementData[i]);
-		}
-		if (modCount != expectedModCount) {
-			throw new ConcurrentModificationException();
-		}
-		modCount++;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
 	public void sort(Comparator<? super E> c) {
 		final int expectedModCount = modCount;
 		Arrays.sort((E[]) elementData, 0, size, c);

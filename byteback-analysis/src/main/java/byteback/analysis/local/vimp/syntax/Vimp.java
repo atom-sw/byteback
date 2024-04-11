@@ -1,6 +1,7 @@
 package byteback.analysis.local.vimp.syntax;
 
-import byteback.analysis.local.vimp.analyzer.value.VimpTypeInterpreter;
+import byteback.analysis.global.vimp.syntax.value.ExtendsExpr;
+import byteback.analysis.global.vimp.syntax.value.TypeConstant;
 import byteback.analysis.local.vimp.syntax.unit.*;
 import byteback.analysis.local.vimp.syntax.value.*;
 import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
@@ -11,6 +12,7 @@ import soot.jimple.internal.ImmediateBox;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,15 +56,22 @@ public class Vimp {
         return new IffExpr(op1, op2);
     }
 
-    public ImpliesExpr newLogicImpliesExpr(final Value op1, final Value op2) {
+    public ImpliesExpr newImpliesExpr(final Value op1, final Value op2) {
         return new ImpliesExpr(op1, op2);
     }
 
-    public ForallExpr newLogicForallExpr(final Chain<Local> ls, final Value v) {
+    public ForallExpr newForallExpr(final Chain<Local> ls, final Value v) {
         return new ForallExpr(ls, v);
     }
 
-    public ForallExpr newLogicForallExpr(final Local local, final Value value) {
+    public ForallExpr newForallExpr(final Local[] ls, final Value v) {
+        final var lsChain = new HashChain<Local>();
+        lsChain.addAll(Arrays.asList(ls));
+
+        return new ForallExpr(lsChain, v);
+    }
+
+    public ForallExpr newForallExpr(final Local local, final Value value) {
         final HashChain<Local> locals = new HashChain<>();
         locals.add(local);
 
@@ -114,6 +123,14 @@ public class Vimp {
 
     public YieldStmt newYieldStmt() {
         return new YieldStmt();
+    }
+
+    public ExtendsExpr newExtendsExpr(final Value op1, final Value op2) {
+        return new ExtendsExpr(op1, op2);
+    }
+
+    public TypeConstant newTypeConstant(final Type type) {
+        return new TypeConstant(type);
     }
 
 }

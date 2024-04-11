@@ -39,8 +39,8 @@ public class QuantifierValueTransformer extends BodyTransformer {
 
             if (unit instanceof AssignStmt assignStmt) {
                 if (assignStmt.getRightOp() instanceof InvokeExpr invokeExpr) {
-                    final SootMethod invokedMethod = invokeExpr.getMethod();
-                    final SootClass declaringClass = invokedMethod.getDeclaringClass();
+                    final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
+                    final SootClass declaringClass = invokedMethodRef.getDeclaringClass();
 
                     if (BBLibNames.v().isBindingClass(declaringClass)) {
                         body.getUnits().remove(assignStmt);
@@ -64,7 +64,7 @@ public class QuantifierValueTransformer extends BodyTransformer {
                             variable = castExpr.getOp();
                         }
 
-                        if (variable instanceof Local local) {
+                        if (variable instanceof final Local local) {
                             locals.add(local);
                             expression = invokeExpr.getArg(1);
                         } else {
@@ -73,7 +73,7 @@ public class QuantifierValueTransformer extends BodyTransformer {
 
                         final QuantifierExpr substitute = switch (method.getName()) {
                             case BBLibNames.UNIVERSAL_QUANTIFIER_NAME ->
-                                    Vimp.v().newLogicForallExpr(locals, expression);
+                                    Vimp.v().newForallExpr(locals, expression);
                             case BBLibNames.EXISTENTIAL_QUANTIFIER_NAME ->
                                     Vimp.v().newLogicExistsExpr(locals, expression);
                             default ->

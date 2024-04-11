@@ -1,5 +1,6 @@
 package byteback.tool;
 
+import byteback.analysis.global.vimp.transformer.HierarchyAxiomTagger;
 import byteback.analysis.global.vimp.transformer.PostconditionsPropagator;
 import byteback.analysis.global.vimp.transformer.PreconditionsPropagator;
 import byteback.analysis.local.jimple.transformer.body.InvokeFilter;
@@ -12,6 +13,7 @@ import byteback.analysis.local.vimp.transformer.value.ConditionalExprTransformer
 import byteback.analysis.local.vimp.transformer.value.OldExprTransformer;
 import byteback.analysis.local.vimp.transformer.value.QuantifierValueTransformer;
 import byteback.analysis.local.vimp.transformer.value.ThrownExprTransformer;
+import byteback.encoder.boogie.scene.SceneToBplEncoder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -21,6 +23,7 @@ import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
@@ -172,21 +175,12 @@ public class Main implements Callable<Integer> {
 
         Scene.v().loadBasicClasses();
         Scene.v().loadNecessaryClasses();
-        PackManager.v().runBodyPacks();
+        PackManager.v().runPacks();
 
         PreconditionsPropagator.v().transformScene(Scene.v());
         PostconditionsPropagator.v().transformScene(Scene.v());
-
-        final Iterator<SootClass> classIterator = Scene.v().getApplicationClasses().snapshotIterator();
-
-        while (classIterator.hasNext()) {
-            final SootClass sootClass = classIterator.next();
-
-            for (final SootMethod method : sootClass.getMethods()) {
-                final Body body = method.retrieveActiveBody();
-                System.out.println(body);
-            }
-        }
+        HierarchyAxiomTagger.v().transformScene(Scene.v());
+        new SceneToBplEncoder(new PrintWriter(getOutputPath().toString())).transformScene(Scene.v());
 
         final long endTime = System.currentTimeMillis();
 
