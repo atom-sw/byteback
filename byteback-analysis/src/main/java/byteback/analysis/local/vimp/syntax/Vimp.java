@@ -129,7 +129,7 @@ public class Vimp {
         return new ExtendsExpr(op1, op2);
     }
 
-    public TypeConstant newTypeConstant(final Type type) {
+    public TypeConstant newTypeConstant(final RefType type) {
         return new TypeConstant(type);
     }
 

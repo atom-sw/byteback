@@ -1,7 +1,6 @@
-package byteback.encoder.common.method;
+package byteback.converter.common.method;
 
 import byteback.analysis.global.common.transformer.MethodTransformer;
-import byteback.analysis.global.common.transformer.SceneTransformer;
 
 import java.io.PrintWriter;
 

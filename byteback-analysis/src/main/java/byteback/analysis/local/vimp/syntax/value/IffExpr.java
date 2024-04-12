@@ -2,6 +2,7 @@ package byteback.analysis.local.vimp.syntax.value;
 
 import byteback.analysis.local.common.syntax.value.DefaultCaseValue;
 import soot.Value;
+import soot.jimple.ConditionExpr;
 import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractIntBinopExpr;
 import soot.jimple.internal.ImmediateBox;
@@ -11,7 +12,7 @@ import soot.jimple.internal.ImmediateBox;
  *
  * @author paganma
  */
-public class IffExpr extends AbstractIntBinopExpr implements DefaultCaseValue {
+public class IffExpr extends AbstractIntBinopExpr implements DefaultCaseValue, ConditionExpr {
 
 	public IffExpr(final Value op1, final Value op2) {
 		super(new ImmediateBox(op1), new ImmediateBox(op2));

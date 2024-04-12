@@ -9,7 +9,7 @@ import byteback.analysis.local.vimp.syntax.value.ForallExpr;
 import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
 import byteback.common.function.Lazy;
 import soot.*;
-import soot.jimple.Jimple;
+import soot.grimp.Grimp;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,8 +39,6 @@ public class HierarchyAxiomTagger extends ClassTransformer {
         final Collection<SootClass> superInterfaces = sootClass.getInterfaces();
         superTypes.addAll(superInterfaces);
         final FastHierarchy hierarchy = scene.getOrMakeFastHierarchy();
-        final Collection<SootClass> subTypes = hierarchy.getSubclassesOf(sootClass);
-        final SootClass[] subTypesArray = subTypes.toArray(new SootClass[0]);
         final List<ConditionExprBox> axiomBoxes = AxiomsProvider.v().getOrCompute(sootClass).getValueBoxes();
 
         for (final SootClass superType : superTypes) {
@@ -49,29 +47,35 @@ public class HierarchyAxiomTagger extends ClassTransformer {
             axiomBoxes.add(new ConditionExprBox(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue)));
         }
 
-        for (int i = 0; i < subTypesArray.length; ++i) {
-            for (int j = i + 1; j < subTypesArray.length; ++j) {
-                final TypeConstant st1 = Vimp.v().newTypeConstant(subTypesArray[i].getType());
-                final TypeConstant st2 = Vimp.v().newTypeConstant(subTypesArray[j].getType());
-                final Local rt1 = Jimple.v().newLocal("rt1", TypeType.v());
-                final Local rt2 = Jimple.v().newLocal("rt2", TypeType.v());
-                final ForallExpr axiom = Vimp.v().newForallExpr(
-                        new Local[]{ rt1, rt2 },
-                        Vimp.v().newImpliesExpr(
-                                Jimple.v().newAndExpr(
-                                        Vimp.v().newExtendsExpr(rt1, st1),
-                                        Vimp.v().newExtendsExpr(rt2, st2)
-                                ),
-                                Jimple.v().newAndExpr(
-                                        Jimple.v().newNegExpr(
-                                                Vimp.v().newExtendsExpr(rt1, st2)
-                                        ),
-                                        Jimple.v().newNegExpr(
-                                                Vimp.v().newExtendsExpr(rt2, st1)
-                                        )
-                                )
-                        )
-                );
+        if (!sootClass.isInterface()) {
+            final Collection<SootClass> subTypes = hierarchy.getSubclassesOf(sootClass);
+            final SootClass[] subTypesArray = subTypes.toArray(new SootClass[0]);
+
+            for (int i = 0; i < subTypesArray.length; ++i) {
+                for (int j = i + 1; j < subTypesArray.length; ++j) {
+                    final TypeConstant st1 = Vimp.v().newTypeConstant(subTypesArray[i].getType());
+                    final TypeConstant st2 = Vimp.v().newTypeConstant(subTypesArray[j].getType());
+                    final Local t1Local = Grimp.v().newLocal("t1", TypeType.v());
+                    final Local t2Local = Grimp.v().newLocal("t2", TypeType.v());
+                    final ForallExpr axiom = Vimp.v().newForallExpr(
+                            new Local[]{ t1Local, t2Local },
+                            Vimp.v().newImpliesExpr(
+                                    Grimp.v().newAndExpr(
+                                            Vimp.v().newExtendsExpr(t1Local, st1),
+                                            Vimp.v().newExtendsExpr(t2Local, st2)
+                                    ),
+                                    Grimp.v().newAndExpr(
+                                            Grimp.v().newNegExpr(
+                                                    Vimp.v().newExtendsExpr(t1Local, st2)
+                                            ),
+                                            Grimp.v().newNegExpr(
+                                                    Vimp.v().newExtendsExpr(t2Local, st1)
+                                            )
+                                    )
+                            )
+                    );
+                    axiomBoxes.add(new ConditionExprBox(axiom));
+                }
             }
         }
 

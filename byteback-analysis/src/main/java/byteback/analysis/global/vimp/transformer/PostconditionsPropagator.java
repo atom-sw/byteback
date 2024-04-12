@@ -2,11 +2,8 @@ package byteback.analysis.global.vimp.transformer;
 
 import byteback.analysis.global.vimp.tag.PostconditionsProvider;
 import byteback.analysis.global.vimp.tag.PostconditionsTag;
-import byteback.analysis.local.vimp.syntax.Vimp;
 import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
 import byteback.common.function.Lazy;
-import soot.Value;
-import soot.ValueBox;
 
 import java.util.List;
 

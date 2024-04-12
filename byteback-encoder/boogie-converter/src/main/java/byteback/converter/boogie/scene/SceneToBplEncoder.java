@@ -1,7 +1,7 @@
-package byteback.encoder.boogie.scene;
+package byteback.converter.boogie.scene;
 
-import byteback.encoder.boogie.type.HierarchyToBplEncoder;
-import byteback.encoder.common.scene.SceneEncoder;
+import byteback.converter.boogie.type.ClassToBplEncoder;
+import byteback.converter.common.scene.SceneEncoder;
 import soot.Scene;
 import soot.SootClass;
 
@@ -29,7 +29,7 @@ public class SceneToBplEncoder extends SceneEncoder {
 
             while (classIterator.hasNext()) {
                 final SootClass sootClass = classIterator.next();
-                new HierarchyToBplEncoder(writer).transformClass(scene, sootClass);
+                new ClassToBplEncoder(writer).transformClass(scene, sootClass);
             }
 
             writer.close();

@@ -2,6 +2,7 @@ package byteback.analysis.local.vimp.syntax.value.box;
 
 import byteback.analysis.local.vimp.analyzer.value.VimpTypeInterpreter;
 import soot.BooleanType;
+import soot.Scene;
 import soot.Value;
 
 /**

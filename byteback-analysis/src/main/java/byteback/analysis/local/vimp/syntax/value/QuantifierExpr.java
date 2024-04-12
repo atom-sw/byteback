@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import byteback.analysis.local.vimp.syntax.Vimp;
 import soot.*;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
@@ -32,7 +33,7 @@ public abstract class QuantifierExpr implements Expr {
 	 * @param condition The actual expression (which may refer to the above bindings).
 	 */
 	public QuantifierExpr(final Chain<Local> bindings, final Value condition) {
-		this(bindings, Jimple.v().newImmediateBox(condition));
+		this(bindings, Vimp.v().newConditionExprBox(condition));
 	}
 
 	public Value getValue() {

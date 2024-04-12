@@ -1,4 +1,4 @@
-package byteback.encoder.common.type;
+package byteback.converter.common.type;
 
 import byteback.analysis.global.common.transformer.ClassTransformer;
 

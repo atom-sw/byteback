@@ -13,7 +13,7 @@ import byteback.analysis.local.vimp.transformer.value.ConditionalExprTransformer
 import byteback.analysis.local.vimp.transformer.value.OldExprTransformer;
 import byteback.analysis.local.vimp.transformer.value.QuantifierValueTransformer;
 import byteback.analysis.local.vimp.transformer.value.ThrownExprTransformer;
-import byteback.encoder.boogie.scene.SceneToBplEncoder;
+import byteback.converter.boogie.scene.SceneToBplEncoder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -25,7 +25,6 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
 import java.io.File;
 import java.io.PrintWriter;
 import java.nio.file.Path;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 

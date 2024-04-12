@@ -6,7 +6,7 @@ include(
 		':byteback-common',
 		':byteback-tool',
 		':byteback-analysis',
-		':byteback-encoder:boogie-encoder',
+        ':byteback-encoder:boogie-converter',
 		':byteback-specification',
 		':byteback-test',
 		':byteback-test:test-scala-2.13.8',
