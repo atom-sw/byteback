@@ -1,6 +1,6 @@
 package byteback.converter.common.type;
 
-import byteback.analysis.global.common.transformer.ClassTransformer;
+import byteback.syntax.type.declaration.transformer.ClassTransformer;
 
 import java.io.PrintWriter;
 

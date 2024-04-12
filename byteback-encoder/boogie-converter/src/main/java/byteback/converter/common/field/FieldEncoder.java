@@ -1,6 +1,6 @@
 package byteback.converter.common.field;
 
-import byteback.analysis.global.common.transformer.FieldTransformer;
+import byteback.syntax.member.field.transformer.FieldTransformer;
 
 import java.io.PrintWriter;
 

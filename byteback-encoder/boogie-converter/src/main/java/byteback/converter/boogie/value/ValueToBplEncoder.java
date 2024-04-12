@@ -1,21 +1,19 @@
 package byteback.converter.boogie.value;
 
-import byteback.analysis.global.vimp.syntax.type.TypeType;
-import byteback.analysis.global.vimp.syntax.value.ExtendsExpr;
-import byteback.analysis.global.vimp.syntax.value.TypeConstant;
-import byteback.analysis.local.vimp.analyzer.value.VimpTypeInterpreter;
-import byteback.analysis.local.vimp.syntax.value.ImpliesExpr;
-import byteback.analysis.local.vimp.syntax.value.QuantifierExpr;
+import byteback.syntax.type.TypeType;
+import byteback.syntax.value.ExtendsExpr;
+import byteback.syntax.value.TypeConstant;
+import byteback.syntax.value.analyzer.VimpTypeInterpreter;
+import byteback.syntax.value.ImpliesExpr;
+import byteback.syntax.value.QuantifierExpr;
 import byteback.converter.boogie.type.ClassToBplEncoder;
 import byteback.converter.common.value.ValueEncoder;
-import com.sun.istack.Pool;
 import soot.*;
 import soot.jimple.AndExpr;
 import soot.jimple.BinopExpr;
 import soot.jimple.NegExpr;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Iterator;
 
 public class ValueToBplEncoder extends ValueEncoder {

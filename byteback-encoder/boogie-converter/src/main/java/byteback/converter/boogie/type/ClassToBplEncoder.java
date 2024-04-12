@@ -1,7 +1,7 @@
 package byteback.converter.boogie.type;
 
-import byteback.analysis.global.vimp.tag.AxiomsProvider;
-import byteback.analysis.local.vimp.syntax.value.box.ConditionExprBox;
+import byteback.syntax.type.declaration.tag.AxiomsProvider;
+import byteback.syntax.value.box.ConditionExprBox;
 import byteback.converter.boogie.value.ValueToBplEncoder;
 import byteback.converter.common.type.ClassEncoder;
 import soot.RefType;

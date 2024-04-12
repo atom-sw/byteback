@@ -1,6 +1,6 @@
 package byteback.converter.common.scene;
 
-import byteback.analysis.global.common.transformer.SceneTransformer;
+import byteback.syntax.scene.transformer.SceneTransformer;
 
 import java.io.PrintWriter;
 
