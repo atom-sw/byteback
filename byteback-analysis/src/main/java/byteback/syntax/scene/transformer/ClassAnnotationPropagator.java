@@ -1,64 +1,101 @@
 package byteback.syntax.scene.transformer;
 
-import byteback.syntax.name.BBLibNames;
-import byteback.syntax.name.ClassNames;
-import byteback.syntax.tag.AnnotationReader;
-import byteback.syntax.type.declaration.transformer.ClassTransformer;
 import byteback.common.function.Lazy;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import byteback.syntax.name.BBLibNames;
+import byteback.syntax.scene.context.SceneContext;
+import byteback.syntax.tag.AnnotationReader;
+import byteback.syntax.transformer.TransformationException;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
+import soot.util.Chain;
+import soot.util.NumberedString;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * Propagates method implementations through the @Attach annotation.
+ * Propagates method implementations and specification through the @Attach annotation.
  *
  * @author paganma
  */
-public class ClassAnnotationPropagator extends ClassTransformer {
+public class ClassAnnotationPropagator extends SceneTransformer {
 
-    private static final Lazy<ClassAnnotationPropagator> instance = Lazy.from(ClassAnnotationPropagator::new);
+    private static final Lazy<ClassAnnotationPropagator> INSTANCE = Lazy.from(ClassAnnotationPropagator::new);
 
     public static ClassAnnotationPropagator v() {
-        return instance.get();
+        return INSTANCE.get();
+    }
+
+    private ClassAnnotationPropagator() {
     }
 
     @Override
-    public void transformClass(final Scene scene, final SootClass sootClass) {
-        final AnnotationTag annotation;
-        final AnnotationElem element;
-        final String value;
-        final Optional<AnnotationTag> annotationOptional = AnnotationReader.v()
-                .getAnnotation(sootClass, BBLibNames.ATTACH_ANNOTATION);
+    public void transformScene(final SceneContext context) {
+        final Scene scene = context.getScene();
+        final Chain<SootClass> classes = scene.getClasses();
+        final Iterator<SootClass> classIterator = classes.snapshotIterator();
 
-        if (annotationOptional.isPresent()) {
-            annotation = annotationOptional.get();
-            element = AnnotationReader.v().getElem(annotation, "value").orElseThrow();
-            value = ((AnnotationClassElem) element).getDesc();
-        } else {
-            return;
-        }
+        while (classIterator.hasNext()) {
+            final SootClass attachingClass = classIterator.next();
+            final AnnotationTag annotation;
+            final AnnotationElem element;
+            final String attachedName;
+            final Optional<AnnotationTag> annotationOptional = AnnotationReader.v()
+                    .getAnnotation(attachingClass, BBLibNames.ATTACH_ANNOTATION);
 
-        final SootClass hostClass = Scene.v().getSootClass(ClassNames.v().stripDescriptor(value));
-        final List<SootMethod> methodsSnapshot = new ArrayList<>(sootClass.getMethods());
+            if (annotationOptional.isPresent()) {
+                annotation = annotationOptional.get();
+                element = AnnotationReader.v().getElement(annotation, "value")
+                        .orElseThrow(() ->
+                                new TransformationException("@Attach annotation does not specify value."));
 
-        for (final SootMethod attachedMethod : methodsSnapshot) {
-            final SootMethod hostMethod = hostClass.getMethodUnsafe(attachedMethod.getNumberedSubSignature());
-            sootClass.removeMethod(attachedMethod);
-            attachedMethod.setDeclared(false);
-
-            if (hostMethod != null) {
-                hostClass.removeMethod(hostMethod);
+                if (element instanceof AnnotationClassElem annotationClassElement) {
+                    attachedName = annotationClassElement.getDesc();
+                } else {
+                    throw new TransformationException(
+                            "Wrong element type for @Attach value "
+                                    + element.getName()
+                                    + ": "
+                                    + element.getKind()
+                    );
+                }
+            } else {
+                break;
             }
 
-            hostClass.addMethod(attachedMethod);
+            final SootClass attachedClass = scene.getSootClassUnsafe(attachedName);
+
+            if (attachedClass == null) {
+                throw new TransformationException(
+                        "Unable to find attached class: "
+                                + attachedName
+                                + " for attaching "
+                                + attachingClass
+                );
+            }
+
+            final List<SootMethod> methods = attachingClass.getMethods();
+            final List<SootMethod> methodsSnapshot = new ArrayList<>(methods);
+
+            for (final SootMethod attachingMethod : methodsSnapshot) {
+                final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();
+                final SootMethod attachedMethod = attachedClass.getMethodUnsafe(attachedSubSignature);
+                attachingClass.removeMethod(attachingMethod);
+                attachingMethod.setDeclared(false);
+
+                if (attachedMethod != null) {
+                    attachedClass.removeMethod(attachedMethod);
+                }
+
+                attachedClass.addMethod(attachingMethod);
+            }
         }
     }
+
 }

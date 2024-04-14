@@ -1,6 +1,6 @@
 package byteback.syntax.value;
 
-import byteback.syntax.value.box.TypeExprBox;
+import byteback.syntax.value.box.KindExprBox;
 import soot.*;
 import soot.jimple.internal.AbstractBinopExpr;
 
@@ -16,7 +16,7 @@ public class ExtendsExpr extends AbstractBinopExpr implements DefaultCaseValue {
     }
 
     public ExtendsExpr(final Value op1, final Value op2) {
-        this(new TypeExprBox(op1), new TypeExprBox(op2));
+        this(new KindExprBox(op1), new KindExprBox(op2));
     }
 
     @Override

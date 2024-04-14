@@ -1,6 +1,6 @@
 package byteback.converter.boogie.value;
 
-import byteback.syntax.type.TypeType;
+import byteback.syntax.type.KindType;
 import byteback.syntax.value.ExtendsExpr;
 import byteback.syntax.value.TypeConstant;
 import byteback.syntax.value.analyzer.VimpTypeInterpreter;
@@ -24,7 +24,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 
     // This should go to the Body transformer
     public void writeTypeAccess(final Type type) {
-        if (type instanceof TypeType) {
+        if (type instanceof KindType) {
             writer.write("Type");
         }
     }

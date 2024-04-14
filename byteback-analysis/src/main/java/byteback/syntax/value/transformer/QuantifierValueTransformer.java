@@ -1,7 +1,8 @@
 package byteback.syntax.value.transformer;
 
 import byteback.syntax.name.BBLibNames;
-import byteback.syntax.member.method.body.transformer.BodyTransformer;
+import byteback.syntax.type.declaration.method.body.context.BodyContext;
+import byteback.syntax.type.declaration.method.body.transformer.BodyTransformer;
 import byteback.syntax.value.QuantifierExpr;
 import byteback.syntax.Vimp;
 import byteback.common.function.Lazy;
@@ -30,7 +31,8 @@ public class QuantifierValueTransformer extends BodyTransformer {
     }
 
     @Override
-    public void transformBody(final Body body) {
+    public void walkBody(final BodyContext bodyContext) {
+        final Body body = bodyContext.getBody();
         final PatchingChain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
 

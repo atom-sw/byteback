@@ -16,11 +16,25 @@ public abstract class TagManager<K extends Host, V extends Tag> extends TagReade
         super(tagName);
     }
 
+    /**
+     * Adds or replaces a tag of a host.
+     *
+     * @param host The host owning the tags.
+     * @param tag  The tag to be updated within the tags owned by the host.
+     */
     public void put(final K host, final V tag) {
-        if (tag.getName().equals(tagName)) {
+        final String actualTagName = tag.getName();
+
+        if (actualTagName.equals(tagName)) {
+            host.removeTag(tagName);
             host.addTag(tag);
         } else {
-            throw new IllegalArgumentException("Wrong name for tag: " + tag.getName());
+            throw new IllegalArgumentException(
+                    "Wrong name for tag: "
+                            + tag.getName() + ". "
+                            + "Check that this tag manager is appropriately configured to deal with tags of type "
+                            + tag.getClass()
+            );
         }
     }
 

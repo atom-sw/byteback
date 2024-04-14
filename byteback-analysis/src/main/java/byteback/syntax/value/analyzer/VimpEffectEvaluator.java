@@ -8,7 +8,7 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 
 /**
- * Utility functions to work with Vimp Values.
+ * Analyzer for checking whether a Vimp value may imply side effects.
  *
  * @author paganma
  */

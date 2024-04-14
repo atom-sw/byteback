@@ -1,11 +1,11 @@
 package byteback.syntax.type.declaration.transformer;
 
-import byteback.syntax.type.TypeType;
+import byteback.syntax.type.KindType;
+import byteback.syntax.type.declaration.context.ClassContext;
 import byteback.syntax.value.TypeConstant;
 import byteback.syntax.type.declaration.tag.AxiomsProvider;
 import byteback.syntax.Vimp;
 import byteback.syntax.value.ForallExpr;
-import byteback.syntax.value.box.ConditionExprBox;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.grimp.Grimp;
@@ -23,7 +23,10 @@ public class HierarchyAxiomTagger extends ClassTransformer {
     }
 
     @Override
-    public void transformClass(final Scene scene, final SootClass sootClass) {
+    public void transformClass(final ClassContext classContext) {
+        final SootClass sootClass = classContext.getSootClass();
+        final Scene scene = classContext.getScene();
+
         if (sootClass.resolvingLevel() < SootClass.HIERARCHY) {
             return;
         }
@@ -38,12 +41,12 @@ public class HierarchyAxiomTagger extends ClassTransformer {
         final Collection<SootClass> superInterfaces = sootClass.getInterfaces();
         superTypes.addAll(superInterfaces);
         final FastHierarchy hierarchy = scene.getOrMakeFastHierarchy();
-        final List<ConditionExprBox> axiomBoxes = AxiomsProvider.v().getOrCompute(sootClass).getValueBoxes();
+        final List<Value> axiomBoxes = AxiomsProvider.v().getOrCompute(sootClass).getValues();
 
         for (final SootClass superType : superTypes) {
             final TypeConstant classTypeValue = Vimp.v().newTypeConstant(sootClass.getType());
             final TypeConstant superTypeValue = Vimp.v().newTypeConstant(superType.getType());
-            axiomBoxes.add(new ConditionExprBox(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue)));
+            axiomBoxes.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
         }
 
         if (!sootClass.isInterface()) {
@@ -54,8 +57,8 @@ public class HierarchyAxiomTagger extends ClassTransformer {
                 for (int j = i + 1; j < subTypesArray.length; ++j) {
                     final TypeConstant st1 = Vimp.v().newTypeConstant(subTypesArray[i].getType());
                     final TypeConstant st2 = Vimp.v().newTypeConstant(subTypesArray[j].getType());
-                    final Local t1Local = Grimp.v().newLocal("t1", TypeType.v());
-                    final Local t2Local = Grimp.v().newLocal("t2", TypeType.v());
+                    final Local t1Local = Grimp.v().newLocal("t1", KindType.v());
+                    final Local t2Local = Grimp.v().newLocal("t2", KindType.v());
                     final ForallExpr axiom = Vimp.v().newForallExpr(
                             new Local[]{ t1Local, t2Local },
                             Vimp.v().newImpliesExpr(
@@ -73,7 +76,7 @@ public class HierarchyAxiomTagger extends ClassTransformer {
                                     )
                             )
                     );
-                    axiomBoxes.add(new ConditionExprBox(axiom));
+                    axiomBoxes.add(axiom);
                 }
             }
         }

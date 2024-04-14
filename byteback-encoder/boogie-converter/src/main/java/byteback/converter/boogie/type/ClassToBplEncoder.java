@@ -1,11 +1,11 @@
 package byteback.converter.boogie.type;
 
+import byteback.syntax.type.declaration.context.ClassContext;
 import byteback.syntax.type.declaration.tag.AxiomsProvider;
 import byteback.syntax.value.box.ConditionExprBox;
 import byteback.converter.boogie.value.ValueToBplEncoder;
 import byteback.converter.common.type.ClassEncoder;
 import soot.RefType;
-import soot.Scene;
 import soot.SootClass;
 
 import java.io.PrintWriter;
@@ -27,11 +27,12 @@ public class ClassToBplEncoder extends ClassEncoder {
     }
 
     @Override
-    public void transformClass(final Scene scene, final SootClass sootClass) {
+    public void transformClass(final ClassContext classContext) {
+        final SootClass sootClass = classContext.getSootClass();
         final var valueEncoder = new ValueToBplEncoder(writer);
         writeClassConstantDeclaration(sootClass);
 
-        for (final ConditionExprBox axiomBox : AxiomsProvider.v().getOrCompute(sootClass).getValueBoxes()) {
+        for (final ConditionExprBox axiomBox : AxiomsProvider.v().getOrCompute(sootClass).getValues()) {
             writer.write("axiom ");
             valueEncoder.writeValue(axiomBox.getValue());
             writer.write(";");

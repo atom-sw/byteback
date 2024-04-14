@@ -9,25 +9,17 @@ import byteback.common.function.Lazy;
  */
 public class ClassNames {
 
-    public static final Lazy<ClassNames> instance = Lazy.from(ClassNames::new);
+    public static final Lazy<ClassNames> INSTANCE = Lazy.from(ClassNames::new);
 
     public static ClassNames v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private ClassNames() {
-		}
-
-    public String stripConstantDescriptor(final String descriptor) {
-        return stripDescriptor(descriptor.replace("[", "").replace("]", ""));
     }
 
     public String stripDescriptor(final String descriptor) {
         return descriptor.substring(1, descriptor.length() - 1).replace("/", ".");
-    }
-
-    public String stripLabelDescriptor(final String descriptor) {
-        return stripDescriptor(descriptor.substring(1));
     }
 
 }

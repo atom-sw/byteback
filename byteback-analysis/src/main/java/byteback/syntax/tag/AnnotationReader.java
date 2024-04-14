@@ -7,31 +7,34 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * Reads the VisibilityAnnotationTag from a given host.
+ * Reads a VisibilityAnnotationTag from a host.
  *
  * @author paganma
  */
 public class AnnotationReader extends TagReader<Host, VisibilityAnnotationTag> {
 
-    private static final Lazy<AnnotationReader> instance =
-            Lazy.from(()  -> new AnnotationReader("VisibilityAnnotationTag"));
-
-    public static final String VALUE_IDENTIFIER = "value";
+    private static final Lazy<AnnotationReader> INSTANCE =
+            Lazy.from(() -> new AnnotationReader(VisibilityAnnotationTag.NAME));
 
     public static AnnotationReader v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private AnnotationReader(final String tagName) {
         super(tagName);
     }
 
+    public static final String VALUE_IDENTIFIER = "value";
+
     public Optional<AnnotationElem> getValue(final AnnotationTag annotationTag) {
-        return getElem(annotationTag, VALUE_IDENTIFIER);
+        return getElement(annotationTag, VALUE_IDENTIFIER);
     }
 
-    public Optional<AnnotationElem> getElem(final AnnotationTag annotationTag, final String identifier) {
-        return annotationTag.getElems().stream().filter((elem) -> elem.getName().equals(identifier)).findFirst();
+    public Optional<AnnotationElem> getElement(final AnnotationTag annotationTag, final String identifier) {
+        return annotationTag.getElems().stream()
+                .filter((element) ->
+                        element.getName().equals(identifier))
+                .findFirst();
     }
 
     private void getAnnotations(final Stream.Builder<AnnotationTag> builder, final AnnotationElem annotationElement) {
@@ -42,16 +45,18 @@ public class AnnotationReader extends TagReader<Host, VisibilityAnnotationTag> {
         } else if (annotationElement instanceof final AnnotationAnnotationElem annotationAnnotationElement) {
             final AnnotationTag tag = annotationAnnotationElement.getValue();
             builder.accept(tag);
-            getValue(tag).ifPresent((elem) -> getAnnotations(builder, elem));
+            getValue(tag)
+                    .ifPresent((subElement) ->
+                            getAnnotations(builder, subElement));
         }
     }
 
     public Stream<AnnotationTag> getAnnotations(final AnnotationTag annotationTag) {
         final Stream.Builder<AnnotationTag> builder = Stream.builder();
         builder.add(annotationTag);
-        getValue(annotationTag).ifPresent((elem) -> {
-            getAnnotations(builder, elem);
-        });
+        getValue(annotationTag)
+                .ifPresent((annotationElement) ->
+                        getAnnotations(builder, annotationElement));
 
         return builder.build();
     }
@@ -70,8 +75,7 @@ public class AnnotationReader extends TagReader<Host, VisibilityAnnotationTag> {
     }
 
     public boolean hasAnnotation(final Host host, final String name) {
-        return getAnnotation(host, name)
-                .isPresent();
+        return getAnnotation(host, name).isPresent();
     }
 
 }

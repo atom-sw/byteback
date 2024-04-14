@@ -14,16 +14,16 @@ public class LogicConstant extends Constant implements DefaultCaseValue {
 
 	public final boolean value;
 
-	private static final LogicConstant falseConstant = new LogicConstant(false);
+	private static final LogicConstant FALSE_CONSTANT = new LogicConstant(false);
 
-	private static final LogicConstant trueConstant = new LogicConstant(true);
+	private static final LogicConstant TRUE_CONSTANT = new LogicConstant(true);
 
 	private LogicConstant(final boolean value) {
 		this.value = value;
 	}
 
 	public static LogicConstant v(boolean value) {
-		return value ? trueConstant : falseConstant;
+		return value ? TRUE_CONSTANT : FALSE_CONSTANT;
 	}
 
 	public boolean getValue() {

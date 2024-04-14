@@ -5,17 +5,17 @@ import soot.tagkit.Host;
 import soot.tagkit.SourceFileTag;
 
 /**
- * Reads the SourceFileTag from a given host.
+ * Reads a SourceFileTag from a host.
  *
  * @author paganma
  */
 public class SourceFileReader extends TagReader<Host, SourceFileTag> {
 
-    private static final Lazy<SourceFileReader> instance =
-            Lazy.from(()  -> new SourceFileReader("SourceFileTag"));
+    private static final Lazy<SourceFileReader> INSTANCE =
+            Lazy.from(() -> new SourceFileReader(SourceFileTag.NAME));
 
     public static SourceFileReader v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private SourceFileReader(final String tagName) {

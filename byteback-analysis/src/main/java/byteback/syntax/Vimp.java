@@ -1,11 +1,9 @@
 package byteback.syntax;
 
-import byteback.syntax.value.ExtendsExpr;
-import byteback.syntax.value.TypeConstant;
+import byteback.syntax.type.declaration.method.body.unit.*;
 import byteback.syntax.value.*;
 import byteback.syntax.value.box.ConditionExprBox;
 import byteback.common.function.Lazy;
-import byteback.syntax.unit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.internal.ImmediateBox;

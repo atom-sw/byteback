@@ -1,9 +1,10 @@
 package byteback.syntax.value.transformer;
 
-import byteback.syntax.unit.box.MutableUnitBox;
-import byteback.syntax.unit.transformer.UnitTransformer;
+import byteback.syntax.type.declaration.method.body.context.BodyContext;
+import byteback.syntax.type.declaration.method.body.unit.context.UnitContext;
+import byteback.syntax.value.context.ValueContext;
+import byteback.syntax.value.walker.ValueWalker;
 import soot.Body;
-import soot.Unit;
 import soot.UnitBox;
 import soot.ValueBox;
 
@@ -12,25 +13,27 @@ import soot.ValueBox;
  *
  * @author paganma
  */
-public abstract class ValueTransformer extends UnitTransformer {
+public class ValueTransformer extends ValueWalker<BodyContext, UnitContext, ValueContext> {
 
 	@Override
-	public void transformBody(final Body body) {
-
-		for (final Unit unit : body.getUnits()) {
-			transformUnit(body, new MutableUnitBox(unit, body));
-		}
+	public BodyContext makeBodyContext(final Body body) {
+		return new BodyContext(body);
 	}
 
 	@Override
-	public void transformUnit(final Body body, final UnitBox unitBox) {
-		final Unit unit = unitBox.getUnit();
-
-		for (final ValueBox valueBox : unit.getUseAndDefBoxes()) {
-			transformValue(body, unitBox, valueBox);
-		}
+	public UnitContext makeUnitContext(final BodyContext bodyContext, final UnitBox unitBox) {
+		return new UnitContext(bodyContext, unitBox);
 	}
 
-	public abstract void transformValue(final Body body, final UnitBox unitBox, final ValueBox valueBox);
+	@Override
+	public ValueContext makeLocalValueContext(final UnitContext unitContext, final ValueBox valueBox) {
+		return new ValueContext(unitContext, valueBox);
+	}
+
+	public void walkValue(final ValueContext valueContext) {
+		transformValue(valueContext);
+	}
+
+	public void transformValue(final ValueContext valueContext) {}
 
 }

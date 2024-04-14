@@ -1,51 +1,25 @@
 package byteback.syntax.tag;
 
-import soot.tagkit.*;
-
-import java.util.Optional;
+import byteback.common.function.Lazy;
+import soot.tagkit.AttributeValueException;
+import soot.tagkit.Tag;
 
 /**
- * Tag representing a location in a file.
- * It's supposed to pack together the information provided by LineNumberTag and SourceFileTag.
+ * Tag representing a location in a file, by storing the path to the file and line number.
  *
  * @author paganma
  */
 public class LocationTag implements Tag {
 
-    public static final String NAME = "LocationTag";
+    public static final String DEFAULT_PATH = "unknown";
 
-    /**
-     * TODO: Understand what exactly contains this tag and change the method's parameters accordingly.
-     * Reconstructs a position from multiple hosts. If more than one host has position information, it takes the
-     * information from the latter.
-     * @param hosts The hosts from which to extract the position information.
-     * @return The corresponding LocationTag.
-     */
-    public static LocationTag fromHosts(final Host... hosts) {
-        String path = null;
-        int line = -1;
+    public static final int DEFAULT_LINE = -1;
 
-        for (final Host host : hosts) {
-            if (path == null) {
-                final Optional<SourceFileTag> sourceTagOptional  = SourceFileReader.v().get(host);
+    private static final Lazy<LocationTag> DEFAULT_INSTANCE =
+            Lazy.from(() -> new LocationTag(DEFAULT_PATH, DEFAULT_LINE));
 
-                if (sourceTagOptional.isPresent()) {
-                    path = sourceTagOptional.get().getAbsolutePath();
-                }
-            }
-
-            final Optional<LineNumberTag> lineNumberTagOptional = LineNumberReader.v().get(host);
-
-            if (lineNumberTagOptional.isPresent()) {
-                final int newLine = lineNumberTagOptional.get().getLineNumber();
-
-                if (newLine > -1) {
-                    line = newLine;
-                }
-            }
-        }
-
-        return new LocationTag(path, line);
+    public static LocationTag defaultV() {
+        return DEFAULT_INSTANCE.get();
     }
 
     private final String path;
@@ -56,6 +30,8 @@ public class LocationTag implements Tag {
         this.path = path;
         this.line = line;
     }
+
+    public static final String NAME = "LocationTag";
 
     public String getPath() {
         return path;

@@ -2,6 +2,7 @@ package byteback.syntax.value.transformer;
 
 import byteback.common.function.Lazy;
 
+import byteback.syntax.value.context.ValueContext;
 import soot.*;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.Jimple;
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @author paganma
  */
-public class DynamicInvokeToStaticTransformer extends UseValueTransformer {
+public class DynamicInvokeToStaticTransformer extends ValueTransformer {
 
     private static final Lazy<DynamicInvokeToStaticTransformer> instance = Lazy.from(DynamicInvokeToStaticTransformer::new);
 
@@ -27,7 +28,8 @@ public class DynamicInvokeToStaticTransformer extends UseValueTransformer {
     }
 
     @Override
-    public void transformValue(final Body body, final UnitBox unitBox, final ValueBox valueBox) {
+    public void transformValue(final ValueContext valueContext) {
+        final ValueBox valueBox = valueContext.getValueBox();
         final Value value = valueBox.getValue();
 
         if (value instanceof DynamicInvokeExpr invokeDynamicExpr) {

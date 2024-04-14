@@ -11,10 +11,10 @@ import soot.Value;
  */
 public class JimpleTypeInterpreter implements TypeInterpreter<Value> {
 
-    private static final Lazy<JimpleTypeInterpreter> instance = Lazy.from(JimpleTypeInterpreter::new);
+    private static final Lazy<JimpleTypeInterpreter> INSTANCE = Lazy.from(JimpleTypeInterpreter::new);
 
     public static JimpleTypeInterpreter v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private JimpleTypeInterpreter() {

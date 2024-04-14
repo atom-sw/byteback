@@ -1,17 +1,17 @@
 package byteback.syntax.type.declaration.tag;
 
 import byteback.syntax.tag.ValuesTag;
-import byteback.syntax.value.box.ConditionExprBox;
+import soot.Value;
 
 import java.util.List;
 
-public class AxiomsTag extends ValuesTag<ConditionExprBox> {
+public class AxiomsTag extends ValuesTag<Value> {
+
+    public AxiomsTag(final List<Value> values) {
+        super(values);
+    }
 
     public static String NAME = "AxiomsTag";
-
-    public AxiomsTag(final List<ConditionExprBox> valueBoxes) {
-        super(valueBoxes);
-    }
 
     @Override
     public String getName() {

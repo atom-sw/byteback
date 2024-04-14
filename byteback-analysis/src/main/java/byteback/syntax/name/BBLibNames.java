@@ -1,9 +1,7 @@
 package byteback.syntax.name;
 
-import byteback.syntax.tag.AnnotationReader;
 import byteback.common.function.Lazy;
 import soot.SootClass;
-import soot.SootMethod;
 
 /**
  * Contains the definitions of the names for the BBLib specification.
@@ -11,6 +9,15 @@ import soot.SootMethod;
  * @author paganma
  */
 public class BBLibNames {
+
+    public static final Lazy<BBLibNames> INSTANCE = Lazy.from(BBLibNames::new);
+
+    public static BBLibNames v() {
+        return INSTANCE.get();
+    }
+
+    private BBLibNames() {
+    }
 
     public static final String ANNOTATION_PACKAGE = "byteback.specification";
 
@@ -70,15 +77,6 @@ public class BBLibNames {
 
     public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";
 
-    public static final Lazy<BBLibNames> instance = Lazy.from(BBLibNames::new);
-
-    public static BBLibNames v() {
-        return instance.get();
-    }
-
-    private BBLibNames() {
-    }
-
     public boolean isContractClass(final SootClass sootClass) {
         return sootClass.getName().equals(CONTRACT_CLASS_NAME);
     }
@@ -93,18 +91,6 @@ public class BBLibNames {
 
     public boolean isBindingClass(final SootClass sootClass) {
         return sootClass.getName().equals(BINDING_CLASS_NAME);
-    }
-
-    public boolean isAnnotationClass(final SootClass sootClass) {
-        return sootClass.getPackageName().equals(ANNOTATION_PACKAGE);
-    }
-
-    public boolean isFunctionMethod(final SootMethod method) {
-        return AnnotationReader.v().hasAnnotation(method, BEHAVIOR_ANNOTATION);
-    }
-
-    public boolean isPredicateMethod(final SootMethod method) {
-        return AnnotationReader.v().hasAnnotation(method, BEHAVIOR_ANNOTATION);
     }
 
 }

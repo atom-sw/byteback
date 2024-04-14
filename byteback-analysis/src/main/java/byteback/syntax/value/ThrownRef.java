@@ -1,6 +1,6 @@
 package byteback.syntax.value;
 
-import byteback.syntax.member.method.body.transformer.GuardTransformer;
+import byteback.syntax.type.declaration.method.body.transformer.GuardTransformer;
 import soot.Immediate;
 import soot.jimple.ConcreteRef;
 import soot.jimple.internal.JCaughtExceptionRef;

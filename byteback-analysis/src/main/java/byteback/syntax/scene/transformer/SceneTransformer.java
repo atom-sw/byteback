@@ -1,16 +1,26 @@
 package byteback.syntax.scene.transformer;
 
+import byteback.syntax.scene.context.SceneContext;
+import byteback.syntax.scene.walker.SceneWalker;
 import soot.Scene;
 
-import java.util.Map;
+/**
+ * Transforms a Soot scene.
+ *
+ * @author paganma
+ */
+public abstract class SceneTransformer extends SceneWalker<SceneContext> {
 
-public abstract class SceneTransformer extends soot.SceneTransformer {
+    public abstract void transformScene(final SceneContext sceneContext);
 
     @Override
-    protected void internalTransform(String phaseName, Map<String, String> options) {
-        transformScene(Scene.v());
+    public SceneContext makeSceneContext(final Scene scene) {
+        return new SceneContext(scene);
     }
 
-    public abstract void transformScene(final Scene scene);
+    @Override
+    public void walkScene(final SceneContext sceneContext) {
+        transformScene(sceneContext);
+    }
 
 }

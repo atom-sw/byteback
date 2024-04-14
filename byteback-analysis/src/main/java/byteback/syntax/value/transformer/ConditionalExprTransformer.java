@@ -3,10 +3,8 @@ package byteback.syntax.value.transformer;
 import byteback.syntax.Vimp;
 import byteback.syntax.name.BBLibNames;
 import byteback.common.function.Lazy;
-import soot.Body;
-import soot.SootMethodRef;
-import soot.UnitBox;
-import soot.ValueBox;
+import byteback.syntax.value.context.ValueContext;
+import soot.*;
 import soot.jimple.InvokeExpr;
 
 /**
@@ -16,18 +14,21 @@ import soot.jimple.InvokeExpr;
  */
 public class ConditionalExprTransformer extends ValueTransformer {
 
-    private static final Lazy<ConditionalExprTransformer> instance = Lazy.from(ConditionalExprTransformer::new);
+    private static final Lazy<ConditionalExprTransformer> INSTANCE = Lazy.from(ConditionalExprTransformer::new);
 
     public static ConditionalExprTransformer v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private ConditionalExprTransformer() {
     }
 
     @Override
-    public void transformValue(final Body body, final UnitBox unitBox, final ValueBox valueBox) {
-        if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
+    public void transformValue(final ValueContext valueContext) {
+        final ValueBox valueBox = valueContext.getValueBox();
+        final Value value = valueBox.getValue();
+
+        if (value instanceof InvokeExpr invokeExpr) {
             final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
 
             if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {

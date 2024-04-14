@@ -1,9 +1,9 @@
 package byteback.syntax.tag;
 
-import soot.ValueBox;
-import soot.tagkit.AttributeValueException;
+import soot.Value;
 import soot.tagkit.Tag;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,20 +12,34 @@ import java.util.List;
  * @param <T> The base type of the contained values.
  * @author paganma
  */
-public abstract class ValuesTag<T extends ValueBox> implements Tag {
+public abstract class ValuesTag<T extends Value> implements Tag {
 
-    private final List<T> valueBoxes;
+    private final List<T> specificationValues;
 
-    public ValuesTag(final List<T> valueBoxes) {
-        this.valueBoxes = valueBoxes;
+    public ValuesTag(final List<T> specificationValues) {
+        this.specificationValues = specificationValues;
     }
 
-    public List<T> getValueBoxes() {
-        return valueBoxes;
+    public ValuesTag() {
+        this(new ArrayList<>());
     }
 
+    /**
+     * Getter for the specification values contained in this tag.
+     *
+     * @return The specification values contained in this tag.
+     */
+    public List<T> getValues() {
+        return specificationValues;
+    }
+
+    /**
+     * This method does not refer to the values contained within the tags.
+     *
+     * @return The value in bytes for this tag.
+     */
     @Override
-    public byte[] getValue() throws AttributeValueException {
+    public byte[] getValue() {
         return new byte[0];
     }
 

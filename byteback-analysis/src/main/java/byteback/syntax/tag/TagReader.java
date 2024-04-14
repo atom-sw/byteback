@@ -14,13 +14,18 @@ import java.util.Optional;
  */
 public abstract class TagReader<K extends Host, V extends Tag> {
 
-
     protected final String tagName;
 
     public TagReader(final String tagName) {
         this.tagName = tagName;
     }
 
+    /**
+     * Fetches the tag associated with a host.
+     *
+     * @param host The host to search for the tag.
+     * @return Nothing if the host does not own the tag, otherwise it returns the associated tag.
+     */
     @SuppressWarnings("unchecked")
     public Optional<V> get(final K host) {
         // This unchecked cast is necessary. If the type of the tag is not `V` it means that the tag corresponding to
@@ -28,6 +33,12 @@ public abstract class TagReader<K extends Host, V extends Tag> {
         return (Optional<V>) Optional.ofNullable(host.getTag(tagName));
     }
 
+    /**
+     * Checks whether a host owns the specific tag managed by this instance.
+     *
+     * @param host The host to be queried.
+     * @return `true` if the host contains the managed tag, `false` otherwise.
+     */
     public boolean isTagged(final Host host) {
         return host.hasTag(tagName);
     }

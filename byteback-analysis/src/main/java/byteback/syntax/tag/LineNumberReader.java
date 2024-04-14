@@ -5,17 +5,17 @@ import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
 
 /**
- * Reads the LineNumberTag from a given host.
+ * Reads a LineNumberTag from a host.
  *
  * @author paganma
  */
 public class LineNumberReader extends TagReader<Host, LineNumberTag> {
 
-    private static final Lazy<LineNumberReader> instance = Lazy.from(()  ->
-            new LineNumberReader("LineNumberTag"));
+    private static final Lazy<LineNumberReader> INSTANCE = Lazy.from(() ->
+            new LineNumberReader(LineNumberTag.NAME));
 
     public static LineNumberReader v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private LineNumberReader(final String tagName) {

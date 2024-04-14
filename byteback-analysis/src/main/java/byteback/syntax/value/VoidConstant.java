@@ -17,13 +17,13 @@ import soot.jimple.Constant;
  */
 public class VoidConstant extends Constant implements DefaultCaseValue {
 
-    private static final Lazy<VoidConstant> instance = Lazy.from(VoidConstant::new);
+    private static final Lazy<VoidConstant> INSTANCE = Lazy.from(VoidConstant::new);
 
     private VoidConstant() {
     }
 
     public static VoidConstant v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     @Override

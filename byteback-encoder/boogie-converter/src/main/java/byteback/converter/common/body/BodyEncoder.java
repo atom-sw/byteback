@@ -1,6 +1,6 @@
 package byteback.converter.common.body;
 
-import byteback.syntax.member.method.body.transformer.BodyTransformer;
+import byteback.syntax.type.declaration.method.body.transformer.BodyTransformer;
 
 import java.io.PrintWriter;
 

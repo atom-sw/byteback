@@ -2,12 +2,14 @@ package byteback.syntax.value.transformer;
 
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.Vimp;
-import byteback.syntax.member.method.body.tag.ExceptionalFlagger;
+import byteback.syntax.type.declaration.method.body.tag.ExceptionalFlagger;
 import byteback.common.function.Lazy;
+import byteback.syntax.value.context.ValueContext;
 import soot.*;
 import soot.jimple.InvokeExpr;
 
 /**
+ *
  * @author paganma
  */
 public class ThrownExprTransformer extends ValueTransformer {
@@ -22,13 +24,16 @@ public class ThrownExprTransformer extends ValueTransformer {
     }
 
     @Override
-    public void transformValue(final Body body, final UnitBox unitBox, final ValueBox valueBox) {
-        if (valueBox.getValue() instanceof InvokeExpr invokeExpr) {
+    public void transformValue(final ValueContext valueContext) {
+        final ValueBox valueBox = valueContext.getValueBox();
+        final Value value = valueBox.getValue();
+
+        if (value instanceof final InvokeExpr invokeExpr) {
             final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
 
             if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {
-
                 if (invokedMethodRef.getName().equals("thrown")) {
+                    final Body body = valueContext.getBody();
                     valueBox.setValue(Vimp.v().newCaughtExceptionRef());
                     ExceptionalFlagger.v().flag(body);
                 }

@@ -1,10 +1,10 @@
 package byteback.converter.common.scene;
 
-import byteback.syntax.scene.transformer.SceneTransformer;
+import byteback.syntax.scene.walker.SceneWalker;
 
 import java.io.PrintWriter;
 
-public abstract class SceneEncoder extends SceneTransformer {
+public abstract class SceneEncoder extends SceneWalker {
 
     protected final PrintWriter writer;
 

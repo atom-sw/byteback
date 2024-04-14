@@ -16,8 +16,20 @@ public abstract class TagProvider<K extends Host, V extends Tag> extends TagMana
         super(tagName);
     }
 
+    /**
+     * Defines how to compute a tag from a single host.
+     *
+     * @param host The host for which the tag is computed.
+     * @return The new tag associated with the host.
+     */
     public abstract V compute(final K host);
 
+    /**
+     * Fetches a tag or computes it if needed.
+     *
+     * @param host The host owning the tag.
+     * @return The tag associated with the host.
+     */
     public V getOrCompute(final K host) {
         return super.get(host)
                 .orElseGet(() -> {

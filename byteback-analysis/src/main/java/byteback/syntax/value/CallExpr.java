@@ -1,6 +1,6 @@
 package byteback.syntax.value;
 
-import byteback.syntax.unit.printer.InlineUnitPrinter;
+import byteback.syntax.type.declaration.method.body.unit.printer.InlineUnitPrinter;
 import byteback.syntax.Vimp;
 import soot.*;
 import soot.jimple.Jimple;

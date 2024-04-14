@@ -9,10 +9,10 @@ import soot.jimple.internal.AbstractIntLongBinopExpr;
 
 public class VimpTypeInterpreter implements TypeInterpreter<Value> {
 
-    private static final Lazy<VimpTypeInterpreter> instance = Lazy.from(() -> new VimpTypeInterpreter(Scene.v()));
+    private static final Lazy<VimpTypeInterpreter> INSTANCE = Lazy.from(() -> new VimpTypeInterpreter(Scene.v()));
 
     public static VimpTypeInterpreter v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private final Scene scene;

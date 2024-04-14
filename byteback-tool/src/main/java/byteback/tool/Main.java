@@ -1,17 +1,18 @@
 package byteback.tool;
 
-import byteback.syntax.member.method.body.transformer.*;
+import byteback.syntax.type.declaration.method.body.transformer.*;
+import byteback.syntax.type.declaration.method.body.value.transformer.CallExprTransformer;
+import byteback.syntax.type.declaration.tag.AxiomsProvider;
 import byteback.syntax.type.declaration.transformer.HierarchyAxiomTagger;
-import byteback.syntax.member.method.transformer.PostconditionsPropagator;
-import byteback.syntax.member.method.transformer.PreconditionsPropagator;
+import byteback.syntax.type.declaration.method.transformer.PostconditionsPropagator;
+import byteback.syntax.type.declaration.method.transformer.PreconditionsPropagator;
 import byteback.syntax.value.transformer.DynamicInvokeToStaticTransformer;
-import byteback.syntax.unit.transformer.LogicConstantTransformer;
-import byteback.syntax.unit.transformer.SpecificationStmtTransformer;
+import byteback.syntax.type.declaration.method.body.unit.transformer.LogicConstantTransformer;
+import byteback.syntax.type.declaration.method.body.unit.transformer.SpecificationStmtTransformer;
 import byteback.syntax.value.transformer.ConditionalExprTransformer;
 import byteback.syntax.value.transformer.OldExprTransformer;
 import byteback.syntax.value.transformer.QuantifierValueTransformer;
 import byteback.syntax.value.transformer.ThrownExprTransformer;
-import byteback.converter.boogie.scene.SceneToBplEncoder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -21,7 +22,6 @@ import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -174,10 +174,17 @@ public class Main implements Callable<Integer> {
         Scene.v().loadNecessaryClasses();
         PackManager.v().runPacks();
 
-        PreconditionsPropagator.v().transformScene(Scene.v());
-        PostconditionsPropagator.v().transformScene(Scene.v());
-        HierarchyAxiomTagger.v().transformScene(Scene.v());
-        new SceneToBplEncoder(new PrintWriter(getOutputPath().toString())).transformScene(Scene.v());
+        PreconditionsPropagator.v().transform();
+        PostconditionsPropagator.v().transform();
+        HierarchyAxiomTagger.v().transform();
+
+        for (final SootClass sootClass : Scene.v().getClasses()) {
+            if (sootClass.resolvingLevel() < SootClass.SIGNATURES) continue;
+            for (final SootMethod sootMethod : sootClass.getMethods()) {
+                if (!sootMethod.hasActiveBody()) continue;
+                final Body body = sootMethod.getActiveBody();
+            }
+        }
 
         final long endTime = System.currentTimeMillis();
 

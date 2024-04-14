@@ -2,6 +2,8 @@ package byteback.converter.boogie.scene;
 
 import byteback.converter.boogie.type.ClassToBplEncoder;
 import byteback.converter.common.scene.SceneEncoder;
+import byteback.syntax.scene.context.SceneContext;
+import byteback.syntax.type.declaration.context.ClassContext;
 import soot.Scene;
 import soot.SootClass;
 
@@ -15,7 +17,9 @@ public class SceneToBplEncoder extends SceneEncoder {
     }
 
     @Override
-    public void transformScene(final Scene scene) {
+    public void walkScene(final SceneContext context) {
+        final Scene scene = context.getScene();
+
         try (final InputStream inputStream = getClass().getClassLoader()
                 .getResourceAsStream("boogie/ByteBackPrelude.bpl")) {
             if (inputStream != null) {
@@ -29,7 +33,7 @@ public class SceneToBplEncoder extends SceneEncoder {
 
             while (classIterator.hasNext()) {
                 final SootClass sootClass = classIterator.next();
-                new ClassToBplEncoder(writer).transformClass(scene, sootClass);
+                new ClassToBplEncoder(writer).transformClass(new ClassContext(scene, sootClass));
             }
 
             writer.close();

@@ -1,6 +1,6 @@
 package byteback.syntax.value;
 
-import byteback.syntax.type.TypeType;
+import byteback.syntax.type.KindType;
 import soot.RefType;
 import soot.Type;
 import soot.UnitPrinter;
@@ -16,7 +16,7 @@ public class TypeConstant extends Constant implements DefaultCaseValue {
 
     @Override
     public Type getType() {
-        return TypeType.v();
+        return KindType.v();
     }
 
     @Override

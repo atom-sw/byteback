@@ -1,6 +1,5 @@
 package byteback.syntax.value;
 
-import byteback.syntax.value.DefaultCaseValue;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Expr;
