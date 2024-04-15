@@ -11,6 +11,8 @@ import soot.tagkit.Tag;
  */
 public class LocationTag implements Tag {
 
+    public static final String NAME = "LocationTag";
+
     public static final String DEFAULT_PATH = "unknown";
 
     public static final int DEFAULT_LINE = -1;
@@ -18,6 +20,11 @@ public class LocationTag implements Tag {
     private static final Lazy<LocationTag> DEFAULT_INSTANCE =
             Lazy.from(() -> new LocationTag(DEFAULT_PATH, DEFAULT_LINE));
 
+    /**
+     * Getter for the default instance of LocationTag. This can be used to represent an unknown location.
+     *
+     * @return The default instance of LocationTag.
+     */
     public static LocationTag defaultV() {
         return DEFAULT_INSTANCE.get();
     }
@@ -26,17 +33,31 @@ public class LocationTag implements Tag {
 
     private final int line;
 
+    /**
+     * Constructs a new LocationTag.
+     *
+     * @param path The path to the file corresponding to this location.
+     * @param line The line number corresponding to the location.
+     */
     LocationTag(final String path, final int line) {
         this.path = path;
         this.line = line;
     }
 
-    public static final String NAME = "LocationTag";
-
+    /**
+     * Getter for the path contained in the location tag.
+     *
+     * @return The path contained in the location tag.
+     */
     public String getPath() {
         return path;
     }
 
+    /**
+     * Getter for the line contained in the location tag.
+     *
+     * @return The line contained in the location tag.
+     */
     public int getLine() {
         return line;
     }

@@ -12,6 +12,11 @@ public class SceneContext implements Context {
 
     private final Scene scene;
 
+    /**
+     * Constructs a new SceneContext.
+     *
+     * @param scene The scene corresponding to this context.
+     */
     public SceneContext(final Scene scene) {
         this.scene = scene;
     }

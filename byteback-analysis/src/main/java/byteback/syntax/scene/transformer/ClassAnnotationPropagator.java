@@ -36,7 +36,7 @@ public class ClassAnnotationPropagator extends SceneTransformer {
     }
 
     @Override
-    public void transformScene(final SceneContext context) {
+    public void walkScene(final SceneContext context) {
         final Scene scene = context.getScene();
         final Chain<SootClass> classes = scene.getClasses();
         final Iterator<SootClass> classIterator = classes.snapshotIterator();

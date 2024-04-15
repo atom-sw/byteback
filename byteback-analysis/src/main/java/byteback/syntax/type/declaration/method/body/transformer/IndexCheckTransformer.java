@@ -1,7 +1,7 @@
 package byteback.syntax.type.declaration.method.body.transformer;
 
-import byteback.syntax.value.NestedExprConstructor;
-import byteback.common.function.Lazy;
+import byteback.syntax.Vimp;
+import soot.Scene;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
@@ -18,33 +18,27 @@ import java.util.Optional;
  */
 public class IndexCheckTransformer extends CheckTransformer {
 
-    private static final Lazy<IndexCheckTransformer> INSTANCE = Lazy.from(IndexCheckTransformer::new);
-
-    private IndexCheckTransformer() {
-        super("java.lang.IndexOutOfBoundsException");
-    }
-
-    public static IndexCheckTransformer v() {
-        return INSTANCE.get();
+    public IndexCheckTransformer(final Scene scene) {
+        super(scene, "java.lang.IndexOutOfBoundsException");
     }
 
     @Override
-    public Optional<Value> makeUnitCheck(final NestedExprConstructor immediateConstructor, final Unit unit) {
+    public Optional<Value> makeUnitCheck(final Unit unit) {
         if (unit instanceof AssignStmt assignStmt && assignStmt.getLeftOp() instanceof ArrayRef arrayRef) {
             final Value indexValue = arrayRef.getIndex();
             final Value arrayBase = arrayRef.getBase();
             final Value condition =
                     Jimple.v().newAndExpr(
-                            immediateConstructor.apply(
+                            Vimp.v().nest(
                                     Jimple.v().newLeExpr(
                                             IntConstant.v(0),
                                             indexValue
                                     )
                             ),
-                            immediateConstructor.apply(
+                            Vimp.v().nest(
                                     Jimple.v().newLtExpr(
                                             indexValue,
-                                            immediateConstructor.apply(
+                                            Vimp.v().nest(
                                                     Jimple.v().newLengthExpr(arrayBase)
                                             )
                                     )

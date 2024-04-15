@@ -5,22 +5,15 @@ import byteback.syntax.scene.walker.SceneWalker;
 import soot.Scene;
 
 /**
- * Transforms a Soot scene.
+ * Transformer for a Soot Scene.
  *
  * @author paganma
  */
 public abstract class SceneTransformer extends SceneWalker<SceneContext> {
 
-    public abstract void transformScene(final SceneContext sceneContext);
-
     @Override
     public SceneContext makeSceneContext(final Scene scene) {
         return new SceneContext(scene);
-    }
-
-    @Override
-    public void walkScene(final SceneContext sceneContext) {
-        transformScene(sceneContext);
     }
 
 }

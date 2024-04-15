@@ -2,7 +2,7 @@ package byteback.syntax.type.declaration.method.body.transformer;
 
 import byteback.syntax.Vimp;
 import byteback.syntax.type.declaration.method.body.context.BodyContext;
-import byteback.syntax.value.VoidConstant;
+import byteback.syntax.type.declaration.method.body.value.VoidConstant;
 import byteback.common.function.Lazy;
 import soot.Body;
 import soot.Unit;

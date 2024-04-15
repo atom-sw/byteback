@@ -1,7 +1,7 @@
 package byteback.syntax.transformer;
 
 /**
- * Marker interface for a transformer
+ * Marker interface for a transformer.
  *
  * @author paganma
  */

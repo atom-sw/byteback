@@ -1,10 +1,12 @@
 package byteback.syntax.type.declaration.method.body.transformer;
 
+import byteback.common.function.Lazy;
 import byteback.syntax.type.declaration.method.body.context.BodyContext;
 import byteback.syntax.type.declaration.method.body.tag.BehaviorFlagger;
-import byteback.syntax.value.ReturnRef;
-import byteback.common.function.Lazy;
-import soot.*;
+import byteback.syntax.type.declaration.method.body.value.ReturnRef;
+import soot.Body;
+import soot.Unit;
+import soot.ValueBox;
 import soot.jimple.AssignStmt;
 
 /**

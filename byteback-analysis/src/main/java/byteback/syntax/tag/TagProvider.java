@@ -12,6 +12,11 @@ import soot.tagkit.Tag;
  */
 public abstract class TagProvider<K extends Host, V extends Tag> extends TagManager<K, V> {
 
+    /**
+     * Constructs a new TagProvider.
+     *
+     * @param tagName The name of the tag provided by this instance.
+     */
     public TagProvider(final String tagName) {
         super(tagName);
     }

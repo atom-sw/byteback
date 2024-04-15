@@ -2,7 +2,7 @@ package byteback.syntax.type.declaration.method.body.transformer;
 
 import byteback.syntax.Vimp;
 import byteback.syntax.type.declaration.method.body.context.BodyContext;
-import byteback.syntax.value.ReturnRef;
+import byteback.syntax.type.declaration.method.body.value.ReturnRef;
 import byteback.common.function.Lazy;
 import soot.Body;
 import soot.Type;
@@ -43,14 +43,14 @@ public class ReturnEliminator extends BodyTransformer {
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
 
-            if (unit instanceof ReturnStmt returnStmt) {
+            if (unit instanceof final ReturnStmt returnStmt) {
                 final Value returnValue = returnStmt.getOp();
                 final Unit returnAssignUnit = Jimple.v().newAssignStmt(returnRef, returnValue);
                 units.insertBefore(returnAssignUnit, returnStmt);
                 returnStmt.redirectJumpsToThisTo(returnAssignUnit);
                 returnAssignUnit.addAllTagsOf(returnStmt);
                 units.swapWith(returnStmt, Vimp.v().newYieldStmt());
-            } else if (unit instanceof ReturnVoidStmt returnVoidStmt) {
+            } else if (unit instanceof final ReturnVoidStmt returnVoidStmt) {
                 units.swapWith(returnVoidStmt, Vimp.v().newYieldStmt());
             }
         }

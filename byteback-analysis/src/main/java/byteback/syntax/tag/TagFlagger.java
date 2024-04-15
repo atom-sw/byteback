@@ -14,6 +14,11 @@ public abstract class TagFlagger<K extends Host, V extends Tag> extends TagManag
 
     private final V tag;
 
+    /**
+     * Constructs a new TagFlagger.
+     *
+     * @param tag The tag used to flag the hosts.
+     */
     public TagFlagger(final V tag) {
         super(tag.getName());
         this.tag = tag;
@@ -23,7 +28,6 @@ public abstract class TagFlagger<K extends Host, V extends Tag> extends TagManag
      * Flags the host with the given `tag`, unless it was already flagged.
      *
      * @param host The host to be flagged.
-     * @author paganma
      */
     public void flag(final K host) {
         if (!host.hasTag(tagName)) {

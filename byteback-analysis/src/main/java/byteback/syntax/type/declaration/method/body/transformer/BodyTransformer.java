@@ -5,7 +5,7 @@ import byteback.syntax.type.declaration.method.body.walker.BodyWalker;
 import soot.Body;
 
 /**
- * Base class for the transformer of a body of a method.
+ * Base class for the transformer of a method's body.
  *
  * @author paganma
  */

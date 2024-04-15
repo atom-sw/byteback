@@ -8,6 +8,11 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
 
+/**
+ * Transformer for a single class field.
+ *
+ * @author paganma
+ */
 public abstract class FieldTransformer extends FieldWalker<SceneContext, ClassContext, FieldContext> {
 
     @Override

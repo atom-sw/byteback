@@ -1,9 +1,8 @@
 package byteback.syntax.type.declaration.method.body.value.transformer;
 
 import byteback.syntax.tag.AnnotationReader;
-import byteback.syntax.value.CallExpr;
-import byteback.syntax.value.context.ValueContext;
-import byteback.syntax.value.transformer.ValueTransformer;
+import byteback.syntax.type.declaration.method.body.value.context.ValueContext;
+import byteback.syntax.type.declaration.method.body.value.CallExpr;
 import byteback.syntax.Vimp;
 import byteback.syntax.name.BBLibNames;
 import byteback.common.function.Lazy;

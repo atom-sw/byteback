@@ -2,7 +2,6 @@ package byteback.syntax.type.declaration.method.transformer;
 
 import byteback.syntax.type.declaration.method.tag.PostconditionsProvider;
 import byteback.syntax.type.declaration.method.tag.PostconditionsTag;
-import byteback.syntax.value.box.ConditionExprBox;
 import byteback.common.function.Lazy;
 import soot.Value;
 

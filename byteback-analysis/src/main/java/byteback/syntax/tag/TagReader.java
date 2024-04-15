@@ -16,6 +16,11 @@ public abstract class TagReader<K extends Host, V extends Tag> {
 
     protected final String tagName;
 
+    /**
+     * Constructs a new TagReader.
+     *
+     * @param tagName The name of the tag read by this instance.
+     */
     public TagReader(final String tagName) {
         this.tagName = tagName;
     }

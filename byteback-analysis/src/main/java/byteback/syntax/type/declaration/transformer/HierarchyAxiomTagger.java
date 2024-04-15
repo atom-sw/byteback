@@ -2,10 +2,10 @@ package byteback.syntax.type.declaration.transformer;
 
 import byteback.syntax.type.KindType;
 import byteback.syntax.type.declaration.context.ClassContext;
-import byteback.syntax.value.TypeConstant;
+import byteback.syntax.type.declaration.method.body.value.TypeConstant;
 import byteback.syntax.type.declaration.tag.AxiomsProvider;
 import byteback.syntax.Vimp;
-import byteback.syntax.value.ForallExpr;
+import byteback.syntax.type.declaration.method.body.value.ForallExpr;
 import byteback.common.function.Lazy;
 import soot.*;
 import soot.grimp.Grimp;

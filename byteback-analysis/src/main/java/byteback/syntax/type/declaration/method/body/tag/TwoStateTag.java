@@ -5,7 +5,7 @@ import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
 /**
- * Tag used to annotate a methods specifying behavior expressions.
+ * Tag marking methods accessing the two-state.
  *
  * @author paganma
  */

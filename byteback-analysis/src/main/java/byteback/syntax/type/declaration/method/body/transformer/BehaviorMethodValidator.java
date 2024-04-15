@@ -7,7 +7,7 @@ import byteback.syntax.transformer.TransformationException;
 import byteback.syntax.type.declaration.method.body.context.BodyContext;
 import byteback.syntax.type.declaration.method.body.tag.BehaviorFlagger;
 import byteback.syntax.type.declaration.method.body.unit.YieldStmt;
-import byteback.syntax.value.analyzer.VimpEffectEvaluator;
+import byteback.syntax.type.declaration.method.body.value.analyzer.VimpEffectEvaluator;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.IdentityStmt;

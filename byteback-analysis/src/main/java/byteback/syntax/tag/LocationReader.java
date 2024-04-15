@@ -17,6 +17,11 @@ public class LocationReader extends TagReader<Host, LocationTag> {
         return INSTANCE.get();
     }
 
+    /**
+     * Constructs a new location reader
+     *
+     * @param tagName The name associated with the location tag.
+     */
     private LocationReader(final String tagName) {
         super(tagName);
     }

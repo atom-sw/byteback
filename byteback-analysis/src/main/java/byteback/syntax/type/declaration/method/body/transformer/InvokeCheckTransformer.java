@@ -1,9 +1,9 @@
 package byteback.syntax.type.declaration.method.body.transformer;
 
 import byteback.syntax.type.declaration.method.body.context.BodyContext;
-import byteback.syntax.value.analyzer.VimpEffectEvaluator;
+import byteback.syntax.type.declaration.method.body.value.analyzer.VimpEffectEvaluator;
 import byteback.syntax.Vimp;
-import byteback.syntax.value.VoidConstant;
+import byteback.syntax.type.declaration.method.body.value.VoidConstant;
 import byteback.common.function.Lazy;
 
 import java.util.Iterator;

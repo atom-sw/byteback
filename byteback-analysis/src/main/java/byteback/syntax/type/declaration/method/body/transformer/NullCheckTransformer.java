@@ -1,7 +1,6 @@
 package byteback.syntax.type.declaration.method.body.transformer;
 
-import byteback.syntax.value.NestedExprConstructor;
-import byteback.common.function.Lazy;
+import byteback.syntax.Vimp;
 
 import java.util.Optional;
 
@@ -15,22 +14,16 @@ import soot.jimple.*;
  */
 public class NullCheckTransformer extends CheckTransformer {
 
-    private static final Lazy<NullCheckTransformer> INSTANCE = Lazy.from(NullCheckTransformer::new);
-
-    private NullCheckTransformer() {
-        super("java.lang.NullPointerException");
-    }
-
-    public static NullCheckTransformer v() {
-        return INSTANCE.get();
+    public NullCheckTransformer(final Scene scene) {
+        super(scene, "java.lang.NullPointerException");
     }
 
     @Override
-    public Optional<Value> makeUnitCheck(final NestedExprConstructor immediateConstructor, final Unit unit) {
+    public Optional<Value> makeUnitCheck(final Unit unit) {
         Value base = null;
 
         if (unit instanceof final AssignStmt assignStmt) {
-            if (assignStmt.getLeftOp() instanceof Ref ref) {
+            if (assignStmt.getLeftOp() instanceof final Ref ref) {
                 if (ref instanceof final InstanceFieldRef instanceFieldRef) {
                     base = instanceFieldRef.getBase();
                 } else if (ref instanceof final ArrayRef arrayRef) {
@@ -46,8 +39,8 @@ public class NullCheckTransformer extends CheckTransformer {
         if (base != null) {
             final Value condition =
                     Jimple.v().newNeExpr(
-                        immediateConstructor.apply(base),
-                        NullConstant.v()
+                            Vimp.v().nest(base),
+                            NullConstant.v()
                     );
 
             return Optional.of(condition);

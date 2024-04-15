@@ -71,7 +71,7 @@ public class InvariantExpander extends BodyTransformer {
 
         for (final Loop loop : loopTree) {
             for (final Unit unit : loop.getLoopStatements()) {
-                if (unit instanceof InvariantStmt invariantUnit) {
+                if (unit instanceof final InvariantStmt invariantUnit) {
                     final Value condition = invariantUnit.getCondition();
 
                     final Supplier<AssertStmt> assertionSupplier = () -> {

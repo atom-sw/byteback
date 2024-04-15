@@ -3,7 +3,7 @@ package byteback.syntax.type.declaration.method.body.transformer;
 import byteback.syntax.type.declaration.method.body.context.BodyContext;
 import byteback.syntax.type.declaration.method.body.unit.iterator.TrapCollectingIterator;
 import byteback.syntax.type.declaration.method.body.unit.tag.ExceptionalTargetFlagger;
-import byteback.syntax.value.NestedExprConstructor;
+import byteback.syntax.type.declaration.method.body.value.ExprAggregator;
 import byteback.syntax.Vimp;
 import byteback.common.function.Lazy;
 import soot.*;
@@ -39,7 +39,7 @@ public class GuardTransformer extends BodyTransformer {
         final Body body = bodyContext.getBody();
         final PatchingChain<Unit> units = body.getUnits();
         final var unitIterator = new TrapCollectingIterator(units, body.getTraps());
-        final var exprConstructor = new NestedExprConstructor(body);
+        final var exprConstructor = new ExprAggregator(body);
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();

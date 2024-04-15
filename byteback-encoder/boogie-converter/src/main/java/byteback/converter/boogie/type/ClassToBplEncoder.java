@@ -2,7 +2,7 @@ package byteback.converter.boogie.type;
 
 import byteback.syntax.type.declaration.context.ClassContext;
 import byteback.syntax.type.declaration.tag.AxiomsProvider;
-import byteback.syntax.value.box.ConditionExprBox;
+import byteback.syntax.type.declaration.method.body.value.box.ConditionExprBox;
 import byteback.converter.boogie.value.ValueToBplEncoder;
 import byteback.converter.common.type.ClassEncoder;
 import soot.RefType;

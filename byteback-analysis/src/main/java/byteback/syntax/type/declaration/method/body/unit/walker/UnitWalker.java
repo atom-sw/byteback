@@ -14,7 +14,7 @@ import java.util.Iterator;
 public abstract class UnitWalker<B extends BodyContext, U extends UnitContext>
         extends BodyWalker<B> {
 
-    public abstract U makeUnitContext(final B localBodyContext, final UnitBox unitBox);
+    public abstract U makeUnitContext(final B bodyContext, final UnitBox unitBox);
 
     public abstract void walkUnit(final U localUnitContext);
 

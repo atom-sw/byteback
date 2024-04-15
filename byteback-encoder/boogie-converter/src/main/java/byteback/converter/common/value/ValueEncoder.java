@@ -1,6 +1,6 @@
 package byteback.converter.common.value;
 
-import byteback.syntax.value.transformer.ValueTransformer;
+import byteback.syntax.type.declaration.method.body.value.transformer.ValueTransformer;
 
 import java.io.PrintWriter;
 

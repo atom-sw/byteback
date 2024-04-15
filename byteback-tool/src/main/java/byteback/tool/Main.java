@@ -2,17 +2,18 @@ package byteback.tool;
 
 import byteback.syntax.type.declaration.method.body.transformer.*;
 import byteback.syntax.type.declaration.method.body.value.transformer.CallExprTransformer;
-import byteback.syntax.type.declaration.tag.AxiomsProvider;
+import byteback.syntax.type.declaration.method.transformer.PostconditionsFinder;
+import byteback.syntax.type.declaration.method.transformer.PreconditionsFinder;
 import byteback.syntax.type.declaration.transformer.HierarchyAxiomTagger;
 import byteback.syntax.type.declaration.method.transformer.PostconditionsPropagator;
 import byteback.syntax.type.declaration.method.transformer.PreconditionsPropagator;
-import byteback.syntax.value.transformer.DynamicInvokeToStaticTransformer;
+import byteback.syntax.type.declaration.method.body.value.transformer.DynamicInvokeToStaticTransformer;
 import byteback.syntax.type.declaration.method.body.unit.transformer.LogicConstantTransformer;
 import byteback.syntax.type.declaration.method.body.unit.transformer.SpecificationStmtTransformer;
-import byteback.syntax.value.transformer.ConditionalExprTransformer;
-import byteback.syntax.value.transformer.OldExprTransformer;
-import byteback.syntax.value.transformer.QuantifierValueTransformer;
-import byteback.syntax.value.transformer.ThrownExprTransformer;
+import byteback.syntax.type.declaration.method.body.value.transformer.ConditionalExprTransformer;
+import byteback.syntax.type.declaration.method.body.value.transformer.OldExprTransformer;
+import byteback.syntax.type.declaration.method.body.value.transformer.QuantifierValueTransformer;
+import byteback.syntax.type.declaration.method.body.value.transformer.ThrownExprTransformer;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -149,11 +150,11 @@ public class Main implements Callable<Integer> {
         // - Transformations of the exceptional control flow
         // Create explicit checks for implicit exceptions
         if (getTransformArrayCheck()) {
-            jtpPack.add(new Transform("jtp.ict", IndexCheckTransformer.v()));
+            jtpPack.add(new Transform("jtp.ict", new IndexCheckTransformer(Scene.v())));
         }
 
         if (getTransformNullCheck()) {
-            jtpPack.add(new Transform("jtp.nct", NullCheckTransformer.v()));
+            jtpPack.add(new Transform("jtp.nct", new NullCheckTransformer(Scene.v())));
         }
 
         jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));

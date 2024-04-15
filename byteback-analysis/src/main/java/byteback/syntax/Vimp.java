@@ -1,11 +1,13 @@
 package byteback.syntax;
 
-import byteback.syntax.type.declaration.method.body.unit.*;
-import byteback.syntax.value.*;
-import byteback.syntax.value.box.ConditionExprBox;
 import byteback.common.function.Lazy;
+import byteback.syntax.type.declaration.method.body.unit.*;
+import byteback.syntax.type.declaration.method.body.value.*;
+import byteback.syntax.type.declaration.method.body.value.box.ConditionExprBox;
 import soot.*;
-import soot.jimple.*;
+import soot.jimple.AssignStmt;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IfStmt;
 import soot.jimple.internal.ImmediateBox;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -20,10 +22,10 @@ import java.util.List;
  */
 public class Vimp {
 
-    private static final Lazy<Vimp> instance = Lazy.from(Vimp::new);
+    private static final Lazy<Vimp> INSTANCE = Lazy.from(Vimp::new);
 
     public static Vimp v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     public ValueBox newImmediateBox(final Value value) {
@@ -111,8 +113,12 @@ public class Vimp {
         return new ReturnRef(type);
     }
 
-    public NestedExpr newNestedExpr(final AssignStmt def) {
-        return new NestedExpr(def);
+    public NestedExpr newNestedExpr(final Value value) {
+        return new NestedExpr(value);
+    }
+
+    public AggregateExpr newAggregateExpr(final AssignStmt assignStmt) {
+        return new AggregateExpr(assignStmt);
     }
 
     public IfStmt newIfStmt(final Value condition, final Unit target) {
@@ -129,6 +135,14 @@ public class Vimp {
 
     public TypeConstant newTypeConstant(final RefType type) {
         return new TypeConstant(type);
+    }
+
+    public Immediate nest(final Value value) {
+        if (value instanceof Immediate immediate) {
+            return immediate;
+        } else {
+            return Vimp.v().newNestedExpr(value);
+        }
     }
 
 }

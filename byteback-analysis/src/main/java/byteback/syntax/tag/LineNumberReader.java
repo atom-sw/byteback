@@ -18,6 +18,11 @@ public class LineNumberReader extends TagReader<Host, LineNumberTag> {
         return INSTANCE.get();
     }
 
+    /**
+     * Constructs a new line number reader.
+     *
+     * @param tagName The name associated with the line number tag.
+     */
     private LineNumberReader(final String tagName) {
         super(tagName);
     }

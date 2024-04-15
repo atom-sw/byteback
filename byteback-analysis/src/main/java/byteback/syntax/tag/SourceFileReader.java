@@ -18,6 +18,11 @@ public class SourceFileReader extends TagReader<Host, SourceFileTag> {
         return INSTANCE.get();
     }
 
+    /**
+     * Constructs a new SourceFileReader.
+     *
+     * @param tagName The name associated with the SourceFileTag.
+     */
     private SourceFileReader(final String tagName) {
         super(tagName);
     }

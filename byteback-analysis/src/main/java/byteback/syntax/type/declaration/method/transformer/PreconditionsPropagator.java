@@ -2,11 +2,8 @@ package byteback.syntax.type.declaration.method.transformer;
 
 import byteback.syntax.type.declaration.method.tag.PreconditionsProvider;
 import byteback.syntax.type.declaration.method.tag.PreconditionsTag;
-import byteback.syntax.value.box.ConditionExprBox;
 import byteback.common.function.Lazy;
 import soot.Value;
-import soot.jimple.Jimple;
-import soot.jimple.OrExpr;
 
 import java.util.List;
 

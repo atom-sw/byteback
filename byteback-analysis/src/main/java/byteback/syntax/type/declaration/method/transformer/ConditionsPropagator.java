@@ -3,7 +3,6 @@ package byteback.syntax.type.declaration.method.transformer;
 import byteback.syntax.type.declaration.method.context.MethodContext;
 import byteback.syntax.type.declaration.method.tag.ConditionsProvider;
 import byteback.syntax.type.declaration.method.tag.ConditionsTag;
-import byteback.syntax.value.box.ConditionExprBox;
 import soot.*;
 
 import java.util.ArrayDeque;

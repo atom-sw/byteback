@@ -1,12 +1,13 @@
 package byteback.syntax.type.declaration.method.body.transformer;
 
-import byteback.syntax.type.declaration.method.body.context.BodyContext;
-import byteback.syntax.value.analyzer.VimpEffectEvaluator;
-import byteback.syntax.Vimp;
-import byteback.syntax.value.NestedExpr;
 import byteback.common.collection.SetHashMap;
+import byteback.syntax.Vimp;
+import byteback.syntax.type.declaration.method.body.context.BodyContext;
+import byteback.syntax.type.declaration.method.body.value.AggregateExpr;
+import byteback.syntax.type.declaration.method.body.value.analyzer.VimpEffectEvaluator;
 import soot.*;
-import soot.jimple.*;
+import soot.jimple.AssignStmt;
+import soot.jimple.Ref;
 import soot.jimple.toolkits.infoflow.CachedEquivalentValue;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.LocalDefs;
@@ -16,13 +17,15 @@ import soot.toolkits.scalar.SimpleLocalUses;
 import soot.util.Chain;
 import soot.util.HashChain;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Folds expressions used in the Body as nested expressions based on some condition.
- * @see NestedExpr
  *
  * @author paganma
+ * @see AggregateExpr
  */
 public abstract class ExprFolder extends BodyTransformer {
 
@@ -49,7 +52,8 @@ public abstract class ExprFolder extends BodyTransformer {
 
     /**
      * Whether a value can be substituted at position `valueBox` in `unit`.
-     * @param unit The unit in which the substitution may occur.
+     *
+     * @param unit     The unit in which the substitution may occur.
      * @param valueBox The position in the unit in which the substitution may occur.
      * @return `true` if a value can be inlined in `valueBox`, `false` otherwise.
      */
@@ -115,7 +119,7 @@ public abstract class ExprFolder extends BodyTransformer {
                             // Notice the condition above specifies that the local has exactly one def and one use at
                             // the position at which nestedExpr is being inserted, hence the substitution obeys
                             // NestedExpr's contract.
-                            substitutionBox.setValue(Vimp.v().newNestedExpr(substitution));
+                            substitutionBox.setValue(Vimp.v().newAggregateExpr(substitution));
                         }
 
                         units.remove(substitution);

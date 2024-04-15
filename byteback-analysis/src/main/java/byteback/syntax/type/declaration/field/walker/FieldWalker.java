@@ -10,11 +10,31 @@ import soot.util.Chain;
 
 import java.util.Iterator;
 
+/**
+ * Walks a single field.
+ *
+ * @param <S> The type of the SceneContext.
+ * @param <C> The type of the ClassContext.
+ * @param <F> The type of the FieldContext.
+ * @author paganma
+ */
 public abstract class FieldWalker<S extends SceneContext, C extends ClassContext, F extends FieldContext>
         extends ClassWalker<S, C> {
 
+    /**
+     * Creates a new {@link FieldContext}.
+     *
+     * @param classContext The enclosing class context.
+     * @param sootField    The field of the context.
+     * @return A new field context.
+     */
     public abstract F makeFieldContext(final ClassContext classContext, final SootField sootField);
 
+    /**
+     * Walks a field context.
+     *
+     * @param fieldContext The field context created with {@link #makeFieldContext}`.
+     */
     public abstract void walkField(final F fieldContext);
 
     @Override

@@ -16,10 +16,18 @@ public abstract class ValuesTag<T extends Value> implements Tag {
 
     private final List<T> specificationValues;
 
-    public ValuesTag(final List<T> specificationValues) {
-        this.specificationValues = specificationValues;
+    /**
+     * Constructs a new ValuesTag.
+     *
+     * @param values The values associated to this tag.
+     */
+    public ValuesTag(final List<T> values) {
+        this.specificationValues = values;
     }
 
+    /**
+     * Constructs a new empty ValuesTag.
+     */
     public ValuesTag() {
         this(new ArrayList<>());
     }

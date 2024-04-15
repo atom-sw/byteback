@@ -1,11 +1,11 @@
 package byteback.converter.boogie.value;
 
 import byteback.syntax.type.KindType;
-import byteback.syntax.value.ExtendsExpr;
-import byteback.syntax.value.TypeConstant;
-import byteback.syntax.value.analyzer.VimpTypeInterpreter;
-import byteback.syntax.value.ImpliesExpr;
-import byteback.syntax.value.QuantifierExpr;
+import byteback.syntax.type.declaration.method.body.value.ExtendsExpr;
+import byteback.syntax.type.declaration.method.body.value.TypeConstant;
+import byteback.syntax.type.declaration.method.body.value.analyzer.VimpTypeInterpreter;
+import byteback.syntax.type.declaration.method.body.value.ImpliesExpr;
+import byteback.syntax.type.declaration.method.body.value.QuantifierExpr;
 import byteback.converter.boogie.type.ClassToBplEncoder;
 import byteback.converter.common.value.ValueEncoder;
 import soot.*;
