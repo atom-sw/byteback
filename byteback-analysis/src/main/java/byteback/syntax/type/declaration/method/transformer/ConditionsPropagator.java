@@ -19,6 +19,14 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
     public abstract void combineConditions(final List<Value> originalConditions,
                                            final List<Value> overridingConditions);
 
+    protected final List<SootClass> subTypesOf(final Hierarchy hierarchy, final SootClass sootClass) {
+        if (sootClass.isInterface()) {
+            return hierarchy.getDirectImplementersOf(sootClass);
+        } else {
+            return hierarchy.getDirectSubclassesOf(sootClass);
+        }
+    }
+
     @Override
     public void walkMethod(final MethodContext context) {
         final SootMethod sootMethod = context.getSootMethod();
@@ -32,7 +40,7 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
         }
 
         final Hierarchy hierarchy = scene.getActiveHierarchy();
-        final var nextSubClasses = new ArrayDeque<>(hierarchy.getDirectSubclassesOf(declaringClass));
+        final var nextSubClasses = new ArrayDeque<>(subTypesOf(hierarchy, declaringClass));
 
         while (!nextSubClasses.isEmpty()) {
             final SootClass sootClass = nextSubClasses.pop();
@@ -48,7 +56,7 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
                 combineConditions(originalConditionBoxes, overridingConditions);
             }
 
-            nextSubClasses.addAll(hierarchy.getDirectSubclassesOf(sootClass));
+            nextSubClasses.addAll(subTypesOf(hierarchy, sootClass));
         }
     }
 
