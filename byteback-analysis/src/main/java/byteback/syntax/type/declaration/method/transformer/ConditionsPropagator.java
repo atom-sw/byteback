@@ -16,8 +16,7 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
         this.conditionsProvider = conditionsProvider;
     }
 
-    public abstract void combineConditions(final List<Value> originalConditions,
-                                           final List<Value> overridingConditions);
+    public abstract List<Value> combineConditions(List<Value> originalConditions, List<Value> overridingConditions);
 
     protected final List<SootClass> subTypesOf(final Hierarchy hierarchy, final SootClass sootClass) {
         if (sootClass.isInterface()) {
