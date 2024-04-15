@@ -1,6 +1,8 @@
 package byteback.syntax.type.declaration.method.transformer;
 
 import byteback.syntax.name.BBLibNames;
+import byteback.syntax.type.declaration.method.tag.ParameterLocalsProvider;
+import byteback.syntax.type.declaration.method.tag.ParameterLocalsTag;
 import byteback.syntax.type.declaration.method.tag.PreconditionsProvider;
 import byteback.syntax.type.declaration.method.tag.PreconditionsTag;
 import byteback.common.function.Lazy;
@@ -14,9 +16,7 @@ public class PreconditionsFinder extends ConditionsFinder<PreconditionsTag> {
     private static final Lazy<PreconditionsFinder> INSTANCE = Lazy.from(() ->
             new PreconditionsFinder(BBLibNames.REQUIRE_ANNOTATION, PreconditionsProvider.v()));
 
-    private PreconditionsFinder(final String annotationDescriptor,
-                                final PreconditionsProvider preconditionsProvider) {
-
+    private PreconditionsFinder(final String annotationDescriptor, final PreconditionsProvider preconditionsProvider) {
         super(annotationDescriptor, preconditionsProvider);
     }
 
@@ -25,13 +25,16 @@ public class PreconditionsFinder extends ConditionsFinder<PreconditionsTag> {
     }
 
     @Override
-    protected List<Type> makeBehaviorParameterTypes(final Body body) {
-        return new ArrayList<>(body.getMethod().getParameterTypes());
+    protected List<Type> makeBehaviorParameterTypes(final SootMethod targetMethod) {
+        return new ArrayList<>(targetMethod.getParameterTypes());
     }
 
     @Override
-    protected List<Value> makeBehaviorParameters(final Body body) {
-        return new ArrayList<>(body.getParameterLocals());
+    protected List<Value> makeBehaviorParameters(final SootMethod targetMethod) {
+        final ParameterLocalsTag parameterLocalsTag = ParameterLocalsProvider.v().compute(targetMethod);
+        final List<Local> parameterLocals = parameterLocalsTag.getValues();
+
+        return new ArrayList<>(parameterLocals);
     }
 
 }

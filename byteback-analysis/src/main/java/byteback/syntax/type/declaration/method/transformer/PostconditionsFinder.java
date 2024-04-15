@@ -3,6 +3,8 @@ package byteback.syntax.type.declaration.method.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.Vimp;
 import byteback.syntax.name.BBLibNames;
+import byteback.syntax.type.declaration.method.tag.ParameterLocalsProvider;
+import byteback.syntax.type.declaration.method.tag.ParameterLocalsTag;
 import byteback.syntax.type.declaration.method.tag.PostconditionsProvider;
 import byteback.syntax.type.declaration.method.tag.PostconditionsTag;
 import soot.*;
@@ -26,8 +28,7 @@ public class PostconditionsFinder extends ConditionsFinder<PostconditionsTag> {
     }
 
     @Override
-    protected List<Type> makeBehaviorParameterTypes(final Body body) {
-        final SootMethod targetMethod = body.getMethod();
+    protected List<Type> makeBehaviorParameterTypes(final SootMethod targetMethod) {
         final var behaviorParameterTypes = new ArrayList<>(targetMethod.getParameterTypes());
 
         if (targetMethod.getReturnType() != VoidType.v()) {
@@ -38,9 +39,10 @@ public class PostconditionsFinder extends ConditionsFinder<PostconditionsTag> {
     }
 
     @Override
-    protected List<Value> makeBehaviorParameters(final Body body) {
-        final SootMethod targetMethod = body.getMethod();
-        final var behaviorParameters = new ArrayList<Value>(body.getParameterLocals());
+    protected List<Value> makeBehaviorParameters(final SootMethod targetMethod) {
+        final ParameterLocalsTag parameterLocalsTag = ParameterLocalsProvider.v().getOrCompute(targetMethod);
+        final List<Local> parameterLocals = parameterLocalsTag.getValues();
+        final var behaviorParameters = new ArrayList<Value>(parameterLocals);
         final Type returnType = targetMethod.getReturnType();
 
         if (returnType != VoidType.v()) {

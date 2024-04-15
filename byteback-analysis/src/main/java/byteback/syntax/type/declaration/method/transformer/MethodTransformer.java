@@ -14,8 +14,6 @@ import java.util.List;
 
 public abstract class MethodTransformer extends MethodWalker<SceneContext, ClassContext, MethodContext> {
 
-    public abstract void transformMethod(final MethodContext methodContext);
-
     @Override
     public SceneContext makeSceneContext(final Scene scene) {
         return new SceneContext(scene);
@@ -29,11 +27,6 @@ public abstract class MethodTransformer extends MethodWalker<SceneContext, Class
     @Override
     public MethodContext makeMethodContext(final ClassContext classContext, final SootMethod sootMethod) {
         return new MethodContext(classContext, sootMethod);
-    }
-
-    @Override
-    public void walkMethod(final MethodContext methodContext) {
-        transformMethod(methodContext);
     }
 
 }

@@ -1,8 +1,8 @@
 package byteback.syntax.type.declaration.method.transformer;
 
+import byteback.common.function.Lazy;
 import byteback.syntax.type.declaration.method.tag.PostconditionsProvider;
 import byteback.syntax.type.declaration.method.tag.PostconditionsTag;
-import byteback.common.function.Lazy;
 import soot.Value;
 
 import java.util.List;

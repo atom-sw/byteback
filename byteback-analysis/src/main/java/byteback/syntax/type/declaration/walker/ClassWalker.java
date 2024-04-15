@@ -11,7 +11,6 @@ import soot.SootClass;
  *
  * @param <S> The type of the outer scene context.
  * @param <C> The type of the class context.
- *
  * @author paganma
  */
 public abstract class ClassWalker<S extends SceneContext, C extends ClassContext>

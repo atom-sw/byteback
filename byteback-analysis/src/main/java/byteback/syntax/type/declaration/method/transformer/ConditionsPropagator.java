@@ -20,7 +20,7 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
                                            final List<Value> overridingConditions);
 
     @Override
-    public void transformMethod(final MethodContext context) {
+    public void walkMethod(final MethodContext context) {
         final SootMethod sootMethod = context.getSootMethod();
         final Scene scene = context.getScene();
         final SootClass declaringClass = sootMethod.getDeclaringClass();

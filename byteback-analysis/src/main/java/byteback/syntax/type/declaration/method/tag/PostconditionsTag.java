@@ -2,6 +2,7 @@ package byteback.syntax.type.declaration.method.tag;
 
 import soot.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostconditionsTag extends ConditionsTag {
@@ -10,6 +11,10 @@ public class PostconditionsTag extends ConditionsTag {
 
     public PostconditionsTag(final List<Value> values) {
         super(values);
+    }
+
+    public PostconditionsTag() {
+        this(new ArrayList<>());
     }
 
     @Override

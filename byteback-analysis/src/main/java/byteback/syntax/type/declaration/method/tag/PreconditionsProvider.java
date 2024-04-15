@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public class PreconditionsProvider extends ConditionsProvider<PreconditionsTag> {
 
-    private static final Lazy<PreconditionsProvider> instance =
+    private static final Lazy<PreconditionsProvider> INSTANCE =
             Lazy.from(()  -> new PreconditionsProvider(PreconditionsTag.NAME));
 
     public static PreconditionsProvider v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private PreconditionsProvider(final String tagName) {
@@ -20,7 +20,7 @@ public class PreconditionsProvider extends ConditionsProvider<PreconditionsTag> 
 
     @Override
     public PreconditionsTag compute(final SootMethod sootMethod) {
-        return new PreconditionsTag(new ArrayList<>());
+        return new PreconditionsTag();
     }
 
 }

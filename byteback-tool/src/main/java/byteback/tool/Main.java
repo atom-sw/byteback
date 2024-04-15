@@ -168,13 +168,13 @@ public class Main implements Callable<Integer> {
 
         // Assign local specification
         jtpPack.add(new Transform("jtp.lif", FrameConditionFinder.v()));
-        jtpPack.add(new Transform("jtp.pcf", PreconditionsFinder.v()));
-        jtpPack.add(new Transform("jtp.psf", PostconditionsFinder.v()));
 
         Scene.v().loadBasicClasses();
         Scene.v().loadNecessaryClasses();
         PackManager.v().runPacks();
 
+        PreconditionsFinder.v().transform();
+        PostconditionsFinder.v().transform();
         PreconditionsPropagator.v().transform();
         PostconditionsPropagator.v().transform();
         HierarchyAxiomTagger.v().transform();

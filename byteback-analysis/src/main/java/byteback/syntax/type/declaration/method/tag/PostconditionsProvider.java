@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public class PostconditionsProvider extends ConditionsProvider<PostconditionsTag> {
 
-    private static final Lazy<PostconditionsProvider> instance =
+    private static final Lazy<PostconditionsProvider> INSTANCE =
             Lazy.from(()  -> new PostconditionsProvider(PostconditionsTag.NAME));
 
     public static PostconditionsProvider v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private PostconditionsProvider(final String tagName) {
