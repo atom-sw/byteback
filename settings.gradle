@@ -5,8 +5,8 @@ includeBuild('./conventions')
 include(
 		':byteback-common',
 		':byteback-tool',
-		':byteback-analysis',
-        ':byteback-encoder:boogie-converter',
+		':byteback-syntax',
+    ':byteback-converter:boogie-converter',
 		':byteback-specification',
 		':byteback-test',
 		':byteback-test:test-scala-2.13.8',

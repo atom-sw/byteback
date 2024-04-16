@@ -6,11 +6,11 @@ plugins {
 
 dependencies {
     implementation project(':byteback-common')
-    implementation project(':byteback-analysis')
-    //implementation project(':byteback-encoder:boogie-converter')
+    implementation project(':byteback-syntax')
+    implementation project(':byteback-converter:boogie-converter')
     implementation 'org.soot-oss:soot:4.3.0'
-		implementation 'info.picocli:picocli:4.7.5'
-		annotationProcessor 'info.picocli:picocli-codegen:4.7.5'
+    implementation 'info.picocli:picocli:4.7.5'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.5'
 }
 
 
