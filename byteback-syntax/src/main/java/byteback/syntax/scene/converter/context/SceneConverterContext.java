@@ -5,12 +5,7 @@ import soot.Scene;
 
 public class SceneConverterContext extends SceneContext {
 
-    /**
-     * Constructs a new {@link SceneContext}.
-     *
-     * @param scene The scene corresponding to this context.
-     */
-    public SceneConverterContext(Scene scene) {
+    public SceneConverterContext(final Scene scene) {
         super(scene);
     }
 

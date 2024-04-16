@@ -114,6 +114,7 @@ public class Main implements Callable<Integer> {
         final Pack jtpPack = PackManager.v().getPack("jtp");
 
         // - Jimple transformations
+        jtpPack.add(new Transform("jtp.lns1", LocalNameStandardizer.v()));
         jtpPack.add(new Transform("jtp.ivf", InvokeFilter.v()));
         jtpPack.add(new Transform("jtp.dir", DynamicInvokeToStaticTransformer.v()));
 
@@ -164,7 +165,7 @@ public class Main implements Callable<Integer> {
 
         // Cleanup the output
         jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
-        jtpPack.add(new Transform("jtp.lns", LocalNameStandardizer.v()));
+        jtpPack.add(new Transform("jtp.lns2", LocalNameStandardizer.v()));
 
         // Assign local specification
         jtpPack.add(new Transform("jtp.lif", FrameConditionFinder.v()));
