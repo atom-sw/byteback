@@ -8,12 +8,13 @@ import soot.Scene;
  *
  * @author paganma
  */
-public class SceneContext implements Context {
+public abstract class SceneContext implements Context {
+
 
     private final Scene scene;
 
     /**
-     * Constructs a new SceneContext.
+     * Constructs a new {@link SceneContext}.
      *
      * @param scene The scene corresponding to this context.
      */

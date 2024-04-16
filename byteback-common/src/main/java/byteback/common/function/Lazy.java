@@ -2,6 +2,12 @@ package byteback.common.function;
 
 import java.util.function.Supplier;
 
+/**
+ * A lazy supplier.
+ *
+ * @param <T> The type of the value supplied.
+ * @author paganma
+ */
 public class Lazy<T> implements Supplier<T> {
 
     private final Supplier<T> supplier;
@@ -13,12 +19,6 @@ public class Lazy<T> implements Supplier<T> {
 
     public static <T> Lazy<T> from(final Supplier<T> supplier) {
         return new Lazy<>(supplier);
-    }
-
-    public static <T> Lazy<T> empty() {
-        return new Lazy<T>(() -> {
-            throw new IllegalStateException("Unable to initialize value");
-        });
     }
 
     public synchronized void invalidate() {

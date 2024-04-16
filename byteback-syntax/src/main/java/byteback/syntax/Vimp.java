@@ -1,9 +1,9 @@
 package byteback.syntax;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.type.declaration.method.body.unit.*;
-import byteback.syntax.type.declaration.method.body.value.*;
-import byteback.syntax.type.declaration.method.body.value.box.ConditionExprBox;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.*;
+import byteback.syntax.scene.type.declaration.member.method.body.value.*;
+import byteback.syntax.scene.type.declaration.member.method.body.value.box.ConditionExprBox;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;

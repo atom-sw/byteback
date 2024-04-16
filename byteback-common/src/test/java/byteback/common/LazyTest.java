@@ -23,11 +23,7 @@ public class LazyTest {
         assertEquals(first, second);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void Get_CalledOnEmpty_ThrowsIllegalStateException() {
-        Lazy.empty().get();
-    }
-
+    @Test
     public void invalidate_CalledBetweenGets_ResultsInDifferentValues() {
         final Lazy<Object> lazyValue = Lazy.from(Object::new);
         final Object first = lazyValue.get();

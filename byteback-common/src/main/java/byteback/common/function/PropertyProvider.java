@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 /**
  * Base class for a lazy weak property provider.
+ *
  * @param <A> Instance owning the property.
  * @param <B> Type of the property.
  * @author paganma
