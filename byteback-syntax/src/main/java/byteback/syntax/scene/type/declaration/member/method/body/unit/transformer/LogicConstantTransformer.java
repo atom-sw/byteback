@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.unit.transformer;
 
 import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.context.UnitTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.LogicConstant;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import byteback.common.function.Lazy;
@@ -25,7 +25,7 @@ public class LogicConstantTransformer extends UnitTransformer {
     }
 
     @Override
-    public void transformUnit(final UnitTransformationContext unitContext) {
+    public void transformUnit(final UnitContext unitContext) {
         final UnitBox unitBox = unitContext.getUnitBox();
         final Unit unit = unitBox.getUnit();
 

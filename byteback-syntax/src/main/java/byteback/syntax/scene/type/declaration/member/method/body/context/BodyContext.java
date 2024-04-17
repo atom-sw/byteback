@@ -10,7 +10,7 @@ import soot.SootMethod;
  *
  * @author paganma
  */
-public abstract class BodyContext implements Context {
+public class BodyContext implements Context {
 
     private final Body body;
 

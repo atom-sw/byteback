@@ -1,19 +1,16 @@
 package byteback.tool;
 
+import byteback.syntax.scene.type.declaration.member.method.body.tag.TwoStateFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.CallExprTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.transformer.PostconditionsFinder;
 import byteback.syntax.scene.type.declaration.member.method.transformer.PreconditionsFinder;
 import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
 import byteback.syntax.scene.type.declaration.member.method.transformer.PostconditionsPropagator;
 import byteback.syntax.scene.type.declaration.member.method.transformer.PreconditionsPropagator;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.DynamicInvokeToStaticTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.LogicConstantTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.SpecificationStmtTransformer;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.ConditionalExprTransformer;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.OldExprTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.QuantifierValueTransformer;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.ThrownExprTransformer;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -143,6 +140,7 @@ public class Main implements Callable<Integer> {
         // Create the specification statements and expressions
         jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
         jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
+        jtpPack.add(new Transform("jtp.i2sft", OldExprTightener.v()));
 
         // Create initial assumptions.
         jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
@@ -181,11 +179,14 @@ public class Main implements Callable<Integer> {
         HierarchyAxiomTagger.v().transform();
 
         for (final SootClass sootClass : Scene.v().getClasses()) {
-            if (sootClass.resolvingLevel() < SootClass.SIGNATURES) continue;
-            for (final SootMethod sootMethod : sootClass.getMethods()) {
-                if (!sootMethod.hasActiveBody()) continue;
-                final Body body = sootMethod.getActiveBody();
-                System.out.println(body);
+            if (sootClass.resolvingLevel() >= SootClass.BODIES) {
+                for (final SootMethod method : sootClass.getMethods()) {
+                    final Body body = method.getActiveBody();
+
+                    if (TwoStateFlagger.v().isTagged(body)) {
+                        System.out.println(method.getActiveBody());
+                    }
+                }
             }
         }
 

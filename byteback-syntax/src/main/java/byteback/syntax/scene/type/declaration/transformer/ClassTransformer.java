@@ -1,8 +1,8 @@
 package byteback.syntax.scene.type.declaration.transformer;
 
+import byteback.syntax.scene.context.SceneContext;
 import byteback.syntax.scene.transformer.SceneTransformer;
-import byteback.syntax.scene.transformer.context.SceneTransformationContext;
-import byteback.syntax.scene.type.declaration.transformer.context.ClassTransformationContext;
+import byteback.syntax.scene.type.declaration.context.ClassContext;
 import soot.Scene;
 import soot.SootClass;
 
@@ -15,13 +15,13 @@ import soot.SootClass;
  */
 public abstract class ClassTransformer extends SceneTransformer {
 
-    public abstract void transformClass(final ClassTransformationContext classContext);
+    public abstract void transformClass(final ClassContext classContext);
 
-    public void transformScene(final SceneTransformationContext sceneTransformationContext) {
-        final Scene scene = sceneTransformationContext.getScene();
+    public void transformScene(final SceneContext sceneContext) {
+        final Scene scene = sceneContext.getScene();
 
         for (final SootClass sootClass : scene.getClasses()) {
-            final var classContext = new ClassTransformationContext(sceneTransformationContext, sootClass);
+            final var classContext = new ClassContext(sceneContext, sootClass);
             transformClass(classContext);
         }
     }

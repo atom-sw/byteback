@@ -1,5 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
+import byteback.syntax.scene.type.declaration.member.method.body.unit.printer.InlineUnitPrinter;
 import soot.Local;
 import soot.Type;
 import soot.UnitPrinter;
@@ -132,6 +133,14 @@ public class AggregateExpr extends NestedExpr implements Local {
         printer.literal("(");
         definition.getRightOp().toString(printer);
         printer.literal(")");
+    }
+
+    @Override
+    public String toString() {
+        final var printer = new InlineUnitPrinter();
+        toString(printer);
+
+        return printer.toString();
     }
 
 }

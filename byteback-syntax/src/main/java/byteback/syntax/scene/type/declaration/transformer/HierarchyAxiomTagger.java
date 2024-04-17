@@ -4,10 +4,10 @@ import byteback.common.function.Lazy;
 import byteback.syntax.Vimp;
 import byteback.syntax.scene.context.SceneContext;
 import byteback.syntax.scene.type.TypeType;
+import byteback.syntax.scene.type.declaration.context.ClassContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ForallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.TypeConstant;
 import byteback.syntax.scene.type.declaration.tag.AxiomsProvider;
-import byteback.syntax.scene.type.declaration.transformer.context.ClassTransformationContext;
 import soot.*;
 import soot.grimp.Grimp;
 import soot.jimple.Jimple;
@@ -25,7 +25,7 @@ public class HierarchyAxiomTagger extends ClassTransformer {
     }
 
     @Override
-    public void transformClass(final ClassTransformationContext classContext) {
+    public void transformClass(final ClassContext classContext) {
         final SceneContext sceneContext = classContext.getSceneContext();
         final SootClass sootClass = classContext.getSootClass();
         final Scene scene = sceneContext.getScene();

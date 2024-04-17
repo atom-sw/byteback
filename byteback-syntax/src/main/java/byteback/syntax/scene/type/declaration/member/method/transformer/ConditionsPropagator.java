@@ -1,10 +1,10 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
-import byteback.syntax.scene.transformer.context.SceneTransformationContext;
+import byteback.syntax.scene.context.SceneContext;
+import byteback.syntax.scene.type.declaration.context.ClassContext;
+import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsProvider;
 import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsTag;
-import byteback.syntax.scene.type.declaration.member.method.transformer.context.MethodTransformationContext;
-import byteback.syntax.scene.type.declaration.transformer.context.ClassTransformationContext;
 import soot.*;
 
 import java.util.ArrayDeque;
@@ -29,10 +29,10 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
     }
 
     @Override
-    public void transformMethod(final MethodTransformationContext methodContext) {
+    public void transformMethod(final MethodContext methodContext) {
         final SootMethod sootMethod = methodContext.getSootMethod();
-        final ClassTransformationContext classContext = methodContext.getClassContext();
-        final SceneTransformationContext sceneContext = classContext.getSceneContext();
+        final ClassContext classContext = methodContext.getClassContext();
+        final SceneContext sceneContext = classContext.getSceneContext();
         final Scene scene = sceneContext.getScene();
         final SootClass declaringClass = classContext.getSootClass();
         final ConditionsTag conditionsTag = conditionsProvider.getOrCompute(sootMethod);

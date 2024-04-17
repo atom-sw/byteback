@@ -4,7 +4,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.tag.BehaviorFla
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredLocalFramesProvider;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredLocalFramesTag;
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import soot.Body;
 import soot.ValueBox;
 import soot.jimple.ArrayRef;
@@ -25,7 +25,7 @@ public class FrameConditionFinder extends BodyTransformer {
     }
 
     @Override
-    public void transformBody(final BodyTransformationContext bodyContext) {
+    public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
 
         if (BehaviorFlagger.v().isTagged(body)) {

@@ -9,7 +9,7 @@ import soot.SootField;
  *
  * @author paganma
  */
-public abstract class FieldContext<C extends ClassContext<?>> extends MemberContext<C> {
+public class FieldContext extends MemberContext {
 
     private final SootField sootField;
 
@@ -19,7 +19,7 @@ public abstract class FieldContext<C extends ClassContext<?>> extends MemberCont
      * @param classContext The outer class context.
      * @param sootField    The field in this context.
      */
-    public FieldContext(final C classContext, final SootField sootField) {
+    public FieldContext(final ClassContext classContext, final SootField sootField) {
         super(classContext);
         this.sootField = sootField;
     }

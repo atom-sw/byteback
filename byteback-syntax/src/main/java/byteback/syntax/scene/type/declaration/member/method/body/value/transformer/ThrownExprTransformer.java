@@ -4,9 +4,9 @@ import byteback.syntax.name.BBLibNames;
 import byteback.syntax.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.ExceptionalFlagger;
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.context.UnitTransformationContext;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.context.ValueTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
+import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
 import soot.*;
 import soot.jimple.InvokeExpr;
 
@@ -26,9 +26,9 @@ public class ThrownExprTransformer extends ValueTransformer {
     }
 
     @Override
-    public void transformValue(final ValueTransformationContext valueContext) {
-        final UnitTransformationContext unitContext = valueContext.getUnitContext();
-        final BodyTransformationContext bodyContext = unitContext.getBodyContext();
+    public void transformValue(final ValueContext valueContext) {
+        final UnitContext unitContext = valueContext.getUnitContext();
+        final BodyContext bodyContext = unitContext.getBodyContext();
         final ValueBox valueBox = valueContext.getValueBox();
         final Value value = valueBox.getValue();
 

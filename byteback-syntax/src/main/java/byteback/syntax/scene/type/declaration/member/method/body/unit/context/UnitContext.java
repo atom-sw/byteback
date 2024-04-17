@@ -2,7 +2,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.unit.context;
 
 import byteback.syntax.context.Context;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import soot.Body;
 import soot.UnitBox;
 
 /**
@@ -10,9 +9,9 @@ import soot.UnitBox;
  *
  * @author paganma
  */
-public class UnitContext<B extends BodyContext> implements Context {
+public class UnitContext implements Context {
 
-    private final B bodyContext;
+    private final BodyContext bodyContext;
 
     private final UnitBox unitBox;
 
@@ -22,12 +21,12 @@ public class UnitContext<B extends BodyContext> implements Context {
      * @param bodyContext The outer body context.
      * @param unitBox The unit box in this context.
      */
-    public UnitContext(final B bodyContext, final UnitBox unitBox) {
+    public UnitContext(final BodyContext bodyContext, final UnitBox unitBox) {
         this.bodyContext = bodyContext;
         this.unitBox = unitBox;
     }
 
-    public B getBodyContext() {
+    public BodyContext getBodyContext() {
         return bodyContext;
     }
 

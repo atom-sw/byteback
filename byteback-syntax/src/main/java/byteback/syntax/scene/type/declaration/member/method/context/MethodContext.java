@@ -4,11 +4,11 @@ import byteback.syntax.scene.type.declaration.context.ClassContext;
 import byteback.syntax.scene.type.declaration.member.context.MemberContext;
 import soot.SootMethod;
 
-public abstract class MethodContext<C extends ClassContext<?>> extends MemberContext<C> {
+public class MethodContext extends MemberContext {
 
     private final SootMethod sootMethod;
 
-    public MethodContext(final C classContext, final SootMethod sootMethod) {
+    public MethodContext(final ClassContext classContext, final SootMethod sootMethod) {
         super(classContext);
         this.sootMethod = sootMethod;
     }

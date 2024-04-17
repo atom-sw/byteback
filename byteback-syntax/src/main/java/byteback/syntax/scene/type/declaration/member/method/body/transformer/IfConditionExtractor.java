@@ -2,7 +2,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.syntax.Vimp;
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import soot.*;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.AssignStmt;
@@ -24,7 +24,7 @@ public class IfConditionExtractor extends BodyTransformer {
     }
 
     @Override
-    public void transformBody(final BodyTransformationContext bodyContext) {
+    public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
         final PatchingChain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();

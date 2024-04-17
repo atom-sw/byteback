@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.syntax.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ExceptionalTargetFlagger;
@@ -38,7 +38,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
     }
 
     @Override
-    public void transformBody(final BodyTransformationContext bodyContext) {
+    public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
         final LoopFinder loopFinder = new LoopFinder();
         final Chain<Unit> units = body.getUnits();

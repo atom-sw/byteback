@@ -2,7 +2,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import soot.*;
 import soot.jimple.*;
@@ -64,7 +64,7 @@ public class ExplicitTypeCaster extends BodyTransformer {
     }
 
     @Override
-    public void transformBody(final BodyTransformationContext bodyContext) {
+    public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
 
         for (final Unit unit : body.getUnits()) {

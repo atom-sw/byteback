@@ -1,8 +1,11 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
 import byteback.syntax.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.printer.InlineUnitPrinter;
 import soot.*;
 import soot.jimple.internal.AbstractUnopExpr;
+
+import java.util.Collection;
 
 /**
  * An expression to access the pre-state of a method.
@@ -12,7 +15,7 @@ import soot.jimple.internal.AbstractUnopExpr;
 public class OldExpr extends AbstractUnopExpr implements Immediate, DefaultCaseValue {
 
 	public OldExpr(final Value value) {
-		super(Vimp.v().newArgBox(value));
+		super(Vimp.v().newImmediateBox(value));
 	}
 
 	public OldExpr(final ValueBox valueBox) {
@@ -39,12 +42,21 @@ public class OldExpr extends AbstractUnopExpr implements Immediate, DefaultCaseV
 
 	@Override
 	public boolean equivTo(final Object object) {
-		return object instanceof OldExpr oldExpr && oldExpr.getOp().equivTo(getOp());
+		return object instanceof final OldExpr oldExpr
+				&& oldExpr.getOp().equivTo(getOp());
 	}
 
 	@Override
 	public int equivHashCode() {
 		return getOp().equivHashCode() * 101 + 17 ^ "old".hashCode();
+	}
+
+	@Override
+	public String toString() {
+		final var printer = new InlineUnitPrinter();
+		toString(printer);
+
+		return printer.toString();
 	}
 
 }

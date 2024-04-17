@@ -2,7 +2,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.syntax.Vimp;
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import soot.Body;
 import soot.Unit;
 import soot.Value;
@@ -26,7 +26,7 @@ public class ThisAssumptionInserter extends BodyTransformer {
     }
 
     @Override
-    public void transformBody(final BodyTransformationContext bodyContext) {
+    public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
 
         if (!body.getMethod().isStatic()) {

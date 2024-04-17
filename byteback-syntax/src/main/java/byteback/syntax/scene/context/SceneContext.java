@@ -8,7 +8,7 @@ import soot.Scene;
  *
  * @author paganma
  */
-public abstract class SceneContext implements Context {
+public class SceneContext implements Context {
 
     private final Scene scene;
 

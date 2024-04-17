@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.syntax.name.BBLibNames;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.QuantifierExpr;
 import byteback.syntax.Vimp;
 import byteback.common.function.Lazy;
@@ -30,7 +30,7 @@ public class QuantifierValueTransformer extends BodyTransformer {
     }
 
     @Override
-    public void transformBody(final BodyTransformationContext bodyContext) {
+    public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
         final PatchingChain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();

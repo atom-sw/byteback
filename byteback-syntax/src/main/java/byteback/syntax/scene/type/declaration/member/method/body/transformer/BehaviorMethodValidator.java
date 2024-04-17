@@ -3,7 +3,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.BehaviorFlagger;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.YieldStmt;
 import byteback.syntax.tag.AnnotationReader;
 import byteback.syntax.transformer.TransformationException;
@@ -30,7 +30,7 @@ public class BehaviorMethodValidator extends BodyTransformer {
     }
 
     @Override
-    public void transformBody(final BodyTransformationContext bodyContext) {
+    public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
         final SootMethod sootMethod = bodyContext.getSootMethod();
 

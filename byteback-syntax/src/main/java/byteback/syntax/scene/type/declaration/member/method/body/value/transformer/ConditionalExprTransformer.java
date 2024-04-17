@@ -3,7 +3,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.value.transfor
 import byteback.syntax.Vimp;
 import byteback.syntax.name.BBLibNames;
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.context.ValueTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
 import soot.*;
 import soot.jimple.InvokeExpr;
 
@@ -24,11 +24,11 @@ public class ConditionalExprTransformer extends ValueTransformer {
     }
 
     @Override
-    public void transformValue(final ValueTransformationContext valueContext) {
+    public void transformValue(final ValueContext valueContext) {
         final ValueBox valueBox = valueContext.getValueBox();
         final Value value = valueBox.getValue();
 
-        if (value instanceof InvokeExpr invokeExpr) {
+        if (value instanceof final InvokeExpr invokeExpr) {
             final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
 
             if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {

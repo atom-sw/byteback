@@ -2,7 +2,6 @@ package byteback.syntax.scene.type.declaration.context;
 
 import byteback.syntax.context.Context;
 import byteback.syntax.scene.context.SceneContext;
-import soot.Scene;
 import soot.SootClass;
 
 /**
@@ -10,9 +9,9 @@ import soot.SootClass;
  *
  * @author paganma
  */
-public abstract class ClassContext<S extends SceneContext> implements Context {
+public class ClassContext implements Context {
 
-    final S sceneContext;
+    final SceneContext sceneContext;
 
     final SootClass sootClass;
 
@@ -22,7 +21,7 @@ public abstract class ClassContext<S extends SceneContext> implements Context {
      * @param sceneContext The outer scene context.
      * @param sootClass    The class of this context.
      */
-    public ClassContext(final S sceneContext, final SootClass sootClass) {
+    public ClassContext(final SceneContext sceneContext, final SootClass sootClass) {
         this.sceneContext = sceneContext;
         this.sootClass = sootClass;
     }
@@ -36,7 +35,7 @@ public abstract class ClassContext<S extends SceneContext> implements Context {
         return sootClass;
     }
 
-    public S getSceneContext() {
+    public SceneContext getSceneContext() {
         return sceneContext;
     }
 

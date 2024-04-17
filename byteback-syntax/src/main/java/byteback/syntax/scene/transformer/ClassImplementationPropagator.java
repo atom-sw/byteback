@@ -3,7 +3,6 @@ package byteback.syntax.scene.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.context.SceneContext;
-import byteback.syntax.scene.transformer.context.SceneTransformationContext;
 import byteback.syntax.tag.AnnotationReader;
 import byteback.syntax.transformer.TransformationException;
 import soot.Scene;
@@ -25,20 +24,20 @@ import java.util.Optional;
  *
  * @author paganma
  */
-public class ClassAnnotationPropagator extends SceneTransformer {
+public class ClassImplementationPropagator extends SceneTransformer {
 
-    private static final Lazy<ClassAnnotationPropagator> INSTANCE = Lazy.from(ClassAnnotationPropagator::new);
+    private static final Lazy<ClassImplementationPropagator> INSTANCE = Lazy.from(ClassImplementationPropagator::new);
 
-    public static ClassAnnotationPropagator v() {
+    public static ClassImplementationPropagator v() {
         return INSTANCE.get();
     }
 
-    private ClassAnnotationPropagator() {
+    private ClassImplementationPropagator() {
     }
 
     @Override
-    public void transformScene(final SceneTransformationContext sceneTransformationContext) {
-        final Scene scene = sceneTransformationContext.getScene();
+    public void transformScene(final SceneContext sceneContext) {
+        final Scene scene = sceneContext.getScene();
         final Chain<SootClass> classes = scene.getClasses();
         final Iterator<SootClass> classIterator = classes.snapshotIterator();
 

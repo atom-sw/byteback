@@ -3,10 +3,11 @@ package byteback.syntax.scene.type.declaration.member.method.body.value.transfor
 import byteback.syntax.Vimp;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.TwoStateFlagger;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.context.UnitTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.context.ValueTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.value.OldExpr;
+import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
 import soot.*;
 import soot.jimple.InvokeExpr;
 
@@ -28,9 +29,9 @@ public class OldExprTransformer extends ValueTransformer {
     }
 
     @Override
-    public void transformValue(final ValueTransformationContext valueContext) {
-        final UnitTransformationContext unitContext = valueContext.getUnitContext();
-        final BodyTransformationContext bodyContext = unitContext.getBodyContext();
+    public void transformValue(final ValueContext valueContext) {
+        final UnitContext unitContext = valueContext.getUnitContext();
+        final BodyContext bodyContext = unitContext.getBodyContext();
         final ValueBox valueBox = valueContext.getValueBox();
         final Value value = valueBox.getValue();
 
@@ -40,8 +41,9 @@ public class OldExprTransformer extends ValueTransformer {
 
             if (BBLibNames.v().isSpecialClass(declaringClass)) {
                 if (invokedMethodRef.getName().equals("old")) {
+                    final OldExpr oldExpr = Vimp.v().newOldExpr(invokeExpr.getArg(0));
+                    valueBox.setValue(oldExpr);
                     final Body body = bodyContext.getBody();
-                    valueBox.setValue(Vimp.v().newOldExpr(invokeExpr.getArg(0)));
                     TwoStateFlagger.v().flag(body);
                 }
             }

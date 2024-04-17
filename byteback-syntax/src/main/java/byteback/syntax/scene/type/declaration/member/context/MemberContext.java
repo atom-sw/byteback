@@ -3,15 +3,15 @@ package byteback.syntax.scene.type.declaration.member.context;
 import byteback.syntax.context.Context;
 import byteback.syntax.scene.type.declaration.context.ClassContext;
 
-public abstract class MemberContext<C extends ClassContext<?>> implements Context {
+public abstract class MemberContext implements Context {
 
-    private final C classContext;
+    private final ClassContext classContext;
 
-    public MemberContext(final C classContext) {
+    public MemberContext(final ClassContext classContext) {
         this.classContext = classContext;
     }
 
-    public C getClassContext() {
+    public ClassContext getClassContext() {
         return classContext;
     }
 
