@@ -1,31 +1,29 @@
 package byteback.syntax.scene.type.declaration.transformer;
 
-import byteback.syntax.scene.context.SceneContext;
-import byteback.syntax.scene.transformer.context.SceneTransformerContext;
-import byteback.syntax.scene.type.declaration.context.ClassContext;
-import byteback.syntax.scene.type.declaration.transformer.context.ClassTransformerContext;
-import byteback.syntax.scene.type.declaration.walker.ClassWalker;
+import byteback.syntax.scene.transformer.SceneTransformer;
+import byteback.syntax.scene.transformer.context.SceneTransformationContext;
+import byteback.syntax.scene.type.declaration.transformer.context.ClassTransformationContext;
 import soot.Scene;
 import soot.SootClass;
 
-public abstract class ClassTransformer extends ClassWalker<SceneTransformerContext, ClassTransformerContext> {
+/**
+ * Defines how to transform a class.
+ *
+ * @param <S> The type of the outer scene context.
+ * @param <C> The type of the class context.
+ * @author paganma
+ */
+public abstract class ClassTransformer extends SceneTransformer {
 
-    public abstract void transformClass(final ClassTransformerContext classContext);
+    public abstract void transformClass(final ClassTransformationContext classContext);
 
-    @Override
-    public SceneTransformerContext makeSceneContext(final Scene scene) {
-        return new SceneTransformerContext(scene);
-    }
+    public void transformScene(final SceneTransformationContext sceneTransformationContext) {
+        final Scene scene = sceneTransformationContext.getScene();
 
-    @Override
-    public ClassTransformerContext makeClassContext(final SceneTransformerContext sceneContext,
-                                                    final SootClass sootClass) {
-        return new ClassTransformerContext(sceneContext, sootClass);
-    }
-
-    @Override
-    public void walkClass(final ClassTransformerContext classContext) {
-        transformClass(classContext);
+        for (final SootClass sootClass : scene.getClasses()) {
+            final var classContext = new ClassTransformationContext(sceneTransformationContext, sootClass);
+            transformClass(classContext);
+        }
     }
 
 }

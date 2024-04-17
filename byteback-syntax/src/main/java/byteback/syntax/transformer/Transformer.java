@@ -1,9 +1,9 @@
 package byteback.syntax.transformer;
 
-/**
- * Marker interface for a transformer.
- *
- * @author paganma
- */
-public interface Transformer {
+import byteback.syntax.transformer.context.TransformationContext;
+
+public interface Transformer<T extends TransformationContext> {
+
+    void transform(final T transformationContext);
+
 }

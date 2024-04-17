@@ -1,32 +1,30 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
-import byteback.syntax.scene.transformer.context.SceneTransformerContext;
-import byteback.syntax.scene.type.declaration.member.method.walker.MethodWalker;
-import byteback.syntax.scene.type.declaration.member.method.transformer.context.MethodTransformerContext;
-
-import byteback.syntax.scene.type.declaration.transformer.context.ClassTransformerContext;
-import soot.Scene;
+import byteback.syntax.scene.type.declaration.member.method.transformer.context.MethodTransformationContext;
+import byteback.syntax.scene.type.declaration.transformer.ClassTransformer;
+import byteback.syntax.scene.type.declaration.transformer.context.ClassTransformationContext;
 import soot.SootClass;
 import soot.SootMethod;
 
-public abstract class MethodTransformer extends
-        MethodWalker<SceneTransformerContext, ClassTransformerContext, MethodTransformerContext> {
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class MethodTransformer extends ClassTransformer {
+
+    public abstract void transformMethod(final MethodTransformationContext methodContext);
 
     @Override
-    public SceneTransformerContext makeSceneContext(final Scene scene) {
-        return new SceneTransformerContext(scene);
-    }
+    public void transformClass(final ClassTransformationContext classTransformationContext) {
+        final SootClass sootClass = classTransformationContext.getSootClass();
 
-    @Override
-    public ClassTransformerContext makeClassContext(final SceneTransformerContext sceneContext,
-                                                    final SootClass sootClass) {
-        return new ClassTransformerContext(sceneContext, sootClass);
-    }
+        if (sootClass.resolvingLevel() >= SootClass.SIGNATURES) {
+            final List<SootMethod> methods = sootClass.getMethods();
 
-    @Override
-    public MethodTransformerContext makeMethodContext(final ClassTransformerContext classContext,
-                                                      final SootMethod sootMethod) {
-        return new MethodTransformerContext(classContext, sootMethod);
+            for (final SootMethod sootMethod : new ArrayList<>(methods)) {
+                final var methodTransformationContext = new MethodTransformationContext(classTransformationContext, sootMethod);
+                transformMethod(methodTransformationContext);
+            }
+        }
     }
 
 }

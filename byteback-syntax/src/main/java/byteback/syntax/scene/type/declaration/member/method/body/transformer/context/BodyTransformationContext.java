@@ -3,14 +3,14 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer.co
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import soot.Body;
 
-public class BodyTransformerContext extends BodyContext {
+public class BodyTransformationContext extends BodyContext {
 
     /**
      * Constructs a new {@link BodyContext}.
      *
      * @param body The body within this context.
      */
-    public BodyTransformerContext(Body body) {
+    public BodyTransformationContext(Body body) {
         super(body);
     }
 

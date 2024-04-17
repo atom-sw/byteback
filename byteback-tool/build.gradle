@@ -1,7 +1,7 @@
 plugins {
-		id 'byteback.java-common-conventions'
-		id 'byteback.java-integration-conventions'
-		id 'application'
+    id 'byteback.java-common-conventions'
+    id 'byteback.java-integration-conventions'
+    id 'application'
 }
 
 dependencies {

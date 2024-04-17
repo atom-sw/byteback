@@ -1,20 +1,20 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformerContext;
-import byteback.syntax.scene.type.declaration.member.method.body.walker.BodyWalker;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
+import byteback.syntax.walker.Walker;
 import soot.Body;
 
-/**
- * Base class for the transformer of a method's body.
- *
- * @author paganma
- */
-public abstract class BodyTransformer extends BodyWalker<BodyTransformerContext> {
+import java.util.Map;
+
+public abstract class BodyTransformer extends soot.BodyTransformer {
+
+    public abstract void transformBody(final BodyTransformationContext bodyContext);
 
     @Override
-    public BodyTransformerContext makeBodyContext(final Body body) {
-        return new BodyTransformerContext(body);
+    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+        final var bodyContext = new BodyTransformationContext(body);
+        transformBody(bodyContext);
     }
 
 }

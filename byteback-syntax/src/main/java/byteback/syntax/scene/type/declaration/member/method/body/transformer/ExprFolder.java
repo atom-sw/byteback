@@ -2,9 +2,8 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.collection.SetHashMap;
 import byteback.syntax.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformerContext;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.AggregateExpr;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
 import soot.*;
 import soot.jimple.AssignStmt;
@@ -31,7 +30,7 @@ import java.util.Set;
 public abstract class ExprFolder extends BodyTransformer {
 
     @Override
-    public void walkBody(final BodyTransformerContext bodyContext) {
+    public void transformBody(final BodyTransformationContext bodyContext) {
         final Body body = bodyContext.getBody();
         final Chain<Unit> units = body.getUnits();
         final BlockGraph blockGraph = new BriefBlockGraph(body);

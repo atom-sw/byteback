@@ -2,7 +2,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.value.transfor
 
 import byteback.common.function.Lazy;
 
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.context.ValueTransformerContext;
+import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.context.ValueTransformationContext;
 import soot.*;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.Jimple;
@@ -28,7 +28,7 @@ public class DynamicInvokeToStaticTransformer extends ValueTransformer {
     }
 
     @Override
-    public void walkValue(final ValueTransformerContext valueContext) {
+    public void transformValue(final ValueTransformationContext valueContext) {
         final ValueBox valueBox = valueContext.getValueBox();
         final Value value = valueBox.getValue();
 

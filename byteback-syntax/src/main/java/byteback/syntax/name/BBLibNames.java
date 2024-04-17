@@ -19,8 +19,6 @@ public class BBLibNames {
     private BBLibNames() {
     }
 
-    public static final String ANNOTATION_PACKAGE = "byteback.specification";
-
     public static final String CONTRACT_CLASS_NAME = "byteback.specification.Contract";
 
     public static final String QUANTIFIER_CLASS_NAME = "byteback.specification.Quantifier";
@@ -54,12 +52,6 @@ public class BBLibNames {
     public static final String IGNORE_ANNOTATION = "Lbyteback/specification/Contract$Ignore;";
 
     public static final String INVARIANT_ANNOTATION = "Lbyteback/specification/Contract$Invariant;";
-
-    public static final String ATTACH_LABEL_ANNOTATION = "Lbyteback/specification/Contract$AttachLabel;";
-
-    public static final String MODEL_NPE_ANNOTATION = "Lbyteback/specification/Contract$ModelNPE;";
-
-    public static final String MODEL_IOBE_ANNOTATION = "Lbyteback/specification/Contract$ModelIOBE;";
 
     public static final String OLD_NAME = "old";
 

@@ -1,8 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.syntax.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformerContext;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformationContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ReturnRef;
 import byteback.common.function.Lazy;
 import soot.Body;
@@ -34,7 +33,7 @@ public class ReturnEliminator extends BodyTransformer {
     }
 
     @Override
-    public void walkBody(final BodyTransformerContext bodyContext) {
+    public void transformBody(final BodyTransformationContext bodyContext) {
         final Body body = bodyContext.getBody();
         final Type returnType = body.getMethod().getReturnType();
         final Chain<Unit> units = body.getUnits();

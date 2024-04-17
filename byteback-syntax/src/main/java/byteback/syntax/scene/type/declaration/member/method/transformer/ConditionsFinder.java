@@ -6,7 +6,7 @@ import byteback.syntax.tag.AnnotationReader;
 import byteback.syntax.transformer.TransformationException;
 import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsProvider;
 import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsTag;
-import byteback.syntax.scene.type.declaration.member.method.transformer.context.MethodTransformerContext;
+import byteback.syntax.scene.type.declaration.member.method.transformer.context.MethodTransformationContext;
 import soot.*;
 import soot.tagkit.AnnotationStringElem;
 
@@ -34,7 +34,7 @@ public abstract class ConditionsFinder<T extends ConditionsTag> extends MethodTr
     protected abstract List<Type> makeBehaviorParameterTypes(final SootMethod sootMethod);
 
     @Override
-    public void walkMethod(final MethodTransformerContext methodContext) {
+    public void transformMethod(final MethodTransformationContext methodContext) {
         final SootMethod targetMethod = methodContext.getSootMethod();
         final SootClass declaringClass = targetMethod.getDeclaringClass();
 

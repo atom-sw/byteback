@@ -1,11 +1,10 @@
 package byteback.syntax.scene.type.declaration.member.method.body.unit.transformer;
 
 import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.syntax.Vimp;
 import byteback.syntax.name.BBLibNames;
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.context.UnitTransformerContext;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.context.UnitTransformationContext;
 import soot.*;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
@@ -28,7 +27,7 @@ public class SpecificationStmtTransformer extends UnitTransformer {
     }
 
     @Override
-    public void walkUnit(final UnitTransformerContext unitContext) {
+    public void transformUnit(final UnitTransformationContext unitContext) {
         final UnitBox unitBox = unitContext.getUnitBox();
         final Unit unit = unitBox.getUnit();
 

@@ -1,39 +1,36 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.transformer;
 
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.context.BodyTransformerContext;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.context.UnitTransformerContext;
-import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.context.ValueTransformerContext;
-import byteback.syntax.scene.type.declaration.member.method.body.value.walker.ValueWalker;
-import soot.Body;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.UnitTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.context.UnitTransformationContext;
+import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.context.ValueTransformationContext;
+import soot.Unit;
 import soot.UnitBox;
 import soot.ValueBox;
+
+import java.util.List;
 
 /**
  * Body transformer that applies a transformation to each value *used and defined* in the Body.
  *
  * @author paganma
  */
-public abstract class ValueTransformer
-        extends ValueWalker<BodyTransformerContext, UnitTransformerContext, ValueTransformerContext> {
+public abstract class ValueTransformer extends UnitTransformer {
 
-    @Override
-    public BodyTransformerContext makeBodyContext(final Body body) {
-        return new BodyTransformerContext(body);
-    }
+	public abstract void transformValue(final ValueTransformationContext valueContext);
 
-    @Override
-    public UnitTransformerContext makeUnitContext(final BodyTransformerContext bodyContext,
-                                                  final UnitBox unitBox) {
-        return new UnitTransformerContext(bodyContext, unitBox);
-    }
+	public List<ValueBox> extractValueBoxes(final Unit unit) {
+		return unit.getUseAndDefBoxes();
+	}
 
-    @Override
-    public ValueTransformerContext makeLocalValueContext(final UnitTransformerContext unitContext,
-                                                         final ValueBox valueBox) {
-        return new ValueTransformerContext(unitContext, valueBox);
-    }
+	@Override
+	public void transformUnit(final UnitTransformationContext unitTransformationContext) {
+		final UnitBox unitBox = unitTransformationContext.getUnitBox();
+		final Unit unit = unitBox.getUnit();
+
+		for (final ValueBox valueBox : extractValueBoxes(unit)) {
+			final var valueContext = new ValueTransformationContext(unitTransformationContext, valueBox);
+			transformValue(valueContext);
+		}
+	}
 
 }

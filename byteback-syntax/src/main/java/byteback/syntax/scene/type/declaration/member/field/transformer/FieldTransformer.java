@@ -1,36 +1,32 @@
 package byteback.syntax.scene.type.declaration.member.field.transformer;
 
-import byteback.syntax.scene.transformer.context.SceneTransformerContext;
 import byteback.syntax.scene.type.declaration.member.field.transformer.context.FieldTransformerContext;
-import byteback.syntax.scene.type.declaration.member.field.walker.FieldWalker;
-import byteback.syntax.scene.type.declaration.transformer.context.ClassTransformerContext;
-import soot.Scene;
+import byteback.syntax.scene.type.declaration.transformer.ClassTransformer;
+import byteback.syntax.scene.type.declaration.transformer.context.ClassTransformationContext;
 import soot.SootClass;
 import soot.SootField;
+import soot.util.Chain;
 
-/**
- * Transformer for a single class field.
- *
- * @author paganma
- */
-public abstract class FieldTransformer
-        extends FieldWalker<SceneTransformerContext, ClassTransformerContext, FieldTransformerContext> {
+import java.util.Iterator;
 
-    @Override
-    public SceneTransformerContext makeSceneContext(final Scene scene) {
-        return new SceneTransformerContext(scene);
-    }
+public abstract class FieldTransformer extends ClassTransformer {
+
+    public abstract void transformField(final FieldTransformerContext fieldContext);
 
     @Override
-    public ClassTransformerContext makeClassContext(final SceneTransformerContext sceneContext,
-                                                    final SootClass sootClass) {
-        return new ClassTransformerContext(sceneContext, sootClass);
-    }
+    public void transformClass(final ClassTransformationContext classTransformationContext) {
+        final SootClass sootClass = classTransformationContext.getSootClass();
 
-    @Override
-    public FieldTransformerContext makeFieldContext(final ClassTransformerContext classContext,
-                                                    final SootField sootField) {
-        return new FieldTransformerContext(classContext, sootField);
+        if (sootClass.resolvingLevel() >= SootClass.SIGNATURES) {
+            final Chain<SootField> fields = sootClass.getFields();
+            final Iterator<SootField> fieldIterator = fields.snapshotIterator();
+
+            while (fieldIterator.hasNext()) {
+                final SootField sootField = fieldIterator.next();
+                final var fieldContext = new FieldTransformerContext(classTransformationContext, sootField);
+                transformField(fieldContext);
+            }
+        }
     }
 
 }

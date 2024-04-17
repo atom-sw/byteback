@@ -2,5 +2,5 @@ package byteback.syntax.transformer.context;
 
 import byteback.syntax.context.Context;
 
-public interface TransformerContext extends Context {
+public interface TransformationContext extends Context {
 }

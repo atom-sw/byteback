@@ -1,8 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.transformer;
 
 import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
-import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.context.ValueTransformerContext;
+import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.context.ValueTransformationContext;
 import byteback.syntax.tag.AnnotationReader;
 import byteback.syntax.Vimp;
 import byteback.syntax.name.BBLibNames;
@@ -30,7 +29,7 @@ public class CallExprTransformer extends ValueTransformer {
     }
 
     @Override
-    public void walkValue(final ValueTransformerContext valueContext) {
+    public void transformValue(final ValueTransformationContext valueContext) {
         final ValueBox valueBox = valueContext.getValueBox();
         final Value value = valueBox.getValue();
 
