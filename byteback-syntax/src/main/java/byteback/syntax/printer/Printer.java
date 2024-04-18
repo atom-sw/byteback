@@ -47,7 +47,7 @@ public class Printer implements AutoCloseable {
 
     public void startItems(final String separatorString) {
         final var separator = new Separator(separatorString);
-        separators.add(separator);
+        separators.push(separator);
     }
 
     public void separate() {

@@ -7,7 +7,6 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.ValueEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
-import byteback.syntax.tag.AnnotationReader;
 import soot.*;
 import soot.jimple.*;
 import soot.util.Chain;
@@ -32,11 +31,11 @@ public class ValueToBplEncoder implements ValueEncoder {
         printer.print("`");
     }
 
-    public void encodeFunction(final Printer printer, final String functionName, final Value... arguments) {
-        encodeFunction(printer, functionName, Arrays.stream(arguments).toList());
+    public void encodeFunctionCall(final Printer printer, final String functionName, final Value... arguments) {
+        encodeFunctionCall(printer, functionName, Arrays.stream(arguments).toList());
     }
 
-    public void encodeFunction(final Printer printer, final String functionName, final Iterable<Value> arguments) {
+    public void encodeFunctionCall(final Printer printer, final String functionName, final Iterable<Value> arguments) {
         printer.print(functionName);
         printer.print("(");
 
@@ -91,12 +90,10 @@ public class ValueToBplEncoder implements ValueEncoder {
 
     public void encodeArguments(final Printer printer, final List<Value> arguments) {
         printer.startItems(", ");
-
         for (final Value argument : arguments) {
             printer.separate();
             encodeValue(printer, argument);
         }
-
         printer.endItems();
     }
 
@@ -125,22 +122,22 @@ public class ValueToBplEncoder implements ValueEncoder {
 
     @Override
     public void encodeValue(final Printer printer, final Value value) {
-        System.out.println(value);
         if (value instanceof final Immediate immediate) {
-            if (value instanceof Local local) {
-                encodeLocal(printer, local);
+            if (immediate instanceof NestedExpr nestedExpr) {
+                encodeValue(printer, nestedExpr.getValue());
                 return;
             }
 
-            if (immediate instanceof NestedExpr nestedExpr) {
-                encodeValue(printer, nestedExpr.getValue());
+            if (value instanceof Local local) {
+                encodeLocal(printer, local);
                 return;
             }
         }
 
         if (value instanceof final ConcreteRef concreteRef) {
             if (concreteRef instanceof ArrayRef arrayRef) {
-                encodeFunction(printer,"array.element", arrayRef.getBase(), arrayRef.getIndex());
+                encodeHeapFunction(printer, "array.read", "h", arrayRef.getBase(), arrayRef.getIndex());
+                return;
             }
         }
 
@@ -163,7 +160,7 @@ public class ValueToBplEncoder implements ValueEncoder {
 
         if (value instanceof final BinopExpr binopExpr) {
             if (binopExpr instanceof final ExtendsExpr extendsExpr) {
-                encodeFunction(printer, "type.extends", extendsExpr.getOp1(), extendsExpr.getOp2());
+                encodeFunctionCall(printer, "type.extends", extendsExpr.getOp1(), extendsExpr.getOp2());
                 return;
             }
 
@@ -194,7 +191,7 @@ public class ValueToBplEncoder implements ValueEncoder {
             }
 
             if (unopExpr instanceof LengthExpr lengthExpr) {
-                encodeFunction(printer, "array.lengthof", lengthExpr.getOp());
+                encodeFunctionCall(printer, "array.lengthof", lengthExpr.getOp());
                 return;
             }
         }
