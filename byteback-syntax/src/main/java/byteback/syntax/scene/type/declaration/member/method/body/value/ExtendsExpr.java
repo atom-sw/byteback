@@ -2,16 +2,17 @@ package byteback.syntax.scene.type.declaration.member.method.body.value;
 
 import byteback.syntax.scene.type.declaration.member.method.body.value.box.KindExprBox;
 import soot.*;
+import soot.jimple.BinopExpr;
 import soot.jimple.internal.AbstractBinopExpr;
 
-public class ExtendsExpr extends AbstractBinopExpr implements DefaultCaseValue {
+public class ExtendsExpr extends AbstractBinopExpr implements BinopExpr, DefaultCaseValue {
 
     public ExtendsExpr(final ValueBox op1Box, final ValueBox op2Box) {
         super(op1Box, op2Box);
     }
 
     @Override
-    protected String getSymbol() {
+    public String getSymbol() {
         return " <: ";
     }
 

@@ -31,6 +31,8 @@ public class BBLibNames {
 
     public static final String BEHAVIOR_ANNOTATION = "Lbyteback/specification/Contract$Behavior;";
 
+    public static final String PRELUDE_ANNOTATION = "Lbyteback/specification/Contract$Prelude;";
+
     public static final String REQUIRE_ANNOTATION = "Lbyteback/specification/Contract$Require;";
 
     public static final String REQUIRES_ANNOTATION = "Lbyteback/specification/Contract$Requires;";

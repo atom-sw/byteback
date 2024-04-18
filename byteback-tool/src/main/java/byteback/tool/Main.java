@@ -1,6 +1,7 @@
 package byteback.tool;
 
-import byteback.syntax.scene.type.declaration.member.method.body.tag.TwoStateFlagger;
+import byteback.syntax.printer.Printer;
+import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.transformer.PostconditionsFinder;
@@ -140,7 +141,7 @@ public class Main implements Callable<Integer> {
         // Create the specification statements and expressions
         jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
         jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-        jtpPack.add(new Transform("jtp.i2sft", OldExprTightener.v()));
+        jtpPack.add(new Transform("jtp.oett", OldExprTightener.v()));
 
         // Create initial assumptions.
         jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
@@ -178,16 +179,8 @@ public class Main implements Callable<Integer> {
         PostconditionsPropagator.v().transform();
         HierarchyAxiomTagger.v().transform();
 
-        for (final SootClass sootClass : Scene.v().getClasses()) {
-            if (sootClass.resolvingLevel() >= SootClass.BODIES) {
-                for (final SootMethod method : sootClass.getMethods()) {
-                    final Body body = method.getActiveBody();
-
-                    if (TwoStateFlagger.v().isTagged(body)) {
-                        System.out.println(method.getActiveBody());
-                    }
-                }
-            }
+        try (final Printer printer = new Printer(outputPath.toString())) {
+            SceneToBplEncoder.v().encodeScene(printer, Scene.v());
         }
 
         final long endTime = System.currentTimeMillis();

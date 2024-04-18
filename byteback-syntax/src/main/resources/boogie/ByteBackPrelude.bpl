@@ -117,11 +117,11 @@ function unbox<a>(Box) returns (a);
 
 axiom (forall <a> x : a :: { box(x) } unbox(box(x)) == x);
 
-function element(int) returns (Field Box);
+function array.element(int) returns (Field Box);
 
-function element_inverse<a>(Field a) returns (int);
+function array.element_inverse<a>(Field a) returns (int);
 
-axiom (forall i: int :: { element(i) } element_inverse(element(i)) == i);
+axiom (forall i: int :: { array.element(i) } array.element_inverse(array.element(i)) == i);
 
 function array.lengthof(r: Reference) returns (int);
 

@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class Printer {
+public class Printer implements AutoCloseable {
 
     private static class Separator {
 
@@ -37,27 +37,38 @@ public class Printer {
         writer.write(string);
     }
 
+    public void printLine(final String string) {
+        writer.println(string);
+    }
+
     public void endLine() {
         writer.println();
     }
 
-    public void startItems(final String string) {
-        final var separator = new Separator(string);
+    public void startItems(final String separatorString) {
+        final var separator = new Separator(separatorString);
         separators.add(separator);
     }
 
-    public void printItem(final String string) {
-        final Separator topSeparator = separators.pop();
+    public void separate() {
+        final Separator topSeparator = separators.peek();
+        assert topSeparator != null;
 
         if (topSeparator.isFirst) {
-            writer.write(topSeparator.string);
+            topSeparator.isFirst = false;
+            return;
         }
 
-        print(string);
+        print(topSeparator.string);
     }
 
     public void endItems() {
         separators.pop();
+    }
+
+    public void close() {
+        writer.flush();
+        writer.close();
     }
 
 }

@@ -33,6 +33,9 @@ public class OldExprTightener extends ValueTransformer {
                 if (useValue instanceof final OldExpr nestedOldExpr) {
                     useBox.setValue(nestedOldExpr.getOp());
                 } else if (useValue instanceof ConcreteRef) {
+                    while (useValue instanceof final NestedExpr nestedExpr) {
+                        useValue = nestedExpr.getValue();
+                    }
                     final OldExpr newOldExpr = Vimp.v().newOldExpr(useValue);
                     useBox.setValue(newOldExpr);
                 }

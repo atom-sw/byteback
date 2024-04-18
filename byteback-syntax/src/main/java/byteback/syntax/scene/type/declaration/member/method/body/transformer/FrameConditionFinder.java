@@ -26,9 +26,8 @@ public class FrameConditionFinder extends BodyTransformer {
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
-        final Body body = bodyContext.getBody();
-
-        if (BehaviorFlagger.v().isTagged(body)) {
+        if (!BehaviorFlagger.v().isTagged(bodyContext.getSootMethod())) {
+            final Body body = bodyContext.getBody();
             final InferredLocalFramesTag inferredLocalFramesTag = InferredLocalFramesProvider.v().compute(body);
             final List<ConcreteRef> inferredFrames = inferredLocalFramesTag.getValues();
 

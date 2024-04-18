@@ -3,6 +3,10 @@ package byteback.syntax.scene.type.declaration.member.method.body.value;
 import byteback.syntax.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.printer.InlineUnitPrinter;
 import soot.*;
+import soot.grimp.Grimp;
+import soot.grimp.internal.ObjExprBox;
+import soot.jimple.ConcreteRef;
+import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractUnopExpr;
 
 import java.util.Collection;
@@ -12,10 +16,10 @@ import java.util.Collection;
  *
  * @author paganma
  */
-public class OldExpr extends AbstractUnopExpr implements Immediate, DefaultCaseValue {
+public class OldExpr extends AbstractUnopExpr implements ConcreteRef, DefaultCaseValue {
 
 	public OldExpr(final Value value) {
-		super(Vimp.v().newImmediateBox(value));
+		super(new ObjExprBox(value));
 	}
 
 	public OldExpr(final ValueBox valueBox) {

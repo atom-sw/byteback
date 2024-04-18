@@ -43,7 +43,7 @@ public class HierarchyAxiomTagger extends ClassTransformer {
 
         final Collection<SootClass> superInterfaces = sootClass.getInterfaces();
         superTypes.addAll(superInterfaces);
-        final FastHierarchy hierarchy = scene.getOrMakeFastHierarchy();
+        final Hierarchy hierarchy = scene.getActiveHierarchy();
         final List<Value> axiomBoxes = AxiomsProvider.v().getOrCompute(sootClass).getValues();
 
         for (final SootClass superType : superTypes) {
@@ -53,7 +53,7 @@ public class HierarchyAxiomTagger extends ClassTransformer {
         }
 
         if (!sootClass.isInterface()) {
-            final Collection<SootClass> subTypes = hierarchy.getSubclassesOf(sootClass);
+            final Collection<SootClass> subTypes = hierarchy.getDirectSubclassesOf(sootClass);
             final SootClass[] subTypesArray = subTypes.toArray(new SootClass[0]);
 
             for (int i = 0; i < subTypesArray.length; ++i) {

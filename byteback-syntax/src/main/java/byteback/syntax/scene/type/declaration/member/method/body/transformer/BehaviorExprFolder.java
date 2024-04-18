@@ -24,9 +24,7 @@ public class BehaviorExprFolder extends ExprFolder {
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
-        final Body body = bodyContext.getBody();
-
-        if (BehaviorFlagger.v().isTagged(body)) {
+        if (BehaviorFlagger.v().isTagged(bodyContext.getSootMethod())) {
             super.transformBody(bodyContext);
         }
     }

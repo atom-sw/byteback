@@ -31,10 +31,11 @@ public class BehaviorMethodValidator extends BodyTransformer {
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
-        final Body body = bodyContext.getBody();
         final SootMethod sootMethod = bodyContext.getSootMethod();
 
         if (AnnotationReader.v().hasAnnotation(sootMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
+            final Body body = bodyContext.getBody();
+
             for (final Unit unit : body.getUnits()) {
                 if (!(unit instanceof AssignStmt || unit instanceof YieldStmt || unit instanceof IdentityStmt)) {
                     throw new TransformationException("Invalid statement in behavior method: " + unit, unit);
@@ -55,7 +56,7 @@ public class BehaviorMethodValidator extends BodyTransformer {
                 }
             }
 
-            BehaviorFlagger.v().flag(body);
+            BehaviorFlagger.v().flag(sootMethod);
         }
     }
 
