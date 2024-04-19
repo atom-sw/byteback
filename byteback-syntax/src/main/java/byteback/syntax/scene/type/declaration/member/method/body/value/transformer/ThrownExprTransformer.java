@@ -37,9 +37,8 @@ public class ThrownExprTransformer extends ValueTransformer {
 
             if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {
                 if (invokedMethodRef.getName().equals("thrown")) {
-                    final Body body = bodyContext.getBody();
                     valueBox.setValue(Vimp.v().newCaughtExceptionRef());
-                    ExceptionalFlagger.v().flag(body);
+                    ExceptionalFlagger.v().flag(bodyContext.getSootMethod());
                 }
             }
         }

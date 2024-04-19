@@ -2,7 +2,10 @@ package byteback.syntax.scene.type.declaration.member.method.body.value.encoder.
 
 import byteback.syntax.Vimp;
 import byteback.syntax.printer.Printer;
+import byteback.syntax.scene.type.declaration.encoder.ClassEncoder;
+import byteback.syntax.scene.type.declaration.encoder.to_bpl.ClassToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.field.transformer.encoder.to_bpl.FieldToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.method.body.tag.ExceptionalFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.TwoStateFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.value.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
@@ -20,7 +23,11 @@ import java.util.List;
 
 public class ValueToBplEncoder extends ValueEncoder {
 
-	public static final String HEAP_SYMBOL = "h";
+	public static final String HEAP_SYMBOL = "heap";
+
+	public static final String THROWN_SYMBOL = "`#thrown`";
+
+	public static final String RETURN_SYMBOL = "`#return`";
 
 	public ValueToBplEncoder(final Printer printer) {
 		super(printer);
@@ -100,7 +107,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 	}
 
 	public String getHeapSymbol() {
-		return "h";
+		return HEAP_SYMBOL;
 	}
 
 	public void encodeHeapFunctionCall(final String functionName, final Iterable<Value> arguments) {
@@ -120,6 +127,10 @@ public class ValueToBplEncoder extends ValueEncoder {
 		encodeHeapFunctionCall(functionName, Arrays.stream(arguments).toList());
 	}
 
+	public String getOldHeapSymbol() {
+		return OldValueToBplEncoder.OLD_HEAP_SYMBOL;
+	}
+
 	public void encodeCallExpr(final CallExpr callExpr) {
 		final SootMethod calledMethod = callExpr.getMethod();
 		PreludeDefinitionReader.v().get(calledMethod)
@@ -135,7 +146,12 @@ public class ValueToBplEncoder extends ValueEncoder {
 
 			if (TwoStateFlagger.v().isTagged(calledMethod)) {
 				printer.separate();
-				printer.print("heap'");
+				printer.print(getOldHeapSymbol());
+			}
+
+			if (ExceptionalFlagger.v().isTagged(calledMethod)) {
+				printer.separate();
+				printer.print(THROWN_SYMBOL);
 			}
 		}
 
@@ -194,6 +210,29 @@ public class ValueToBplEncoder extends ValueEncoder {
 		printer.print(")");
 	}
 
+	public void encodeStaticFieldRef(final StaticFieldRef staticFieldRef) {
+		final SootField sootField = staticFieldRef.getField();
+		printer.print("store.read(");
+		printer.startItems(", ");
+		printer.separate();
+		printer.print(getHeapSymbol());
+		printer.separate();
+		printer.print("type.reference(");
+		new ClassToBplEncoder(printer).encodeClassConstant(sootField.getDeclaringClass());
+		printer.print(")");
+		printer.separate();
+		new FieldToBplEncoder(printer).encodeFieldConstantName(sootField);
+		printer.print(")");
+	}
+
+	public void encodeCaughtExceptionRef() {
+		printer.print(THROWN_SYMBOL);
+	}
+
+	public void encodeReturnRef() {
+		printer.print(RETURN_SYMBOL);
+	}
+
 	@Override
 	public void encodeValue(final Value value) {
 		if (value instanceof final Immediate immediate) {
@@ -218,6 +257,11 @@ public class ValueToBplEncoder extends ValueEncoder {
 
 			if (concreteRef instanceof final InstanceFieldRef instanceFieldRef) {
 				encodeInstanceFieldRef(instanceFieldRef);
+				return;
+			}
+
+			if (concreteRef instanceof final StaticFieldRef staticFieldRef) {
+				encodeStaticFieldRef(staticFieldRef);
 				return;
 			}
 		}
@@ -353,7 +397,6 @@ public class ValueToBplEncoder extends ValueEncoder {
 					return;
 				}
 
-
 				if (Type.toMachineType(type) == IntType.v()) {
 					printer.print("-");
 					encodeValue(negExpr.getOp());
@@ -370,6 +413,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 		if (value instanceof final InstanceOfExpr instanceOfExpr) {
 			final TypeConstant checkTypeConstant = Vimp.v().newTypeConstant((RefType) instanceOfExpr.getCheckType());
 			encodeHeapFunctionCall("reference.instanceof", instanceOfExpr.getOp(), checkTypeConstant);
+			return;
 		}
 
 		if (value instanceof final InvokeExpr invokeExpr) {
@@ -381,6 +425,16 @@ public class ValueToBplEncoder extends ValueEncoder {
 
 		if (value instanceof final QuantifierExpr quantifierExpr) {
 			encodeQuantifierExpr(quantifierExpr);
+			return;
+		}
+
+		if (value instanceof CaughtExceptionRef) {
+			encodeCaughtExceptionRef();
+			return;
+		}
+
+		if (value instanceof ReturnRef) {
+			encodeReturnRef();
 			return;
 		}
 

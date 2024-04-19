@@ -35,17 +35,23 @@ public class ClassToBplEncoder extends ClassEncoder {
         }
     }
 
-    public void encodeClassConstant(final Printer printer, final SootClass sootClass) {
-        printer.print("const unique `");
+    public void encodeClassConstant(final SootClass sootClass) {
+        printer.print("`");
         printer.print(sootClass.getName());
-        printer.print("`: Type;");
+        printer.print("`");
+    }
+
+    public void encodeClassConstantDeclaration(final SootClass sootClass) {
+        printer.print("const unique ");
+        encodeClassConstant(sootClass);
+        printer.print(": Type;");
         printer.endLine();
     }
 
     @Override
     public void encodeClass(final SootClass sootClass) {
         printer.printLine("// START OF CLASS: " + sootClass.getName());
-        encodeClassConstant(printer, sootClass);
+        encodeClassConstantDeclaration(sootClass);
         printer.endLine();
         final AxiomsTag axiomsTag = AxiomsProvider.v().getOrCompute(sootClass);
         encodeAxiomsTag(printer, axiomsTag);

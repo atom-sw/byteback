@@ -8,6 +8,8 @@ import soot.ArrayType;
 import soot.SootMethod;
 import soot.Type;
 
+import java.util.ArrayList;
+
 public class MethodToBplEncoder extends MethodEncoder {
 
 	public MethodToBplEncoder(final Printer printer) {
@@ -18,11 +20,17 @@ public class MethodToBplEncoder extends MethodEncoder {
 		printer.print("`");
 		printer.print(sootMethod.getDeclaringClass().getName());
 		printer.print(".");
-		printer.print(sootMethod.getName());
-
+		final String methodName = sootMethod.getName()
+				.replace("<", "_LT_")
+				.replace(">", "_GT_");
+		printer.print(methodName);
 		printer.print("#");
 		printer.startItems("#");
-		for (final Type type : sootMethod.getParameterTypes()) {
+		final var signatureTypes = new ArrayList<Type>();
+		signatureTypes.add(sootMethod.getReturnType());
+		signatureTypes.addAll(sootMethod.getParameterTypes());
+
+		for (final Type type : signatureTypes) {
 			printer.separate();
 
 			if (type instanceof ArrayType arrayType) {
@@ -32,6 +40,7 @@ public class MethodToBplEncoder extends MethodEncoder {
 				printer.print(type.toString());
 			}
 		}
+
 		printer.endItems();
 		printer.print("#");
 		printer.print("`");

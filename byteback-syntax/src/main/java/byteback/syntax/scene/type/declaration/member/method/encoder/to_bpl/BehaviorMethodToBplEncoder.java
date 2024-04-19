@@ -3,6 +3,7 @@ package byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.BehaviorBodyToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.method.body.tag.ExceptionalFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.TwoStateFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.OldValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
@@ -19,49 +20,57 @@ import java.util.List;
 public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
 
 
-	public BehaviorMethodToBplEncoder(final Printer printer) {
-		super(printer);
-	}
+    public BehaviorMethodToBplEncoder(final Printer printer) {
+        super(printer);
+    }
 
-	public void encodeMethod(final SootMethod sootMethod) {
-		if (!AnnotationReader.v().hasAnnotation(sootMethod, BBLibNames.PRELUDE_ANNOTATION)) {
-			printer.print("function ");
-			encodeMethodName(sootMethod);
-			printer.print("(");
-			printer.startItems(", ");
+    public void encodeMethod(final SootMethod sootMethod) {
+        if (AnnotationReader.v().hasAnnotation(sootMethod, BBLibNames.PRELUDE_ANNOTATION)) {
+            return;
+        }
 
-			if (!OperatorFlagger.v().isTagged(sootMethod)) {
-				printer.separate();
-				printer.print(ValueToBplEncoder.HEAP_SYMBOL);
-				printer.print(": Store");
+        printer.print("function ");
+        encodeMethodName(sootMethod);
+        printer.print("(");
+        printer.startItems(", ");
 
-				if (TwoStateFlagger.v().isTagged(sootMethod)) {
-					printer.separate();
-					printer.print(OldValueToBplEncoder.OLD_HEAP_SYMBOL);
-					printer.print(": Store");
-				}
-			}
+        if (!OperatorFlagger.v().isTagged(sootMethod)) {
+            printer.separate();
+            printer.print(ValueToBplEncoder.HEAP_SYMBOL);
+            printer.print(": Store");
 
-			final List<Local> parameterLocals = ParameterLocalsProvider.v().getOrCompute(sootMethod).getValues();
-			new ValueToBplEncoder(printer).encodeBindings(parameterLocals);
-			printer.endItems();
+            if (TwoStateFlagger.v().isTagged(sootMethod)) {
+                printer.separate();
+                printer.print(OldValueToBplEncoder.OLD_HEAP_SYMBOL);
+                printer.print(": Store");
+            }
 
-			printer.print(") returns (");
-			new TypeAccessToBplEncoder(printer).encodeTypeAccess(sootMethod.getReturnType());
-			printer.print(")");
-			printer.endLine();
+            if (ExceptionalFlagger.v().isTagged(sootMethod)) {
+                printer.separate();
+                printer.print(ValueToBplEncoder.THROWN_SYMBOL);
+                printer.print(": Reference");
+            }
+        }
 
-			if (sootMethod.hasActiveBody()) {
-				final Body body = sootMethod.getActiveBody();
-				printer.print("{ ");
-				new BehaviorBodyToBplEncoder(printer).encodeBody(body);
-				printer.print(" }");
-			} else {
-				printer.print(";");
-			}
+        final List<Local> parameterLocals = ParameterLocalsProvider.v().getOrCompute(sootMethod).getValues();
+        new ValueToBplEncoder(printer).encodeBindings(parameterLocals);
+        printer.endItems();
 
-			printer.endLine();
-		}
-	}
+        printer.print(") returns (");
+        new TypeAccessToBplEncoder(printer).encodeTypeAccess(sootMethod.getReturnType());
+        printer.print(")");
+
+        if (sootMethod.hasActiveBody()) {
+            final Body body = sootMethod.getActiveBody();
+            printer.endLine();
+            printer.print("{ ");
+            new BehaviorBodyToBplEncoder(printer).encodeBody(body);
+            printer.print(" }");
+        } else {
+            printer.print(";");
+        }
+
+        printer.endLine();
+    }
 
 }
