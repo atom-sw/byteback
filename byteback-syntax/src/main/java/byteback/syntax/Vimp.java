@@ -7,6 +7,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.box.Condi
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.internal.ImmediateBox;
 import soot.util.Chain;

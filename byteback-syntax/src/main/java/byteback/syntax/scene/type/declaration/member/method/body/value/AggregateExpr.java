@@ -6,6 +6,7 @@ import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.jimple.AssignStmt;
+import soot.jimple.AssignStmt;
 import soot.util.Chain;
 import soot.util.HashChain;
 

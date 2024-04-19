@@ -29,6 +29,8 @@ import java.util.Set;
  */
 public abstract class ExprFolder extends BodyTransformer {
 
+    private static boolean logging = false;
+
     @Override
     public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
@@ -37,6 +39,8 @@ public abstract class ExprFolder extends BodyTransformer {
         final UnitGraph unitGraph = new BriefUnitGraph(body);
         final LocalDefs localDefs = new SimpleLocalDefs(unitGraph);
         final LocalUses localUses = new SimpleLocalUses(unitGraph, localDefs);
+
+        logging = bodyContext.getSootMethod().getName().equals("commonSubExpressionPlus");
 
         for (final Block block : blockGraph) {
             final var blockSnapshot = new HashChain<Unit>();
@@ -81,10 +85,10 @@ public abstract class ExprFolder extends BodyTransformer {
             this.localUses = localUses;
         }
 
-        protected void track(final AssignStmt assignStmt) {
-            if (assignStmt.getLeftOp() instanceof Local local) {
-                localToSubstitution.put(local, assignStmt);
-            } else if (assignStmt.getLeftOp() instanceof Ref dependency) {
+        protected void track(final AssignStmt AssignStmt) {
+            if (AssignStmt.getLeftOp() instanceof Local local) {
+                localToSubstitution.put(local, AssignStmt);
+            } else if (AssignStmt.getLeftOp() instanceof Ref dependency) {
                 final Set<Local> dependentLocals = dependencyToLocals.get(new CachedEquivalentValue(dependency));
 
                 if (dependentLocals != null) {
@@ -138,8 +142,11 @@ public abstract class ExprFolder extends BodyTransformer {
 
         protected void fold(final Iterable<Unit> block) {
             for (final Unit unit : block) {
-                if (unit instanceof final AssignStmt assignUnit) {
-                    track(assignUnit);
+                if (unit instanceof final AssignStmt assignStmt) {
+                    if (logging) {
+                        System.out.println(assignStmt);
+                    }
+                    track(assignStmt);
                 }
 
                 substituteUses(unit);

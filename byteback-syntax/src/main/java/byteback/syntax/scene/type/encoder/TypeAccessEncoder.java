@@ -1,11 +1,15 @@
 package byteback.syntax.scene.type.encoder;
 
+import byteback.syntax.encoder.Encoder;
 import byteback.syntax.printer.Printer;
-import soot.Scene;
 import soot.Type;
 
-public interface TypeAccessEncoder {
+public abstract class TypeAccessEncoder extends Encoder {
 
-    void encodeTypeAccess(final Printer printer, final Type type);
+	public TypeAccessEncoder(final Printer printer) {
+		super(printer);
+	}
+
+	public abstract void encodeTypeAccess(final Type type);
 
 }

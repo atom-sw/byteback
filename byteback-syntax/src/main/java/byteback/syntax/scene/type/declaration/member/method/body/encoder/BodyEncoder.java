@@ -4,8 +4,12 @@ import byteback.syntax.encoder.Encoder;
 import byteback.syntax.printer.Printer;
 import soot.Body;
 
-public interface BodyEncoder extends Encoder {
+public abstract class BodyEncoder extends Encoder {
 
-    void encodeBody(final Printer printer, final Body body);
+	public BodyEncoder(final Printer printer) {
+		super(printer);
+	}
+
+  public abstract void encodeBody(final Body body);
 
 }

@@ -1,12 +1,9 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
-import byteback.syntax.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.printer.InlineUnitPrinter;
 import soot.*;
-import soot.grimp.Grimp;
 import soot.grimp.internal.ObjExprBox;
 import soot.jimple.ConcreteRef;
-import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractUnopExpr;
 
 import java.util.Collection;

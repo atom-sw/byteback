@@ -180,7 +180,7 @@ public class Main implements Callable<Integer> {
         HierarchyAxiomTagger.v().transform();
 
         try (final Printer printer = new Printer(outputPath.toString())) {
-            SceneToBplEncoder.v().encodeScene(printer, Scene.v());
+            new SceneToBplEncoder(printer).encodeScene(Scene.v());
         }
 
         final long endTime = System.currentTimeMillis();

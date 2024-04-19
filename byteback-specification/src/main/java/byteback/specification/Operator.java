@@ -1,7 +1,6 @@
 package byteback.specification;
 
 import byteback.specification.Contract.Prelude;
-import byteback.specification.Contract.Primitive;
 import byteback.specification.Contract.Behavior;
 
 /**
@@ -16,9 +15,9 @@ public class Operator {
 	/**
 	 * Boolean implication.
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~implies")
+	@Prelude("implies")
 	public static boolean implies(final boolean a, final boolean b) {
 		return !a || b;
 	}
@@ -26,9 +25,9 @@ public class Operator {
 	/**
 	 * Boolean equivalence.
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~iff")
+	@Prelude("iff")
 	public static boolean iff(final boolean a, final boolean b) {
 		return a == b;
 	}
@@ -36,9 +35,9 @@ public class Operator {
 	/**
 	 * Boolean AND.
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~and")
+	@Prelude("and")
 	public static boolean and(final boolean a, final boolean b) {
 		return a && b;
 	}
@@ -46,9 +45,9 @@ public class Operator {
 	/**
 	 * Boolean OR.
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~or")
+	@Prelude("or")
 	public static boolean or(final boolean a, final boolean b) {
 		return a || b;
 	}
@@ -56,9 +55,9 @@ public class Operator {
 	/**
 	 * Boolean NOT.
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~not")
+	@Prelude("not")
 	public static boolean not(final boolean a) {
 		return !a;
 	}
@@ -66,65 +65,65 @@ public class Operator {
 	/**
 	 * Equality.
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~eq")
+	@Prelude("eq")
 	public static boolean eq(final Object a, final Object b) {
 		return a.equals(b);
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~eq")
+	@Prelude("eq")
 	public static boolean eq(final boolean a, final boolean b) {
 		return a == b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~eq")
+	@Prelude("eq")
 	public static boolean eq(final byte a, final byte b) {
 		return a == b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~eq")
+	@Prelude("eq")
 	public static boolean eq(final short a, final short b) {
 		return a == b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~eq")
+	@Prelude("eq")
 	public static boolean eq(final int a, final int b) {
 		return a == b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~eq")
+	@Prelude("eq")
 	public static boolean eq(final long a, final long b) {
 		return a == b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~eq")
+	@Prelude("eq")
 	public static boolean eq(final char a, final char b) {
 		return a == b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~eq")
+	@Prelude("eq")
 	public static boolean eq(final float a, final float b) {
 		return a == b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~eq")
+	@Prelude("eq")
 	public static boolean eq(final double a, final double b) {
 		return a == b;
 	}
@@ -132,65 +131,65 @@ public class Operator {
 	/**
 	 * Inequality
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~neq")
+	@Prelude("neq")
 	public static boolean neq(final Object a, final Object b) {
 		return !a.equals(b);
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~neq")
+	@Prelude("neq")
 	public static boolean neq(final boolean a, final boolean b) {
 		return a != b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~neq")
+	@Prelude("neq")
 	public static boolean neq(final byte a, final byte b) {
 		return a != b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~neq")
+	@Prelude("neq")
 	public static boolean neq(final short a, final short b) {
 		return a != b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~neq")
+	@Prelude("neq")
 	public static boolean neq(final int a, final int b) {
 		return a != b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~neq")
+	@Prelude("neq")
 	public static boolean neq(final long a, final long b) {
 		return a != b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~neq")
+	@Prelude("neq")
 	public static boolean neq(final char a, final char b) {
 		return a != b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~neq")
+	@Prelude("neq")
 	public static boolean neq(final float a, final float b) {
 		return a != b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~neq")
+	@Prelude("neq")
 	public static boolean neq(final double a, final double b) {
 		return a != b;
 	}
@@ -199,44 +198,44 @@ public class Operator {
 	 * Less-than
 	 */
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.lt")
+	@Prelude("int.lt")
 	public static boolean lt(final byte a, final byte b) {
 		return a < b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.lt")
+	@Prelude("int.lt")
 	public static boolean lt(final short a, final short b) {
 		return a < b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.lt")
+	@Prelude("int.lt")
 	public static boolean lt(final int a, final int b) {
 		return a < b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.lt")
+	@Prelude("int.lt")
 	public static boolean lt(final long a, final long b) {
 		return a < b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~real.lt")
+	@Prelude("real.lt")
 	public static boolean lt(final float a, final float b) {
 		return a < b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~real.lt")
+	@Prelude("real.lt")
 	public static boolean lt(final double a, final double b) {
 		return a < b;
 	}
@@ -244,44 +243,44 @@ public class Operator {
 	/**
 	 * Less-than or equal
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.lte")
+	@Prelude("int.lte")
 	public static boolean lte(final byte a, final byte b) {
 		return a <= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.lte")
+	@Prelude("int.lte")
 	public static boolean lte(final short a, final short b) {
 		return a <= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.lte")
+	@Prelude("int.lte")
 	public static boolean lte(final int a, final int b) {
 		return a <= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.lte")
+	@Prelude("int.lte")
 	public static boolean lte(final long a, final long b) {
 		return a <= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~real.lte")
+	@Prelude("real.lte")
 	public static boolean lte(final float a, final float b) {
 		return a <= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~real.lte")
+	@Prelude("real.lte")
 	public static boolean lte(final double a, final double b) {
 		return a <= b;
 	}
@@ -289,44 +288,44 @@ public class Operator {
 	/**
 	 * Greater-than
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.gt")
+	@Prelude("int.gt")
 	public static boolean gt(final byte a, final byte b) {
 		return a > b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.gt")
+	@Prelude("int.gt")
 	public static boolean gt(final short a, final short b) {
 		return a > b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.gt")
+	@Prelude("int.gt")
 	public static boolean gt(final int a, final int b) {
 		return a > b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.gt")
+	@Prelude("int.gt")
 	public static boolean gt(final long a, final long b) {
 		return a > b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~real.gt")
+	@Prelude("real.gt")
 	public static boolean gt(final float a, final float b) {
 		return a > b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~real.gt")
+	@Prelude("real.gt")
 	public static boolean gt(final double a, final double b) {
 		return a > b;
 	}
@@ -334,51 +333,51 @@ public class Operator {
 	/**
 	 * Greater-than or equal
 	 */
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.gte")
+	@Prelude("int.gte")
 	public static boolean gte(final byte a, final byte b) {
 		return a >= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.gte")
+	@Prelude("int.gte")
 	public static boolean gte(final short a, final short b) {
 		return a >= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.gte")
+	@Prelude("int.gte")
 	public static boolean gte(final int a, final int b) {
 		return a >= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~int.gte")
+	@Prelude("int.gte")
 	public static boolean gte(final long a, final long b) {
 		return a >= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~real.gte")
+	@Prelude("real.gte")
 	public static boolean gte(final float a, final float b) {
 		return a >= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~real.gte")
+	@Prelude("real.gte")
 	public static boolean gte(final double a, final double b) {
 		return a >= b;
 	}
 
-	@Primitive
+	@Contract.Operator
 	@Behavior
-	@Prelude("~isvoid")
+	@Prelude("isvoid")
 	public static boolean isVoid(final Object a) {
 		return false;
 	}

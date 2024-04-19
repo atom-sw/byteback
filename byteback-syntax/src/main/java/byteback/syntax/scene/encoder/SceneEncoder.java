@@ -4,8 +4,12 @@ import byteback.syntax.encoder.Encoder;
 import byteback.syntax.printer.Printer;
 import soot.Scene;
 
-public interface SceneEncoder extends Encoder {
+public abstract class SceneEncoder extends Encoder {
 
-    void encodeScene(Printer printer, Scene scene);
+	public SceneEncoder(final Printer printer) {
+		super(printer);
+	}
+
+	public abstract void encodeScene(Scene scene);
 
 }

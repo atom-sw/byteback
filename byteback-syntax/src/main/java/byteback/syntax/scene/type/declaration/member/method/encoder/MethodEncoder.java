@@ -4,8 +4,12 @@ import byteback.syntax.encoder.Encoder;
 import byteback.syntax.printer.Printer;
 import soot.SootMethod;
 
-public interface MethodEncoder extends Encoder {
+public abstract class MethodEncoder extends Encoder {
 
-    void encodeMethod(final Printer printer, final SootMethod sootMethod);
+	public MethodEncoder(final Printer printer) {
+		super(printer);
+	}
+
+	public abstract void encodeMethod(final SootMethod sootMethod);
 
 }

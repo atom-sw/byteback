@@ -1,6 +1,5 @@
 package byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl;
 
-import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.encoder.MethodEncoder;
@@ -9,44 +8,44 @@ import soot.ArrayType;
 import soot.SootMethod;
 import soot.Type;
 
-public class MethodToBplEncoder implements MethodEncoder {
+public class MethodToBplEncoder extends MethodEncoder {
 
-    private static final Lazy<MethodToBplEncoder> INSTANCE = Lazy.from(MethodToBplEncoder::new);
+	public MethodToBplEncoder(final Printer printer) {
+		super(printer);
+	}
 
-    public static MethodToBplEncoder v() {
-        return INSTANCE.get();
-    }
+	public void encodeMethodName(final SootMethod sootMethod) {
+		printer.print("`");
+		printer.print(sootMethod.getDeclaringClass().getName());
+		printer.print(".");
+		printer.print(sootMethod.getName());
 
-    private MethodToBplEncoder() {
-    }
+		printer.print("#");
+		printer.startItems("#");
+		for (final Type type : sootMethod.getParameterTypes()) {
+			printer.separate();
 
-    public void encodeMethodName(final Printer printer, final SootMethod sootMethod) {
-        printer.print(sootMethod.getDeclaringClass().getName());
-        printer.print(".");
-        printer.print(sootMethod.getName());
+			if (type instanceof ArrayType arrayType) {
+				printer.print(arrayType.baseType.toString());
+				printer.print("$");
+			} else {
+				printer.print(type.toString());
+			}
+		}
+		printer.endItems();
+		printer.print("#");
+		printer.print("`");
+	}
 
-        printer.print("#");
-        printer.startItems("#");
-        for (final Type type : sootMethod.getParameterTypes()) {
-            printer.separate();
-            if (type instanceof ArrayType arrayType) {
-                printer.print(arrayType.baseType.toString());
-                printer.print("$");
-            } else {
-                printer.print(type.toString());
-            }
-        }
-        printer.endItems();
-        printer.print("#");
-    }
+	@Override
+	public void encodeMethod(final SootMethod sootMethod) {
+		if (AnnotationReader.v().hasAnnotation(sootMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
+			new BehaviorMethodToBplEncoder(printer).encodeMethod(sootMethod);
+		} else {
+			new ProceduralMethodToBplEncoder(printer).encodeMethod(sootMethod);
+		}
 
-    @Override
-    public void encodeMethod(final Printer printer, final SootMethod sootMethod) {
-        if (AnnotationReader.v().hasAnnotation(sootMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
-            BehaviorMethodToBplEncoder.v().encodeBehaviorMethod(printer, sootMethod);
-        } else {
-            ProceduralMethodToBplEncoder.v().encodeProceduralMethod(printer, sootMethod);
-        }
-    }
+		printer.endLine();
+	}
 
 }

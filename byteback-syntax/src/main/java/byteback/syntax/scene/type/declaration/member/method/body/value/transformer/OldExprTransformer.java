@@ -44,7 +44,7 @@ public class OldExprTransformer extends ValueTransformer {
                     final OldExpr oldExpr = Vimp.v().newOldExpr(invokeExpr.getArg(0));
                     valueBox.setValue(oldExpr);
                     final Body body = bodyContext.getBody();
-                    TwoStateFlagger.v().flag(body);
+                    TwoStateFlagger.v().flag(bodyContext.getSootMethod());
                 }
             }
         }

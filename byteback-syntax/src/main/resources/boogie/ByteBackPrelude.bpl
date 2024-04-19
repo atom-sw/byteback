@@ -43,7 +43,7 @@ axiom (forall h1: Store, h2: Store, h3: Store ::
 axiom (forall h1: Store, h2: Store ::
 	heap.succeeds(h1, h2) &&
 	(forall r: Reference, t: Type ::
-		heap.typeof(h1, r) == heap.typeof(h2, r)));
+		reference.typeof(h1, r) == reference.typeof(h2, r)));
 
 axiom (forall h1: Store, h2: Store ::
 	heap.succeeds(h1, h2) &&
@@ -54,7 +54,7 @@ axiom (forall h1: Store, h2: Store ::
 procedure new(t: Type) returns (r: Reference, e: Reference);
 	ensures r != `null`;
 	ensures e == `void`;
-	ensures heap.typeof(heap, r) == t;
+	ensures reference.typeof(heap, r) == t;
 	ensures heap.allocated(heap, r);
 
 // -------------------------------------------------------------------
@@ -66,13 +66,15 @@ const unique Primitive: Type;
 
 const unique Object.Type: Field Type;
 
-type `boolean` = int;
+type `boolean` = bool;
 
 type `byte` = int;
 
 type `short` = int;
 
 type `int` = int;
+
+type `char` = int;
 
 type `long` = int;
 
@@ -88,17 +90,17 @@ axiom (forall t1: Type, t2: Type, t3: Type :: type.extends(t1, t2) && type.exten
 
 axiom (forall t1: Type, t2: Type :: t1 != t2 && type.extends(t1, t2) ==> !type.extends(t2, t1));
 
-function {:inline} heap.typeof(h: Store, r: Reference) returns (Type)
+function {:inline} reference.typeof(h: Store, r: Reference) returns (Type)
 {
   store.read(h, r, Object.Type)
 }
 
-function {:inline} heap.instanceof(h: Store, r: Reference, t: Type) returns (bool)
+function {:inline} reference.instanceof(h: Store, r: Reference, t: Type) returns (bool)
 {
 	type.extends(store.read(h, r, Object.Type), t)
 }
 
-axiom (forall h: Store, t: Type :: !heap.instanceof(h, `void`, t));
+axiom (forall h: Store, t: Type :: !reference.instanceof(h, `void`, t));
 
 function type.reference(Type) returns (Reference);
 
@@ -129,7 +131,7 @@ axiom (forall r: Reference :: array.lengthof(r) >= 0);
 
 axiom (forall h1: Store, h2: Store, r: Reference , i: int ::
 	heap.succeeds(h1, h2) && 0 <= i && i < array.lengthof(r)
-	==> store.read(h1, r, element(i)) == store.read(h2, r, element(i)));
+	==> store.read(h1, r, array.element(i)) == store.read(h2, r, array.element(i)));
 
 function array.type(Type) returns (Type);
 
@@ -138,17 +140,17 @@ function array.type_inverse(Type) returns (Type);
 axiom (forall t: Type :: { array.type(t) } array.type_inverse(array.type(t)) == t);
 
 function {:inline} array.read<b>(h: Store, a: Reference, i: int) returns (b)
-{ unbox(store.read(h, a, element(i))) : b }
+{ unbox(store.read(h, a, array.element(i))) : b }
 
 function {:inline} array.update<b>(h: Store, a: Reference, i: int, v: b) returns (Store)
-{ store.update(h, a, element(i), box(v)) }
+{ store.update(h, a, array.element(i), box(v)) }
 
 procedure array(t: Type, l: int) returns (r: Reference, e: Reference);
 	ensures r != `null`;
 	ensures e == `void`;
 	ensures heap.allocated(heap, r);
 	ensures array.lengthof(r) == l && array.lengthof(r) >= 0;
-	ensures heap.typeof(heap, r) == array.type(t);
+	ensures reference.typeof(heap, r) == array.type(t);
 
 // -------------------------------------------------------------------
 // String model

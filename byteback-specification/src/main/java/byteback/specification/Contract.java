@@ -18,7 +18,7 @@ public class Contract {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
-	public @interface Primitive {
+	public @interface Operator {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -32,33 +32,33 @@ public class Contract {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD})
 	public @interface Prelude {
-		public String value();
+		String value();
 	}
 
 	@Repeatable(Requires.class)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Require {
-		public String value();
+		String value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Requires {
-		public Require[] value();
+		Require[] value();
 	}
 
 	@Repeatable(Ensures.class)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Ensure {
-		public String value();
+		String value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Ensures {
-		public Ensure[] value();
+		Ensure[] value();
 	}
 
 	@Repeatable(Raises.class)

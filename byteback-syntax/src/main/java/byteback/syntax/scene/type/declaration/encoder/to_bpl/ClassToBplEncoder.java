@@ -1,33 +1,28 @@
 package byteback.syntax.scene.type.declaration.encoder.to_bpl;
 
-import byteback.common.function.Lazy;
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.encoder.ClassEncoder;
+import byteback.syntax.scene.type.declaration.member.field.transformer.encoder.to_bpl.FieldToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
 import byteback.syntax.scene.type.declaration.tag.AxiomsProvider;
 import byteback.syntax.scene.type.declaration.tag.AxiomsTag;
-import soot.Hierarchy;
 import soot.SootClass;
+import soot.SootField;
 import soot.SootMethod;
 import soot.Value;
 
 import java.util.List;
 
-public class ClassToBplEncoder implements ClassEncoder {
+public class ClassToBplEncoder extends ClassEncoder {
 
-    private static final Lazy<ClassToBplEncoder> INSTANCE = Lazy.from(ClassToBplEncoder::new);
-
-    public static ClassToBplEncoder v() {
-        return INSTANCE.get();
-    }
-
-    private ClassToBplEncoder() {
+    public ClassToBplEncoder(final Printer printer) {
+			super(printer);
     }
 
     public void encodeAxiom(final Printer printer, final Value axiomValue) {
         printer.print("axiom ");
-        ValueToBplEncoder.v().encodeValue(printer, axiomValue);
+        new ValueToBplEncoder(printer).encodeValue(axiomValue);
         printer.print(";");
         printer.endLine();
     }
@@ -48,7 +43,7 @@ public class ClassToBplEncoder implements ClassEncoder {
     }
 
     @Override
-    public void encodeClass(final Printer printer, final SootClass sootClass) {
+    public void encodeClass(final SootClass sootClass) {
         printer.printLine("// START OF CLASS: " + sootClass.getName());
         encodeClassConstant(printer, sootClass);
         printer.endLine();
@@ -57,8 +52,12 @@ public class ClassToBplEncoder implements ClassEncoder {
         printer.endLine();
 
         if (sootClass.resolvingLevel() >= SootClass.SIGNATURES) {
+            for (final SootField sootField : sootClass.getFields()) {
+                new FieldToBplEncoder(printer).encodeField(sootField);
+            }
+
             for (final SootMethod sootMethod : sootClass.getMethods()) {
-                MethodToBplEncoder.v().encodeMethod(printer, sootMethod);
+                new MethodToBplEncoder(printer).encodeMethod(sootMethod);
             }
         }
 

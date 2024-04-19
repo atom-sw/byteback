@@ -47,7 +47,7 @@ public class BBLibNames {
 
     public static final String RETURN_ANNOTATION = "Lbyteback/specification/Contract$Return;";
 
-    public static final String PRIMITIVE_ANNOTATION = "Lbyteback/specification/Contract$Primitive;";
+    public static final String OPERATOR_ANNOTATION = "Lbyteback/specification/Contract$Operator;";
 
     public static final String ATTACH_ANNOTATION = "Lbyteback/specification/Contract$Attach;";
 

@@ -6,8 +6,7 @@ import soot.*;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.JimpleBody;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ParameterLocalsProvider extends TagProvider<SootMethod, ParameterLocalsTag> {
 
@@ -24,15 +23,23 @@ public class ParameterLocalsProvider extends TagProvider<SootMethod, ParameterLo
 
     @Override
     public ParameterLocalsTag compute(final SootMethod sootMethod) {
-        final List<Local> locals;
+        final var locals = new ArrayList<Local>();
 
         if (sootMethod.hasActiveBody()) {
             final Body body = sootMethod.getActiveBody();
-            locals = body.getParameterLocals();
+
+            if (!sootMethod.isStatic()) {
+                locals.add(body.getThisLocal());
+            }
+
+            locals.addAll(body.getParameterLocals());
         } else {
-            locals = new ArrayList<>();
             final var dummyBody = new JimpleBody();
             final var localGenerator = new DefaultLocalGenerator(dummyBody);
+
+            if (!sootMethod.isStatic()) {
+                locals.add(localGenerator.generateLocal(sootMethod.getDeclaringClass().getType()));
+            }
 
             for (final Type type : sootMethod.getParameterTypes()) {
                 final Local local = localGenerator.generateLocal(type);

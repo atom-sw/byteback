@@ -1,11 +1,15 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl;
 
-import byteback.common.function.Lazy;
+import byteback.syntax.Vimp;
 import byteback.syntax.printer.Printer;
+import byteback.syntax.scene.type.declaration.member.field.transformer.encoder.to_bpl.FieldToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.method.body.tag.TwoStateFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.value.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.ValueEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.method.tag.OperatorFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.PreludeDefinitionReader;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
 import soot.jimple.*;
@@ -14,201 +18,383 @@ import soot.util.Chain;
 import java.util.Arrays;
 import java.util.List;
 
-public class ValueToBplEncoder implements ValueEncoder {
+public class ValueToBplEncoder extends ValueEncoder {
 
-    private static final Lazy<ValueToBplEncoder> INSTANCE = Lazy.from(ValueToBplEncoder::new);
+	public static final String HEAP_SYMBOL = "h";
 
-    public static ValueToBplEncoder v() {
-        return INSTANCE.get();
-    }
+	public ValueToBplEncoder(final Printer printer) {
+		super(printer);
+	}
 
-    private ValueToBplEncoder() {
-    }
+	public void encodeTypeConstant(final TypeConstant typeConstant) {
+		printer.print("`");
+		printer.print(typeConstant.value.getClassName());
+		printer.print("`");
+	}
 
-    public void encodeTypeConstant(final Printer printer, final TypeConstant typeConstant) {
-        printer.print("`");
-        printer.print(typeConstant.value.getClassName());
-        printer.print("`");
-    }
+	public void encodeFunctionCall(final String functionName, final Value... arguments) {
+		encodeFunctionCall(functionName, Arrays.stream(arguments).toList());
+	}
 
-    public void encodeFunctionCall(final Printer printer, final String functionName, final Value... arguments) {
-        encodeFunctionCall(printer, functionName, Arrays.stream(arguments).toList());
-    }
+	public void encodeFunctionCall(final String functionName, final Iterable<Value> arguments) {
+		printer.print(functionName);
+		printer.print("(");
+		printer.startItems(", ");
 
-    public void encodeFunctionCall(final Printer printer, final String functionName, final Iterable<Value> arguments) {
-        printer.print(functionName);
-        printer.print("(");
+		for (final Value value : arguments) {
+			printer.separate();
+			encodeValue(value);
+		}
 
-        printer.startItems(", ");
-        for (final Value value : arguments) {
-            printer.separate();
-            encodeValue(printer, value);
-        }
-        printer.endItems();
-        printer.print(")");
-    }
+		printer.endItems();
+		printer.print(")");
+	}
 
-    public void encodeBinding(final Printer printer, final Local binding) {
-        printer.print(binding.getName());
-        printer.print(": ");
-        final Type bindingType = binding.getType();
-        TypeAccessToBplEncoder.v().encodeTypeAccess(printer, bindingType);
-    }
+	public void encodeBinding(final Local binding) {
+		encodeLocal(binding);
+		printer.print(": ");
+		final Type bindingType = binding.getType();
+		new TypeAccessToBplEncoder(printer).encodeTypeAccess(bindingType);
+	}
 
-    public void encodeBindings(final Printer printer, final Iterable<Local> bindings) {
-        printer.startItems(", ");
-        for (final Local local : bindings) {
-            printer.separate();
-            encodeBinding(printer, local);
-        }
-        printer.endItems();
-    }
+	public void encodeBindings(final Iterable<Local> bindings) {
+		for (final Local local : bindings) {
+			printer.separate();
+			encodeBinding(local);
+		}
+	}
 
-    public void encodeQuantifierExpr(final Printer printer, final QuantifierExpr quantifierExpr) {
-        printer.print("(forall ");
-        final Chain<Local> bindings = quantifierExpr.getBindings();
-        encodeBindings(printer, bindings);
-        printer.print(" :: ");
-        final Value value = quantifierExpr.getValue();
-        encodeValue(printer, value);
-        printer.print(")");
-    }
+	public void encodeQuantifierExpr(final QuantifierExpr quantifierExpr) {
+		printer.print("(forall ");
+		final Chain<Local> bindings = quantifierExpr.getBindings();
+		printer.startItems(", ");
+		encodeBindings(bindings);
+		printer.endItems();
+		printer.print(" :: ");
+		final Value value = quantifierExpr.getValue();
+		encodeValue(value);
+		printer.print(")");
+	}
 
-    public void encodeBinaryExpr(final Printer printer, final BinopExpr binopExpr, final String operator) {
-        printer.print("(");
-        final Value op1Value = binopExpr.getOp1();
-        encodeValue(printer, op1Value);
-        printer.print(operator);
-        final Value op2Value = binopExpr.getOp2();
-        encodeValue(printer, op2Value);
-        printer.print(")");
-    }
+	public void encodeBinaryExpr(final BinopExpr binopExpr, final String operator) {
+		printer.print("(");
+		final Value op1Value = binopExpr.getOp1();
+		encodeValue(op1Value);
+		printer.print(operator);
+		final Value op2Value = binopExpr.getOp2();
+		encodeValue(op2Value);
+		printer.print(")");
+	}
 
-    public void encodeLocal(final Printer printer, final Local local) {
-        printer.print(local.getName());
-    }
+	public void encodeLocal(final Local local) {
+		printer.print("`");
+		printer.print(local.getName());
+		printer.print("`");
+	}
 
-    public void encodeArguments(final Printer printer, final List<Value> arguments) {
-        printer.startItems(", ");
-        for (final Value argument : arguments) {
-            printer.separate();
-            encodeValue(printer, argument);
-        }
-        printer.endItems();
-    }
+	public void encodeArguments(final List<Value> arguments) {
+		for (final Value argument : arguments) {
+			printer.separate();
+			encodeValue(argument);
+		}
+	}
 
-    public void encodeCallExpr(final Printer printer, final CallExpr callExpr) {
-        MethodToBplEncoder.v().encodeMethodName(printer, callExpr.getMethod());
-        printer.print("(");
-        encodeArguments(printer, callExpr.getArgs());
-        printer.print(")");
-    }
+	public String getHeapSymbol() {
+		return "h";
+	}
 
-    public void encodeDoubleConstant(final Printer printer, final DoubleConstant doubleConstant) {
-        if (Double.isFinite(doubleConstant.value)) {
-            printer.print(Double.toString(doubleConstant.value));
-        } else {
-            throw new IllegalArgumentException("Unable to encode NaN to Boogie");
-        }
-    }
+	public void encodeHeapFunctionCall(final String functionName, final Iterable<Value> arguments) {
+		printer.print(functionName);
+		printer.print("(");
+		printer.print(getHeapSymbol());
 
-    public void encodeFloatConstant(final Printer printer, final FloatConstant floatConstant) {
-        if (Float.isFinite(floatConstant.value)) {
-            printer.print(Float.toString(floatConstant.value));
-        } else {
-            throw new IllegalArgumentException("Unable to encode NaN to Boogie");
-        }
-    }
+		for (final Value argument : arguments) {
+			printer.print(", ");
+			encodeValue(argument);
+		}
 
-    @Override
-    public void encodeValue(final Printer printer, final Value value) {
-        if (value instanceof final Immediate immediate) {
-            if (immediate instanceof NestedExpr nestedExpr) {
-                encodeValue(printer, nestedExpr.getValue());
-                return;
-            }
+		printer.print(")");
+	}
 
-            if (value instanceof Local local) {
-                encodeLocal(printer, local);
-                return;
-            }
-        }
+	public void encodeHeapFunctionCall(final String functionName, final Value... arguments) {
+		encodeHeapFunctionCall(functionName, Arrays.stream(arguments).toList());
+	}
 
-        if (value instanceof final ConcreteRef concreteRef) {
-            if (concreteRef instanceof ArrayRef arrayRef) {
-                encodeHeapFunction(printer, "array.read", "h", arrayRef.getBase(), arrayRef.getIndex());
-                return;
-            }
-        }
+	public void encodeCallExpr(final CallExpr callExpr) {
+		final SootMethod calledMethod = callExpr.getMethod();
+		PreludeDefinitionReader.v().get(calledMethod)
+				.ifPresentOrElse(
+						(preludeDefinitionTag) -> printer.print(preludeDefinitionTag.getDefinitionSymbol()),
+						() -> new MethodToBplEncoder(printer).encodeMethodName(callExpr.getMethod()));
+		printer.print("(");
+		printer.startItems(", ");
 
-        if (value instanceof final Constant constant) {
-            if (constant instanceof final TypeConstant typeConstant) {
-                encodeTypeConstant(printer, typeConstant);
-                return;
-            }
+		if (!OperatorFlagger.v().isTagged(calledMethod)) {
+			printer.separate();
+			printer.print(getHeapSymbol());
 
-            if (constant instanceof final DoubleConstant doubleConstant) {
-                encodeDoubleConstant(printer, doubleConstant);
-                return;
-            }
+			if (TwoStateFlagger.v().isTagged(calledMethod)) {
+				printer.separate();
+				printer.print("heap'");
+			}
+		}
 
-            if (constant instanceof final FloatConstant floatConstant) {
-                encodeFloatConstant(printer, floatConstant);
-                return;
-            }
-        }
+		encodeArguments(callExpr.getArgs());
+		printer.endItems();
+		printer.print(")");
+	}
 
-        if (value instanceof final BinopExpr binopExpr) {
-            if (binopExpr instanceof final ExtendsExpr extendsExpr) {
-                encodeFunctionCall(printer, "type.extends", extendsExpr.getOp1(), extendsExpr.getOp2());
-                return;
-            }
+	public void encodeIntConstant(final IntConstant intConstant) {
+		printer.print(Integer.toString(intConstant.value));
+	}
 
-            if (binopExpr instanceof final ImpliesExpr impliesExpr) {
-                encodeBinaryExpr(printer, impliesExpr, " ==> ");
-                return;
-            }
+	public void encodeDoubleConstant(final DoubleConstant doubleConstant) {
+		if (Double.isFinite(doubleConstant.value)) {
+			printer.print(Double.toString(doubleConstant.value));
+		} else {
+			throw new IllegalArgumentException("Unable to encode NaN to Boogie");
+		}
+	}
 
-            if (binopExpr instanceof final AndExpr andExpr) {
-                final Type type = VimpTypeInterpreter.v().typeOf(andExpr);
+	public void encodeFloatConstant(final FloatConstant floatConstant) {
+		if (Float.isFinite(floatConstant.value)) {
+			printer.print(Float.toString(floatConstant.value));
+		} else {
+			throw new IllegalArgumentException("Unable to encode NaN to Boogie");
+		}
+	}
 
-                if (type == BooleanType.v()) {
-                    encodeBinaryExpr(printer, andExpr, " && ");
-                    return;
-                }
-            }
-        }
+	public void encodeLogicConstant(final LogicConstant logicConstant) {
+		if (logicConstant.value) {
+			printer.print("true");
+		} else {
+			printer.print("false");
+		}
+	}
 
-        if (value instanceof final UnopExpr unopExpr) {
-            if (unopExpr instanceof NegExpr negExpr) {
-                final Type type = VimpTypeInterpreter.v().typeOf(negExpr);
+	public void encodeOldExpr(final OldExpr oldExpr) {
+		new OldValueToBplEncoder(printer).encodeValue(oldExpr.getOp());
+	}
 
-                if (type == BooleanType.v()) {
-                    printer.print("!");
-                    encodeValue(printer, negExpr.getOp());
-                    return;
-                }
-            }
+	public void encodeFieldConstant(final SootFieldRef sootFieldRef) {
+		printer.print("`");
+		printer.print(sootFieldRef.name());
+		printer.print("`");
+	}
 
-            if (unopExpr instanceof LengthExpr lengthExpr) {
-                encodeFunctionCall(printer, "array.lengthof", lengthExpr.getOp());
-                return;
-            }
-        }
+	public void encodeInstanceFieldRef(final InstanceFieldRef instanceFieldRef) {
+		printer.print("store.read(");
+		printer.startItems(", ");
+		printer.separate();
+		printer.print(getHeapSymbol());
+		printer.separate();
+		encodeValue(instanceFieldRef.getBase());
+		printer.separate();
+		new FieldToBplEncoder(printer).encodeFieldConstantName(instanceFieldRef.getField());
+		printer.print(")");
+	}
 
-        if (value instanceof final InvokeExpr invokeExpr) {
-            if (invokeExpr instanceof final CallExpr callExpr) {
-                encodeCallExpr(printer, callExpr);
-                return;
-            }
-        }
+	@Override
+	public void encodeValue(final Value value) {
+		if (value instanceof final Immediate immediate) {
+			if (immediate instanceof NestedExpr nestedExpr) {
+				encodeValue(nestedExpr.getValue());
+				return;
+			}
 
-        if (value instanceof final QuantifierExpr quantifierExpr) {
-            encodeQuantifierExpr(printer, quantifierExpr);
-            return;
-        }
+			if (value instanceof final Local local) {
+				encodeLocal(local);
+				return;
+			}
+		}
 
-        throw new IllegalStateException("Unable to convert value " + value + " of type " + value.getClass());
-    }
+		if (value instanceof final ConcreteRef concreteRef) {
+			if (concreteRef instanceof final ArrayRef arrayRef) {
+				encodeHeapFunctionCall("array.read", arrayRef.getBase(), arrayRef.getIndex());
+				printer.print(" : ");
+				new TypeAccessToBplEncoder(printer).encodeTypeAccess(arrayRef.getType());
+				return;
+			}
+
+			if (concreteRef instanceof final InstanceFieldRef instanceFieldRef) {
+				encodeInstanceFieldRef(instanceFieldRef);
+				return;
+			}
+		}
+
+		if (value instanceof final OldExpr oldExpr) {
+			encodeOldExpr(oldExpr);
+			return;
+		}
+
+		if (value instanceof final Constant constant) {
+			if (constant instanceof final TypeConstant typeConstant) {
+				encodeTypeConstant(typeConstant);
+				return;
+			}
+
+			if (constant instanceof final LogicConstant logicConstant) {
+				encodeLogicConstant(logicConstant);
+				return;
+			}
+
+			if (constant instanceof final IntConstant intConstant) {
+				encodeIntConstant(intConstant);
+				return;
+			}
+
+			if (constant instanceof final DoubleConstant doubleConstant) {
+				encodeDoubleConstant(doubleConstant);
+				return;
+			}
+
+			if (constant instanceof final FloatConstant floatConstant) {
+				encodeFloatConstant(floatConstant);
+				return;
+			}
+
+			if (constant instanceof NullConstant) {
+				printer.print("`null`");
+				return;
+			}
+		}
+
+		if (value instanceof final CastExpr castExpr) {
+			final Type fromType = castExpr.getCastType();
+			final Type toType = castExpr.getType();
+
+			if (fromType == BooleanType.v()) {
+				if (toType == IntType.v()) {
+					encodeFunctionCall("bool.to.int");
+					return;
+				}
+			}
+
+			encodeValue(castExpr.getOp());
+			return;
+		}
+
+		if (value instanceof final BinopExpr binopExpr) {
+			if (binopExpr instanceof final ExtendsExpr extendsExpr) {
+				encodeFunctionCall("type.extends", extendsExpr.getOp1(), extendsExpr.getOp2());
+				return;
+			}
+
+			if (binopExpr instanceof final ImpliesExpr impliesExpr) {
+				encodeBinaryExpr(impliesExpr, " ==> ");
+				return;
+			}
+
+			if (binopExpr instanceof final AndExpr andExpr) {
+				final Type type = VimpTypeInterpreter.v().typeOf(andExpr);
+
+				if (type == BooleanType.v()) {
+					encodeBinaryExpr(andExpr, " && ");
+					return;
+				}
+			}
+
+			if (binopExpr instanceof final OrExpr orExpr) {
+				final Type type = VimpTypeInterpreter.v().typeOf(orExpr);
+
+				if (type == BooleanType.v()) {
+					encodeBinaryExpr(orExpr, " || ");
+					return;
+				}
+			}
+
+			if (binopExpr instanceof final XorExpr xorExpr) {
+				final Type type = VimpTypeInterpreter.v().typeOf(xorExpr);
+
+				if (type == BooleanType.v()) {
+					encodeBinaryExpr(xorExpr, " != ");
+					return;
+				}
+			}
+
+			if (binopExpr instanceof final SubExpr subExpr) {
+				encodeBinaryExpr(subExpr, " - ");
+				return;
+			}
+
+			if (binopExpr instanceof final AddExpr addExpr) {
+				encodeBinaryExpr(addExpr, " + ");
+				return;
+			}
+
+			if (binopExpr instanceof final MulExpr mulExpr) {
+				encodeBinaryExpr(mulExpr, " * ");
+				return;
+			}
+
+			if (binopExpr instanceof final RemExpr remExpr) {
+				encodeBinaryExpr(remExpr, " mod ");
+				return;
+			}
+
+
+			if (binopExpr instanceof final DivExpr divExpr) {
+				if (Type.toMachineType(binopExpr.getType()) == IntType.v()) {
+					encodeBinaryExpr(divExpr, " div ");
+				} else {
+					encodeBinaryExpr(divExpr, " / ");
+				}
+				return;
+			}
+		}
+
+		if (value instanceof final UnopExpr unopExpr) {
+			if (unopExpr instanceof NegExpr negExpr) {
+				final Type type = VimpTypeInterpreter.v().typeOf(negExpr);
+
+				if (type == BooleanType.v()) {
+					printer.print("!");
+					encodeValue(negExpr.getOp());
+					return;
+				}
+
+
+				if (Type.toMachineType(type) == IntType.v()) {
+					printer.print("-");
+					encodeValue(negExpr.getOp());
+					return;
+				}
+			}
+
+			if (unopExpr instanceof final LengthExpr lengthExpr) {
+				encodeFunctionCall("array.lengthof", lengthExpr.getOp());
+				return;
+			}
+		}
+
+		if (value instanceof final InstanceOfExpr instanceOfExpr) {
+			final TypeConstant checkTypeConstant = Vimp.v().newTypeConstant((RefType) instanceOfExpr.getCheckType());
+			encodeHeapFunctionCall("reference.instanceof", instanceOfExpr.getOp(), checkTypeConstant);
+		}
+
+		if (value instanceof final InvokeExpr invokeExpr) {
+			if (invokeExpr instanceof final CallExpr callExpr) {
+				encodeCallExpr(callExpr);
+				return;
+			}
+		}
+
+		if (value instanceof final QuantifierExpr quantifierExpr) {
+			encodeQuantifierExpr(quantifierExpr);
+			return;
+		}
+
+		if (value instanceof final ConditionalExpr conditionalExpr) {
+			printer.print("if (");
+			encodeValue(conditionalExpr.getOp1());
+			printer.print(") then ");
+			encodeValue(conditionalExpr.getOp2());
+			printer.print(" else ");
+			encodeValue(conditionalExpr.getOp3());
+			return;
+		}
+
+		throw new IllegalStateException("Unable to convert value " + value + " of type " + value.getClass());
+	}
 
 }

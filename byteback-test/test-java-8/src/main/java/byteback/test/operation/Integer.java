@@ -154,13 +154,12 @@ public class Integer {
 
 	@Behavior
 	public static int assignPlusIndirectVariables(int a) {
-		int b = a + 1;
-		int c = b + 2;
-		int d = c + 3;
-		int e = d + 4;
-		int f = e + 5;
+		final int b = a + 1;
+		final int c = b + 2;
+		final int d = c + 3;
+		final int e = d + 4;
 
-		return f;
+        return e + 5;
 	}
 
 	public static int proceduralAssignPlusIndirectVariables(int a) {
@@ -173,15 +172,7 @@ public class Integer {
 		return f;
 	}
 
-	@Behavior
 	public static int commonSubExpressionPlus(int a) {
-		a = a + 1;
-		int b = a + a;
-
-		return b;
-	}
-
-	public static int proceduralCommonSubExpressionPlus(int a) {
 		a = a + 1;
 		int b = a + a;
 
