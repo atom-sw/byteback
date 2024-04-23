@@ -5,8 +5,8 @@ import soot.Value;
 
 /**
  * Base class for a strategy to find a type of given value.
- * @param <T> The base type of the value to which the strategy can be applied.
  *
+ * @param <T> The base type of the value to which the strategy can be applied.
  * @author paganma
  */
 public interface TypeInterpreter<T extends Value> {

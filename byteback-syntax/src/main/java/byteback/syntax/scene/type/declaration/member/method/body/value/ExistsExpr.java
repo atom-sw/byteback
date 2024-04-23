@@ -12,18 +12,18 @@ import soot.util.Chain;
  */
 public class ExistsExpr extends QuantifierExpr implements DefaultCaseValue {
 
-	public ExistsExpr(final Chain<Local> freeLocals, final Value value) {
-		super(freeLocals, value);
-	}
+    public ExistsExpr(final Chain<Local> freeLocals, final Value value) {
+        super(freeLocals, value);
+    }
 
-	@Override
-	protected String getSymbol() {
-		return "exists";
-	}
+    @Override
+    protected String getSymbol() {
+        return "exists";
+    }
 
-	@Override
-	public ExistsExpr clone() {
-		return new ExistsExpr(cloneBindings(), Jimple.cloneIfNecessary(getValue()));
-	}
+    @Override
+    public ExistsExpr clone() {
+        return new ExistsExpr(cloneBindings(), Jimple.cloneIfNecessary(getValue()));
+    }
 
 }

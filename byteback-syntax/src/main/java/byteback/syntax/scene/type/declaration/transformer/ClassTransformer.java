@@ -9,8 +9,6 @@ import soot.SootClass;
 /**
  * Defines how to transform a class.
  *
- * @param <S> The type of the outer scene context.
- * @param <C> The type of the class context.
  * @author paganma
  */
 public abstract class ClassTransformer extends SceneTransformer {

@@ -1,11 +1,12 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import soot.Scene;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.*;
 
 import java.util.Optional;
-
-import soot.*;
-import soot.jimple.*;
 
 /**
  * Introduces explicit index checks before every array dereference.

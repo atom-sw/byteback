@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.collection.SetHashMap;
-import byteback.syntax.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.AggregateExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
@@ -29,8 +29,6 @@ import java.util.Set;
  */
 public abstract class ExprFolder extends BodyTransformer {
 
-    private static boolean logging = false;
-
     @Override
     public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
@@ -39,8 +37,6 @@ public abstract class ExprFolder extends BodyTransformer {
         final UnitGraph unitGraph = new BriefUnitGraph(body);
         final LocalDefs localDefs = new SimpleLocalDefs(unitGraph);
         final LocalUses localUses = new SimpleLocalUses(unitGraph, localDefs);
-
-        logging = bodyContext.getSootMethod().getName().equals("commonSubExpressionPlus");
 
         for (final Block block : blockGraph) {
             final var blockSnapshot = new HashChain<Unit>();
@@ -110,7 +106,6 @@ public abstract class ExprFolder extends BodyTransformer {
 
                 if (substitutionBox.getValue() instanceof final Local local) {
                     final AssignStmt substitution = localToSubstitution.get(local);
-
                     if (substitution != null
                             && localDefs.getDefsOfAt(local, unit).size() == 1
                             && localUses.getUsesOf(substitution).size() == 1
@@ -143,9 +138,6 @@ public abstract class ExprFolder extends BodyTransformer {
         protected void fold(final Iterable<Unit> block) {
             for (final Unit unit : block) {
                 if (unit instanceof final AssignStmt assignStmt) {
-                    if (logging) {
-                        System.out.println(assignStmt);
-                    }
                     track(assignStmt);
                 }
 

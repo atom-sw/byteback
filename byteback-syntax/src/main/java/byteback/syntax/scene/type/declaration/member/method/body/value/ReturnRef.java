@@ -44,13 +44,14 @@ public class ReturnRef implements ConcreteRef, IdentityRef, Immediate, DefaultCa
     }
 
     @Override
-    public boolean equivTo(Object o) {
-        return false;
+    public boolean equivTo(final Object object) {
+        return object instanceof final ReturnRef returnRef
+                && this.type == returnRef.type;
     }
 
     @Override
     public int equivHashCode() {
-        return 155809;
+        return 155809 * type.hashCode();
     }
 
 }

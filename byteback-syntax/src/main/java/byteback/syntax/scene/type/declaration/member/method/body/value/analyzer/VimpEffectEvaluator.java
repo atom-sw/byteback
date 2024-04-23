@@ -1,14 +1,14 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.analyzer;
 
-import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
 import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
 import soot.Value;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 
 /**
- * Analyzer for checking whether a Vimp value may imply side effects.
+ * Methods for checking whether a Vimp value may imply side effects.
  *
  * @author paganma
  */

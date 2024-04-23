@@ -18,6 +18,9 @@ public class EnumSwitch {
 			case ORANGE:
 				b = 3;
 				break;
+			case GRAPES:
+				b = 4;
+				break;
 			default :
 				b = 0;
 		}

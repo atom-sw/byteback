@@ -1,15 +1,14 @@
 package byteback.specification.plugin;
 
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 
-import byteback.specification.Contract.Attach;
 import byteback.specification.Contract.Ignore;
 import byteback.specification.Contract.Lemma;
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 
-@Attach("kotlin/jvm/internal/Intrinsics;")
+@Plugin.Attach("kotlin/jvm/internal/Intrinsics;")
 public abstract class KotlinIntrinsicsSpec {
 
 	@Behavior

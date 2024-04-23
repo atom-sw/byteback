@@ -4,8 +4,6 @@ import byteback.common.function.Lazy;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
-import java.util.Optional;
-
 public class OperatorTag implements Tag {
 
     public static final String NAME = "OperatorTag";

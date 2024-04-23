@@ -52,7 +52,7 @@ public abstract class TernaryExpr implements Expr, DefaultCaseValue {
 
     @Override
     public List<ValueBox> getUseBoxes() {
-        final var useBoxes =  new ArrayList<ValueBox>();
+        final var useBoxes = new ArrayList<ValueBox>();
         useBoxes.add(op1Box);
         useBoxes.add(op2Box);
         useBoxes.add(op3Box);

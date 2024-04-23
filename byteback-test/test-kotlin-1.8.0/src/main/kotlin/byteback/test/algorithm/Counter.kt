@@ -6,7 +6,7 @@ package byteback.test.algorithm;
 import byteback.specification.Contract
 import byteback.specification.Contract.*
 import byteback.specification.Special.*
-import byteback.specification.Operator.*
+import byteback.specification.Operators.*
 
 class Counter {
 

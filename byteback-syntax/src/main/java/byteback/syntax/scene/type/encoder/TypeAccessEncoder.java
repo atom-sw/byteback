@@ -6,10 +6,10 @@ import soot.Type;
 
 public abstract class TypeAccessEncoder extends Encoder {
 
-	public TypeAccessEncoder(final Printer printer) {
-		super(printer);
-	}
+    public TypeAccessEncoder(final Printer printer) {
+        super(printer);
+    }
 
-	public abstract void encodeTypeAccess(final Type type);
+    public abstract void encodeTypeAccess(final Type type);
 
 }

@@ -12,18 +12,18 @@ import soot.util.Chain;
  */
 public class ForallExpr extends QuantifierExpr implements DefaultCaseValue {
 
-	public ForallExpr(final Chain<Local> freeLocals, final Value value) {
-		super(freeLocals, value);
-	}
+    public ForallExpr(final Chain<Local> freeLocals, final Value value) {
+        super(freeLocals, value);
+    }
 
-	@Override
-	protected String getSymbol() {
-		return "forall";
-	}
+    @Override
+    protected String getSymbol() {
+        return "forall";
+    }
 
-	@Override
-	public ForallExpr clone() {
-		return new ForallExpr(cloneBindings(), Jimple.cloneIfNecessary(getValue()));
-	}
+    @Override
+    public ForallExpr clone() {
+        return new ForallExpr(cloneBindings(), Jimple.cloneIfNecessary(getValue()));
+    }
 
 }

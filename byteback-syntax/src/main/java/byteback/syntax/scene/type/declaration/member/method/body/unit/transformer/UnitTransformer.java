@@ -23,7 +23,7 @@ public abstract class UnitTransformer extends BodyTransformer {
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
-            final UnitBox unitBox = new MutableUnitBox(unit, body);
+            final var unitBox = new MutableUnitBox(unit, body);
             final var unitContext = new UnitContext(bodyTransformationContext, unitBox);
             transformUnit(unitContext);
         }

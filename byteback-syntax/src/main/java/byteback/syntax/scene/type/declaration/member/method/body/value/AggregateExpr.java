@@ -6,7 +6,6 @@ import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.jimple.AssignStmt;
-import soot.jimple.AssignStmt;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -65,7 +64,7 @@ public class AggregateExpr extends NestedExpr implements Local {
         while (!nextAggregateExprs.isEmpty()) {
             final AggregateExpr aggregateExpr = nextAggregateExprs.pop();
 
-            if (aggregateExpr.getValue() instanceof AggregateExpr subExpr) {
+            if (aggregateExpr.getValue() instanceof final AggregateExpr subExpr) {
                 innerDefinitions.add(subExpr.getDef());
                 nextAggregateExprs.add(subExpr);
             }

@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.NestedExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.OldExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
@@ -36,6 +36,7 @@ public class OldExprTightener extends ValueTransformer {
                     while (useValue instanceof final NestedExpr nestedExpr) {
                         useValue = nestedExpr.getValue();
                     }
+
                     final OldExpr newOldExpr = Vimp.v().newOldExpr(useValue);
                     useBox.setValue(newOldExpr);
                 }

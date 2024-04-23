@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
-import byteback.syntax.Vimp;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
@@ -33,18 +33,18 @@ public class ConditionalExpr extends TernaryExpr {
     }
 
     @Override
-    public void toString(final UnitPrinter up) {
-        up.literal("if ");
-        getOp1().toString(up);
-        up.literal(" then ");
-        getOp2().toString(up);
-        up.literal( " else ");
-        getOp3().toString(up);
+    public void toString(final UnitPrinter printer) {
+        printer.literal("if ");
+        getOp1().toString(printer);
+        printer.literal(" then ");
+        getOp2().toString(printer);
+        printer.literal(" else ");
+        getOp3().toString(printer);
     }
 
     @Override
     public boolean equivTo(final Object object) {
-        return object instanceof ConditionalExpr conditionalExpr
+        return object instanceof final ConditionalExpr conditionalExpr
                 && conditionalExpr.getOp1().equivTo(getOp1())
                 && conditionalExpr.getOp2().equivTo(getOp2())
                 && conditionalExpr.getOp3().equivTo(getOp3());

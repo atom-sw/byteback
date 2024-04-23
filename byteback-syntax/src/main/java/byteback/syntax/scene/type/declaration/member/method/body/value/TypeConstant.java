@@ -22,12 +22,12 @@ public class TypeConstant extends Constant implements DefaultCaseValue, Concrete
 
     @Override
     public Object clone() {
-        return null;
+        return new TypeConstant(value);
     }
 
     @Override
-    public boolean equivTo(Object o) {
-        return o instanceof final TypeConstant typeConstant
+    public boolean equivTo(final Object object) {
+        return object instanceof final TypeConstant typeConstant
                 && typeConstant.value == value;
     }
 

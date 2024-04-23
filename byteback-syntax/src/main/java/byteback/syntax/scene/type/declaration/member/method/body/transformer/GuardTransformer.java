@@ -1,25 +1,21 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.value.ExprAggregator;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.TrapCollectingIterator;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ExceptionalTargetFlagger;
-import byteback.syntax.Vimp;
 import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.TrapCollectingIterator;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagFlagger;
 import soot.*;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.Jimple;
 import soot.jimple.ThrowStmt;
 
 /**
- * Transforms throw instructions into explicit branching instructions.
- * Given a statement `throw e`, the transformation introduces an assignment `@caughtexception := e`.
- * For each active trap at that point [e, handler], we then introduce an instance check:
- * ``` java
- * if (@caughtexception instanceof e) goto handler;
- * ```
- * At the end of these checks, we simply append a `return` statement, signaling that the method will return without
- * yielding any value, leaving the caller method to check for the exceptions that were unchecked in the called method.
+ * Transforms throw instructions into explicit branching instructions. Given a statement `throw e`, the transformation
+ * introduces an assignment `@caughtexception := e`. For each active trap at that point [e, handler], we then introduce
+ * an instance check: ``` java if (@caughtexception instanceof e) goto handler; ``` At the end of these checks, we
+ * simply append a `return` statement, signaling that the method will return without yielding any value, leaving the
+ * caller method to check for the exceptions that were unchecked in the called method.
  *
  * @author paganma
  */
@@ -39,12 +35,11 @@ public class GuardTransformer extends BodyTransformer {
         final Body body = bodyContext.getBody();
         final PatchingChain<Unit> units = body.getUnits();
         final var unitIterator = new TrapCollectingIterator(units, body.getTraps());
-        final var exprConstructor = new ExprAggregator(body);
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
 
-            if (unit instanceof ThrowStmt throwUnit) {
+            if (unit instanceof final ThrowStmt throwUnit) {
                 final Unit baseUnit = Vimp.v().newYieldStmt();
                 units.insertBefore(baseUnit, throwUnit);
 
@@ -64,14 +59,14 @@ public class GuardTransformer extends BodyTransformer {
                 // been opened, hence making the jumps semantically equivalent to the control flow specified by the
                 // exception table.
                 for (final Trap trap : unitIterator.getActiveTraps()) {
-                    final Immediate checkValue = exprConstructor.apply(
+                    final Immediate checkValue = Vimp.v().nest(
                             Jimple.v().newInstanceOfExpr(
                                     Vimp.v().newCaughtExceptionRef(),
                                     trap.getException().getType()
                             )
                     );
                     final Unit branchUnit = Vimp.v().newIfStmt(checkValue, trap.getHandlerUnit());
-                    ExceptionalTargetFlagger.v().flag(branchUnit);
+                    ThrowTargetTagFlagger.v().flag(branchUnit);
                     units.insertBefore(branchUnit, baseUnit);
                 }
 

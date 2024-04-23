@@ -4,11 +4,11 @@
 package byteback.test.algorithm;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
-import static byteback.specification.Quantifier.*;
+import static byteback.specification.Operators.*;
+import static byteback.specification.Quantifiers.*;
 import static byteback.specification.Special.*;
 
-import byteback.specification.Binding;
+import byteback.specification.Bindings;
 import byteback.specification.Contract.Ensure;
 
 public class IntegerSelectionSort {
@@ -30,7 +30,7 @@ public class IntegerSelectionSort {
 
 	@Behavior
 	public static boolean is_minimum(final int[] a, final int i, final int j, final int m) {
-		final int k = Binding.integer();
+		final int k = Bindings.integer();
 
 		return forall(k, implies(lte(i, k) & lt(k, j), gte(a[k], a[m])));
 	}
@@ -62,15 +62,15 @@ public class IntegerSelectionSort {
 
 	@Behavior
 	public static boolean sorted(final int[] a, final int i, final int j) {
-		final int k = Binding.integer();
+		final int k = Bindings.integer();
 
 		return forall(k, implies(lt(i, k) & lt(k, j), lte(a[k - 1], a[k])));
 	}
 
 	@Behavior
 	public static boolean partitioned(final int[] a, final int c) {
-		final int k = Binding.integer();
-		final int l = Binding.integer();
+		final int k = Bindings.integer();
+		final int l = Bindings.integer();
 
 		return forall(k, forall(l, implies(lte(0, k) & lt(k, c) & lte(c, l) & lt(l, a.length), lte(a[k], a[l]))));
 	}
@@ -90,14 +90,16 @@ public class IntegerSelectionSort {
 		return neq(a, null);
 	}
 
+	@TwoState
 	@Behavior
 	public static boolean swapped_elements(final int[] a, final int i, final int j) {
 		return eq(old(a[i]), a[j]) & eq(old(a[j]), a[i]);
 	}
 
+	@TwoState
 	@Behavior
 	public static boolean elements_invariance(final int[] a, final int i, final int j) {
-		final int k = Binding.integer();
+		final int k = Bindings.integer();
 		return  forall(k, implies(lte(0, k) & lt(k, a.length) & neq(k, i) & neq(k, j), eq(k, old(k))));
 	}
 

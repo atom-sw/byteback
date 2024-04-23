@@ -1,8 +1,8 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsProvider;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagProvider;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag;
 import soot.Value;
 import soot.jimple.Jimple;
@@ -13,13 +13,13 @@ import java.util.List;
 public class PreconditionsPropagator extends ConditionsPropagator<PreconditionsTag> {
 
     private static final Lazy<PreconditionsPropagator> INSTANCE = Lazy.from(() ->
-            new PreconditionsPropagator(PreconditionsProvider.v()));
+            new PreconditionsPropagator(PreconditionsTagProvider.v()));
 
     public static PreconditionsPropagator v() {
         return INSTANCE.get();
     }
 
-    public PreconditionsPropagator(PreconditionsProvider conditionsProvider) {
+    public PreconditionsPropagator(final PreconditionsTagProvider conditionsProvider) {
         super(conditionsProvider);
     }
 

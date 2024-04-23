@@ -1,13 +1,14 @@
 package byteback.syntax.scene.type.declaration.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.Vimp;
 import byteback.syntax.scene.context.SceneContext;
 import byteback.syntax.scene.type.TypeType;
 import byteback.syntax.scene.type.declaration.context.ClassContext;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ForallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.TypeConstant;
-import byteback.syntax.scene.type.declaration.tag.AxiomsProvider;
+import byteback.syntax.scene.type.declaration.tag.AxiomsTag;
+import byteback.syntax.scene.type.declaration.tag.AxiomsTagProvider;
 import soot.*;
 import soot.grimp.Grimp;
 import soot.jimple.Jimple;
@@ -44,12 +45,13 @@ public class HierarchyAxiomTagger extends ClassTransformer {
         final Collection<SootClass> superInterfaces = sootClass.getInterfaces();
         superTypes.addAll(superInterfaces);
         final Hierarchy hierarchy = scene.getActiveHierarchy();
-        final List<Value> axiomBoxes = AxiomsProvider.v().getOrCompute(sootClass).getValues();
+        final AxiomsTag axiomsTag = AxiomsTagProvider.v().gerOrCompute(sootClass);
+        final List<Value> axiomValues = axiomsTag.getValues();
 
         for (final SootClass superType : superTypes) {
             final TypeConstant classTypeValue = Vimp.v().newTypeConstant(sootClass.getType());
             final TypeConstant superTypeValue = Vimp.v().newTypeConstant(superType.getType());
-            axiomBoxes.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
+            axiomValues.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
         }
 
         if (!sootClass.isInterface()) {
@@ -65,33 +67,37 @@ public class HierarchyAxiomTagger extends ClassTransformer {
                     final ForallExpr axiom = Vimp.v().newForallExpr(
                             new Local[]{t1Local, t2Local},
                             Vimp.v().newImpliesExpr(
-                                    Jimple.v().newAndExpr(
-                                            Vimp.v().nest(
-                                                    Vimp.v().newExtendsExpr(t1Local, st1)
-                                            ),
-                                            Vimp.v().nest(
-                                                    Vimp.v().newExtendsExpr(t2Local, st2)
+                                    Vimp.v().nest(
+                                            Jimple.v().newAndExpr(
+                                                    Vimp.v().nest(
+                                                            Vimp.v().newExtendsExpr(t1Local, st1)
+                                                    ),
+                                                    Vimp.v().nest(
+                                                            Vimp.v().newExtendsExpr(t2Local, st2)
+                                                    )
                                             )
                                     ),
-                                    Jimple.v().newAndExpr(
-                                            Vimp.v().nest(
-                                                    Jimple.v().newNegExpr(
-                                                            Vimp.v().nest(
-                                                                    Vimp.v().newExtendsExpr(t1Local, st2)
+                                    Vimp.v().nest(
+                                            Jimple.v().newAndExpr(
+                                                    Vimp.v().nest(
+                                                            Jimple.v().newNegExpr(
+                                                                    Vimp.v().nest(
+                                                                            Vimp.v().newExtendsExpr(t1Local, st2)
+                                                                    )
                                                             )
-                                                    )
-                                            ),
-                                            Vimp.v().nest(
-                                                    Jimple.v().newNegExpr(
-                                                            Vimp.v().nest(
-                                                                    Vimp.v().newExtendsExpr(t2Local, st1)
+                                                    ),
+                                                    Vimp.v().nest(
+                                                            Jimple.v().newNegExpr(
+                                                                    Vimp.v().nest(
+                                                                            Vimp.v().newExtendsExpr(t2Local, st1)
+                                                                    )
                                                             )
                                                     )
                                             )
                                     )
                             )
                     );
-                    axiomBoxes.add(axiom);
+                    axiomValues.add(axiom);
                 }
             }
         }

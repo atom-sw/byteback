@@ -6,7 +6,7 @@ package byteback.test.exceptions;
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 
 @SuppressWarnings("unused")
 public class PotentialNullDereference {

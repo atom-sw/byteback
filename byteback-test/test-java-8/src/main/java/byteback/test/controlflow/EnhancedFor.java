@@ -3,16 +3,16 @@
  */
 package byteback.test.controlflow;
 
-import byteback.specification.Binding;
-import static byteback.specification.Quantifier.*;
-import static byteback.specification.Operator.*;
+import byteback.specification.Bindings;
+import static byteback.specification.Quantifiers.*;
+import static byteback.specification.Operators.*;
 import static byteback.specification.Contract.*;
 
 public class EnhancedFor {
 
 	@Behavior
 	public static boolean contains(int[] a, int x) {
-		final int i = Binding.integer();
+		final int i = Bindings.integer();
 
 		return exists(i, lte(0, i) & lt(0, a.length) & eq(a[i], x));
 	}

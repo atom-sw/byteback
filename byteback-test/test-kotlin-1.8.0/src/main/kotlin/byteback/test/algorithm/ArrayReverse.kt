@@ -4,17 +4,17 @@
 package byteback.test.algorithm;
 
 import byteback.specification.Contract.*
-import byteback.specification.Operator.*
+import byteback.specification.Operators.*
 import byteback.specification.Special.*
-import byteback.specification.Quantifier.*
-import byteback.specification.Binding
+import byteback.specification.Quantifiers.*
+import byteback.specification.Bindings
 import byteback.specification.Contract
 
 class ArrayReverse {
 
 		@Contract.Function
 		fun `reverse of`(a: IntArray?, b: IntArray?): Boolean {
-				val i: Int = Binding.integer();
+				val i: Int = Bindings.integer();
 
 				return and(eq(a!!.size, b!!.size),
 									 forall(i, implies(lte(0, i) and lt(i, a.size), eq(a[i], b[b.size - 1 - i]))))
@@ -57,7 +57,7 @@ class ArrayReverse {
 				var i = 0
 
 				while (i < (l - i)) {
-						val k: Int = Binding.integer();
+						val k: Int = Bindings.integer();
 						invariant(forall(k, implies(lte(0, k) and lt(k, i) or lt(l - i, k) and lte(k, l), eq(a[k], old(a[l - k])))))
 						invariant(forall(k, implies(lte(i, k) and lt(k, l - i), eq(a[k], old(a[k])))))
 						invariant(lte(0, i) and lte(i, (l + 1) / 2))

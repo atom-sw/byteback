@@ -35,6 +35,11 @@ public class ClassContext implements Context {
         return sootClass;
     }
 
+    /**
+     * Getter for the surrounding Scene context.
+     *
+     * @return The Scene context associated with this class context.
+     */
     public SceneContext getSceneContext() {
         return sceneContext;
     }

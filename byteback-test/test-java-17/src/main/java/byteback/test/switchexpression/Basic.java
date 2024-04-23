@@ -4,7 +4,7 @@
 package byteback.test.switchexpression;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 
 public class Basic {
 

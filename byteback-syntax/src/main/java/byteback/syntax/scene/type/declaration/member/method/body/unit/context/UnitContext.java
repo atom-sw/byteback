@@ -19,7 +19,7 @@ public class UnitContext implements Context {
      * Constructs a new {@link UnitContext}.
      *
      * @param bodyContext The outer body context.
-     * @param unitBox The unit box in this context.
+     * @param unitBox     The unit box in this context.
      */
     public UnitContext(final BodyContext bodyContext, final UnitBox unitBox) {
         this.bodyContext = bodyContext;

@@ -1,16 +1,15 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
+import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
-import byteback.syntax.Vimp;
-import byteback.common.function.Lazy;
-
-import java.util.Iterator;
-
 import soot.*;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.Jimple;
+
+import java.util.Iterator;
 
 /**
  * Introduces explicit guards checking if the method that was just invoked threw an exception. The effect introduced by

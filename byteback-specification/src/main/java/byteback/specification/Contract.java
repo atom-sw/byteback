@@ -22,6 +22,16 @@ public class Contract {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public @interface Exceptional {
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.METHOD})
+	public @interface TwoState {
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Lemma {
 	}
@@ -85,17 +95,6 @@ public class Contract {
 	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 	public @interface Returns {
 		Return[] value();
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
-	public @interface Isolated {
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.TYPE})
-	public @interface Attach {
-		String value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)

@@ -1,11 +1,13 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.analyzer;
 
-import byteback.syntax.Vimp;
+import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.value.NestedExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.QuantifierExpr;
-import byteback.common.function.Lazy;
 import soot.*;
-import soot.jimple.*;
+import soot.jimple.BinopExpr;
+import soot.jimple.ConditionExpr;
+import soot.jimple.NegExpr;
+import soot.jimple.UnopExpr;
 import soot.jimple.internal.AbstractIntBinopExpr;
 import soot.jimple.internal.AbstractIntLongBinopExpr;
 
@@ -24,8 +26,7 @@ public class VimpTypeInterpreter implements TypeInterpreter<Value> {
     }
 
     /**
-     * Relates types based on the following partially-ordered relation:
-     * long > int > short > byte > boolean.
+     * Relates types based on the following partially-ordered relation: long > int > short > byte > boolean.
      *
      * @param type Any given type.
      * @return The corresponding position in the relation.

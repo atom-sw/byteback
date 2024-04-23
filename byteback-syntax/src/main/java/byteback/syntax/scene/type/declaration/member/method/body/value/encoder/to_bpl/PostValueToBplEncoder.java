@@ -4,13 +4,13 @@ import byteback.syntax.printer.Printer;
 
 public class PostValueToBplEncoder extends ValueToBplEncoder {
 
-	public PostValueToBplEncoder(final Printer printer) {
-		super(printer);
-	}
+    public PostValueToBplEncoder(final Printer printer) {
+        super(printer);
+    }
 
-	@Override
-	public String getOldHeapSymbol() {
-		return "old(" + ValueToBplEncoder.HEAP_SYMBOL + ")";
-	}
+    @Override
+    public String getOldHeapReference() {
+        return "old(" + ValueToBplEncoder.HEAP_SYMBOL + ")";
+    }
 
 }

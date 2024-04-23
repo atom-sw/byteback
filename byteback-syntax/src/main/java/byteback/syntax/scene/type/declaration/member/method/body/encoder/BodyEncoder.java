@@ -6,10 +6,10 @@ import soot.Body;
 
 public abstract class BodyEncoder extends Encoder {
 
-	public BodyEncoder(final Printer printer) {
-		super(printer);
-	}
+    public BodyEncoder(final Printer printer) {
+        super(printer);
+    }
 
-  public abstract void encodeBody(final Body body);
+    public abstract void encodeBody(final Body body);
 
 }

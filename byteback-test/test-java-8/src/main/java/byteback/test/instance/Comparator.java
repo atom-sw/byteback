@@ -4,7 +4,7 @@
 package byteback.test.instance;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 
 public interface Comparator {
 
@@ -21,7 +21,7 @@ public interface Comparator {
 
 	}
 
-	public static class LessThanComparator extends DefaultComparator {
+	 class LessThanComparator extends DefaultComparator {
 
 		@Behavior
 		public boolean compare_less_than(int a, int b, boolean returns) {
@@ -36,7 +36,7 @@ public interface Comparator {
 
 	}
 
-	public static class GreaterThanComparator extends DefaultComparator {
+	class GreaterThanComparator extends DefaultComparator {
 
 		@Behavior
 		public boolean compare_greater_than(int a, int b, boolean returns) {
@@ -51,7 +51,7 @@ public interface Comparator {
 
 	}
 
-	public static void main() {
+	static void main() {
 		LessThanComparator ltComparator = new LessThanComparator();
 		GreaterThanComparator gtComparator = new GreaterThanComparator();
 

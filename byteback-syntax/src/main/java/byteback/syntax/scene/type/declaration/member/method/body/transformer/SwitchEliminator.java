@@ -1,8 +1,8 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
+import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.transformer.TransformationException;
-import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.*;
 import soot.util.Chain;
@@ -27,6 +27,7 @@ public class SwitchEliminator extends BodyTransformer {
 
     private PatchingChain<Unit> expandSwitchStmt(final Value base, final Unit defaultTarget,
                                                  final Iterator<Map.Entry<IntConstant, Unit>> valueToTargetIterator) {
+
         final var units = new UnitPatchingChain(new HashChain<>());
 
         while (valueToTargetIterator.hasNext()) {

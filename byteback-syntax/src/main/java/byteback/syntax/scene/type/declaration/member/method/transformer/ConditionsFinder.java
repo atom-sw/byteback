@@ -1,12 +1,12 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
-import byteback.syntax.Vimp;
-import byteback.syntax.name.BBLibNames;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
-import byteback.syntax.tag.AnnotationReader;
-import byteback.syntax.transformer.TransformationException;
-import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsTag;
+import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsTagProvider;
+import byteback.syntax.tag.AnnotationTagReader;
+import byteback.syntax.transformer.TransformationException;
 import soot.*;
 import soot.tagkit.AnnotationStringElem;
 
@@ -22,9 +22,9 @@ public abstract class ConditionsFinder<T extends ConditionsTag> extends MethodTr
 
     private final String annotationDescriptor;
 
-    private final ConditionsProvider<T> conditionsTagProvider;
+    private final ConditionsTagProvider<T> conditionsTagProvider;
 
-    public ConditionsFinder(final String annotationDescriptor, final ConditionsProvider<T> conditionsTagProvider) {
+    public ConditionsFinder(final String annotationDescriptor, final ConditionsTagProvider<T> conditionsTagProvider) {
         this.annotationDescriptor = annotationDescriptor;
         this.conditionsTagProvider = conditionsTagProvider;
     }
@@ -37,11 +37,13 @@ public abstract class ConditionsFinder<T extends ConditionsTag> extends MethodTr
     public void transformMethod(final MethodContext methodContext) {
         final SootMethod targetMethod = methodContext.getSootMethod();
         final SootClass declaringClass = targetMethod.getDeclaringClass();
+        final T conditionsTag = conditionsTagProvider.gerOrCompute(targetMethod);
+        final var conditions = conditionsTag.getValues();
 
-        AnnotationReader.v().getAnnotations(targetMethod)
+        AnnotationTagReader.v().getAnnotations(targetMethod)
                 .filter((tag) -> tag.getType().equals(annotationDescriptor))
                 .forEach((tag) -> {
-                    if (AnnotationReader.v().getValue(tag).orElse(null) instanceof
+                    if (AnnotationTagReader.v().getValue(tag).orElse(null) instanceof
                             final AnnotationStringElem annotationStringElement) {
                         final String behaviorName = annotationStringElement.getValue();
                         final List<Type> behaviorParameterTypes = makeBehaviorParameterTypes(targetMethod);
@@ -53,7 +55,7 @@ public abstract class ConditionsFinder<T extends ConditionsTag> extends MethodTr
                         );
 
                         if (behaviorMethod != null) {
-                            if (!AnnotationReader.v().hasAnnotation(behaviorMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
+                            if (!BehaviorTagFlagger.v().isTagged(behaviorMethod)) {
                                 throw new TransformationException(
                                         "Not a behavior method: " + behaviorName,
                                         targetMethod
@@ -63,7 +65,7 @@ public abstract class ConditionsFinder<T extends ConditionsTag> extends MethodTr
                             final var behaviorParameters = makeBehaviorParameters(targetMethod);
                             final SootMethodRef methodRef = behaviorMethod.makeRef();
                             final Value behaviorValue = Vimp.v().newCallExpr(methodRef, behaviorParameters);
-                            conditionsTagProvider.getOrCompute(targetMethod).getValues().add(behaviorValue);
+                            conditions.add(behaviorValue);
                         } else {
                             throw new TransformationException(
                                     "Could not find behavior method: " + behaviorName,

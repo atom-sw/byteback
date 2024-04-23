@@ -1,10 +1,10 @@
 package byteback.syntax.scene.type.declaration.member.method.body.unit.transformer;
 
+import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.LogicConstant;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
-import byteback.common.function.Lazy;
 import soot.*;
 import soot.jimple.*;
 
@@ -41,6 +41,9 @@ public class LogicConstantTransformer extends UnitTransformer {
         } else if (unit instanceof final SpecificationStmt specificationStmt) {
             final ValueBox conditionValueBox = specificationStmt.getConditionBox();
             transformValueOfType(BooleanType.v(), conditionValueBox);
+        } else if (unit instanceof final ReturnStmt returnStmt) {
+            final SootMethod sootMethod = unitContext.getBodyContext().getSootMethod();
+            transformValueOfType(sootMethod.getReturnType(), returnStmt.getOpBox());
         }
     }
 

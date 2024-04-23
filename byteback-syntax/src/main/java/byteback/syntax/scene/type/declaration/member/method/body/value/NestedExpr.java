@@ -40,18 +40,21 @@ public class NestedExpr implements Immediate, DefaultCaseValue {
     @Override
     public Object clone() {
         final Value value = valueBox.getValue();
+
         return new NestedExpr((Value) value.clone());
     }
 
     @Override
     public boolean equivTo(final Object object) {
         final Value value = valueBox.getValue();
+
         return value.equivTo(object);
     }
 
     @Override
     public int equivHashCode() {
         final Value value = valueBox.getValue();
+
         return value.equivHashCode();
     }
 

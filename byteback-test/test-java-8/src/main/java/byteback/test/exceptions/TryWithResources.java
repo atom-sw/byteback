@@ -4,11 +4,11 @@
 package byteback.test.exceptions;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 import static byteback.specification.Special.*;
-import static byteback.specification.Quantifier.*;
+import static byteback.specification.Quantifiers.*;
 
-import byteback.specification.Binding;
+import byteback.specification.Bindings;
 
 public class TryWithResources {
 
@@ -23,9 +23,10 @@ public class TryWithResources {
 			closed = false;
 		}
 
+		@TwoState
 		@Behavior
 		public boolean otherResourcesAreClosed() {
-			final Resource r = (Resource) Binding.reference();
+			final Resource r = Bindings.reference(Resource.class);
 
 			return forall(r, implies(neq(r, this), eq(old(r.closed), r.closed)));
 		}

@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.Vimp;
 import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import soot.Body;
 import soot.Unit;
@@ -31,9 +31,11 @@ public class ThisAssumptionInserter extends BodyTransformer {
 
         if (!body.getMethod().isStatic()) {
             final Value condition =
-                    Jimple.v().newNeExpr(
-                            body.getThisLocal(),
-                            NullConstant.v()
+                    Vimp.v().nest(
+                            Jimple.v().newNeExpr(
+                                    body.getThisLocal(),
+                                    NullConstant.v()
+                            )
                     );
             final Unit assumeUnit = Vimp.v().newAssumeStmt(condition);
             body.getUnits().addFirst(assumeUnit);

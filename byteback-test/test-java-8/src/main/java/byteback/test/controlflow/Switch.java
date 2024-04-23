@@ -6,13 +6,13 @@ package byteback.test.controlflow;
 public class Switch {
 
 	public static int intSwitch(final int a) {
-		int b;
+		int b = 0;
 
 		switch (a) {
 			case 1 :
 				b = 1;
 			case 2 :
-				b = 2;
+				b = b + 1;
 				break;
 			default :
 				b = 0;

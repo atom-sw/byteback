@@ -6,10 +6,10 @@ import soot.Value;
 
 public abstract class ValueEncoder extends Encoder {
 
-	public ValueEncoder(final Printer printer) {
-		super(printer);
-	}
+    public ValueEncoder(final Printer printer) {
+        super(printer);
+    }
 
-	public abstract void encodeValue(final Value value);
+    public abstract void encodeValue(final Value value);
 
 }

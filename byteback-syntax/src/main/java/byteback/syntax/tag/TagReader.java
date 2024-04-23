@@ -38,6 +38,10 @@ public abstract class TagReader<K extends Host, V extends Tag> {
         return (Optional<V>) Optional.ofNullable(host.getTag(tagName));
     }
 
+    public V getOrThrow(final K host) {
+        return get(host).orElseThrow();
+    }
+
     /**
      * Checks whether a host owns the specific tag managed by this instance.
      *

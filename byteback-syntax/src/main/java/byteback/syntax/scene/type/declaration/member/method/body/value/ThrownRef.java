@@ -8,9 +8,9 @@ import soot.jimple.internal.JCaughtExceptionRef;
 /**
  * A concrete version of JCaughtExceptionRef, which can be assigned to. We use this to model exceptional behavior using
  * branches/guards.
- * @see GuardTransformer
  *
  * @author paganma
+ * @see GuardTransformer
  */
 public class ThrownRef extends JCaughtExceptionRef implements Immediate, ConcreteRef {
 }

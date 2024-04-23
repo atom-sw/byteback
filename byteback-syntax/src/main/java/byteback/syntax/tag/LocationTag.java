@@ -11,27 +11,13 @@ import soot.tagkit.Tag;
  */
 public class LocationTag implements Tag {
 
-    public static final String NAME = "LocationTag";
-
-    public static final String DEFAULT_PATH = "unknown";
-
     public static final int DEFAULT_LINE = -1;
-
+    public static final String DEFAULT_PATH = "unknown";
     private static final Lazy<LocationTag> DEFAULT_INSTANCE =
             Lazy.from(() -> new LocationTag(DEFAULT_PATH, DEFAULT_LINE));
-
-    /**
-     * Getter for the default instance of LocationTag. This can be used to represent an unknown location.
-     *
-     * @return The default instance of LocationTag.
-     */
-    public static LocationTag defaultV() {
-        return DEFAULT_INSTANCE.get();
-    }
-
-    private final String path;
-
+    public static final String NAME = "LocationTag";
     private final int line;
+    private final String path;
 
     /**
      * Constructs a new LocationTag.
@@ -42,15 +28,6 @@ public class LocationTag implements Tag {
     LocationTag(final String path, final int line) {
         this.path = path;
         this.line = line;
-    }
-
-    /**
-     * Getter for the path contained in the location tag.
-     *
-     * @return The path contained in the location tag.
-     */
-    public String getPath() {
-        return path;
     }
 
     /**
@@ -67,9 +44,27 @@ public class LocationTag implements Tag {
         return NAME;
     }
 
+    /**
+     * Getter for the path contained in the location tag.
+     *
+     * @return The path contained in the location tag.
+     */
+    public String getPath() {
+        return path;
+    }
+
     @Override
     public byte[] getValue() throws AttributeValueException {
         return new byte[0];
+    }
+
+    /**
+     * Getter for the default instance of LocationTag. This can be used to represent an unknown location.
+     *
+     * @return The default instance of LocationTag.
+     */
+    public static LocationTag defaultV() {
+        return DEFAULT_INSTANCE.get();
     }
 
     @Override

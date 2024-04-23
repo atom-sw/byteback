@@ -12,27 +12,27 @@ import java.util.function.Function;
  */
 public abstract class PropertyProvider<A, B> implements Function<A, B> {
 
-    final WeakHashMap<A, B> instanceToProperty;
+	final WeakHashMap<A, B> instanceToProperty;
 
-    public PropertyProvider(final WeakHashMap<A, B> instanceToProperty) {
-        this.instanceToProperty = instanceToProperty;
-    }
+	public PropertyProvider(final WeakHashMap<A, B> instanceToProperty) {
+		this.instanceToProperty = instanceToProperty;
+	}
 
-    public PropertyProvider() {
-        this(new WeakHashMap<>());
-    }
+	public PropertyProvider() {
+		this(new WeakHashMap<>());
+	}
 
-    protected abstract B compute(final A instance);
+	protected abstract B compute(final A instance);
 
-    public B apply(final A instance) {
-        B property = instanceToProperty.get(instance);
+	public B apply(final A instance) {
+		B property = instanceToProperty.get(instance);
 
-        if (property == null) {
-            property = compute(instance);
-            instanceToProperty.put(instance, property);
-        }
+		if (property == null) {
+			property = compute(instance);
+			instanceToProperty.put(instance, property);
+		}
 
-        return property;
-    }
+		return property;
+	}
 
 }

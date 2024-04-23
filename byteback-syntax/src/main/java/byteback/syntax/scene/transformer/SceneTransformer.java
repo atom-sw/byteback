@@ -18,7 +18,7 @@ public abstract class SceneTransformer extends soot.SceneTransformer {
      * Defined for compatibility with Soot's whole-program transformation packs.
      *
      * @param phaseName The name of the phase.
-     * @param options The options passed to the phase.
+     * @param options   The options passed to the phase.
      */
     @Override
     protected void internalTransform(final String phaseName, final Map<String, String> options) {

@@ -1,10 +1,9 @@
 package byteback.specification.plugin;
 
-import byteback.specification.Contract.Attach;
 import byteback.specification.Contract.Lemma;
 import byteback.specification.Contract.Return;
 
-@Attach("soot.dummy.InvokeDynamic")
+@Plugin.Attach("soot.dummy.InvokeDynamic")
 public abstract class InvokeDynamicSpec {
 
 	@Lemma

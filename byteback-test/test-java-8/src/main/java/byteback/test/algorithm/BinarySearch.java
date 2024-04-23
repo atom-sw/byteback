@@ -3,18 +3,18 @@
  */
 package byteback.test.algorithm;
 
-import byteback.specification.Binding;
+import byteback.specification.Bindings;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
-import static byteback.specification.Quantifier.forall;
+import static byteback.specification.Operators.*;
+import static byteback.specification.Quantifiers.forall;
 
 public class BinarySearch {
 
     @Behavior
     public static boolean sorted_array(int[] a, int n, int left, int right) {
-        int i = Binding.integer();
-        int j = Binding.integer();
+        int i = Bindings.integer();
+        int j = Bindings.integer();
 
         return forall(i, forall(j, implies(lte(left, i) & lt(i, j) & lte(j, right), lte(a[i], a[j]))));
     }

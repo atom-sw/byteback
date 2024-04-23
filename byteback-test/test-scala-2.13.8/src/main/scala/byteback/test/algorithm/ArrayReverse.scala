@@ -5,10 +5,10 @@ package byteback.test.algorithm;
 
 import byteback.specification.Contract._;
 import byteback.specification.Special._;
-import byteback.specification.Operator._;
-import byteback.specification.Operator.{eq => equal};
-import byteback.specification.Binding;
-import byteback.specification.Quantifier._;
+import byteback.specification.Operators._;
+import byteback.specification.Operators.{eq => equal};
+import byteback.specification.Bindings;
+import byteback.specification.Quantifiers._;
 
 class ArrayReverse {
 

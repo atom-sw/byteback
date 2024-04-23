@@ -1,17 +1,21 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
+import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.QuantifierExpr;
-import byteback.syntax.Vimp;
-import byteback.common.function.Lazy;
+import byteback.syntax.transformer.TransformationException;
+import soot.*;
+import soot.jimple.AssignStmt;
+import soot.jimple.InvokeExpr;
+import soot.jimple.StaticInvokeExpr;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.scalar.SimpleLocalDefs;
+import soot.util.HashChain;
 
 import java.util.Iterator;
-
-import soot.*;
-import soot.jimple.*;
-import soot.util.Chain;
-import soot.util.HashChain;
+import java.util.List;
 
 /**
  * Transforms BBLib's quantifier expressions.
@@ -34,17 +38,20 @@ public class QuantifierValueTransformer extends BodyTransformer {
         final Body body = bodyContext.getBody();
         final PatchingChain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
+        final var unitGraph = new BriefUnitGraph(body);
+        final var localDefs = new SimpleLocalDefs(unitGraph);
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
 
             if (unit instanceof final AssignStmt assignStmt) {
                 final Value rightOp = assignStmt.getRightOp();
+
                 if (rightOp instanceof final InvokeExpr invokeExpr) {
                     final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
                     final SootClass declaringClass = invokedMethodRef.getDeclaringClass();
 
-                    if (BBLibNames.v().isBindingClass(declaringClass)) {
+                    if (BBLibNames.v().isBindingsClass(declaringClass)) {
                         body.getUnits().remove(assignStmt);
                         continue;
                     }
@@ -52,20 +59,31 @@ public class QuantifierValueTransformer extends BodyTransformer {
             }
 
             for (final ValueBox valueBox : unit.getUseBoxes()) {
-                if (valueBox.getValue() instanceof final StaticInvokeExpr invokeExpr) {
+                final Value value = valueBox.getValue();
+
+                if (value instanceof final StaticInvokeExpr invokeExpr) {
                     final SootMethod invokedMethod = invokeExpr.getMethod();
                     final SootClass declaringClass = invokedMethod.getDeclaringClass();
 
-                    if (BBLibNames.v().isQuantifierClass(declaringClass)) {
+                    if (BBLibNames.v().isQuantifiersClass(declaringClass)) {
                         assert invokeExpr.getArgCount() == 2;
-                        final Chain<Local> locals = new HashChain<>();
+                        final var locals = new HashChain<Local>();
                         final Value bindingValue = invokeExpr.getArg(0);
                         final Value expressionValue = invokeExpr.getArg(1);
 
                         if (bindingValue instanceof final Local local) {
                             locals.add(local);
+                            final List<Unit> defUnits = localDefs.getDefsOfAt(local, unit);
+
+                            for (final Unit defUnit : defUnits) {
+                                units.remove(defUnit);
+                            }
                         } else {
-                            throw new RuntimeException("First argument of quantifier method must be a local variable");
+                            throw new TransformationException(
+                                    "First argument of quantifier method must be a local variable, got: "
+                                            + bindingValue + ".",
+                                    unit
+                            );
                         }
 
                         final QuantifierExpr substitute = switch (invokedMethod.getName()) {
@@ -73,8 +91,10 @@ public class QuantifierValueTransformer extends BodyTransformer {
                                     Vimp.v().newForallExpr(locals, expressionValue);
                             case BBLibNames.EXISTENTIAL_QUANTIFIER_NAME ->
                                     Vimp.v().newLogicExistsExpr(locals, expressionValue);
-                            default ->
-                                    throw new IllegalStateException("Unknown quantifier method " + invokedMethod.getName());
+                            default -> throw new IllegalStateException(
+                                    "Unknown quantifier method "
+                                            + invokedMethod.getName()
+                            );
                         };
 
                         valueBox.setValue(substitute);

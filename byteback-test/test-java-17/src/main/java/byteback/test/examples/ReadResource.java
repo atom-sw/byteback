@@ -11,7 +11,7 @@ import byteback.specification.Contract.Function;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 import static byteback.specification.Special.*;
 
 public class ReadResource {

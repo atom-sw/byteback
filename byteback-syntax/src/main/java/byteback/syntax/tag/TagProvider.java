@@ -4,45 +4,43 @@ import soot.tagkit.Host;
 import soot.tagkit.Tag;
 
 /**
- * Lazily computes and assigns tags to hosts.
+ * Manages tags in a given host.
  *
  * @param <K> The type of the hosts.
  * @param <V> The type of the tags.
  * @author paganma
  */
-public abstract class TagProvider<K extends Host, V extends Tag> extends TagManager<K, V> {
+public abstract class TagProvider<K extends Host, V extends Tag> extends TagReader<K, V> {
 
     /**
-     * Constructs a new TagProvider.
+     * Constructs a new TagManager.
      *
-     * @param tagName The name of the tag provided by this instance.
+     * @param tagName The name of the tag managed by this instance.
      */
     public TagProvider(final String tagName) {
         super(tagName);
     }
 
     /**
-     * Defines how to compute a tag from a single host.
+     * Adds or replaces a tag of a host.
      *
-     * @param host The host for which the tag is computed.
-     * @return The new tag associated with the host.
+     * @param host The host owning the tags.
+     * @param tag  The tag to be updated within the tags owned by the host.
      */
-    public abstract V compute(final K host);
+    public void put(final K host, final V tag) {
+        final String actualTagName = tag.getName();
 
-    /**
-     * Fetches a tag or computes it if needed.
-     *
-     * @param host The host owning the tag.
-     * @return The tag associated with the host.
-     */
-    public V getOrCompute(final K host) {
-        return super.get(host)
-                .orElseGet(() -> {
-                    final V tag = compute(host);
-                    TagProvider.this.put(host, tag);
-
-                    return tag;
-                });
+        if (actualTagName.equals(tagName)) {
+            host.removeTag(tagName);
+            host.addTag(tag);
+        } else {
+            throw new IllegalArgumentException(
+                    "Wrong name for tag: "
+                            + tag.getName() + ". "
+                            + "Check that this tag manager is appropriately configured to deal with tags of type "
+                            + tag.getClass()
+            );
+        }
     }
 
 }

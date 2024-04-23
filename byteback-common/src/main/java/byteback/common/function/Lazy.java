@@ -10,33 +10,33 @@ import java.util.function.Supplier;
  */
 public class Lazy<T> implements Supplier<T> {
 
-    private final Supplier<T> supplier;
-    private T value;
+	private final Supplier<T> supplier;
+	private T value;
 
-    private Lazy(final Supplier<T> supplier) {
-        this.supplier = supplier;
-    }
+	private Lazy(final Supplier<T> supplier) {
+		this.supplier = supplier;
+	}
 
-    public static <T> Lazy<T> from(final Supplier<T> supplier) {
-        return new Lazy<>(supplier);
-    }
+	public static <T> Lazy<T> from(final Supplier<T> supplier) {
+		return new Lazy<>(supplier);
+	}
 
-    public synchronized void invalidate() {
-        value = null;
-    }
+	public synchronized void invalidate() {
+		value = null;
+	}
 
-    public synchronized T get() {
-        if (value != null) {
-            return value;
-        } else {
-            return initialize();
-        }
-    }
+	public synchronized T get() {
+		if (value != null) {
+			return value;
+		} else {
+			return initialize();
+		}
+	}
 
-    private T initialize() {
-        value = supplier.get();
+	private T initialize() {
+		value = supplier.get();
 
-        return value;
-    }
+		return value;
+	}
 
 }

@@ -1,14 +1,11 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.Vimp;
+import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ExceptionalTargetFlagger;
-import byteback.common.function.Lazy;
-
-import java.util.Set;
-
 import soot.Body;
 import soot.Unit;
 import soot.Value;
@@ -19,6 +16,8 @@ import soot.jimple.Jimple;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.util.Chain;
+
+import java.util.Set;
 
 /**
  * Specifies non-exceptional loop exits as such, by adding `assume @caughtexception == @void` at every non-exceptional
@@ -49,9 +48,11 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
                 final CaughtExceptionRef exceptionRef = Vimp.v().newCaughtExceptionRef();
                 final VoidConstant voidConstant = VoidConstant.v();
                 final Value behaviorValue =
-                        Jimple.v().newEqExpr(
-                                exceptionRef,
-                                voidConstant
+                        Vimp.v().nest(
+                                Jimple.v().newEqExpr(
+                                        exceptionRef,
+                                        voidConstant
+                                )
                         );
                 final AssertStmt assertUnit = Vimp.v().newAssertStmt(behaviorValue);
                 final Unit target;
@@ -67,7 +68,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
 
                 // Insert the assumption only if exit target is not an exceptional target
                 // (as tagged by GuardTransformer).
-                if (ExceptionalTargetFlagger.v().get(target).isEmpty()) {
+                if (ThrowTargetTagFlagger.v().get(target).isEmpty()) {
                     units.insertBefore(assertUnit, target);
                     target.redirectJumpsToThisTo(assertUnit);
                 }

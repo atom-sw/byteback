@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagProvider;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
 import soot.Value;
 
@@ -10,14 +10,14 @@ import java.util.List;
 
 public class PostconditionsPropagator extends ConditionsPropagator<PostconditionsTag> {
 
-    private static final Lazy<PostconditionsPropagator> instance =
-            Lazy.from(() -> new PostconditionsPropagator(PostconditionsProvider.v()));
+    private static final Lazy<PostconditionsPropagator> INSTANCE =
+            Lazy.from(() -> new PostconditionsPropagator(PostconditionsTagProvider.v()));
 
     public static PostconditionsPropagator v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
-    private PostconditionsPropagator(final PostconditionsProvider conditionsProvider) {
+    private PostconditionsPropagator(final PostconditionsTagProvider conditionsProvider) {
         super(conditionsProvider);
     }
 

@@ -1,12 +1,14 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.BehaviorFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ReturnRef;
+import soot.SootMethod;
 import soot.Unit;
 import soot.ValueBox;
 import soot.jimple.AssignStmt;
+import soot.jimple.ReturnStmt;
 
 /**
  * Folds the expressions in a behavior method.
@@ -23,15 +25,16 @@ public class BehaviorExprFolder extends ExprFolder {
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
-        if (BehaviorFlagger.v().isTagged(bodyContext.getSootMethod())) {
+        final SootMethod sootMethod = bodyContext.getSootMethod();
+
+        if (BehaviorTagFlagger.v().isTagged(sootMethod)) {
             super.transformBody(bodyContext);
         }
     }
 
     @Override
     public boolean canSubstituteUse(final Unit unit, final ValueBox valueBox) {
-        return unit instanceof final AssignStmt assignStmt
-                && assignStmt.getLeftOp() instanceof ReturnRef;
+        return unit instanceof ReturnStmt;
     }
 
 }

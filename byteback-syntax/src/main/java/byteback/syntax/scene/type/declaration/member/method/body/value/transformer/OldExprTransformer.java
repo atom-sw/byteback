@@ -1,11 +1,11 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.transformer;
 
-import byteback.syntax.Vimp;
-import byteback.syntax.name.BBLibNames;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.TwoStateFlagger;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.name.BBLibNames;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.OldExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
 import soot.*;
@@ -30,8 +30,6 @@ public class OldExprTransformer extends ValueTransformer {
 
     @Override
     public void transformValue(final ValueContext valueContext) {
-        final UnitContext unitContext = valueContext.getUnitContext();
-        final BodyContext bodyContext = unitContext.getBodyContext();
         final ValueBox valueBox = valueContext.getValueBox();
         final Value value = valueBox.getValue();
 
@@ -40,11 +38,9 @@ public class OldExprTransformer extends ValueTransformer {
             final SootClass declaringClass = invokedMethodRef.getDeclaringClass();
 
             if (BBLibNames.v().isSpecialClass(declaringClass)) {
-                if (invokedMethodRef.getName().equals("old")) {
+                if (invokedMethodRef.getName().equals(BBLibNames.OLD_NAME)) {
                     final OldExpr oldExpr = Vimp.v().newOldExpr(invokeExpr.getArg(0));
                     valueBox.setValue(oldExpr);
-                    final Body body = bodyContext.getBody();
-                    TwoStateFlagger.v().flag(bodyContext.getSootMethod());
                 }
             }
         }

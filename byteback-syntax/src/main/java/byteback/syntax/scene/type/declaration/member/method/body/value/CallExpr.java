@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.printer.InlineUnitPrinter;
-import byteback.syntax.Vimp;
 import soot.*;
 import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractInvokeExpr;
@@ -21,7 +21,7 @@ public class CallExpr extends AbstractInvokeExpr implements Immediate, DefaultCa
     public CallExpr(final SootMethodRef methodRef, final List<Value> args) {
         super(methodRef, new ValueBox[args.size()]);
 
-        for (final ListIterator<Value> valueIterator = args.listIterator(); valueIterator.hasNext();) {
+        for (final ListIterator<Value> valueIterator = args.listIterator(); valueIterator.hasNext(); ) {
             final Value value = valueIterator.next();
             this.argBoxes[valueIterator.previousIndex()] = Vimp.v().newImmediateBox(value);
         }

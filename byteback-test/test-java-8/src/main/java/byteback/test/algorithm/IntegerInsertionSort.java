@@ -4,16 +4,16 @@
 package byteback.test.algorithm;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
-import static byteback.specification.Quantifier.*;
+import static byteback.specification.Operators.*;
+import static byteback.specification.Quantifiers.*;
 
-import byteback.specification.Binding;
+import byteback.specification.Bindings;
 
 public class IntegerInsertionSort {
 
 	@Behavior
 	public static boolean sorted(final int[] a, final int i, final int j) {
-		final int k = Binding.integer();
+		final int k = Bindings.integer();
 
 		return forall(k, implies(lt(i, k) & lt(k, j), lte(a[k - 1], a[k])));
 	}

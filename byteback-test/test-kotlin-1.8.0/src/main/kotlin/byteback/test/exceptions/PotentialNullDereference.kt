@@ -5,7 +5,7 @@
 package byteback.test.exceptions
 
 import byteback.specification.Contract.*
-import byteback.specification.Operator.*
+import byteback.specification.Operators.*
 
 class A @Return constructor() {
 

@@ -1,6 +1,6 @@
 package byteback.syntax.transformer;
 
-import byteback.syntax.tag.LocationReader;
+import byteback.syntax.tag.LocationTagReader;
 import byteback.syntax.tag.LocationTag;
 import soot.tagkit.Host;
 
@@ -28,7 +28,7 @@ public class TransformationException extends RuntimeException {
      * @param host    The host containing the location tag corresponding to this exception.
      */
     public TransformationException(final String message, final Host host) {
-        this(message, LocationReader.v().get(host).orElse(LocationTag.defaultV()));
+        this(message, LocationTagReader.v().get(host).orElse(LocationTag.defaultV()));
     }
 
     /**

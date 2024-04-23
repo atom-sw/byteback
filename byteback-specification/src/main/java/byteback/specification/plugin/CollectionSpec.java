@@ -1,8 +1,7 @@
 package byteback.specification.plugin;
 
-import byteback.specification.Contract.Attach;
+import byteback.specification.plugin.Plugin.Attach;
 import byteback.specification.Contract.Return;
-import java.util.Collection;
 
 @Attach("java.util.Collection")
 public abstract class CollectionSpec {

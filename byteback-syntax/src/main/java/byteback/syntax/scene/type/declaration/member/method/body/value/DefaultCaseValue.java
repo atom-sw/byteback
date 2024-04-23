@@ -14,7 +14,7 @@ public interface DefaultCaseValue extends Value, Switchable {
 
     @Override
     default void apply(final Switch visitor) {
-        if (visitor instanceof ExprSwitch exprSwitch) {
+        if (visitor instanceof final ExprSwitch exprSwitch) {
             exprSwitch.defaultCase(this);
         }
     }

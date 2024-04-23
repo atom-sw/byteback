@@ -10,6 +10,7 @@ import byteback.test.exceptions.Basic.Exception4;
 
 public class MultiCatch {
 
+	@Exceptional
 	@Behavior
 	public boolean always_throws_exception1_exception2() {
 		return thrown() instanceof Exception1;

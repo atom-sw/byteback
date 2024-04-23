@@ -3,7 +3,7 @@ package byteback.syntax.scene.type.declaration.member.method.transformer;
 import byteback.syntax.scene.context.SceneContext;
 import byteback.syntax.scene.type.declaration.context.ClassContext;
 import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
-import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsTagProvider;
 import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsTag;
 import soot.*;
 
@@ -12,10 +12,10 @@ import java.util.List;
 
 public abstract class ConditionsPropagator<T extends ConditionsTag> extends MethodTransformer {
 
-    private final ConditionsProvider<T> conditionsProvider;
+    private final ConditionsTagProvider<T> conditionsTagManager;
 
-    public ConditionsPropagator(final ConditionsProvider<T> conditionsProvider) {
-        this.conditionsProvider = conditionsProvider;
+    public ConditionsPropagator(final ConditionsTagProvider<T> conditionsTagManager) {
+        this.conditionsTagManager = conditionsTagManager;
     }
 
     public abstract List<Value> combineConditions(List<Value> originalConditions, List<Value> overridingConditions);
@@ -35,10 +35,10 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
         final SceneContext sceneContext = classContext.getSceneContext();
         final Scene scene = sceneContext.getScene();
         final SootClass declaringClass = classContext.getSootClass();
-        final ConditionsTag conditionsTag = conditionsProvider.getOrCompute(sootMethod);
-        final List<Value> originalConditionBoxes = conditionsTag.getValues();
+        final ConditionsTag conditionsTag = conditionsTagManager.getOrThrow(sootMethod);
+        final List<Value> originalConditions = conditionsTag.getValues();
 
-        if (originalConditionBoxes.isEmpty()) {
+        if (originalConditions.isEmpty()) {
             return;
         }
 
@@ -54,9 +54,9 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
             );
 
             if (overridingMethod != null) {
-                final ConditionsTag overridingConditionsTag = conditionsProvider.getOrCompute(overridingMethod);
+                final ConditionsTag overridingConditionsTag = conditionsTagManager.getOrThrow(overridingMethod);
                 final List<Value> overridingConditions = overridingConditionsTag.getValues();
-                final List<Value> combinedConditions = combineConditions(originalConditionBoxes, overridingConditions);
+                final List<Value> combinedConditions = combineConditions(originalConditions, overridingConditions);
                 overridingConditionsTag.setValues(combinedConditions);
             }
 

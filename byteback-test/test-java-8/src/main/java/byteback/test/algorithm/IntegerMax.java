@@ -4,10 +4,10 @@
 package byteback.test.algorithm;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
-import static byteback.specification.Quantifier.*;
+import static byteback.specification.Operators.*;
+import static byteback.specification.Quantifiers.*;
 
-import byteback.specification.Binding;
+import byteback.specification.Bindings;
 
 public class IntegerMax {
 
@@ -18,7 +18,7 @@ public class IntegerMax {
 
 	@Behavior
 	public static boolean max_in_range(int a[], int n, int start, int end) {
-		int i = Binding.integer();
+		int i = Bindings.integer();
 
 		return forall(i, implies(lte(start, i) & lt(i, end), gte(n, a[i])));
 	}

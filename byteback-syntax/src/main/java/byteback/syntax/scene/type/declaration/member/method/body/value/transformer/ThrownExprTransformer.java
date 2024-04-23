@@ -1,17 +1,18 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.transformer;
 
-import byteback.syntax.name.BBLibNames;
-import byteback.syntax.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.ExceptionalFlagger;
 import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
-import soot.*;
+import soot.SootMethodRef;
+import soot.Value;
+import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 
 /**
- *
  * @author paganma
  */
 public class ThrownExprTransformer extends ValueTransformer {
@@ -27,8 +28,6 @@ public class ThrownExprTransformer extends ValueTransformer {
 
     @Override
     public void transformValue(final ValueContext valueContext) {
-        final UnitContext unitContext = valueContext.getUnitContext();
-        final BodyContext bodyContext = unitContext.getBodyContext();
         final ValueBox valueBox = valueContext.getValueBox();
         final Value value = valueBox.getValue();
 
@@ -36,9 +35,8 @@ public class ThrownExprTransformer extends ValueTransformer {
             final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
 
             if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {
-                if (invokedMethodRef.getName().equals("thrown")) {
+                if (invokedMethodRef.getName().equals(BBLibNames.THROWN_NAME)) {
                     valueBox.setValue(Vimp.v().newCaughtExceptionRef());
-                    ExceptionalFlagger.v().flag(bodyContext.getSootMethod());
                 }
             }
         }

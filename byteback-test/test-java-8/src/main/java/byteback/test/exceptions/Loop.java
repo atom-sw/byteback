@@ -8,7 +8,7 @@ import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 
 public class Loop {
 

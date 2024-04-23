@@ -13,18 +13,18 @@ import soot.jimple.internal.ImmediateBox;
  */
 public class IffExpr extends AbstractIntBinopExpr implements DefaultCaseValue, ConditionExpr {
 
-	public IffExpr(final Value op1, final Value op2) {
-		super(new ImmediateBox(op1), new ImmediateBox(op2));
-	}
+    public IffExpr(final Value op1, final Value op2) {
+        super(new ImmediateBox(op1), new ImmediateBox(op2));
+    }
 
-	@Override
-	public String getSymbol() {
-		return " <-> ";
-	}
+    @Override
+    public String getSymbol() {
+        return " <-> ";
+    }
 
-	@Override
-	public IffExpr clone() {
-		return new IffExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
-	}
+    @Override
+    public IffExpr clone() {
+        return new IffExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+    }
 
 }

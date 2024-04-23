@@ -5,8 +5,8 @@ package byteback.test.exceptions;
 
 import byteback.specification.Contract._;
 import byteback.specification.Special._;
-import byteback.specification.Operator._;
-import byteback.specification.Operator.{eq => equal};
+import byteback.specification.Operators._;
+import byteback.specification.Operators.{eq => equal};
 
 import scala.annotation.meta._;
 

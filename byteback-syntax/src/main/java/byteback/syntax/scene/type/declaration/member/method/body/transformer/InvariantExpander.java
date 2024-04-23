@@ -1,14 +1,10 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.Vimp;
+import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.InvariantStmt;
-import byteback.common.function.Lazy;
-
-import java.util.*;
-import java.util.function.Supplier;
-
 import soot.Body;
 import soot.PatchingChain;
 import soot.Unit;
@@ -18,37 +14,13 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.toolkits.graph.LoopNestTree;
 
+import java.util.HashSet;
+import java.util.function.Supplier;
+
 /**
- * Expands loop invariants into a set of assertions and assumptions.
- * The criteria used is as follows:
- * ``` java
- * HEAD:
- *   ...
- *   invariant e;
- *   ...
- *   if (c) goto EXIT;
- *   ...
- *   goto HEAD;
- *   ...
- * EXIT:
- *   ...
- * ```
- * is transformed into:
- * ``` java
- *   assert e;
- * HEAD:
- *   assume e;
- *   ...
- *   assert e;
- *   if (c) goto EXIT;
- *   ...
- *   assert e;
- *   goto HEAD;
- *   ...
- * EXIT:
- *   assume e
- *   ...
- * ```
+ * Expands loop invariants into a set of assertions and assumptions. The criteria used is as follows: ``` java HEAD: ...
+ * invariant e; ... if (c) goto EXIT; ... goto HEAD; ... EXIT: ... ``` is transformed into: ``` java assert e; HEAD:
+ * assume e; ... assert e; if (c) goto EXIT; ... assert e; goto HEAD; ... EXIT: assume e ... ```
  *
  * @author paganma
  */
@@ -88,7 +60,6 @@ public class InvariantExpander extends BodyTransformer {
                     }
 
                     units.insertBefore(assertionSupplier.get(), loop.getBackJumpStmt());
-
                     final HashSet<Unit> exitTargets = new HashSet<>();
 
                     for (final Stmt exit : loop.getLoopExits()) {

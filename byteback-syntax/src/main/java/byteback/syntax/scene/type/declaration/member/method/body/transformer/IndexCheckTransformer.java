@@ -1,6 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import soot.Scene;
 import soot.Unit;
 import soot.Value;

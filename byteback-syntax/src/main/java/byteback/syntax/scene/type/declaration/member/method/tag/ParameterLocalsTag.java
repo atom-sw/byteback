@@ -10,8 +10,8 @@ public class ParameterLocalsTag extends ValuesTag<Local> {
 
     public static final String NAME = "ParametersLocalsTag";
 
-    public ParameterLocalsTag(final List<Local> locals) {
-        super(locals);
+    public ParameterLocalsTag(final List<Local> parameterLocals) {
+        super(parameterLocals);
     }
 
     public ParameterLocalsTag() {

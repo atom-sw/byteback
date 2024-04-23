@@ -2,19 +2,85 @@ package byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl
 
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.BodyEncoder;
-import soot.Body;
-import soot.Unit;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.UnitEncoder;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.to_bpl.UnitToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTag;
+import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTagProvider;
+import byteback.syntax.scene.type.encoder.TypeAccessEncoder;
+import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
+import soot.*;
+import soot.jimple.AssignStmt;
+import soot.jimple.IdentityStmt;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class ProceduralBodyToBplEncoder extends BodyEncoder {
 
+    public static final String STMT_INDENT = "  ";
+
+    private final ValueToBplEncoder valueToBplEncoder;
+
+    private final TypeAccessToBplEncoder typeAccessToBplEncoder;
+
     public ProceduralBodyToBplEncoder(final Printer printer) {
-			super(printer);
+        super(printer);
+        this.valueToBplEncoder = new ValueToBplEncoder(printer);
+        this.typeAccessToBplEncoder = new TypeAccessToBplEncoder(printer);
+    }
+
+    public HashMap<Unit, String> makeUnitToLabelMap(final Body body) {
+        final var unitToLabel = new HashMap<Unit, String>();
+        int labelCounter = 0;
+
+        for (final UnitBox unitBox : body.getAllUnitBoxes()) {
+            if (unitBox.isBranchTarget()) {
+                final Unit unit = unitBox.getUnit();
+                unitToLabel.put(unit, "L" + labelCounter++);
+            }
+        }
+
+        return unitToLabel;
     }
 
     @Override
     public void encodeBody(final Body body) {
+        final SootMethod sootMethod = body.getMethod();
+        final HashMap<Unit, String> unitToLabelMap = makeUnitToLabelMap(body);
+        final var unitToBplEncoder = new UnitToBplEncoder(printer, unitToLabelMap);
+        final ParameterLocalsTag parameterLocalsTag = ParameterLocalsTagProvider.v().getOrThrow(sootMethod);
+        final List<Local> parameterLocals = parameterLocalsTag.getValues();
+
+        for (final Local local : body.getLocals()) {
+            if (parameterLocals.contains(local)) {
+                continue;
+            }
+
+            printer.print(STMT_INDENT);
+            printer.print("var ");
+            valueToBplEncoder.encodeLocal(local);
+            printer.print(": ");
+            final Type localType = local.getType();
+            typeAccessToBplEncoder.encodeTypeAccess(localType);
+            printer.print(";");
+            printer.endLine();
+        }
+
         for (final Unit unit : body.getUnits()) {
-            
+            if (unit instanceof IdentityStmt) {
+                continue;
+            }
+
+            final String label = unitToLabelMap.get(unit);
+
+            if (label != null) {
+                printer.printLine(label + ":");
+            }
+
+            printer.print(STMT_INDENT);
+            unitToBplEncoder.encodeUnit(unit);
+            printer.endLine();
         }
     }
 

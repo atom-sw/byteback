@@ -5,6 +5,11 @@ import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+/**
+ * A printer used to encode a syntax tree.
+ *
+ * @author paganma
+ */
 public class Printer implements AutoCloseable {
 
     private static class Separator {

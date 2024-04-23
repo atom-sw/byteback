@@ -43,12 +43,11 @@ import java.util.RandomAccess;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import byteback.specification.Contract.Raise;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 
 /**
  * Resizable-array implementation of the <tt>List</tt> interface. Implements

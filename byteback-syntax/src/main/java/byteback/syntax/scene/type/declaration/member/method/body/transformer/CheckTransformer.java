@@ -1,6 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import soot.*;
 import soot.javaToJimple.DefaultLocalGenerator;
@@ -122,7 +122,7 @@ public abstract class CheckTransformer extends BodyTransformer {
                 final Value unitCheck = unitCheckOption.get();
                 final Chain<Unit> throwUnits = makeThrowUnits(localGenerator);
                 units.insertBefore(throwUnits, unit);
-                final Unit checkStmt = Vimp.v().newIfStmt(unitCheck, unit);
+                final Unit checkStmt = Vimp.v().newIfStmt(Vimp.v().nest(unitCheck), unit);
                 units.insertBefore(checkStmt, throwUnits.getFirst());
             }
         }

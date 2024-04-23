@@ -1,17 +1,17 @@
 package byteback.syntax.scene.type.declaration.member.method.body.unit.transformer;
 
-import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
-import byteback.syntax.Vimp;
-import byteback.syntax.name.BBLibNames;
 import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.name.BBLibNames;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import soot.*;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 
 /**
- * Converts BBLib's invoke statements into specification statements, corresponding to assertions, assumptions,
- * and invariants.
+ * Converts BBLib's invoke statements into specification statements, corresponding to assertions, assumptions, and
+ * invariants.
  *
  * @author paganma
  */
@@ -31,7 +31,7 @@ public class SpecificationStmtTransformer extends UnitTransformer {
         final UnitBox unitBox = unitContext.getUnitBox();
         final Unit unit = unitBox.getUnit();
 
-        if (unit instanceof InvokeStmt invokeStmt) {
+        if (unit instanceof final InvokeStmt invokeStmt) {
             final InvokeExpr invokeExpr = invokeStmt.getInvokeExpr();
             final SootMethodRef methodRef = invokeExpr.getMethodRef();
             final SootClass declaringClass = methodRef.getDeclaringClass();
@@ -41,17 +41,13 @@ public class SpecificationStmtTransformer extends UnitTransformer {
                 final Value argument = invokeExpr.getArg(0);
 
                 final SpecificationStmt newUnit = switch (methodRef.getName()) {
-                    case BBLibNames.ASSERTION_NAME ->
-                            Vimp.v().newAssertStmt(argument);
-                    case BBLibNames.ASSUMPTION_NAME ->
-                            Vimp.v().newAssumeStmt(argument);
-                    case BBLibNames.INVARIANT_NAME ->
-                            Vimp.v().newInvariantStmt(argument);
-                    default ->
-                            throw new IllegalStateException(
-                                    "Unknown specification statement "
-                                            + methodRef.getName()
-                                            + "."
+                    case BBLibNames.ASSERTION_NAME -> Vimp.v().newAssertStmt(argument);
+                    case BBLibNames.ASSUMPTION_NAME -> Vimp.v().newAssumeStmt(argument);
+                    case BBLibNames.INVARIANT_NAME -> Vimp.v().newInvariantStmt(argument);
+                    default -> throw new IllegalStateException(
+                            "Unknown specification statement "
+                                    + methodRef.getName()
+                                    + "."
                     );
                 };
 

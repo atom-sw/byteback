@@ -1,13 +1,11 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.Vimp;
+import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ReturnRef;
-import byteback.common.function.Lazy;
-import soot.Body;
-import soot.Type;
-import soot.Unit;
-import soot.Value;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
+import soot.*;
 import soot.jimple.Jimple;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
@@ -34,6 +32,12 @@ public class ReturnEliminator extends BodyTransformer {
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
+        final SootMethod sootMethod = bodyContext.getSootMethod();
+
+        if (BehaviorTagFlagger.v().isTagged(sootMethod)) {
+            return;
+        }
+
         final Body body = bodyContext.getBody();
         final Type returnType = body.getMethod().getReturnType();
         final Chain<Unit> units = body.getUnits();

@@ -48,7 +48,7 @@ import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 import static byteback.specification.Special.*;
 
 /**
@@ -593,6 +593,7 @@ public class LinkedList<E>
 		return unlink(node(index));
 	}
 
+	@TwoState
 	@Behavior
 	public boolean size_invariant(int index, boolean returns) {
 		return eq(old(this.size), this.size);

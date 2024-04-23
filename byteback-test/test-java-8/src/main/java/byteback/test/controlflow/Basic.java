@@ -3,7 +3,7 @@
  */
 package byteback.test.controlflow;
 
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 import static byteback.specification.Contract.*;
 
 @SuppressWarnings("unused")

@@ -33,15 +33,6 @@ public abstract class ValuesTag<T extends Value> implements Tag {
     }
 
     /**
-     * Getter for the specification values contained in this tag.
-     *
-     * @return The specification values contained in this tag.
-     */
-    public List<T> getValues() {
-        return values;
-    }
-
-    /**
      * This method does not refer to the values contained within the tags.
      *
      * @return The value in bytes for this tag.
@@ -49,6 +40,15 @@ public abstract class ValuesTag<T extends Value> implements Tag {
     @Override
     public byte[] getValue() {
         return new byte[0];
+    }
+
+    /**
+     * Getter for the specification values contained in this tag.
+     *
+     * @return The specification values contained in this tag.
+     */
+    public List<T> getValues() {
+        return values;
     }
 
     public void setValues(final List<T> values) {

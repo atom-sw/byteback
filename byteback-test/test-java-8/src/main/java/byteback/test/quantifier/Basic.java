@@ -3,26 +3,25 @@
  */
 package byteback.test.quantifier;
 
-import static byteback.specification.Quantifier.exists;
-import static byteback.specification.Quantifier.forall;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Quantifiers.exists;
+import static byteback.specification.Quantifiers.forall;
+import static byteback.specification.Operators.*;
 
-import byteback.specification.Binding;
-import byteback.specification.Contract;
+import byteback.specification.Bindings;
 import byteback.specification.Contract.Behavior;
 
 public class Basic {
 
 	@Behavior
 	public static boolean universalQuantifier() {
-		int i = Binding.integer();
+		int i = Bindings.integer();
 
 		return forall(i, eq(i, 0));
 	}
 
 	@Behavior
 	public static boolean existentialQuantifier() {
-		int i = Binding.integer();
+		int i = Bindings.integer();
 
 		return exists(i, eq(i, 0));
 	}

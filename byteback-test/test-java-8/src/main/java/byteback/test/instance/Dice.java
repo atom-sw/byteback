@@ -4,7 +4,7 @@
 package byteback.test.instance;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 
 public class Dice {
 
@@ -22,7 +22,7 @@ public class Dice {
 
 		@Ensure("outcome_is_positive")
 		@Ensure("outcome_is_leq_max")
-		public int roll(int max);
+		int roll(int max);
 
 	}
 

@@ -3,8 +3,8 @@
  */
 package byteback.test.operation;
 
-import static byteback.specification.Operator.implies;
-import static byteback.specification.Operator.not;
+import static byteback.specification.Operators.implies;
+import static byteback.specification.Operators.not;
 
 import byteback.specification.Contract.*;
 

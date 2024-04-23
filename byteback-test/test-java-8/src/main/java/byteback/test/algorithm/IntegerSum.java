@@ -4,10 +4,10 @@
 package byteback.test.algorithm;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
-import static byteback.specification.Quantifier.*;
+import static byteback.specification.Operators.*;
+import static byteback.specification.Quantifiers.*;
 
-import byteback.specification.Binding;
+import byteback.specification.Bindings;
 import byteback.specification.Contract.Ensure;
 import byteback.specification.Contract.Behavior;
 
@@ -16,7 +16,7 @@ public class IntegerSum {
 
 	@Behavior
 	public static boolean positive_arguments(int[] as) {
-		int i = Binding.integer();
+		int i = Bindings.integer();
 
 		return forall(i, implies(lt(i, as.length), gt(as[i], 0)));
 	}

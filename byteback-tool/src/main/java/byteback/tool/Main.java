@@ -4,11 +4,8 @@ import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
-import byteback.syntax.scene.type.declaration.member.method.transformer.PostconditionsFinder;
-import byteback.syntax.scene.type.declaration.member.method.transformer.PreconditionsFinder;
+import byteback.syntax.scene.type.declaration.member.method.transformer.*;
 import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
-import byteback.syntax.scene.type.declaration.member.method.transformer.PostconditionsPropagator;
-import byteback.syntax.scene.type.declaration.member.method.transformer.PreconditionsPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.LogicConstantTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.SpecificationStmtTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.QuantifierValueTransformer;
@@ -111,10 +108,10 @@ public class Main implements Callable<Integer> {
 
         final Pack jtpPack = PackManager.v().getPack("jtp");
 
+        final Scene scene = Scene.v();
+
         // - Jimple transformations
-        jtpPack.add(new Transform("jtp.lns1", LocalNameStandardizer.v()));
         jtpPack.add(new Transform("jtp.ivf", InvokeFilter.v()));
-        jtpPack.add(new Transform("jtp.dir", DynamicInvokeToStaticTransformer.v()));
 
         // - Vimp transformations
         // Basic flow transformations
@@ -134,14 +131,16 @@ public class Main implements Callable<Integer> {
         jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
 
         // - Transformations targeting behavioral methods
-        jtpPack.add(new Transform("jtp.btg", BehaviorMethodValidator.v()));
         jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
+        jtpPack.add(new Transform("jtp.ule1", UnusedLocalEliminator.v()));
+        jtpPack.add(new Transform("jtp.btg", BehaviorBodyValidator.v()));
 
         // - Transformations targeting procedural methods
         // Create the specification statements and expressions
         jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
         jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
         jtpPack.add(new Transform("jtp.oett", OldExprTightener.v()));
+        jtpPack.add(new Transform("jtp.plf", ParameterLocalFinalizer.v()));
 
         // Create initial assumptions.
         jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
@@ -150,11 +149,11 @@ public class Main implements Callable<Integer> {
         // - Transformations of the exceptional control flow
         // Create explicit checks for implicit exceptions
         if (getTransformArrayCheck()) {
-            jtpPack.add(new Transform("jtp.ict", new IndexCheckTransformer(Scene.v())));
+            jtpPack.add(new Transform("jtp.ict", new IndexCheckTransformer(scene)));
         }
 
         if (getTransformNullCheck()) {
-            jtpPack.add(new Transform("jtp.nct", new NullCheckTransformer(Scene.v())));
+            jtpPack.add(new Transform("jtp.nct", new NullCheckTransformer(scene)));
         }
 
         jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
@@ -163,24 +162,28 @@ public class Main implements Callable<Integer> {
         jtpPack.add(new Transform("jtp.ine", InvariantExpander.v()));
 
         // Cleanup the output
-        jtpPack.add(new Transform("jtp.ule", UnusedLocalEliminator.v()));
-        jtpPack.add(new Transform("jtp.lns2", LocalNameStandardizer.v()));
+        jtpPack.add(new Transform("jtp.ule2", UnusedLocalEliminator.v()));
+        jtpPack.add(new Transform("jtp.lns", LocalNameStandardizer.v()));
 
         // Assign local specification
         jtpPack.add(new Transform("jtp.lif", FrameConditionFinder.v()));
 
-        Scene.v().loadBasicClasses();
-        Scene.v().loadNecessaryClasses();
-        PackManager.v().runPacks();
+        scene.loadBasicClasses();
+        scene.loadNecessaryClasses();
 
-        PreconditionsFinder.v().transform();
-        PostconditionsFinder.v().transform();
+        MethodTypeFinder.v().transform();
+
+        PackManager.v().runBodyPacks();
+
+        ParameterLocalsTagger.v().transform();
+        PreconditionsTagger.v().transform();
         PreconditionsPropagator.v().transform();
+        PostconditionsTagger.v().transform();
         PostconditionsPropagator.v().transform();
         HierarchyAxiomTagger.v().transform();
 
         try (final Printer printer = new Printer(outputPath.toString())) {
-            new SceneToBplEncoder(printer).encodeScene(Scene.v());
+            new SceneToBplEncoder(printer).encodeScene(scene);
         }
 
         final long endTime = System.currentTimeMillis();
@@ -192,7 +195,7 @@ public class Main implements Callable<Integer> {
     }
 
     public static void main(final String... args) throws Exception {
-        // Thread.sleep(10000L); // For attaching the visualvm
+        // Thread.sleep(10000L); // For attaching visualvm.
         int exitCode = new CommandLine(new Main()).execute(args);
         System.exit(exitCode);
     }

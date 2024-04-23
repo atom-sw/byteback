@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.field.context;
 
-import byteback.syntax.scene.type.declaration.member.context.MemberContext;
 import byteback.syntax.scene.type.declaration.context.ClassContext;
+import byteback.syntax.scene.type.declaration.member.context.MemberContext;
 import soot.SootField;
 
 /**
@@ -11,6 +11,9 @@ import soot.SootField;
  */
 public class FieldContext extends MemberContext {
 
+    /**
+     * The field in this context.
+     */
     private final SootField sootField;
 
     /**

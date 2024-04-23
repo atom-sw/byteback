@@ -3,14 +3,14 @@ package byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.BehaviorBodyToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.ExceptionalFlagger;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.TwoStateFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.OldValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.OperatorFlagger;
-import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTagProvider;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
-import byteback.syntax.tag.AnnotationReader;
+import byteback.syntax.tag.AnnotationTagReader;
 import soot.Body;
 import soot.Local;
 import soot.SootMethod;
@@ -25,7 +25,7 @@ public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
     }
 
     public void encodeMethod(final SootMethod sootMethod) {
-        if (AnnotationReader.v().hasAnnotation(sootMethod, BBLibNames.PRELUDE_ANNOTATION)) {
+        if (AnnotationTagReader.v().hasAnnotation(sootMethod, BBLibNames.PRELUDE_ANNOTATION)) {
             return;
         }
 
@@ -34,25 +34,25 @@ public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
         printer.print("(");
         printer.startItems(", ");
 
-        if (!OperatorFlagger.v().isTagged(sootMethod)) {
+        if (!OperatorTagFlagger.v().isTagged(sootMethod)) {
             printer.separate();
             printer.print(ValueToBplEncoder.HEAP_SYMBOL);
             printer.print(": Store");
 
-            if (TwoStateFlagger.v().isTagged(sootMethod)) {
+            if (TwoStateTagFlagger.v().isTagged(sootMethod)) {
                 printer.separate();
                 printer.print(OldValueToBplEncoder.OLD_HEAP_SYMBOL);
                 printer.print(": Store");
             }
 
-            if (ExceptionalFlagger.v().isTagged(sootMethod)) {
+            if (ExceptionalTagFlagger.v().isTagged(sootMethod)) {
                 printer.separate();
                 printer.print(ValueToBplEncoder.THROWN_SYMBOL);
                 printer.print(": Reference");
             }
         }
 
-        final List<Local> parameterLocals = ParameterLocalsProvider.v().getOrCompute(sootMethod).getValues();
+        final List<Local> parameterLocals = ParameterLocalsTagProvider.v().getOrThrow(sootMethod).getValues();
         new ValueToBplEncoder(printer).encodeBindings(parameterLocals);
         printer.endItems();
 

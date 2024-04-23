@@ -2,10 +2,10 @@ package byteback.syntax.scene.type.declaration.encoder.to_bpl;
 
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.encoder.ClassEncoder;
-import byteback.syntax.scene.type.declaration.member.field.transformer.encoder.to_bpl.FieldToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.field.encoder.to_bpl.FieldToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
-import byteback.syntax.scene.type.declaration.tag.AxiomsProvider;
+import byteback.syntax.scene.type.declaration.tag.AxiomsTagProvider;
 import byteback.syntax.scene.type.declaration.tag.AxiomsTag;
 import soot.SootClass;
 import soot.SootField;
@@ -13,16 +13,26 @@ import soot.SootMethod;
 import soot.Value;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ClassToBplEncoder extends ClassEncoder {
 
+    private final ValueToBplEncoder valueEncoder;
+
+    private final FieldToBplEncoder fieldEncoder;
+
+    private final MethodToBplEncoder methodEncoder;
+
     public ClassToBplEncoder(final Printer printer) {
-			super(printer);
+        super(printer);
+        this.valueEncoder = new ValueToBplEncoder(printer);
+        this.fieldEncoder = new FieldToBplEncoder(printer);
+        this.methodEncoder = new MethodToBplEncoder(printer);
     }
 
     public void encodeAxiom(final Printer printer, final Value axiomValue) {
         printer.print("axiom ");
-        new ValueToBplEncoder(printer).encodeValue(axiomValue);
+        valueEncoder.encodeValue(axiomValue);
         printer.print(";");
         printer.endLine();
     }
@@ -53,17 +63,22 @@ public class ClassToBplEncoder extends ClassEncoder {
         printer.printLine("// START OF CLASS: " + sootClass.getName());
         encodeClassConstantDeclaration(sootClass);
         printer.endLine();
-        final AxiomsTag axiomsTag = AxiomsProvider.v().getOrCompute(sootClass);
-        encodeAxiomsTag(printer, axiomsTag);
-        printer.endLine();
+
+        final Optional<AxiomsTag> axiomsTagOptional = AxiomsTagProvider.v().get(sootClass);
+
+        if (axiomsTagOptional.isPresent()) {
+            final AxiomsTag axiomsTag = axiomsTagOptional.get();
+            encodeAxiomsTag(printer, axiomsTag);
+            printer.endLine();
+        }
 
         if (sootClass.resolvingLevel() >= SootClass.SIGNATURES) {
             for (final SootField sootField : sootClass.getFields()) {
-                new FieldToBplEncoder(printer).encodeField(sootField);
+                fieldEncoder.encodeField(sootField);
             }
 
             for (final SootMethod sootMethod : sootClass.getMethods()) {
-                new MethodToBplEncoder(printer).encodeMethod(sootMethod);
+                methodEncoder.encodeMethod(sootMethod);
             }
         }
 

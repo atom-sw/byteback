@@ -1,7 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import soot.*;
@@ -42,14 +42,6 @@ public class ExplicitTypeCaster extends BodyTransformer {
 
                 castIfNeeded(binopExpr.getOp1Box(), joinedType);
                 castIfNeeded(binopExpr.getOp2Box(), joinedType);
-            }
-        } else if (value instanceof final UnopExpr unopExpr) {
-            if (unopExpr instanceof LengthExpr) {
-                if (unopExpr.getOp().getType() instanceof ArrayType) {
-                    return;
-                }
-            } else {
-                castIfNeeded(unopExpr.getOpBox(), expectedType);
             }
         }
 

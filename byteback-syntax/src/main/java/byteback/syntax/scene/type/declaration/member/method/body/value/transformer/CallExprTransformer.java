@@ -1,12 +1,15 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.transformer;
 
+import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
-import byteback.syntax.tag.AnnotationReader;
-import byteback.syntax.Vimp;
-import byteback.syntax.name.BBLibNames;
-import byteback.common.function.Lazy;
-import soot.*;
+import byteback.syntax.tag.AnnotationTagReader;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.Value;
+import soot.ValueBox;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 
@@ -37,7 +40,7 @@ public class CallExprTransformer extends ValueTransformer {
             final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
             final SootMethod invokedMethod = invokedMethodRef.resolve();
 
-            if (AnnotationReader.v().hasAnnotation(invokedMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
+            if (AnnotationTagReader.v().hasAnnotation(invokedMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
                 final var args = new ArrayList<>(invokeExpr.getArgs());
 
                 if (invokeExpr instanceof final InstanceInvokeExpr instanceInvokeExpr) {

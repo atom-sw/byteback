@@ -4,7 +4,7 @@
 package byteback.test.generics;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Operator.*;
+import static byteback.specification.Operators.*;
 
 public class List<T> {
 

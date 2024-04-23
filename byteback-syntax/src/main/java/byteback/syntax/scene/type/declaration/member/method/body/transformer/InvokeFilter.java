@@ -1,24 +1,23 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.tag.AnnotationReader;
-import byteback.syntax.name.BBLibNames;
 import byteback.common.function.Lazy;
-
-import java.util.Iterator;
-
+import byteback.syntax.name.BBLibNames;
+import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.tag.AnnotationTagReader;
 import soot.Body;
 import soot.PatchingChain;
 import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.InvokeStmt;
 
+import java.util.Iterator;
+
 /**
  * Filters invocations to methods annotated with the @Ignore annotation. More precisely, if a unit contains an
  * invocation to an ignored method, it is removed from the body.
- * @see BBLibNames
  *
  * @author paganma
+ * @see BBLibNames
  */
 public class InvokeFilter extends BodyTransformer {
 
@@ -40,7 +39,7 @@ public class InvokeFilter extends BodyTransformer {
             if (unit instanceof final InvokeStmt invokeStmt) {
                 final SootMethod method = invokeStmt.getInvokeExpr().getMethod();
 
-                if (AnnotationReader.v().hasAnnotation(method, BBLibNames.IGNORE_ANNOTATION)) {
+                if (AnnotationTagReader.v().hasAnnotation(method, BBLibNames.IGNORE_ANNOTATION)) {
                     units.remove(unit);
                 }
             }

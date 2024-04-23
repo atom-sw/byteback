@@ -10,7 +10,7 @@ import soot.tagkit.Tag;
  * @param <V> The type of the tags.
  * @author paganma
  */
-public abstract class TagFlagger<K extends Host, V extends Tag> extends TagManager<K, V> {
+public abstract class TagFlagger<K extends Host, V extends Tag> extends TagProvider<K, V> {
 
     private final V tag;
 
