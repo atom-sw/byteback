@@ -9,10 +9,8 @@ import byteback.syntax.scene.type.declaration.member.method.body.unit.AssumeStmt
 import byteback.syntax.scene.type.declaration.member.method.body.unit.YieldStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.UnitEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
-import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
-import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -29,7 +27,7 @@ public class UnitToBplEncoder extends UnitEncoder {
     public UnitToBplEncoder(final Printer printer, final Map<Unit, String> unitToLabelMap) {
         super(printer);
         this.unitToLabelMap = unitToLabelMap;
-        this.valueEncoder = new ValueToBplEncoder(printer);
+        this.valueEncoder = new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.POST_STATE);
     }
 
     public void encodeCall(final String procedureName, final Value[] destValues, final Value[] argValues) {
@@ -76,8 +74,6 @@ public class UnitToBplEncoder extends UnitEncoder {
         if (invokeExpr instanceof final InstanceInvokeExpr instanceInvokeExpr) {
             printer.separate();
             valueEncoder.encodeValue(instanceInvokeExpr.getBase());
-        } else if (invokeExpr instanceof final StaticInvokeExpr staticInvokeExpr) {
-            throw new RuntimeException();
         }
 
         for (final Value argument : invokeExpr.getArgs()) {
@@ -113,30 +109,23 @@ public class UnitToBplEncoder extends UnitEncoder {
 
             if (rightOp instanceof final InvokeExpr invokeExpr && VimpEffectEvaluator.v().hasSideEffects(invokeExpr)) {
                 if (leftOp instanceof final Local local) {
-                    encodeInvoke(invokeExpr, new Value[] { local, Vimp.v().newCaughtExceptionRef() });
+                    encodeInvoke(invokeExpr, new Value[]{local, Vimp.v().newCaughtExceptionRef()});
                     return;
                 }
             } else if (rightOp instanceof final NewExpr newExpr) {
                 printer.print("call ");
-                valueEncoder.encodeValue(Vimp.v().newCaughtExceptionRef());
-                printer.print(", ");
                 valueEncoder.encodeValue(leftOp);
+                printer.print(", ");
+                valueEncoder.encodeValue(Vimp.v().newCaughtExceptionRef());
                 printer.print(" := ");
                 printer.print("new(");
                 new ClassToBplEncoder(printer).encodeClassConstant(newExpr.getBaseType().getSootClass());
                 printer.print(");");
                 return;
             } else if (rightOp instanceof NewArrayExpr) {
-              // TODO
-              return;
+                // TODO
             } else {
-                if (leftOp instanceof Local) {
-                    valueEncoder.encodeValue(assignStmt.getLeftOp());
-                    printer.print(" := ");
-                    valueEncoder.encodeValue(assignStmt.getRightOp());
-                    printer.print(";");
-                    return;
-                } else if (leftOp instanceof final InstanceFieldRef instanceFieldRef) {
+                if (leftOp instanceof final InstanceFieldRef instanceFieldRef) {
                     printer.print(ValueToBplEncoder.HEAP_SYMBOL);
                     printer.print(" := ");
                     printer.print("store.update(");
@@ -151,14 +140,37 @@ public class UnitToBplEncoder extends UnitEncoder {
                     valueEncoder.encodeValue(rightOp);
                     printer.endItems();
                     printer.print(");");
+                    return;
+                } else if (leftOp instanceof final ArrayRef arrayRef) {
+                    printer.print(ValueToBplEncoder.HEAP_SYMBOL);
+                    printer.print(" := ");
+                    printer.print("array.update(");
+                    printer.startItems(", ");
+                    printer.separate();
+                    printer.print(ValueToBplEncoder.HEAP_SYMBOL);
+                    printer.separate();
+                    valueEncoder.encodeValue(arrayRef.getBase());
+                    printer.separate();
+                    valueEncoder.encodeValue(arrayRef.getIndex());
+                    printer.separate();
+                    valueEncoder.encodeValue(rightOp);
+                    printer.endItems();
+                    printer.print(")");
+                    printer.print(";");
+                    return;
+                } else {
+                    valueEncoder.encodeValue(assignStmt.getLeftOp());
+                    printer.print(" := ");
+                    valueEncoder.encodeValue(assignStmt.getRightOp());
+                    printer.print(";");
+                    return;
                 }
             }
-            return;
         }
 
         if (unit instanceof final InvokeStmt invokeStmt) {
             final InvokeExpr invokeExpr = invokeStmt.getInvokeExpr();
-            encodeInvoke(invokeExpr, new Value[]{ Vimp.v().newCaughtExceptionRef() });
+            encodeInvoke(invokeExpr, new Value[]{Vimp.v().newCaughtExceptionRef()});
             return;
         }
 

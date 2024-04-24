@@ -1,17 +1,17 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl;
 
-import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.encoder.to_bpl.ClassToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.field.encoder.to_bpl.FieldToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.tag.PreludeTagProvider;
-import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.ValueEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.PreludeTagProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
 import soot.jimple.*;
@@ -22,14 +22,23 @@ import java.util.List;
 
 public class ValueToBplEncoder extends ValueEncoder {
 
+    public enum HeapContext {
+        TWO_STATE, POST_STATE, PRE_STATE
+    }
+
     public static final String HEAP_SYMBOL = "heap";
+
+    public static final String OLD_HEAP_SYMBOL = "heap'";
 
     public static final String THROWN_SYMBOL = "`#thrown`";
 
     public static final String RETURN_SYMBOL = "`#return`";
 
-    public ValueToBplEncoder(final Printer printer) {
+    private final HeapContext heapContext;
+
+    public ValueToBplEncoder(final Printer printer, final HeapContext heapContext) {
         super(printer);
+        this.heapContext = heapContext;
     }
 
     public void encodeTypeConstant(final TypeConstant typeConstant) {
@@ -71,7 +80,9 @@ public class ValueToBplEncoder extends ValueEncoder {
     }
 
     public void encodeQuantifierExpr(final QuantifierExpr quantifierExpr) {
-        printer.print("(forall ");
+        printer.print("(");
+        printer.print(quantifierExpr.getSymbol());
+        printer.print(" ");
         final Chain<Local> bindings = quantifierExpr.getBindings();
         printer.startItems(", ");
         encodeBindings(bindings);
@@ -105,19 +116,40 @@ public class ValueToBplEncoder extends ValueEncoder {
         }
     }
 
-    public String getHeapReference() {
-        return HEAP_SYMBOL;
+    public void encodeOldHeapReference() {
+        switch (heapContext) {
+            case TWO_STATE -> {
+                printer.print(OLD_HEAP_SYMBOL);
+            }
+            case POST_STATE -> {
+                printer.print("old(");
+                printer.print(OLD_HEAP_SYMBOL);
+                printer.print(")");
+            }
+            default -> {
+                throw new IllegalStateException();
+            }
+        }
+    }
+
+    public void encodeHeapReference() {
+        printer.print(HEAP_SYMBOL);
     }
 
     public void encodeHeapFunctionCall(final String functionName, final Iterable<Value> arguments) {
         printer.print(functionName);
         printer.print("(");
-        printer.print(getHeapReference());
+
+        printer.startItems(", ");
+        printer.separate();
+        encodeHeapReference();
 
         for (final Value argument : arguments) {
-            printer.print(", ");
+            printer.separate();
             encodeValue(argument);
         }
+
+        printer.endItems();
 
         printer.print(")");
     }
@@ -126,26 +158,23 @@ public class ValueToBplEncoder extends ValueEncoder {
         encodeHeapFunctionCall(functionName, Arrays.stream(arguments).toList());
     }
 
-    public String getOldHeapReference() {
-        return OldValueToBplEncoder.OLD_HEAP_SYMBOL;
-    }
-
     public void encodeCallExpr(final InvokeExpr invokeExpr) {
         final SootMethod calledMethod = invokeExpr.getMethod();
         PreludeTagProvider.v().get(calledMethod)
                 .ifPresentOrElse(
                         (preludeDefinitionTag) -> printer.print(preludeDefinitionTag.getDefinitionSymbol()),
-                        () -> new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethod()));
+                        () -> new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethod())
+                );
         printer.print("(");
         printer.startItems(", ");
 
         if (!OperatorTagFlagger.v().isTagged(calledMethod)) {
             printer.separate();
-            printer.print(getHeapReference());
+            encodeHeapReference();
 
             if (TwoStateTagFlagger.v().isTagged(calledMethod)) {
                 printer.separate();
-                printer.print(getOldHeapReference());
+                encodeOldHeapReference();
             }
 
             if (ExceptionalTagFlagger.v().isTagged(calledMethod)) {
@@ -187,36 +216,74 @@ public class ValueToBplEncoder extends ValueEncoder {
         }
     }
 
-    public void encodeOldExpr(final OldExpr oldExpr) {
-        new OldValueToBplEncoder(printer).encodeValue(oldExpr.getOp());
+    public void encodeStringConstant(final StringConstant stringConstant) {
+        printer.print("string.const(");
+        printer.print(Integer.toString(stringConstant.hashCode()));
+        printer.print(")");
     }
 
-    public void encodeInstanceFieldRef(final InstanceFieldRef instanceFieldRef) {
+    public void encodeInstanceFieldRef(final InstanceFieldRef instanceFieldRef, final boolean isOld) {
         printer.print("store.read(");
         printer.startItems(", ");
         printer.separate();
-        printer.print(getHeapReference());
+
+        if (isOld) {
+            encodeOldHeapReference();
+        } else {
+            encodeHeapReference();
+        }
+
         printer.separate();
         encodeValue(instanceFieldRef.getBase());
         printer.separate();
         new FieldToBplEncoder(printer).encodeFieldConstant(instanceFieldRef.getField());
+        printer.endItems();
         printer.print(")");
     }
 
-    public void encodeStaticFieldRef(final StaticFieldRef staticFieldRef) {
+    public void encodeStaticFieldRef(final StaticFieldRef staticFieldRef, final boolean isOld) {
         final SootField sootField = staticFieldRef.getField();
         printer.print("store.read(");
         printer.startItems(", ");
         printer.separate();
-        printer.print(getHeapReference());
+
+        if (isOld) {
+            encodeOldHeapReference();
+        } else {
+            encodeHeapReference();
+        }
+
         printer.separate();
         printer.print("type.reference(");
         new ClassToBplEncoder(printer).encodeClassConstant(sootField.getDeclaringClass());
         printer.print(")");
         printer.separate();
         new FieldToBplEncoder(printer).encodeFieldConstant(sootField);
+        printer.endItems();
         printer.print(")");
     }
+
+    public void encodeArrayRef(final ArrayRef arrayRef, final boolean isOld) {
+        printer.print("array.read(");
+        printer.startItems(", ");
+        printer.separate();
+
+        if (isOld) {
+            encodeOldHeapReference();
+        } else {
+            encodeHeapReference();
+        }
+
+        printer.separate();
+        encodeValue(arrayRef.getBase());
+        printer.separate();
+        encodeValue(arrayRef.getIndex());
+        printer.endItems();
+        printer.print(")");
+        printer.print(" : ");
+        new TypeAccessToBplEncoder(printer).encodeTypeAccess(arrayRef.getType());
+    }
+
 
     public void encodeCaughtExceptionRef() {
         printer.print(THROWN_SYMBOL);
@@ -224,6 +291,30 @@ public class ValueToBplEncoder extends ValueEncoder {
 
     public void encodeReturnRef() {
         printer.print(RETURN_SYMBOL);
+    }
+
+    public void encodeConcreteRef(final ConcreteRef concreteRef, final boolean isOld) {
+        if (concreteRef instanceof final ArrayRef arrayRef) {
+            encodeArrayRef(arrayRef, isOld);
+        } else if (concreteRef instanceof final InstanceFieldRef instanceFieldRef) {
+            encodeInstanceFieldRef(instanceFieldRef, isOld);
+        } else if (concreteRef instanceof final StaticFieldRef staticFieldRef) {
+            encodeStaticFieldRef(staticFieldRef, isOld);
+        } else if (concreteRef instanceof ThrownRef) {
+            encodeCaughtExceptionRef();
+        } else if (concreteRef instanceof ReturnRef) {
+            encodeReturnRef();
+        } else {
+            throw new RuntimeException("Unable to convert reference " + concreteRef + ".");
+        }
+    }
+
+    public void encodeOldExpr(final OldExpr oldExpr) {
+        if (oldExpr.getOp() instanceof final ConcreteRef concreteRef) {
+            encodeConcreteRef(concreteRef, true);
+        } else {
+            throw new IllegalStateException("Unsupported argument for `old` expression: " + oldExpr);
+        }
     }
 
     @Override
@@ -241,22 +332,8 @@ public class ValueToBplEncoder extends ValueEncoder {
         }
 
         if (value instanceof final ConcreteRef concreteRef) {
-            if (concreteRef instanceof final ArrayRef arrayRef) {
-                encodeHeapFunctionCall("array.read", arrayRef.getBase(), arrayRef.getIndex());
-                printer.print(" : ");
-                new TypeAccessToBplEncoder(printer).encodeTypeAccess(arrayRef.getType());
-                return;
-            }
-
-            if (concreteRef instanceof final InstanceFieldRef instanceFieldRef) {
-                encodeInstanceFieldRef(instanceFieldRef);
-                return;
-            }
-
-            if (concreteRef instanceof final StaticFieldRef staticFieldRef) {
-                encodeStaticFieldRef(staticFieldRef);
-                return;
-            }
+            encodeConcreteRef(concreteRef, false);
+            return;
         }
 
         if (value instanceof final OldExpr oldExpr) {
@@ -297,6 +374,11 @@ public class ValueToBplEncoder extends ValueEncoder {
 
             if (constant instanceof VoidConstant) {
                 printer.print("`void`");
+                return;
+            }
+
+            if (constant instanceof StringConstant stringConstant) {
+                encodeStringConstant(stringConstant);
                 return;
             }
         }
@@ -455,16 +537,6 @@ public class ValueToBplEncoder extends ValueEncoder {
             return;
         }
 
-        if (value instanceof CaughtExceptionRef) {
-            encodeCaughtExceptionRef();
-            return;
-        }
-
-        if (value instanceof ReturnRef) {
-            encodeReturnRef();
-            return;
-        }
-
         if (value instanceof final ConditionalExpr conditionalExpr) {
             printer.print("if (");
             encodeValue(conditionalExpr.getOp1());
@@ -475,7 +547,7 @@ public class ValueToBplEncoder extends ValueEncoder {
             return;
         }
 
-        throw new IllegalStateException("Unable to convert value " + value + " of type " + value.getClass());
+        throw new IllegalStateException("Unable to convert value " + value + " of type " + value.getClass() + ".");
     }
 
 }

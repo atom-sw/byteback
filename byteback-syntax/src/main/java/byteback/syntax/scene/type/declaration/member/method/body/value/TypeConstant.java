@@ -7,7 +7,7 @@ import soot.UnitPrinter;
 import soot.jimple.ConcreteRef;
 import soot.jimple.Constant;
 
-public class TypeConstant extends Constant implements DefaultCaseValue, ConcreteRef {
+public class TypeConstant extends Constant implements DefaultCaseValue {
 
     public final RefType value;
 

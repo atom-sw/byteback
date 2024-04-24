@@ -2,10 +2,7 @@ package byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl;
 
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.ProceduralBodyToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTag;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagProvider;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.FrameConditionFinder;
-import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.PostValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTagProvider;
@@ -24,15 +21,12 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 
     private final ValueToBplEncoder valueToBplEncoder;
 
-    private final PostValueToBplEncoder postValueToBplEncoder;
-
     private final ProceduralBodyToBplEncoder proceduralBodyToBplEncoder;
 
     public ProceduralMethodToBplEncoder(final Printer printer) {
         super(printer);
         this.typeAccessToBplEncoder = new TypeAccessToBplEncoder(printer);
-        this.valueToBplEncoder = new ValueToBplEncoder(printer);
-        this.postValueToBplEncoder = new PostValueToBplEncoder(printer);
+        this.valueToBplEncoder = new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE);
         this.proceduralBodyToBplEncoder = new ProceduralBodyToBplEncoder(printer);
     }
 
@@ -85,7 +79,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
                     for (final Value value : postconditions) {
                         printer.print(SPEC_INDENT);
                         printer.print("ensures ");
-                        postValueToBplEncoder.encodeValue(value);
+                        valueToBplEncoder.encodeValue(value);
                         printer.printLine(";");
                     }
                 });

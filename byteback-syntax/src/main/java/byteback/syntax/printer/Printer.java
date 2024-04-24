@@ -42,6 +42,10 @@ public class Printer implements AutoCloseable {
         writer.write(string);
     }
 
+    public void print(final int number) {
+        writer.write(number);
+    }
+
     public void printLine(final String string) {
         writer.println(string);
     }

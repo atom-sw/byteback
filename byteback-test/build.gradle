@@ -15,10 +15,6 @@ subprojects { test ->
 
 		def summaryDir = "$buildDir/summary"
 
-		def dependencyDir = "$rootDir/dependencies"
-
-		def path = "${System.env.PATH}:${dependencyDir}/dotnet/boogie-2.15.7/"
-
 		def system = tasks.register('system') {
 				def sourceSet = project.sourceSets.main
 				def sourceDirs = sourceSet.allSource.srcDirs
@@ -38,7 +34,6 @@ subprojects { test ->
 								environment 'BYTEBACK_ROOT', toolRoot
 								environment 'TEST_JAR', project.shadowJar.archivePath
 								environment 'BOOGIE_TIME_LIMIT', boogieTimeLimitProperty
-								environment 'PATH', path
 								commandLine 'lit', target, '-a', '-j', jobsProperty
 						}
 				}
@@ -63,7 +58,7 @@ subprojects { test ->
 										if (targetProperty == null) {
 												execute(dir)
 										} else {
-												def targetPath = Paths.get(bytebackTestRoot.getCanonicalPath(), targetProperty).normalize()
+												def targetPath = Paths.get(bytebackTestRoot.getCanonicalPath(), targetProperty as String).normalize()
 												if (targetPath.startsWith(test.projectDir.getCanonicalPath())) {
 														execute(targetPath)
 												}

@@ -17,7 +17,7 @@ public class ForallExpr extends QuantifierExpr implements DefaultCaseValue {
     }
 
     @Override
-    protected String getSymbol() {
+    public String getSymbol() {
         return "forall";
     }
 

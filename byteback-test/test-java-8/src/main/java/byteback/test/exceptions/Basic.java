@@ -9,8 +9,10 @@ import static byteback.specification.Contract.*;
 public class Basic {
 
 	public static class Exception4 extends Exception {
-		@Return
-		public Exception4() {}
+
+		public Exception4() {
+		}
+
 	}
 
 	public Exception tryCatchBlock() {
@@ -155,5 +157,5 @@ public class Basic {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 15 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 11 verified, 0 errors
  */

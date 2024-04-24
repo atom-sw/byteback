@@ -68,7 +68,7 @@ public abstract class QuantifierExpr implements Expr {
         return locals;
     }
 
-    protected abstract String getSymbol();
+    public abstract String getSymbol();
 
     @Override
     public void toString(final UnitPrinter printer) {

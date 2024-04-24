@@ -25,7 +25,7 @@ public class ClassToBplEncoder extends ClassEncoder {
 
     public ClassToBplEncoder(final Printer printer) {
         super(printer);
-        this.valueEncoder = new ValueToBplEncoder(printer);
+        this.valueEncoder = new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE);
         this.fieldEncoder = new FieldToBplEncoder(printer);
         this.methodEncoder = new MethodToBplEncoder(printer);
     }

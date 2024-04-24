@@ -13,23 +13,15 @@ import soot.util.NumberedString;
  * @param <T> The type of the {@link ConditionsTag}.
  * @author paganma
  */
-public abstract class ConditionsResolver<T extends ConditionsTag> {
+public abstract class BehaviorResolver<T extends ConditionsTag> {
 
-    private final ConditionsTagProvider<T> conditionsTagProvider;
-
-    public ConditionsResolver(final ConditionsTagProvider<T> conditionsTagProvider) {
-        this.conditionsTagProvider = conditionsTagProvider;
+    public BehaviorResolver(final ConditionsTagProvider<T> conditionsTagProvider) {
     }
 
     protected abstract NumberedString makeBehaviorSignature(final SootMethod targetMethod, final String behaviorName);
 
-    protected abstract Value makeConditionValue(final SootMethod targetMethod, final SootMethod behaviorMethod);
-
-    public final void resolveCondition(final SootMethod targetMethod, final String behaviorName) {
+    public final SootMethod resolveBehavior(final SootMethod targetMethod, final String behaviorName) {
         final SootClass declaringClass = targetMethod.getDeclaringClass();
-        final T conditionsTag = conditionsTagProvider.getOrCompute(targetMethod);
-        final var conditions = conditionsTag.getValues();
-
         final NumberedString behaviorSignature = makeBehaviorSignature(targetMethod, behaviorName);
         final SootMethod behaviorMethod = declaringClass.getMethodUnsafe(behaviorSignature);
 
@@ -41,8 +33,7 @@ public abstract class ConditionsResolver<T extends ConditionsTag> {
                 );
             }
 
-            final var conditionValue = makeConditionValue(targetMethod, behaviorMethod);
-            conditions.add(conditionValue);
+            return behaviorMethod;
         } else {
             throw new TransformationException(
                     "Could not find behavior method: " + behaviorName,

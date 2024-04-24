@@ -17,7 +17,7 @@ public class ExistsExpr extends QuantifierExpr implements DefaultCaseValue {
     }
 
     @Override
-    protected String getSymbol() {
+    public String getSymbol() {
         return "exists";
     }
 

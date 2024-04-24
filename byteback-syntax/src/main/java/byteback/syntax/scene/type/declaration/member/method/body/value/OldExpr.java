@@ -1,6 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
 import byteback.syntax.scene.type.declaration.member.method.body.unit.printer.InlineUnitPrinter;
+import byteback.syntax.scene.type.declaration.member.method.body.value.box.ConcreteRefBox;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
@@ -14,10 +15,10 @@ import soot.jimple.internal.AbstractUnopExpr;
  *
  * @author paganma
  */
-public class OldExpr extends AbstractUnopExpr implements ConcreteRef, DefaultCaseValue {
+public class OldExpr extends AbstractUnopExpr implements DefaultCaseValue {
 
     public OldExpr(final Value value) {
-        super(new ObjExprBox(value));
+        super(new ConcreteRefBox(value));
     }
 
     public OldExpr(final ValueBox valueBox) {

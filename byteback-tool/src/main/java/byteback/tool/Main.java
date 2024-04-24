@@ -4,6 +4,7 @@ import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.ThrownAssignmentTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.transformer.*;
 import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
@@ -134,6 +135,7 @@ public class Main implements Callable<Integer> {
         jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
         jtpPack.add(new Transform("jtp.oet", OldExprTransformer.v()));
         jtpPack.add(new Transform("jtp.tet", ThrownExprTransformer.v()));
+        jtpPack.add(new Transform("jtp.tat", ThrownAssignmentTransformer.v()));
         jtpPack.add(new Transform("jtp.cot", ConditionalExprTransformer.v()));
         jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
 
@@ -146,7 +148,6 @@ public class Main implements Callable<Integer> {
         // Create the specification statements and expressions
         jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
         jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-        jtpPack.add(new Transform("jtp.oett", OldExprTightener.v()));
         jtpPack.add(new Transform("jtp.plf", ParameterLocalFinalizer.v()));
 
         // Create initial assumptions.

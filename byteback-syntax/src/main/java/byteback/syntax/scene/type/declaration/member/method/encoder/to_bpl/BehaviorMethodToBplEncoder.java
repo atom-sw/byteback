@@ -5,7 +5,6 @@ import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.BehaviorBodyToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.OldValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTagProvider;
@@ -41,7 +40,7 @@ public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
 
             if (TwoStateTagFlagger.v().isTagged(sootMethod)) {
                 printer.separate();
-                printer.print(OldValueToBplEncoder.OLD_HEAP_SYMBOL);
+                printer.print(ValueToBplEncoder.HEAP_SYMBOL);
                 printer.print(": Store");
             }
 
@@ -53,7 +52,7 @@ public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
         }
 
         final List<Local> parameterLocals = ParameterLocalsTagProvider.v().getOrThrow(sootMethod).getValues();
-        new ValueToBplEncoder(printer).encodeBindings(parameterLocals);
+        new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE).encodeBindings(parameterLocals);
         printer.endItems();
 
         printer.print(") returns (");

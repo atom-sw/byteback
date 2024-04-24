@@ -2,16 +2,15 @@ package byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl
 
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.BodyEncoder;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.UnitEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.to_bpl.UnitToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTagProvider;
-import byteback.syntax.scene.type.encoder.TypeAccessEncoder;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
-import soot.jimple.AssignStmt;
+import soot.jimple.GotoStmt;
 import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,7 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
 
     public ProceduralBodyToBplEncoder(final Printer printer) {
         super(printer);
-        this.valueToBplEncoder = new ValueToBplEncoder(printer);
+        this.valueToBplEncoder = new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE);
         this.typeAccessToBplEncoder = new TypeAccessToBplEncoder(printer);
     }
 
@@ -34,11 +33,18 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
         final var unitToLabel = new HashMap<Unit, String>();
         int labelCounter = 0;
 
-        for (final UnitBox unitBox : body.getAllUnitBoxes()) {
-            if (unitBox.isBranchTarget()) {
-                final Unit unit = unitBox.getUnit();
-                unitToLabel.put(unit, "L" + labelCounter++);
+        for (final Unit unit : body.getUnits()) {
+            final Unit target;
+
+            if (unit instanceof IfStmt ifStmt) {
+                target = ifStmt.getTarget();
+            } else if (unit instanceof GotoStmt gotoStmt) {
+                target = gotoStmt.getTarget();
+            } else {
+                continue;
             }
+
+            unitToLabel.put(target, "L" + labelCounter++);
         }
 
         return unitToLabel;
