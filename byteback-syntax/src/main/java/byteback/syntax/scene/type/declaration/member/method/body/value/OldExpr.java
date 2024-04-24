@@ -9,6 +9,7 @@ import soot.ValueBox;
 import soot.grimp.internal.ObjExprBox;
 import soot.jimple.ConcreteRef;
 import soot.jimple.internal.AbstractUnopExpr;
+import soot.jimple.internal.ImmediateBox;
 
 /**
  * An expression to access the pre-state of a method.
@@ -18,7 +19,7 @@ import soot.jimple.internal.AbstractUnopExpr;
 public class OldExpr extends AbstractUnopExpr implements DefaultCaseValue {
 
     public OldExpr(final Value value) {
-        super(new ConcreteRefBox(value));
+        super(new ImmediateBox(value));
     }
 
     public OldExpr(final ValueBox valueBox) {
@@ -27,8 +28,7 @@ public class OldExpr extends AbstractUnopExpr implements DefaultCaseValue {
 
     @Override
     public void toString(final UnitPrinter printer) {
-        printer.literal("old");
-        printer.literal("(");
+        printer.literal("old(");
         getOp().toString(printer);
         printer.literal(")");
     }
