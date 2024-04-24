@@ -16,7 +16,7 @@ public abstract class LazyTagProvider<K extends Host, V extends Tag> extends Tag
 
     public abstract V compute();
 
-    public V gerOrCompute(final K host) {
+    public V getOrCompute(final K host) {
         return get(host)
                 .orElseGet(() -> {
                     final V tag = compute();

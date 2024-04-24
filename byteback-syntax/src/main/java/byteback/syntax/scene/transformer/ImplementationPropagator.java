@@ -54,7 +54,7 @@ public class ImplementationPropagator extends SceneTransformer {
                                 .orElseThrow();
                 attachedName = annotationStringElement.getValue();
             } else {
-                break;
+                continue;
             }
 
             final SootClass attachedClass = scene.getSootClassUnsafe(attachedName);

@@ -12,10 +12,10 @@ import java.util.List;
 
 public abstract class ConditionsPropagator<T extends ConditionsTag> extends MethodTransformer {
 
-    private final ConditionsTagProvider<T> conditionsTagManager;
+    private final ConditionsTagProvider<T> conditionsTagProvider;
 
-    public ConditionsPropagator(final ConditionsTagProvider<T> conditionsTagManager) {
-        this.conditionsTagManager = conditionsTagManager;
+    public ConditionsPropagator(final ConditionsTagProvider<T> conditionsTagProvider) {
+        this.conditionsTagProvider = conditionsTagProvider;
     }
 
     public abstract List<Value> combineConditions(List<Value> originalConditions, List<Value> overridingConditions);
@@ -35,7 +35,7 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
         final SceneContext sceneContext = classContext.getSceneContext();
         final Scene scene = sceneContext.getScene();
         final SootClass declaringClass = classContext.getSootClass();
-        final ConditionsTag conditionsTag = conditionsTagManager.getOrThrow(sootMethod);
+        final ConditionsTag conditionsTag = conditionsTagProvider.getOrCompute(sootMethod);
         final List<Value> originalConditions = conditionsTag.getValues();
 
         if (originalConditions.isEmpty()) {
@@ -47,20 +47,23 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
 
         while (!nextSubClasses.isEmpty()) {
             final SootClass sootClass = nextSubClasses.pop();
-            final SootMethod overridingMethod = sootClass.getMethodUnsafe(
-                    sootMethod.getName(),
-                    sootMethod.getParameterTypes(),
-                    sootMethod.getReturnType()
-            );
 
-            if (overridingMethod != null) {
-                final ConditionsTag overridingConditionsTag = conditionsTagManager.getOrThrow(overridingMethod);
-                final List<Value> overridingConditions = overridingConditionsTag.getValues();
-                final List<Value> combinedConditions = combineConditions(originalConditions, overridingConditions);
-                overridingConditionsTag.setValues(combinedConditions);
+            if (sootClass.resolvingLevel() >= SootClass.SIGNATURES) {
+                final SootMethod overridingMethod = sootClass.getMethodUnsafe(
+                        sootMethod.getName(),
+                        sootMethod.getParameterTypes(),
+                        sootMethod.getReturnType()
+                );
+
+                if (overridingMethod != null) {
+                    final ConditionsTag overridingConditionsTag = conditionsTagProvider.getOrCompute(overridingMethod);
+                    final List<Value> overridingConditions = overridingConditionsTag.getValues();
+                    final List<Value> combinedConditions = combineConditions(originalConditions, overridingConditions);
+                    overridingConditionsTag.setValues(combinedConditions);
+                }
+
+                nextSubClasses.addAll(subTypesOf(hierarchy, sootClass));
             }
-
-            nextSubClasses.addAll(subTypesOf(hierarchy, sootClass));
         }
     }
 

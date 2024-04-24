@@ -14,7 +14,7 @@ public class EnhancedFor {
 	public static boolean contains(int[] a, int x) {
 		final int i = Bindings.integer();
 
-		return exists(i, lte(0, i) & lt(0, a.length) & eq(a[i], x));
+		return exists(i, lte(0, i) & lt(i, a.length) & eq(a[i], x));
 	}
 
 	public static void forEach(int[] a) {

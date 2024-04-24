@@ -45,7 +45,7 @@ public class HierarchyAxiomTagger extends ClassTransformer {
         final Collection<SootClass> superInterfaces = sootClass.getInterfaces();
         superTypes.addAll(superInterfaces);
         final Hierarchy hierarchy = scene.getActiveHierarchy();
-        final AxiomsTag axiomsTag = AxiomsTagProvider.v().gerOrCompute(sootClass);
+        final AxiomsTag axiomsTag = AxiomsTagProvider.v().getOrCompute(sootClass);
         final List<Value> axiomValues = axiomsTag.getValues();
 
         for (final SootClass superType : superTypes) {

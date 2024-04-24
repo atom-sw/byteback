@@ -9,38 +9,44 @@ import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsT
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagProvider;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
 import soot.*;
+import soot.util.NumberedString;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostconditionsTagger extends ConditionsFinder<PostconditionsTag> {
+public class PostconditionsResolver extends ConditionsResolver<PostconditionsTag> {
 
-    private static final Lazy<PostconditionsTagger> INSTANCE = Lazy.from(() ->
-            new PostconditionsTagger(BBLibNames.ENSURE_ANNOTATION, PostconditionsTagProvider.v()));
+    private static final Lazy<PostconditionsResolver> INSTANCE = Lazy.from(() ->
+            new PostconditionsResolver(PostconditionsTagProvider.v()));
 
-    public static PostconditionsTagger v() {
+    public static PostconditionsResolver v() {
         return INSTANCE.get();
     }
 
-    private PostconditionsTagger(final String annotationDescriptor,
-                                 final PostconditionsTagProvider postConditionsProvider) {
+    private PostconditionsResolver(final PostconditionsTagProvider postConditionsProvider) {
 
-        super(annotationDescriptor, postConditionsProvider);
+        super(postConditionsProvider);
     }
 
     @Override
-    protected List<Type> makeBehaviorParameterTypes(final SootMethod targetMethod) {
+    protected NumberedString makeBehaviorSignature(final SootMethod targetMethod, final String behaviorName) {
         final var behaviorParameterTypes = new ArrayList<>(targetMethod.getParameterTypes());
 
         if (targetMethod.getReturnType() != VoidType.v()) {
             behaviorParameterTypes.add(targetMethod.getReturnType());
         }
 
-        return behaviorParameterTypes;
+        final var behaviorSignature = new MethodSubSignature(
+                behaviorName,
+                BooleanType.v(),
+                behaviorParameterTypes
+        );
+
+        return behaviorSignature.numberedSubSig;
     }
 
     @Override
-    protected List<Value> makeBehaviorParameters(final SootMethod targetMethod) {
+    protected Value makeConditionValue(SootMethod targetMethod, SootMethod behaviorMethod) {
         final ParameterLocalsTag parameterLocalsTag = ParameterLocalsTagProvider.v().getOrThrow(targetMethod);
         final List<Local> parameterLocals = parameterLocalsTag.getValues();
         final var behaviorParameters = new ArrayList<Value>(parameterLocals);
@@ -51,7 +57,7 @@ public class PostconditionsTagger extends ConditionsFinder<PostconditionsTag> {
             behaviorParameters.add(returnRef);
         }
 
-        return behaviorParameters;
+        return Vimp.v().newCallExpr(behaviorMethod.makeRef(), behaviorParameters);
     }
 
 }

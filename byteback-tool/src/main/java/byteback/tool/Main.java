@@ -2,6 +2,7 @@ package byteback.tool;
 
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
+import byteback.syntax.scene.transformer.ImplementationPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.transformer.*;
@@ -84,12 +85,18 @@ public class Main implements Callable<Integer> {
         return transformArrayCheck;
     }
 
+    private final String[] pluginClasses = new String[] {
+            "byteback.specification.plugin.ObjectSpec"
+    };
+
     public Integer call() throws Exception {
         final long startTime = System.currentTimeMillis();
 
         // We will add the classes using Options.v().classes, instead of using the Soot main.
         Options.v().set_unfriendly_mode(true);
-        Options.v().classes().addAll(getStartingClasses());
+        final List<String> startingClasses = getStartingClasses();
+        startingClasses.addAll(List.of(pluginClasses));
+        Options.v().classes().addAll(startingClasses);
 
         // For now ByteBack will not produce any output. Especially since we still haven't defined how Vimp should be
         // compiled.
@@ -171,14 +178,14 @@ public class Main implements Callable<Integer> {
         scene.loadBasicClasses();
         scene.loadNecessaryClasses();
 
-        MethodTypeFinder.v().transform();
+        MethodTypeTagger.v().transform();
+        ImplementationPropagator.v().transform();
 
         PackManager.v().runBodyPacks();
 
         ParameterLocalsTagger.v().transform();
-        PreconditionsTagger.v().transform();
+        MethodConditionsTagger.v().transform();
         PreconditionsPropagator.v().transform();
-        PostconditionsTagger.v().transform();
         PostconditionsPropagator.v().transform();
         HierarchyAxiomTagger.v().transform();
 

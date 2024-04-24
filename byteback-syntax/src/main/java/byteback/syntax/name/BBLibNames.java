@@ -23,7 +23,7 @@ public class BBLibNames {
 
     public static final String ASSUMPTION_NAME = "assumption";
 
-    public static final String ATTACH_ANNOTATION = "Lbyteback/specification/Contract$Attach;";
+    public static final String ATTACH_ANNOTATION = "Lbyteback/specification/plugin/Plugin$Attach;";
 
     public static final String BEHAVIOR_ANNOTATION = "Lbyteback/specification/Contract$Behavior;";
 
