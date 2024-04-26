@@ -11,6 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * Encodes an entire Scene into the Boogie Intermediate Verification Language.
+ *
+ * @author paganma
+ */
 public class SceneToBplEncoder extends SceneEncoder {
 
     private static final String DEFAULT_PRELUDE_SOURCE_PATH = "/boogie/ByteBackPrelude.bpl";

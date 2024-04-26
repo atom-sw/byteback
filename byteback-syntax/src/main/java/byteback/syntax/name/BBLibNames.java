@@ -19,10 +19,6 @@ public class BBLibNames {
         return INSTANCE.get();
     }
 
-    public static final String ASSERTION_NAME = "assertion";
-
-    public static final String ASSUMPTION_NAME = "assumption";
-
     public static final String ATTACH_ANNOTATION = "Lbyteback/specification/plugin/Plugin$Attach;";
 
     public static final String BEHAVIOR_ANNOTATION = "Lbyteback/specification/Contract$Behavior;";
@@ -33,15 +29,11 @@ public class BBLibNames {
 
     public static final String BINDINGS_CLASS_NAME = "byteback.specification.Bindings";
 
-    public static final String CONDITIONAL_NAME = "conditional";
-
     public static final String CONTRACT_CLASS_NAME = "byteback.specification.Contract";
 
     public static final String ENSURES_ANNOTATION = "Lbyteback/specification/Contract$Ensures;";
 
     public static final String ENSURE_ANNOTATION = "Lbyteback/specification/Contract$Ensure;";
-
-    public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";
 
     public static final String IGNORE_ANNOTATION = "Lbyteback/specification/Contract$Ignore;";
 
@@ -51,15 +43,15 @@ public class BBLibNames {
 
     public static final String LEMMA_ANNOTATION = "Lbyteback/specification/Contract$Lemma;";
 
-    public static final String OLD_NAME = "old";
-
-    public static final String THROWN_NAME = "thrown";
-
     public static final String OPERATOR_ANNOTATION = "Lbyteback/specification/Contract$Operator;";
 
     public static final String PRELUDE_ANNOTATION = "Lbyteback/specification/Contract$Prelude;";
 
     public static final String QUANTIFIERS_CLASS_NAME = "byteback.specification.Quantifiers";
+
+    public static final String EXISTENTIAL_QUANTIFIER_NAME = "exists";
+
+    public static final String UNIVERSAL_QUANTIFIER_NAME = "forall";
 
     public static final String RAISES_ANNOTATION = "Lbyteback/specification/Contract$Raises;";
 
@@ -73,7 +65,13 @@ public class BBLibNames {
 
     public static final String SPECIAL_CLASS_NAME = "byteback.specification.Special";
 
-    public static final String UNIVERSAL_QUANTIFIER_NAME = "forall";
+    public static final String CONDITIONAL_NAME = "conditional";
+
+    public static final String OLD_NAME = "old";
+
+    public static final String THROWN_NAME = "thrown";
+
+
 
     public boolean isBindingsClass(final SootClass sootClass) {
         return sootClass.getName().equals(BINDINGS_CLASS_NAME);

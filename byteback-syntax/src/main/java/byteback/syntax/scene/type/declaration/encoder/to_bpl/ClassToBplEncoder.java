@@ -15,6 +15,11 @@ import soot.Value;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Encodes a class into the Boogie Intermediate Verification Language.
+ *
+ * @author paganma
+ */
 public class ClassToBplEncoder extends ClassEncoder {
 
     private final ValueToBplEncoder valueEncoder;
@@ -25,7 +30,7 @@ public class ClassToBplEncoder extends ClassEncoder {
 
     public ClassToBplEncoder(final Printer printer) {
         super(printer);
-        this.valueEncoder = new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE);
+        this.valueEncoder = new ValueToBplEncoder(printer);
         this.fieldEncoder = new FieldToBplEncoder(printer);
         this.methodEncoder = new MethodToBplEncoder(printer);
     }

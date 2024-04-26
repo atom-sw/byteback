@@ -36,9 +36,9 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
         for (final Unit unit : body.getUnits()) {
             final Unit target;
 
-            if (unit instanceof IfStmt ifStmt) {
+            if (unit instanceof final IfStmt ifStmt) {
                 target = ifStmt.getTarget();
-            } else if (unit instanceof GotoStmt gotoStmt) {
+            } else if (unit instanceof final GotoStmt gotoStmt) {
                 target = gotoStmt.getTarget();
             } else {
                 continue;

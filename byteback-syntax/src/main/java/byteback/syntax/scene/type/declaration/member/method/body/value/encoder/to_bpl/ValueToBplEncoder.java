@@ -41,6 +41,10 @@ public class ValueToBplEncoder extends ValueEncoder {
         this.heapContext = heapContext;
     }
 
+    public ValueToBplEncoder(final Printer printer) {
+        this(printer, HeapContext.PRE_STATE);
+    }
+
     public void encodeTypeConstant(final TypeConstant typeConstant) {
         printer.print("`");
         printer.print(typeConstant.value.getClassName());
