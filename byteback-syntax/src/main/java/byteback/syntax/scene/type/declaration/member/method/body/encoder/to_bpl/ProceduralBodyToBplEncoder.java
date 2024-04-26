@@ -4,8 +4,8 @@ import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.BodyEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.to_bpl.UnitToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTagProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.IdentityStmtsTag;
+import byteback.syntax.scene.type.declaration.member.method.tag.IdentityStmtsTagProvider;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
 import soot.jimple.GotoStmt;
@@ -55,8 +55,8 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
         final SootMethod sootMethod = body.getMethod();
         final HashMap<Unit, String> unitToLabelMap = makeUnitToLabelMap(body);
         final var unitToBplEncoder = new UnitToBplEncoder(printer, unitToLabelMap);
-        final ParameterLocalsTag parameterLocalsTag = ParameterLocalsTagProvider.v().getOrThrow(sootMethod);
-        final List<Local> parameterLocals = parameterLocalsTag.getValues();
+        final IdentityStmtsTag identityStmtsTag = IdentityStmtsTagProvider.v().getOrThrow(sootMethod);
+        final List<Local> parameterLocals = identityStmtsTag.getValues();
 
         for (final Local local : body.getLocals()) {
             if (parameterLocals.contains(local)) {

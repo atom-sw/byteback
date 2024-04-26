@@ -2,23 +2,24 @@ package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
-import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTagProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.IdentityStmtsTag;
+import byteback.syntax.scene.type.declaration.member.method.tag.IdentityStmtsTagProvider;
 import soot.*;
 import soot.javaToJimple.DefaultLocalGenerator;
+import soot.jimple.IdentityRef;
 import soot.jimple.JimpleBody;
 
 import java.util.ArrayList;
 
-public class ParameterLocalsTagger extends MethodTransformer {
+public class InputRefsTagger extends MethodTransformer {
 
-    private static final Lazy<ParameterLocalsTagger> INSTANCE = Lazy.from(ParameterLocalsTagger::new);
+    private static final Lazy<InputRefsTagger> INSTANCE = Lazy.from(InputRefsTagger::new);
 
-    public static ParameterLocalsTagger v() {
+    public static InputRefsTagger v() {
         return INSTANCE.get();
     }
 
-    private ParameterLocalsTagger() {
+    private InputRefsTagger() {
     }
 
     @Override
@@ -31,7 +32,7 @@ public class ParameterLocalsTagger extends MethodTransformer {
             final Body body = sootMethod.getActiveBody();
 
             if (!sootMethod.isStatic()) {
-                parameterLocals.add(body.getThisLocal());
+                parameterLocals.add((IdentityRef) body.getThisUnit());
             }
 
             parameterLocals.addAll(body.getParameterLocals());
@@ -50,8 +51,8 @@ public class ParameterLocalsTagger extends MethodTransformer {
             }
         }
 
-        final var parameterLocalsTag = new ParameterLocalsTag(parameterLocals);
-        ParameterLocalsTagProvider.v().put(sootMethod, parameterLocalsTag);
+        final var parameterLocalsTag = new IdentityStmtsTag(parameterLocals);
+        IdentityStmtsTagProvider.v().put(sootMethod, parameterLocalsTag);
     }
 
 }

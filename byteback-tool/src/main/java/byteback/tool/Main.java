@@ -190,7 +190,7 @@ public class Main implements Callable<Integer> {
 
         PackManager.v().runBodyPacks();
 
-        ParameterLocalsTagger.v().transform();
+        InputRefsTagger.v().transform();
         ConditionsTagger.v().transform();
         PreconditionsPropagator.v().transform();
         PostconditionsPropagator.v().transform();

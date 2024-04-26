@@ -7,7 +7,7 @@ import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagFl
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.tag.ParameterLocalsTagProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.IdentityStmtsTagProvider;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.Body;
@@ -51,7 +51,7 @@ public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
             }
         }
 
-        final List<Local> parameterLocals = ParameterLocalsTagProvider.v().getOrThrow(sootMethod).getValues();
+        final List<Local> parameterLocals = IdentityStmtsTagProvider.v().getOrThrow(sootMethod).getValues();
         new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE).encodeBindings(parameterLocals);
         printer.endItems();
 

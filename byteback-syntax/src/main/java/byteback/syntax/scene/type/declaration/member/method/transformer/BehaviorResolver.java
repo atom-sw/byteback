@@ -22,7 +22,8 @@ public abstract class BehaviorResolver {
         if (behaviorMethod != null) {
             if (!BehaviorTagFlagger.v().isTagged(behaviorMethod)) {
                 throw new TransformationException(
-                        "Not a behavior method: " + behaviorName,
+                        "Not a behavior method: "
+                                + behaviorName,
                         targetMethod
                 );
             }
@@ -30,7 +31,8 @@ public abstract class BehaviorResolver {
             return behaviorMethod;
         } else {
             throw new TransformationException(
-                    "Could not find behavior method: " + behaviorName,
+                    "Could not find behavior method: "
+                            + behaviorName,
                     targetMethod
             );
         }

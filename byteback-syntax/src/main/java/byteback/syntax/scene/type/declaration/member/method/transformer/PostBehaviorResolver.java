@@ -2,6 +2,8 @@ package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
 import soot.*;
+import soot.jimple.Jimple;
+import soot.jimple.ParameterRef;
 import soot.util.NumberedString;
 
 import java.util.ArrayList;
@@ -33,7 +35,9 @@ public class PostBehaviorResolver extends BehaviorResolver {
 
     @Override
     protected Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod) {
-        return null;
+        for (int i = 0; i < targetMethod.getParameterCount(); ++i) {
+            final ParameterRef parameterRef = Jimple.v().newParameterRef();
+        }
     }
 
 }

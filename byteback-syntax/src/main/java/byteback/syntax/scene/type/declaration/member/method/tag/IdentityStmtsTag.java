@@ -1,21 +1,19 @@
 package byteback.syntax.scene.type.declaration.member.method.tag;
 
-import byteback.syntax.tag.ValuesTag;
-import soot.Local;
+import soot.jimple.IdentityStmt;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ParameterLocalsTag implements Tag {
+public class IdentityStmtsTag implements Tag {
 
     public static final String NAME = "ParametersLocalsTag";
 
-    final List<Local> parameterLocals;
+    final List<IdentityStmt> identityStmts;
 
-    public ParameterLocalsTag(final List<Local> parameterLocals) {
-        this.parameterLocals = parameterLocals;
+    public IdentityStmtsTag(final List<IdentityStmt> identityStmts) {
+        this.identityStmts = identityStmts;
     }
 
     @Override
