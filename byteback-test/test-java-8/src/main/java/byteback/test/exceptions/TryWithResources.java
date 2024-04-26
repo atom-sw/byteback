@@ -232,5 +232,5 @@ public class TryWithResources {
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 14 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 15 verified, 0 errors
  */

@@ -4,6 +4,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import soot.Scene;
 import soot.Unit;
 import soot.Value;
+import soot.ValueBox;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
@@ -24,29 +25,33 @@ public class IndexCheckTransformer extends CheckTransformer {
 
     @Override
     public Optional<Value> makeUnitCheck(final Unit unit) {
-        if (unit instanceof final AssignStmt assignStmt
-                && assignStmt.getLeftOp() instanceof final ArrayRef arrayRef) {
-            final Value indexValue = arrayRef.getIndex();
-            final Value arrayBase = arrayRef.getBase();
-            final Value condition =
-                    Jimple.v().newAndExpr(
-                            Vimp.v().nest(
-                                    Jimple.v().newLeExpr(
-                                            IntConstant.v(0),
-                                            indexValue
-                                    )
-                            ),
-                            Vimp.v().nest(
-                                    Jimple.v().newLtExpr(
-                                            indexValue,
-                                            Vimp.v().nest(
-                                                    Jimple.v().newLengthExpr(arrayBase)
-                                            )
-                                    )
-                            )
-                    );
 
-            return Optional.of(condition);
+        for (final ValueBox valueBox : unit.getUseBoxes()) {
+            final Value value = valueBox.getValue();
+
+            if (value instanceof final ArrayRef arrayRef) {
+                final Value indexValue = arrayRef.getIndex();
+                final Value arrayBase = arrayRef.getBase();
+                final Value condition =
+                        Jimple.v().newAndExpr(
+                                Vimp.v().nest(
+                                        Jimple.v().newLeExpr(
+                                                IntConstant.v(0),
+                                                indexValue
+                                        )
+                                ),
+                                Vimp.v().nest(
+                                        Jimple.v().newLtExpr(
+                                                indexValue,
+                                                Vimp.v().nest(
+                                                        Jimple.v().newLengthExpr(arrayBase)
+                                                )
+                                        )
+                                )
+                        );
+
+                return Optional.of(condition);
+            }
         }
 
         return Optional.empty();

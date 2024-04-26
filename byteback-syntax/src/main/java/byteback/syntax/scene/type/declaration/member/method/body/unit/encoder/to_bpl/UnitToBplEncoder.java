@@ -11,9 +11,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.Un
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
-import soot.Local;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.jimple.*;
 
 import java.util.Map;
@@ -60,13 +58,14 @@ public class UnitToBplEncoder extends UnitEncoder {
         printer.startItems(", ");
 
         for (final Value destValue : destValues) {
+            printer.separate();
             valueEncoder.encodeValue(destValue);
         }
 
         printer.endItems();
         printer.print(" := ");
 
-        new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethod());
+        new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethodRef());
 
         printer.print("(");
         printer.startItems(", ");
@@ -122,8 +121,29 @@ public class UnitToBplEncoder extends UnitEncoder {
                 new ClassToBplEncoder(printer).encodeClassConstant(newExpr.getBaseType().getSootClass());
                 printer.print(");");
                 return;
-            } else if (rightOp instanceof NewArrayExpr) {
-                // TODO
+            } else if (rightOp instanceof final NewArrayExpr newArrayExpr) {
+                printer.print("call ");
+                valueEncoder.encodeValue(leftOp);
+                printer.print(", ");
+                valueEncoder.encodeValue(Vimp.v().newCaughtExceptionRef());
+                printer.print(" := ");
+                printer.print("array(");
+                printer.startItems(", ");
+
+                printer.separate();
+                if (newArrayExpr.getBaseType() instanceof final RefType refType) {
+                    new ClassToBplEncoder(printer).encodeClassConstant(refType.getSootClass());
+                } else {
+                    printer.print("Primitive");
+                }
+
+                printer.separate();
+                valueEncoder.encodeValue(newArrayExpr.getSize());
+
+                printer.endItems();
+
+                printer.print(");");
+                return;
             } else {
                 if (leftOp instanceof final InstanceFieldRef instanceFieldRef) {
                     printer.print(ValueToBplEncoder.HEAP_SYMBOL);

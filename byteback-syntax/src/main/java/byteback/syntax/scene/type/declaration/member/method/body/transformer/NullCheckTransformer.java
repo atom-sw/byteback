@@ -4,6 +4,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import soot.Scene;
 import soot.Unit;
 import soot.Value;
+import soot.ValueBox;
 import soot.jimple.*;
 
 import java.util.Optional;
@@ -21,33 +22,38 @@ public class NullCheckTransformer extends CheckTransformer {
 
     @Override
     public Optional<Value> makeUnitCheck(final Unit unit) {
-        Value base = null;
 
-        if (unit instanceof final AssignStmt assignStmt) {
-            if (assignStmt.getLeftOp() instanceof final Ref ref) {
+        for (final ValueBox valueBox : unit.getUseBoxes()) {
+            final Value value = valueBox.getValue();
+
+            final Value base;
+
+            if (value instanceof final Ref ref) {
                 if (ref instanceof final InstanceFieldRef instanceFieldRef) {
                     base = instanceFieldRef.getBase();
                 } else if (ref instanceof final ArrayRef arrayRef) {
                     base = arrayRef.getBase();
+                } else {
+                    continue;
                 }
-            } else if (assignStmt.getRightOp() instanceof final InstanceInvokeExpr invokeExpr) {
+            } else if (value instanceof final InstanceInvokeExpr invokeExpr) {
                 base = invokeExpr.getBase();
+            } else {
+                continue;
             }
-        } else if (unit instanceof final InstanceInvokeExpr invokeExpr) {
-            base = invokeExpr.getBase();
+
+            if (base != null) {
+                final Value condition =
+                        Jimple.v().newNeExpr(
+                                Vimp.v().nest(base),
+                                NullConstant.v()
+                        );
+
+                return Optional.of(condition);
+            }
         }
 
-        if (base != null) {
-            final Value condition =
-                    Jimple.v().newNeExpr(
-                            Vimp.v().nest(base),
-                            NullConstant.v()
-                    );
-
-            return Optional.of(condition);
-        } else {
-            return Optional.empty();
-        }
+        return Optional.empty();
     }
 
 }

@@ -7,6 +7,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagFlagger;
 import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
 import soot.Body;
+import soot.PatchingChain;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.CaughtExceptionRef;
@@ -15,9 +16,11 @@ import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
-import soot.util.Chain;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.UnitGraph;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Specifies non-exceptional loop exits as such, by adding `assume @caughtexception == @void` at every non-exceptional
@@ -39,25 +42,30 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
     @Override
     public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
+        final PatchingChain<Unit> units = body.getUnits();
         final LoopFinder loopFinder = new LoopFinder();
-        final Chain<Unit> units = body.getUnits();
-        final Set<Loop> loops = loopFinder.getLoops(body);
+        final var unitGraph = new BriefUnitGraph(body);
+        final Set<Loop> loops = loopFinder.getLoops(unitGraph);
 
         for (final Loop loop : loops) {
+            final CaughtExceptionRef exceptionRef = Vimp.v().newCaughtExceptionRef();
+            final VoidConstant voidConstant = VoidConstant.v();
+            final Value behaviorValue =
+                    Vimp.v().nest(
+                            Jimple.v().newEqExpr(
+                                    exceptionRef,
+                                    voidConstant
+                            )
+                    );
+            final Supplier<AssertStmt> assertStmtSupplier = () -> Vimp.v().newAssertStmt(behaviorValue);
+
+            units.insertBefore(assertStmtSupplier.get(), loop.getHead());
+            units.insertBefore(assertStmtSupplier.get(), loop.getBackJumpStmt());
+
             for (final Unit loopExit : loop.getLoopExits()) {
-                final CaughtExceptionRef exceptionRef = Vimp.v().newCaughtExceptionRef();
-                final VoidConstant voidConstant = VoidConstant.v();
-                final Value behaviorValue =
-                        Vimp.v().nest(
-                                Jimple.v().newEqExpr(
-                                        exceptionRef,
-                                        voidConstant
-                                )
-                        );
-                final AssertStmt assertUnit = Vimp.v().newAssertStmt(behaviorValue);
                 final Unit target;
 
-                // The `getTarget()` method for IfStmt is different to that of GotoStmt, hence the two matches.
+                // The `getTarget()` method for IfStmt is different to that of GotoStmt, hence the two if-matches.
                 if (loopExit instanceof final IfStmt ifExit) {
                     target = ifExit.getTarget();
                 } else if (loopExit instanceof final GotoStmt gotoStmt) {
@@ -69,8 +77,10 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
                 // Insert the assumption only if exit target is not an exceptional target
                 // (as tagged by GuardTransformer).
                 if (ThrowTargetTagFlagger.v().get(target).isEmpty()) {
-                    units.insertBefore(assertUnit, target);
-                    target.redirectJumpsToThisTo(assertUnit);
+                    units.insertBefore(assertStmtSupplier.get(), loopExit);
+                    final AssertStmt targetAssertStmt = assertStmtSupplier.get();
+                    units.insertBefore(targetAssertStmt, target);
+                    target.redirectJumpsToThisTo(targetAssertStmt);
                 }
             }
         }

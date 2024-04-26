@@ -4,6 +4,7 @@ import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.InvokeAssigner;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.ThrownAssignmentTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.transformer.*;
@@ -87,7 +88,8 @@ public class Main implements Callable<Integer> {
     }
 
     private final String[] pluginClasses = new String[] {
-            "byteback.specification.plugin.ObjectSpec"
+            "byteback.specification.plugin.ObjectSpec",
+            "byteback.specification.plugin.ExceptionSpec"
     };
 
     public Integer call() throws Exception {
@@ -129,7 +131,7 @@ public class Main implements Callable<Integer> {
         // Removes subexpressions in if conditions
         jtpPack.add(new Transform("jtp.i2j", IfConditionExtractor.v()));
 
-        // First introduce the new Vimp expression types
+        // Introduce the new Vimp expression types
         jtpPack.add(new Transform("jtp.vvt", LogicConstantTransformer.v()));
         jtpPack.add(new Transform("jtp.etc", ExplicitTypeCaster.v()));
         jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
@@ -138,6 +140,7 @@ public class Main implements Callable<Integer> {
         jtpPack.add(new Transform("jtp.tat", ThrownAssignmentTransformer.v()));
         jtpPack.add(new Transform("jtp.cot", ConditionalExprTransformer.v()));
         jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
+        jtpPack.add(new Transform("jtp.ias", InvokeAssigner.v()));
 
         // - Transformations targeting behavioral methods
         jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
@@ -149,18 +152,21 @@ public class Main implements Callable<Integer> {
         jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
         jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
         jtpPack.add(new Transform("jtp.plf", ParameterLocalFinalizer.v()));
+        jtpPack.add(new Transform("jtp.oett", OldExprTightener.v()));
 
-        // Create initial assumptions.
+        // Generate initial assumptions.
         jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
         jtpPack.add(new Transform("jtp.cai", CaughtAssumptionInserter.v()));
 
         // - Transformations of the exceptional control flow
         // Create explicit checks for implicit exceptions
         if (getTransformArrayCheck()) {
+            scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
             jtpPack.add(new Transform("jtp.ict", new IndexCheckTransformer(scene)));
         }
 
         if (getTransformNullCheck()) {
+            scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
             jtpPack.add(new Transform("jtp.nct", new NullCheckTransformer(scene)));
         }
 
@@ -179,13 +185,13 @@ public class Main implements Callable<Integer> {
         scene.loadBasicClasses();
         scene.loadNecessaryClasses();
 
-        MethodTypeTagger.v().transform();
+        ModifierTagger.v().transform();
         ImplementationPropagator.v().transform();
 
         PackManager.v().runBodyPacks();
 
         ParameterLocalsTagger.v().transform();
-        MethodConditionsTagger.v().transform();
+        ConditionsTagger.v().transform();
         PreconditionsPropagator.v().transform();
         PostconditionsPropagator.v().transform();
         HierarchyAxiomTagger.v().transform();

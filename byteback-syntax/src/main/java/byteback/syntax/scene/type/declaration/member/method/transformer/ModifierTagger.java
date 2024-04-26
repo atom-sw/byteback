@@ -7,17 +7,16 @@ import byteback.syntax.scene.type.declaration.member.method.tag.*;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.SootMethod;
 import soot.tagkit.AnnotationStringElem;
-import soot.tagkit.AnnotationTag;
 
-public class MethodTypeTagger extends MethodTransformer {
+public class ModifierTagger extends MethodTransformer {
 
-    private static final Lazy<MethodTypeTagger> INSTANCE = Lazy.from(MethodTypeTagger::new);
+    private static final Lazy<ModifierTagger> INSTANCE = Lazy.from(ModifierTagger::new);
 
-    public static MethodTypeTagger v() {
+    public static ModifierTagger v() {
         return INSTANCE.get();
     }
 
-    private MethodTypeTagger() {
+    private ModifierTagger() {
     }
 
     @Override

@@ -9,8 +9,8 @@ public class PreconditionsTag extends ConditionsTag {
 
     public static final String NAME = "PreconditionsTag";
 
-    public PreconditionsTag(final List<Value> values) {
-        super(values);
+    public PreconditionsTag(final List<Value> conditions) {
+        super(conditions);
     }
 
     public PreconditionsTag() {

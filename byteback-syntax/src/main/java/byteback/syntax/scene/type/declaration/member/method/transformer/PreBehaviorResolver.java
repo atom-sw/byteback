@@ -1,20 +1,14 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.tag.*;
 import soot.*;
 import soot.util.NumberedString;
 
-public class PreconditionResolver extends BehaviorResolver<PreconditionsTag> {
+public class PreBehaviorResolver extends BehaviorResolver {
 
-    private static final Lazy<PreconditionResolver> INSTANCE = Lazy.from(() ->
-            new PreconditionResolver(PreconditionsTagProvider.v()));
+    private static final Lazy<PreBehaviorResolver> INSTANCE = Lazy.from(PreBehaviorResolver::new);
 
-    private PreconditionResolver(final PreconditionsTagProvider preconditionsProvider) {
-        super(preconditionsProvider);
-    }
-
-    public static PreconditionResolver v() {
+    public static PreBehaviorResolver v() {
         return INSTANCE.get();
     }
 
@@ -27,6 +21,11 @@ public class PreconditionResolver extends BehaviorResolver<PreconditionsTag> {
         );
 
         return behaviorSignature.numberedSubSig;
+    }
+
+    @Override
+    protected Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod) {
+        return null;
     }
 
 }

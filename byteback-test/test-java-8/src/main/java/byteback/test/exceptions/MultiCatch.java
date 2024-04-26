@@ -50,5 +50,5 @@ public class MultiCatch {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 9 verified
+ * CHECK: Boogie program verifier finished with 5 verified
  */

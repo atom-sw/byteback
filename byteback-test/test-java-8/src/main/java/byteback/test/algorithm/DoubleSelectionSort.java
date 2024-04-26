@@ -96,6 +96,7 @@ public class DoubleSelectionSort {
 		return eq(old(a[i]), a[j]) & eq(old(a[j]), a[i]);
 	}
 
+	@TwoState
 	@Behavior
 	public static boolean elements_invariance(final double[] a, final int i, final int j) {
 		final int k = Bindings.integer();
@@ -117,13 +118,13 @@ public class DoubleSelectionSort {
 	@Require("array_is_not_empty")
 	@Ensure("array_is_sorted")
 	public static void sort(final double[] a) {
-		for (int c = 0; c < a.length; ++c) {
-			invariant(lte(0, c) & lte(c, a.length));
-			invariant(partitioned(a, c));
-			invariant(sorted(a, 0, c));
+		for (int i = 0; i < a.length; ++i) {
+			invariant(lte(0, i) & lte(i, a.length));
+			invariant(partitioned(a, i));
+			invariant(sorted(a, 0, i));
 
-			final int m = minimum(a, c);
-			swap(a, m, c);
+			final int m = minimum(a, i);
+			swap(a, m, i);
 		}
 	}
 

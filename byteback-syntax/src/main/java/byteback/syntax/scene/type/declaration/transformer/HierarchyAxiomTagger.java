@@ -54,7 +54,7 @@ public class HierarchyAxiomTagger extends ClassTransformer {
             axiomValues.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
         }
 
-        if (!sootClass.isInterface()) {
+        if (!sootClass.isInterface() && !sootClass.getName().equals("java.lang.Object")) {
             final Collection<SootClass> subTypes = hierarchy.getDirectSubclassesOf(sootClass);
             final SootClass[] subTypesArray = subTypes.toArray(new SootClass[0]);
 

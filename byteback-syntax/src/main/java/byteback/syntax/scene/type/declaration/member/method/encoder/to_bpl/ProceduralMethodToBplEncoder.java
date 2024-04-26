@@ -32,7 +32,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 
     public void encodeMethod(final SootMethod sootMethod) {
         printer.print("procedure ");
-        encodeMethodName(sootMethod);
+        encodeMethodName(sootMethod.makeRef());
         printer.print("(");
         final ParameterLocalsTag parameterLocalsTag = ParameterLocalsTagProvider.v().getOrThrow(sootMethod);
         final List<Local> methodLocals = parameterLocalsTag.getValues();
@@ -62,24 +62,24 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 
         PreconditionsTagProvider.v().get(sootMethod)
                 .ifPresent((preconditionsTag) -> {
-                    final List<Value> preconditions = preconditionsTag.getValues();
+                    final List<Value> preconditions = preconditionsTag.getConditions();
 
                     for (final Value value : preconditions) {
                         printer.print(SPEC_INDENT);
                         printer.print("requires ");
-                        valueToBplEncoder.encodeValue(value);
+                        new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE).encodeValue(value);
                         printer.printLine(";");
                     }
                 });
 
         PostconditionsTagProvider.v().get(sootMethod)
                 .ifPresent((postconditionsTag) -> {
-                    final List<Value> postconditions = postconditionsTag.getValues();
+                    final List<Value> postconditions = postconditionsTag.getConditions();
 
                     for (final Value value : postconditions) {
                         printer.print(SPEC_INDENT);
                         printer.print("ensures ");
-                        valueToBplEncoder.encodeValue(value);
+                        new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.POST_STATE).encodeValue(value);
                         printer.printLine(";");
                     }
                 });

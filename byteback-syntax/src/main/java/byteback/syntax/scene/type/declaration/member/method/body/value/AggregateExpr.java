@@ -6,6 +6,7 @@ import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.jimple.AssignStmt;
+import soot.jimple.internal.RValueBox;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -40,7 +41,7 @@ public class AggregateExpr extends NestedExpr implements Local {
     }
 
     public AggregateExpr(final Local local, final AssignStmt definition) {
-        super(definition.getRightOp());
+        super((RValueBox) definition.getRightOpBox());
         this.local = local;
         this.definition = definition;
     }

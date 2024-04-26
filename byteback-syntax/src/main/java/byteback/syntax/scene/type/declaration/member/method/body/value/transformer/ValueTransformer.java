@@ -19,7 +19,7 @@ public abstract class ValueTransformer extends UnitTransformer {
     public abstract void transformValue(final ValueContext valueContext);
 
     public List<ValueBox> extractValueBoxes(final Unit unit) {
-        return unit.getUseAndDefBoxes();
+        return unit.getUseBoxes();
     }
 
     @Override
