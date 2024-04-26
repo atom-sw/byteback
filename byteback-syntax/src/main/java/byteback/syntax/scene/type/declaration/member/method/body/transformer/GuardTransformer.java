@@ -5,10 +5,13 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.TrapCollectingIterator;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
 import soot.*;
+import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.Jimple;
 import soot.jimple.ThrowStmt;
+import soot.util.Chain;
 
 /**
  * Transforms throw instructions into explicit branching instructions. Given a statement `throw e`, the transformation
@@ -34,7 +37,20 @@ public class GuardTransformer extends BodyTransformer {
     public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
         final PatchingChain<Unit> units = body.getUnits();
-        final var unitIterator = new TrapCollectingIterator(units, body.getTraps());
+        final Chain<Trap> traps = body.getTraps();
+        final var unitIterator = new TrapCollectingIterator(units, traps);
+
+        for (final Trap trap : traps) {
+            final Unit handlerUnit = trap.getHandlerUnit();
+            assert handlerUnit instanceof
+                    final AssignStmt assignStmt
+                    && assignStmt.getRightOp() instanceof CaughtExceptionRef;
+            final AssignStmt thrownAssignStmt = Jimple.v().newAssignStmt(
+                    Vimp.v().newCaughtExceptionRef(),
+                    VoidConstant.v()
+            );
+            units.insertAfter(thrownAssignStmt, handlerUnit);
+        }
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
@@ -51,7 +67,7 @@ public class GuardTransformer extends BodyTransformer {
                     baseUnit.redirectJumpsToThisTo(assignUnit);
                 }
 
-                // Traps are collected in the same order in which they are opened. This means that the first element
+                // Traps are collected in the same order in which they are opened: The first element
                 // of the queue is the innermost trap at the current statement. This means that the active traps are
                 // sorted from innermost to outermost.
                 // Here iterate the active traps from the innermost, and add branching conditions before the return
@@ -65,6 +81,7 @@ public class GuardTransformer extends BodyTransformer {
                                     trap.getException().getType()
                             )
                     );
+
                     final Unit branchUnit = Vimp.v().newIfStmt(checkValue, trap.getHandlerUnit());
                     ThrowTargetTagFlagger.v().flag(branchUnit);
                     units.insertBefore(branchUnit, baseUnit);

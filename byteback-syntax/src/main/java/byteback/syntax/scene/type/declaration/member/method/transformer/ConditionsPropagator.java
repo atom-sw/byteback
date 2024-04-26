@@ -36,7 +36,7 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
         final Scene scene = sceneContext.getScene();
         final SootClass declaringClass = classContext.getSootClass();
         final ConditionsTag conditionsTag = conditionsTagProvider.getOrCompute(sootMethod);
-        final List<Value> originalConditions = conditionsTag.getValues();
+        final List<Value> originalConditions = conditionsTag.getConditions();
 
         if (originalConditions.isEmpty()) {
             return;
@@ -57,7 +57,7 @@ public abstract class ConditionsPropagator<T extends ConditionsTag> extends Meth
 
                 if (overridingMethod != null) {
                     final ConditionsTag overridingConditionsTag = conditionsTagProvider.getOrCompute(overridingMethod);
-                    final List<Value> overridingConditions = overridingConditionsTag.getValues();
+                    final List<Value> overridingConditions = overridingConditionsTag.getConditions();
                     final List<Value> combinedConditions = combineConditions(originalConditions, overridingConditions);
                     overridingConditionsTag.setValues(combinedConditions);
                 }

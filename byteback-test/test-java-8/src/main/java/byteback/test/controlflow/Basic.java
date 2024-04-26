@@ -50,6 +50,7 @@ public class Basic {
 		a = 1;
 	}
 
+	@Return
 	public static void emptyFor() {
 		for (int i = 0; i < 10; ++i) {
 		}

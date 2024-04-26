@@ -129,10 +129,6 @@ function array.lengthof(r: Reference) returns (int);
 
 axiom (forall r: Reference :: array.lengthof(r) >= 0);
 
-axiom (forall h1: Store, h2: Store, r: Reference , i: int ::
-	heap.succeeds(h1, h2) && 0 <= i && i < array.lengthof(r)
-	==> store.read(h1, r, array.element(i)) == store.read(h2, r, array.element(i)));
-
 function array.type(Type) returns (Type);
 
 function array.type_inverse(Type) returns (Type);
@@ -259,6 +255,25 @@ function not(a: bool) returns (bool)
 {
 	!a
 }
+
+// -------------------------------------------------------------------
+// Casting operators
+// -------------------------------------------------------------------
+
+function boolean.to.int(a: `boolean`): `int`
+{ if (a) then 1 else 0  }
+
+function int.to.float(a: `int`): `float`
+{ real(a)  }
+
+function int.to.double(a: `int`): `double`
+{ real(a)  }
+
+function float.to.int(a: `float`): `int`
+{ int(a)  }
+
+function double.to.int(a: `double`): `int`
+{ int(a)  }
 
 // -------------------------------------------------------------------
 // The program starts here

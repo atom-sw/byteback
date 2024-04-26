@@ -1,25 +1,17 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagProvider;
-import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
 import soot.*;
 import soot.util.NumberedString;
 
 import java.util.ArrayList;
 
-public class PostconditionResolver extends BehaviorResolver<PostconditionsTag> {
+public class PostBehaviorResolver extends BehaviorResolver {
 
-    private static final Lazy<PostconditionResolver> INSTANCE = Lazy.from(() ->
-            new PostconditionResolver(PostconditionsTagProvider.v()));
+    private static final Lazy<PostBehaviorResolver> INSTANCE = Lazy.from(PostBehaviorResolver::new);
 
-    public static PostconditionResolver v() {
+    public static PostBehaviorResolver v() {
         return INSTANCE.get();
-    }
-
-    private PostconditionResolver(final PostconditionsTagProvider postConditionsProvider) {
-
-        super(postConditionsProvider);
     }
 
     @Override
@@ -37,6 +29,11 @@ public class PostconditionResolver extends BehaviorResolver<PostconditionsTag> {
         );
 
         return behaviorSignature.numberedSubSig;
+    }
+
+    @Override
+    protected Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod) {
+        return null;
     }
 
 }

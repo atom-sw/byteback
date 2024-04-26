@@ -1,22 +1,29 @@
 package byteback.syntax.scene.type.declaration.member.method.body.tag;
 
-import byteback.syntax.tag.ValuesTag;
 import soot.jimple.ConcreteRef;
+import soot.tagkit.AttributeValueException;
+import soot.tagkit.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InferredFramesTag extends ValuesTag<ConcreteRef> {
+public class InferredFramesTag implements Tag {
 
     public static final String NAME = "InferredFramesTag";
+
+    final List<ConcreteRef> frameRefs;
 
     /**
      * Constructs a new {@link InferredFramesTag}.
      *
-     * @param concreteRefs The references in the frame condition.
+     * @param frameRefs The references in the frame condition.
      */
-    public InferredFramesTag(final List<ConcreteRef> concreteRefs) {
-        super(concreteRefs);
+    public InferredFramesTag(final List<ConcreteRef> frameRefs) {
+        this.frameRefs = frameRefs;
+    }
+
+    public List<ConcreteRef> getFrameRefs() {
+        return frameRefs;
     }
 
     /**
@@ -29,6 +36,11 @@ public class InferredFramesTag extends ValuesTag<ConcreteRef> {
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public byte[] getValue() throws AttributeValueException {
+        return new byte[0];
     }
 
 }

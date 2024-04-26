@@ -50,8 +50,7 @@ public class ParameterLocalsTagger extends MethodTransformer {
             }
         }
 
-        final var parameterLocalsTag = new ParameterLocalsTag();
-        parameterLocalsTag.getValues().addAll(parameterLocals);
+        final var parameterLocalsTag = new ParameterLocalsTag(parameterLocals);
         ParameterLocalsTagProvider.v().put(sootMethod, parameterLocalsTag);
     }
 

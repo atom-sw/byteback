@@ -123,7 +123,7 @@ public class ValueToBplEncoder extends ValueEncoder {
             }
             case POST_STATE -> {
                 printer.print("old(");
-                printer.print(OLD_HEAP_SYMBOL);
+                printer.print(HEAP_SYMBOL);
                 printer.print(")");
             }
             default -> {
@@ -163,7 +163,7 @@ public class ValueToBplEncoder extends ValueEncoder {
         PreludeTagProvider.v().get(calledMethod)
                 .ifPresentOrElse(
                         (preludeDefinitionTag) -> printer.print(preludeDefinitionTag.getDefinitionSymbol()),
-                        () -> new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethod())
+                        () -> new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethodRef())
                 );
         printer.print("(");
         printer.startItems(", ");
@@ -320,7 +320,7 @@ public class ValueToBplEncoder extends ValueEncoder {
     @Override
     public void encodeValue(final Value value) {
         if (value instanceof final Immediate immediate) {
-            if (immediate instanceof NestedExpr nestedExpr) {
+            if (immediate instanceof final NestedExpr nestedExpr) {
                 encodeValue(nestedExpr.getValue());
                 return;
             }
@@ -384,15 +384,35 @@ public class ValueToBplEncoder extends ValueEncoder {
         }
 
         if (value instanceof final CastExpr castExpr) {
-            final Type fromType = castExpr.getCastType();
-            final Type toType = castExpr.getType();
+            final Type fromType = VimpTypeInterpreter.v().typeOf(castExpr.getOp());
+            final Type toType = VimpTypeInterpreter.v().typeOf(castExpr);
 
             if (fromType == BooleanType.v()) {
                 if (toType == IntType.v()) {
-                    encodeFunctionCall("bool.to.int");
+                    encodeFunctionCall("boolean.to.int", castExpr.getOp());
+                    return;
+                }
+            } else if (fromType == IntType.v()) {
+                if (toType == DoubleType.v()) {
+                    encodeFunctionCall("int.to.double", castExpr.getOp());
+                    return;
+                } else if (toType == FloatType.v()) {
+                    encodeFunctionCall("int.to.float", castExpr.getOp());
+                    return;
+                }
+
+            } else if (fromType == DoubleType.v()) {
+                if (toType == IntType.v()) {
+                    encodeFunctionCall("double.to.int", castExpr.getOp());
+                    return;
+                }
+            } else if (fromType == FloatType.v()) {
+                if (toType == IntType.v()) {
+                    encodeFunctionCall("float.to.int", castExpr.getOp());
                     return;
                 }
             }
+
 
             encodeValue(castExpr.getOp());
             return;
@@ -492,6 +512,21 @@ public class ValueToBplEncoder extends ValueEncoder {
 
             if (binopExpr instanceof final LtExpr ltExpr) {
                 encodeBinaryExpr(ltExpr, " < ");
+                return;
+            }
+
+            if (binopExpr instanceof final CmplExpr cmplExpr) {
+                encodeFunctionCall("real.cmp", cmplExpr.getOp1(), cmplExpr.getOp2());
+                return;
+            }
+
+            if (binopExpr instanceof final CmpgExpr cmpgExpr) {
+                encodeFunctionCall("real.cmp", cmpgExpr.getOp1(), cmpgExpr.getOp2());
+                return;
+            }
+
+            if (binopExpr instanceof final CmpExpr cmpExpr) {
+                encodeFunctionCall("int.cmp", cmpExpr.getOp1(), cmpExpr.getOp2());
                 return;
             }
         }

@@ -29,7 +29,7 @@ public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
         }
 
         printer.print("function ");
-        encodeMethodName(sootMethod);
+        encodeMethodName(sootMethod.makeRef());
         printer.print("(");
         printer.startItems(", ");
 
@@ -40,7 +40,7 @@ public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
 
             if (TwoStateTagFlagger.v().isTagged(sootMethod)) {
                 printer.separate();
-                printer.print(ValueToBplEncoder.HEAP_SYMBOL);
+                printer.print(ValueToBplEncoder.OLD_HEAP_SYMBOL);
                 printer.print(": Store");
             }
 

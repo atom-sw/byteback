@@ -8,6 +8,7 @@ import soot.jimple.Jimple;
 import soot.util.Chain;
 import soot.util.HashChain;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -95,7 +96,11 @@ public abstract class QuantifierExpr implements Expr {
 
     @Override
     public List<ValueBox> getUseBoxes() {
-        return Collections.singletonList(conditionBox);
+        final var useBoxes = new ArrayList<ValueBox>();
+        useBoxes.add(conditionBox);
+        useBoxes.addAll(conditionBox.getValue().getUseBoxes());
+
+        return useBoxes;
     }
 
     @Override

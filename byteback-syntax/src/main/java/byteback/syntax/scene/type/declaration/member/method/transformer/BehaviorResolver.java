@@ -1,26 +1,20 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.ConditionsTagProvider;
 import byteback.syntax.transformer.TransformationException;
 import soot.*;
 import soot.util.NumberedString;
 
 /**
- * Extracts the conditions for a method.
- *
- * @param <T> The type of the {@link ConditionsTag}.
  * @author paganma
  */
-public abstract class BehaviorResolver<T extends ConditionsTag> {
-
-    public BehaviorResolver(final ConditionsTagProvider<T> conditionsTagProvider) {
-    }
+public abstract class BehaviorResolver {
 
     protected abstract NumberedString makeBehaviorSignature(final SootMethod targetMethod, final String behaviorName);
 
-    public final SootMethod resolveBehavior(final SootMethod targetMethod, final String behaviorName) {
+    protected abstract Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod);
+
+    protected SootMethod lookupBehavior(final SootMethod targetMethod, final String behaviorName) {
         final SootClass declaringClass = targetMethod.getDeclaringClass();
         final NumberedString behaviorSignature = makeBehaviorSignature(targetMethod, behaviorName);
         final SootMethod behaviorMethod = declaringClass.getMethodUnsafe(behaviorSignature);
@@ -40,6 +34,12 @@ public abstract class BehaviorResolver<T extends ConditionsTag> {
                     targetMethod
             );
         }
+    }
+
+    public final Value resolveBehavior(final SootMethod targetMethod, final String behaviorName) {
+        final SootMethod behaviorMethod = lookupBehavior(targetMethod, behaviorName);
+
+        return makeBehaviorExpr(targetMethod, behaviorMethod);
     }
 
 }

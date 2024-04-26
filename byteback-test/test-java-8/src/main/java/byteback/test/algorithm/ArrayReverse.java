@@ -16,12 +16,9 @@ public class ArrayReverse {
 
     @TwoState
     @Behavior
-    public static boolean reverse_of(final int[] a, final int[] b) {
+    public static boolean reverse_of_old(final int[] a) {
         int i = Bindings.integer();
-
-        return and(eq(a.length, b.length),
-                forall(i, implies(lte(0, i) & lt(i, a.length),
-                        eq(a[i], b[b.length - 1 - i]))));
+        return forall(i, implies(lte(0, i) & lt(i, a.length), eq(a[i], old(a[a.length - 1 - i]))));
     }
 
     @Behavior
@@ -50,29 +47,25 @@ public class ArrayReverse {
     }
 
     @Behavior
-    public static boolean array_is_null(int[] a) {
-        return eq(a, null);
+    public static boolean array_is_not_null(int[] a) {
+        return neq(a, null);
     }
 
 	@TwoState
     @Behavior
     public static boolean reversed(int[] a) {
-        return implies(not(array_is_null(a)), reverse_of(a, old(a)));
+        return reverse_of_old(a);
     }
 
-    @Raise(exception = IllegalArgumentException.class, when = "array_is_null")
+    @Require("array_is_not_null")
     @Ensure("reversed")
     public static void reverse(int[] a) {
-        if (a == null) {
-            throw new IllegalArgumentException("Input array cannot be null");
-        }
-
         final int l = a.length - 1;
         int i = 0;
 
         while (i < (l - i)) {
             final int k = Bindings.integer();
-            invariant(forall(k, implies(lte(0, k) & lt(k, i) | lt(l - i, k) & lte(k, l), eq(a[k], old(a[l - k])))));
+            invariant(forall(k, implies((lte(0, k) & lt(k, i)) | (lt(l - i, k) & lte(k, l)), eq(a[k], old(a[l - k])))));
             invariant(forall(k, implies(lte(i, k) & lt(k, l - i), eq(a[k], old(a[k])))));
             invariant(lte(0, i) & lte(i, (l + 1) / 2));
             swap(a, i, l - i);

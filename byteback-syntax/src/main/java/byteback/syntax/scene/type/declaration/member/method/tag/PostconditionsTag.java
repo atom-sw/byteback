@@ -9,8 +9,8 @@ public class PostconditionsTag extends ConditionsTag {
 
     public static final String NAME = "PostconditionsTag";
 
-    public PostconditionsTag(final List<Value> values) {
-        super(values);
+    public PostconditionsTag(final List<Value> conditions) {
+        super(conditions);
     }
 
     public PostconditionsTag() {

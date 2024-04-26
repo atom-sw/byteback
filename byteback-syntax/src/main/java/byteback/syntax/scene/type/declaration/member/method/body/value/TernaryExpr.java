@@ -47,7 +47,7 @@ public abstract class TernaryExpr implements Expr, DefaultCaseValue {
     }
 
     public Value getOp3() {
-        return op2Box.getValue();
+        return op3Box.getValue();
     }
 
     @Override

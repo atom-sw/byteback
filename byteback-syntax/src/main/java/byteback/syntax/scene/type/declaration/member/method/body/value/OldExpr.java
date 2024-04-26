@@ -19,7 +19,7 @@ import soot.jimple.internal.ImmediateBox;
 public class OldExpr extends AbstractUnopExpr implements DefaultCaseValue {
 
     public OldExpr(final Value value) {
-        super(new ImmediateBox(value));
+        super(new ObjExprBox(value));
     }
 
     public OldExpr(final ValueBox valueBox) {
