@@ -376,7 +376,7 @@ public class ValueToBplEncoder extends ValueEncoder {
                 return;
             }
 
-            if (constant instanceof VoidConstant) {
+            if (constant instanceof UnitConstant) {
                 printer.print("`void`");
                 return;
             }

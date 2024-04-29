@@ -4,8 +4,8 @@ import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.BodyEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.to_bpl.UnitToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTag;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTagAccessor;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
 import soot.jimple.GotoStmt;
@@ -55,8 +55,8 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
         final SootMethod sootMethod = body.getMethod();
         final HashMap<Unit, String> unitToLabelMap = makeUnitToLabelMap(body);
         final var unitToBplEncoder = new UnitToBplEncoder(printer, unitToLabelMap);
-        final InputsTag inputsTag = InputsTagAccessor.v().getOrThrow(sootMethod);
-        final List<Local> parameterLocals = inputsTag.getInputLocals();
+        final InputRefsTag inputRefsTag = InputRefsTagAccessor.v().getOrThrow(sootMethod);
+        final List<Local> parameterLocals = inputRefsTag.getInputLocals();
 
         for (final Local local : body.getLocals()) {
             if (parameterLocals.contains(local)) {

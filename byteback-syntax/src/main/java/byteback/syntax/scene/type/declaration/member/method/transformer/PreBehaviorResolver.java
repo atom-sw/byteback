@@ -2,8 +2,8 @@ package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTag;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTagAccessor;
 import soot.*;
 import soot.util.NumberedString;
 
@@ -31,8 +31,8 @@ public class PreBehaviorResolver extends BehaviorResolver {
 
     @Override
     protected Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod) {
-        final InputsTag inputsTag = InputsTagAccessor.v().getOrThrow(targetMethod);
-        final List<Value> inputs = Collections.unmodifiableList(inputsTag.getInputRefs());
+        final InputRefsTag inputRefsTag = InputRefsTagAccessor.v().getOrThrow(targetMethod);
+        final List<Value> inputs = Collections.unmodifiableList(inputRefsTag.getInputRefs());
 
         return Vimp.v().newCallExpr(targetMethod.makeRef(), inputs);
     }

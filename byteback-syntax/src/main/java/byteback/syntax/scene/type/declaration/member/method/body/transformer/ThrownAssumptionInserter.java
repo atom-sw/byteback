@@ -3,7 +3,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
+import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
 import soot.Body;
 import soot.Unit;
 import soot.Value;
@@ -14,15 +14,15 @@ import soot.jimple.Jimple;
  *
  * @author paganma
  */
-public class CaughtAssumptionInserter extends BodyTransformer {
+public class ThrownAssumptionInserter extends BodyTransformer {
 
-    private static final Lazy<CaughtAssumptionInserter> INSTANCE = Lazy.from(CaughtAssumptionInserter::new);
+    private static final Lazy<ThrownAssumptionInserter> INSTANCE = Lazy.from(ThrownAssumptionInserter::new);
 
-    public static CaughtAssumptionInserter v() {
+    public static ThrownAssumptionInserter v() {
         return INSTANCE.get();
     }
 
-    private CaughtAssumptionInserter() {
+    private ThrownAssumptionInserter() {
     }
 
     @Override
@@ -31,8 +31,8 @@ public class CaughtAssumptionInserter extends BodyTransformer {
         final Value condition =
                 Vimp.v().nest(
                         Jimple.v().newEqExpr(
-                                Vimp.v().newCaughtExceptionRef(),
-                                VoidConstant.v()
+                                Vimp.v().newThrownRef(),
+                                UnitConstant.v()
                         )
                 );
         final Unit assumeUnit = Vimp.v().newAssumeStmt(condition);

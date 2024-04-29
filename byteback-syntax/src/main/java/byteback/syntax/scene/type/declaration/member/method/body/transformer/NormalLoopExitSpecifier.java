@@ -5,12 +5,12 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
+import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
 import soot.Body;
 import soot.PatchingChain;
 import soot.Unit;
 import soot.Value;
-import soot.jimple.CaughtExceptionRef;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
@@ -47,13 +47,13 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
         final Set<Loop> loops = loopFinder.getLoops(unitGraph);
 
         for (final Loop loop : loops) {
-            final CaughtExceptionRef exceptionRef = Vimp.v().newCaughtExceptionRef();
-            final VoidConstant voidConstant = VoidConstant.v();
+            final ThrownRef exceptionRef = Vimp.v().newThrownRef();
+            final UnitConstant unitConstant = UnitConstant.v();
             final Value behaviorValue =
                     Vimp.v().nest(
                             Jimple.v().newEqExpr(
                                     exceptionRef,
-                                    voidConstant
+                                    unitConstant
                             )
                     );
             final Supplier<AssertStmt> assertStmtSupplier = () -> Vimp.v().newAssertStmt(behaviorValue);

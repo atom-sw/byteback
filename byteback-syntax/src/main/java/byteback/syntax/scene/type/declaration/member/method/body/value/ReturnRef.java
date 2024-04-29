@@ -1,57 +1,27 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
-import soot.Immediate;
 import soot.Type;
-import soot.UnitPrinter;
-import soot.ValueBox;
-import soot.jimple.ConcreteRef;
-import soot.jimple.IdentityRef;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Reference corresponding to the value returned by a method.
  *
  * @author paganma
  */
-public class ReturnRef implements ConcreteRef, IdentityRef, Immediate, DefaultCaseValue {
+public class ReturnRef extends OutputRef implements DefaultCaseValue {
 
-    final Type type;
-
-    public ReturnRef(final Type type) {
-        this.type = type;
-    }
-
-    @Override
-    public List<ValueBox> getUseBoxes() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Type getType() {
-        return type;
-    }
-
-    @Override
-    public Object clone() {
-        return new ReturnRef(type);
-    }
-
-    @Override
-    public void toString(final UnitPrinter printer) {
-        printer.literal("@return");
+    public ReturnRef(final Type returnType) {
+        super("return", returnType);
     }
 
     @Override
     public boolean equivTo(final Object object) {
         return object instanceof final ReturnRef returnRef
-                && this.type == returnRef.type;
+                && returnRef.getType().equals(getType());
     }
 
     @Override
     public int equivHashCode() {
-        return 155809 * type.hashCode();
+        return 31 * getType().hashCode();
     }
 
 }

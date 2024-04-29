@@ -52,8 +52,6 @@ public class SceneToBplEncoder extends SceneEncoder {
         for (final SootClass sootClass : scene.getClasses()) {
             new ClassToBplEncoder(printer).encodeClass(sootClass);
         }
-
-        printer.close();
     }
 
 }

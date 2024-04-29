@@ -9,13 +9,13 @@ import soot.tagkit.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputsTag implements Tag {
+public class InputRefsTag implements Tag {
 
-    public static final String NAME = "InputsTag";
+    public static final String NAME = "InputRefsTag";
 
     private final List<IdentityStmt> identityStmts;
 
-    public InputsTag(final List<IdentityStmt> identityStmts) {
+    public InputRefsTag(final List<IdentityStmt> identityStmts) {
         this.identityStmts = identityStmts;
     }
 

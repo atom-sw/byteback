@@ -5,7 +5,8 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.TrapCollectingIterator;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
+import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
@@ -46,8 +47,8 @@ public class GuardTransformer extends BodyTransformer {
                     final AssignStmt assignStmt
                     && assignStmt.getRightOp() instanceof CaughtExceptionRef;
             final AssignStmt thrownAssignStmt = Jimple.v().newAssignStmt(
-                    Vimp.v().newCaughtExceptionRef(),
-                    VoidConstant.v()
+                    Vimp.v().newThrownRef(),
+                    UnitConstant.v()
             );
             units.insertAfter(thrownAssignStmt, handlerUnit);
         }
@@ -61,7 +62,7 @@ public class GuardTransformer extends BodyTransformer {
 
                 // If we are throwing the current @caughtexception, then there is no need to assign it.
                 if (!(throwUnit.getOp() instanceof CaughtExceptionRef)) {
-                    final CaughtExceptionRef caughtExceptionRef = Vimp.v().newCaughtExceptionRef();
+                    final ThrownRef caughtExceptionRef = Vimp.v().newThrownRef();
                     final Unit assignUnit = Jimple.v().newAssignStmt(caughtExceptionRef, throwUnit.getOp());
                     units.insertBefore(assignUnit, baseUnit);
                     baseUnit.redirectJumpsToThisTo(assignUnit);
@@ -77,7 +78,7 @@ public class GuardTransformer extends BodyTransformer {
                 for (final Trap trap : unitIterator.getActiveTraps()) {
                     final Immediate checkValue = Vimp.v().nest(
                             Jimple.v().newInstanceOfExpr(
-                                    Vimp.v().newCaughtExceptionRef(),
+                                    Vimp.v().newThrownRef(),
                                     trap.getException().getType()
                             )
                     );

@@ -5,6 +5,7 @@ import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class InferredFramesTag implements Tag {
@@ -30,7 +31,15 @@ public class InferredFramesTag implements Tag {
     }
 
     public List<ConcreteRef> getFrameRefs() {
-        return frameRefs;
+        return Collections.unmodifiableList(frameRefs);
+    }
+
+    public void addFrameRef(final ConcreteRef concreteRef) {
+        frameRefs.add(concreteRef);
+    }
+
+    public void removeFrameRef(final ConcreteRef concreteRef) {
+        frameRefs.remove(concreteRef);
     }
 
     @Override

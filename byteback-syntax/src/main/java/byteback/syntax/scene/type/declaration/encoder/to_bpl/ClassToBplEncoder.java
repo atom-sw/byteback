@@ -13,7 +13,6 @@ import soot.SootMethod;
 import soot.Value;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Encodes a class into the Boogie Intermediate Verification Language.

@@ -83,14 +83,14 @@ public class UnitToBplEncoder extends UnitEncoder {
 
             if (rightOp instanceof final InvokeExpr invokeExpr && VimpEffectEvaluator.v().hasSideEffects(invokeExpr)) {
                 if (leftOp instanceof final Local local) {
-                    encodeInvoke(invokeExpr, new Value[]{local, Vimp.v().newCaughtExceptionRef()});
+                    encodeInvoke(invokeExpr, new Value[]{local, Vimp.v().newThrownRef()});
                     return;
                 }
             } else if (rightOp instanceof final NewExpr newExpr) {
                 printer.print("call ");
                 valueEncoder.encodeValue(leftOp);
                 printer.print(", ");
-                valueEncoder.encodeValue(Vimp.v().newCaughtExceptionRef());
+                valueEncoder.encodeValue(Vimp.v().newThrownRef());
                 printer.print(" := ");
                 printer.print("new(");
                 new ClassToBplEncoder(printer).encodeClassConstant(newExpr.getBaseType().getSootClass());
@@ -100,7 +100,7 @@ public class UnitToBplEncoder extends UnitEncoder {
                 printer.print("call ");
                 valueEncoder.encodeValue(leftOp);
                 printer.print(", ");
-                valueEncoder.encodeValue(Vimp.v().newCaughtExceptionRef());
+                valueEncoder.encodeValue(Vimp.v().newThrownRef());
                 printer.print(" := ");
                 printer.print("array(");
                 printer.startItems(", ");
@@ -165,7 +165,7 @@ public class UnitToBplEncoder extends UnitEncoder {
 
         if (unit instanceof final InvokeStmt invokeStmt) {
             final InvokeExpr invokeExpr = invokeStmt.getInvokeExpr();
-            encodeInvoke(invokeExpr, new Value[]{Vimp.v().newCaughtExceptionRef()});
+            encodeInvoke(invokeExpr, new Value[]{ Vimp.v().newThrownRef() });
             return;
         }
 

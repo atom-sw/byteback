@@ -85,10 +85,6 @@ public class Vimp {
         return new ExistsExpr(ls, value);
     }
 
-    public CaughtExceptionRef newCaughtExceptionRef() {
-        return new ThrownRef();
-    }
-
     public OldExpr newOldExpr(final Value value) {
         return new OldExpr(value);
     }
@@ -125,12 +121,12 @@ public class Vimp {
         return new YieldStmt();
     }
 
-    public ExtendsExpr newExtendsExpr(final Value op1, final Value op2) {
-        return new ExtendsExpr(op1, op2);
+    public TypeConstant newTypeConstant(final RefType refType) {
+        return new TypeConstant(refType);
     }
 
-    public TypeConstant newTypeConstant(final RefType type) {
-        return new TypeConstant(type);
+    public ExtendsExpr newExtendsExpr(final Value op1, final Value op2) {
+        return new ExtendsExpr(op1, op2);
     }
 
     public Immediate nest(final Value value) {
@@ -139,6 +135,18 @@ public class Vimp {
         } else {
             return Vimp.v().newNestedExpr(value);
         }
+    }
+
+    public ThrownRef newThrownRef() {
+        return new ThrownRef();
+    }
+
+    public InstanceRef newInstanceRef(final RefType instanceType) {
+        return new InstanceRef(instanceType);
+    }
+
+    public ArgumentRef newArgumentRef(final Type argumentType, final int position) {
+        return new ArgumentRef(argumentType, position);
     }
 
 }

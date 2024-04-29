@@ -51,7 +51,7 @@ public class SwitchEliminator extends BodyTransformer {
         final PatchingChain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
 
-        while ((unitIterator.hasNext())) {
+        while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
 
             if (unit instanceof final SwitchStmt switchStmt) {

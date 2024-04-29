@@ -4,17 +4,18 @@ import byteback.common.collection.SetHashMap;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.AggregateExpr;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ParameterRef;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.Ref;
+import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.infoflow.CachedEquivalentValue;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
-import soot.util.Chain;
 import soot.util.HashChain;
 
 import java.util.ArrayDeque;
@@ -32,7 +33,7 @@ public abstract class ExprFolder extends BodyTransformer {
     @Override
     public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
-        final Chain<Unit> units = body.getUnits();
+        final PatchingChain<Unit> units = body.getUnits();
         final BlockGraph blockGraph = new BriefBlockGraph(body);
         final UnitGraph unitGraph = new BriefUnitGraph(body);
         final LocalDefs localDefs = new SimpleLocalDefs(unitGraph);
@@ -67,13 +68,13 @@ public abstract class ExprFolder extends BodyTransformer {
 
         protected final SetHashMap<Value, Local> dependencyToLocals;
 
-        protected final Chain<Unit> units;
+        protected final PatchingChain<Unit> units;
 
         protected final LocalDefs localDefs;
 
         protected final LocalUses localUses;
 
-        public BlockFolder(final Chain<Unit> units, final LocalDefs localDefs, final LocalUses localUses) {
+        public BlockFolder(final PatchingChain<Unit> units, final LocalDefs localDefs, final LocalUses localUses) {
             this.localToSubstitution = new HashMap<>();
             this.dependencyToLocals = new SetHashMap<>();
             this.units = units;
@@ -106,22 +107,28 @@ public abstract class ExprFolder extends BodyTransformer {
 
                 if (substitutionBox.getValue() instanceof final Local local) {
                     final AssignStmt substitution = localToSubstitution.get(local);
-                    if (substitution != null
-                            && localDefs.getDefsOfAt(local, unit).size() == 1
-                            && localUses.getUsesOf(substitution).size() == 1
-                            && !VimpEffectEvaluator.v().hasSideEffects(substitution.getRightOp())) {
-                        nextSubstitutions.addAll(substitution.getUseBoxes());
 
-                        if (substitution.getRightOp() instanceof Immediate immediate) {
-                            substitutionBox.setValue(immediate);
-                        } else {
-                            // Notice the condition above specifies that the local has exactly one def and one use at
-                            // the position at which nestedExpr is being inserted, hence the substitution obeys
-                            // NestedExpr's contract.
-                            substitutionBox.setValue(Vimp.v().newAggregateExpr(substitution));
+                    if (substitution != null) {
+                        final Value substitutionValue = substitution.getRightOp();
+
+                        if ((localDefs.getDefsOfAt(local, unit).size() == 1
+                                && localUses.getUsesOf(substitution).size() == 1
+                                && !VimpEffectEvaluator.v().hasSideEffects(substitutionValue))
+                                || substitutionValue instanceof ParameterRef) {
+
+                            nextSubstitutions.addAll(substitution.getUseBoxes());
+
+                            if (substitutionValue instanceof JimpleLocal) {
+                                substitutionBox.setValue(substitutionValue);
+                            } else {
+                                // Notice the condition above specifies that the local has exactly one def and one use at
+                                // the position at which nestedExpr is being inserted, hence the substitution obeys
+                                // NestedExpr's contract.
+                                substitutionBox.setValue(Vimp.v().newAggregateExpr(substitution));
+                            }
+
+                            units.remove(substitution);
                         }
-
-                        units.remove(substitution);
                     }
                 }
             }

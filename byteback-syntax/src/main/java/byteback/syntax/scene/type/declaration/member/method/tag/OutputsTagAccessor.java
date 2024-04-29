@@ -4,7 +4,7 @@ import byteback.common.function.Lazy;
 import byteback.syntax.tag.TagAccessor;
 import soot.SootMethod;
 
-public class OutputsTagAccessor extends TagAccessor<SootMethod, InputsTag> {
+public class OutputsTagAccessor extends TagAccessor<SootMethod, InputRefsTag> {
 
     private static final Lazy<OutputsTagAccessor> INSTANCE =
             Lazy.from(() -> new OutputsTagAccessor(OutputsTag.NAME));

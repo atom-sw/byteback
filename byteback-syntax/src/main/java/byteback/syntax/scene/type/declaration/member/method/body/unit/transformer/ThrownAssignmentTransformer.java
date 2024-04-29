@@ -31,7 +31,7 @@ public class ThrownAssignmentTransformer extends UnitTransformer {
                 && identityStmt.getRightOp() instanceof CaughtExceptionRef) {
             final Unit thrownAssignStmt = Jimple.v().newAssignStmt(
                     identityStmt.getLeftOp(),
-                    Vimp.v().newCaughtExceptionRef()
+                    Vimp.v().newThrownRef()
             );
             unitBox.setUnit(thrownAssignStmt);
         }

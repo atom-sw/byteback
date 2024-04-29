@@ -5,6 +5,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.encoder.BodyEnc
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import soot.Body;
+import soot.PatchingChain;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.ReturnStmt;
@@ -18,6 +19,7 @@ public class BehaviorBodyToBplEncoder extends BodyEncoder {
     @Override
     public void encodeBody(final Body body) {
         final ValueToBplEncoder.HeapContext heapContext;
+        final PatchingChain<Unit> units = body.getUnits();
 
         if (TwoStateTagMarker.v().hasTag(body.getMethod())) {
             heapContext = ValueToBplEncoder.HeapContext.TWO_STATE;
@@ -27,7 +29,7 @@ public class BehaviorBodyToBplEncoder extends BodyEncoder {
 
         final var valueToBplEncoder = new ValueToBplEncoder(printer, heapContext);
 
-        for (final Unit unit : body.getUnits()) {
+        for (final Unit unit : units) {
             if (unit instanceof final ReturnStmt returnStmt) {
                 final Value behaviorValue = returnStmt.getOp();
                 valueToBplEncoder.encodeValue(behaviorValue);

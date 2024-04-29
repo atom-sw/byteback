@@ -6,6 +6,7 @@ import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.jimple.AssignStmt;
+import soot.jimple.internal.JimpleLocal;
 import soot.jimple.internal.RValueBox;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -21,7 +22,7 @@ import java.util.Stack;
  *
  * @author paganma
  */
-public class AggregateExpr extends NestedExpr implements Local {
+public class AggregateExpr extends JimpleLocal {
 
     private final Local local;
 
@@ -41,7 +42,7 @@ public class AggregateExpr extends NestedExpr implements Local {
     }
 
     public AggregateExpr(final Local local, final AssignStmt assignStmt) {
-        super((RValueBox) assignStmt.getRightOpBox());
+        super(local.getName(), local.getType());
         this.local = local;
         this.assignStmt = assignStmt;
     }
@@ -64,8 +65,9 @@ public class AggregateExpr extends NestedExpr implements Local {
 
         while (!nextAggregateExprs.isEmpty()) {
             final AggregateExpr aggregateExpr = nextAggregateExprs.pop();
+            final Value value = aggregateExpr.getValue();
 
-            if (aggregateExpr.getValue() instanceof final AggregateExpr subExpr) {
+            if (value instanceof final AggregateExpr subExpr) {
                 innerDefinitions.add(subExpr.getDef());
                 nextAggregateExprs.add(subExpr);
             }
@@ -83,45 +85,15 @@ public class AggregateExpr extends NestedExpr implements Local {
     }
 
     @Override
-    public String getName() {
-        return local.getName();
-    }
-
-    @Override
-    public void setName(final String name) {
-        local.setName(name);
-    }
-
-    @Override
-    public void setNumber(int number) {
-        local.setNumber(number);
-    }
-
-    @Override
-    public int getNumber() {
-        return local.getNumber();
-    }
-
-    @Override
-    public void setType(final Type type) {
-        local.setType(type);
-    }
-
-    @Override
     public boolean isStackLocal() {
         return local.isStackLocal();
     }
 
     @Override
-    public Type getType() {
-        return local.getType();
-    }
-
-    @Override
     public boolean equivTo(final Object object) {
-        return object instanceof final AggregateExpr assignStmt
-                && assignStmt.getDef().getLeftOp().equivTo(this.assignStmt.getLeftOp())
-                && assignStmt.getDef().getRightOp().equivTo(this.assignStmt.getRightOp());
+        return object instanceof final AggregateExpr aggregateExpr
+                && aggregateExpr.getDef().getLeftOp().equivTo(assignStmt.getLeftOp())
+                && aggregateExpr.getDef().getRightOp().equivTo(assignStmt.getRightOp());
     }
 
     @Override

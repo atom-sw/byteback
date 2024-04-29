@@ -2,8 +2,8 @@ package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTag;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTagAccessor;
 import soot.*;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.*;
@@ -62,8 +62,8 @@ public class IdentityStmtsTagger extends MethodTransformer {
             }
         }
 
-        final var parameterLocalsTag = new InputsTag(identityStmts);
-        InputsTagAccessor.v().put(sootMethod, parameterLocalsTag);
+        final var parameterLocalsTag = new InputRefsTag(identityStmts);
+        InputRefsTagAccessor.v().put(sootMethod, parameterLocalsTag);
     }
 
 }

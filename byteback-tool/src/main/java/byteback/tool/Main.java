@@ -1,16 +1,12 @@
 package byteback.tool;
 
 import byteback.syntax.printer.Printer;
-import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.InvokeAssigner;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.ThrownAssignmentTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.transformer.*;
 import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.LogicConstantTransformer;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.SpecificationStmtTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.QuantifierValueTransformer;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -124,6 +120,11 @@ public class Main implements Callable<Integer> {
         jtpPack.add(new Transform("jtp.ivf", InvokeFilter.v()));
 
         // - Vimp transformations
+        // Changes notion of a method's input/output
+        jtpPack.add(new Transform("jtp.iri", InputRefTransformer.v()));
+
+        jtpPack.add(new Transform("jtp.bl", new BodyLogger()));
+
         // Basic flow transformations
         jtpPack.add(new Transform("jtp.swe", SwitchEliminator.v()));
         jtpPack.add(new Transform("jtp.rel", ReturnEliminator.v()));
@@ -151,12 +152,11 @@ public class Main implements Callable<Integer> {
         // Create the specification statements and expressions
         jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
         jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-        jtpPack.add(new Transform("jtp.plf", ParameterLocalFinalizer.v()));
         jtpPack.add(new Transform("jtp.oett", OldExprTightener.v()));
 
         // Generate initial assumptions.
         jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
-        jtpPack.add(new Transform("jtp.cai", CaughtAssumptionInserter.v()));
+        jtpPack.add(new Transform("jtp.cai", ThrownAssumptionInserter.v()));
 
         // - Transformations of the exceptional control flow
         // Create explicit checks for implicit exceptions
@@ -182,6 +182,7 @@ public class Main implements Callable<Integer> {
         // Assign local specification
         jtpPack.add(new Transform("jtp.lif", FrameConditionFinder.v()));
 
+
         scene.loadBasicClasses();
         scene.loadNecessaryClasses();
 
@@ -196,7 +197,7 @@ public class Main implements Callable<Integer> {
         HierarchyAxiomTagger.v().transform();
 
         try (final Printer printer = new Printer(outputPath.toString())) {
-            new SceneToBplEncoder(printer).encodeScene(scene);
+            //new SceneToBplEncoder(printer).encodeScene(scene);
         }
 
         final long endTime = System.currentTimeMillis();
