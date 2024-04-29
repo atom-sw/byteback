@@ -80,7 +80,6 @@ public class SwitchEliminator extends BodyTransformer {
 
                 final Chain<Unit> expandedSwitch =
                         expandSwitchStmt(switchStmt.getKey(), switchStmt.getDefaultTarget(), valueToTarget.iterator());
-
                 units.insertBefore(expandedSwitch, switchStmt);
                 units.remove(switchStmt);
             }

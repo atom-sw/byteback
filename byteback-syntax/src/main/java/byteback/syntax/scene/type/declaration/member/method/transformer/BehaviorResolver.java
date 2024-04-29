@@ -1,6 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
-import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.transformer.TransformationException;
 import soot.*;
 import soot.util.NumberedString;
@@ -20,7 +20,7 @@ public abstract class BehaviorResolver {
         final SootMethod behaviorMethod = declaringClass.getMethodUnsafe(behaviorSignature);
 
         if (behaviorMethod != null) {
-            if (!BehaviorTagFlagger.v().isTagged(behaviorMethod)) {
+            if (!BehaviorTagMarker.v().hasTag(behaviorMethod)) {
                 throw new TransformationException(
                         "Not a behavior method: "
                                 + behaviorName,

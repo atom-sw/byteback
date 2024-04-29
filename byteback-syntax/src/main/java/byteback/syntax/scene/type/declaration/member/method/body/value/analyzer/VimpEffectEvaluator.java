@@ -14,10 +14,10 @@ import soot.jimple.NewExpr;
  */
 public class VimpEffectEvaluator {
 
-    private static final Lazy<VimpEffectEvaluator> instance = Lazy.from(VimpEffectEvaluator::new);
+    private static final Lazy<VimpEffectEvaluator> INSTANCE = Lazy.from(VimpEffectEvaluator::new);
 
     public static VimpEffectEvaluator v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     /**

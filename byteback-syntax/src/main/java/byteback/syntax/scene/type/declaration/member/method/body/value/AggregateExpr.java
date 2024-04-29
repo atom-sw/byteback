@@ -25,7 +25,7 @@ public class AggregateExpr extends NestedExpr implements Local {
 
     private final Local local;
 
-    private final AssignStmt definition;
+    private final AssignStmt assignStmt;
 
     /**
      * Constructs a new nested expression based on a local assignment. We need a pretty big assumption: The definition
@@ -34,23 +34,23 @@ public class AggregateExpr extends NestedExpr implements Local {
      * expression is used. Notice that you do not really need to take this into account when creating nested expressions
      * using the ExprFolder classes and the NestedExprConstructor, as they already enforce this condition.
      *
-     * @param definition The definition associated with this nested expression.
+     * @param assignStmt The definition associated with this nested expression.
      */
-    public AggregateExpr(final AssignStmt definition) {
-        this(((Local) definition.getLeftOp()), definition);
+    public AggregateExpr(final AssignStmt assignStmt) {
+        this(((Local) assignStmt.getLeftOp()), assignStmt);
     }
 
-    public AggregateExpr(final Local local, final AssignStmt definition) {
-        super((RValueBox) definition.getRightOpBox());
+    public AggregateExpr(final Local local, final AssignStmt assignStmt) {
+        super((RValueBox) assignStmt.getRightOpBox());
         this.local = local;
-        this.definition = definition;
+        this.assignStmt = assignStmt;
     }
 
     /**
      * @return The definition associated to this expression.
      */
     public AssignStmt getDef() {
-        return definition;
+        return assignStmt;
     }
 
     /**
@@ -79,7 +79,7 @@ public class AggregateExpr extends NestedExpr implements Local {
     }
 
     public Value getValue() {
-        return definition.getRightOp();
+        return assignStmt.getRightOp();
     }
 
     @Override
@@ -120,19 +120,19 @@ public class AggregateExpr extends NestedExpr implements Local {
     @Override
     public boolean equivTo(final Object object) {
         return object instanceof final AggregateExpr assignStmt
-                && assignStmt.getDef().getLeftOp().equivTo(definition.getLeftOp())
-                && assignStmt.getDef().getRightOp().equivTo(definition.getRightOp());
+                && assignStmt.getDef().getLeftOp().equivTo(this.assignStmt.getLeftOp())
+                && assignStmt.getDef().getRightOp().equivTo(this.assignStmt.getRightOp());
     }
 
     @Override
     public int equivHashCode() {
-        return definition.getLeftOp().equivHashCode() * 101 + definition.getRightOp().equivHashCode() * 17;
+        return assignStmt.getLeftOp().equivHashCode() * 101 + assignStmt.getRightOp().equivHashCode() * 17;
     }
 
     @Override
     public void toString(final UnitPrinter printer) {
         printer.literal("(");
-        definition.getRightOp().toString(printer);
+        assignStmt.getRightOp().toString(printer);
         printer.literal(")");
     }
 

@@ -1,6 +1,5 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
-import byteback.syntax.scene.type.declaration.member.method.body.value.box.TypeExprBox;
 import soot.BooleanType;
 import soot.Type;
 import soot.Value;

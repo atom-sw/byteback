@@ -48,7 +48,7 @@ public abstract class TagReader<K extends Host, V extends Tag> {
      * @param host The host to be queried.
      * @return `true` if the host contains the managed tag, `false` otherwise.
      */
-    public boolean isTagged(final K host) {
+    public boolean hasTag(final K host) {
         return host.hasTag(tagName);
     }
 

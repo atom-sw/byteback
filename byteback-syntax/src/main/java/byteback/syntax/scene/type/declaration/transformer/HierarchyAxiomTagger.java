@@ -8,7 +8,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ForallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.TypeConstant;
 import byteback.syntax.scene.type.declaration.tag.AxiomsTag;
-import byteback.syntax.scene.type.declaration.tag.AxiomsTagProvider;
+import byteback.syntax.scene.type.declaration.tag.AxiomsTagAccessor;
 import soot.*;
 import soot.grimp.Grimp;
 import soot.jimple.Jimple;
@@ -19,10 +19,10 @@ import java.util.List;
 
 public class HierarchyAxiomTagger extends ClassTransformer {
 
-    private static final Lazy<HierarchyAxiomTagger> instance = Lazy.from(HierarchyAxiomTagger::new);
+    private static final Lazy<HierarchyAxiomTagger> INSTANCE = Lazy.from(HierarchyAxiomTagger::new);
 
     public static HierarchyAxiomTagger v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     @Override
@@ -45,13 +45,13 @@ public class HierarchyAxiomTagger extends ClassTransformer {
         final Collection<SootClass> superInterfaces = sootClass.getInterfaces();
         superTypes.addAll(superInterfaces);
         final Hierarchy hierarchy = scene.getActiveHierarchy();
-        final AxiomsTag axiomsTag = AxiomsTagProvider.v().getOrCompute(sootClass);
-        final List<Value> axiomValues = axiomsTag.getValues();
+        final AxiomsTag axiomsTag = AxiomsTagAccessor.v().putIfAbsent(sootClass, AxiomsTag::new);
+        final List<Value> axioms = axiomsTag.getAxioms();
 
         for (final SootClass superType : superTypes) {
             final TypeConstant classTypeValue = Vimp.v().newTypeConstant(sootClass.getType());
             final TypeConstant superTypeValue = Vimp.v().newTypeConstant(superType.getType());
-            axiomValues.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
+            axioms.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
         }
 
         if (!sootClass.isInterface() && !sootClass.getName().equals("java.lang.Object")) {
@@ -97,7 +97,7 @@ public class HierarchyAxiomTagger extends ClassTransformer {
                                     )
                             )
                     );
-                    axiomValues.add(axiom);
+                    axioms.add(axiom);
                 }
             }
         }

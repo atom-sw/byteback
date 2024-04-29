@@ -11,7 +11,7 @@ import soot.tagkit.Tag;
  */
 public class BehaviorTag implements Tag {
 
-    public static String NAME = "ExceptionalExitTag";
+    public static String NAME = "BehaviorTag";
 
     private static final Lazy<BehaviorTag> INSTANCE = Lazy.from(BehaviorTag::new);
 

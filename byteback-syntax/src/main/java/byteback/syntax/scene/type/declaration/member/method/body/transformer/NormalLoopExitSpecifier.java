@@ -4,7 +4,7 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
 import soot.Body;
 import soot.PatchingChain;
@@ -17,7 +17,6 @@ import soot.jimple.Jimple;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 import soot.toolkits.graph.BriefUnitGraph;
-import soot.toolkits.graph.UnitGraph;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -76,7 +75,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
 
                 // Insert the assumption only if exit target is not an exceptional target
                 // (as tagged by GuardTransformer).
-                if (ThrowTargetTagFlagger.v().get(target).isEmpty()) {
+                if (ThrowTargetTagMarker.v().get(target).isEmpty()) {
                     units.insertBefore(assertStmtSupplier.get(), loopExit);
                     final AssertStmt targetAssertStmt = assertStmtSupplier.get();
                     units.insertBefore(targetAssertStmt, target);

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public abstract class ConditionsTag implements Tag {
 
-    final List<Value> conditions;
+    private List<Value> conditions;
 
     public ConditionsTag(final List<Value> conditions) {
         this.conditions = conditions;
@@ -22,8 +22,8 @@ public abstract class ConditionsTag implements Tag {
         return conditions;
     }
 
-    public void addCondition(final Value condition) {
-        conditions.add(condition);
+    public void setConditions(final List<Value> conditions) {
+        this.conditions = conditions;
     }
 
     @Override

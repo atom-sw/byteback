@@ -11,9 +11,9 @@ import soot.SootClass;
  */
 public class ClassContext implements Context {
 
-    final SceneContext sceneContext;
+    private final SceneContext sceneContext;
 
-    final SootClass sootClass;
+    private final SootClass sootClass;
 
     /**
      * Constructs a new ClassContext.

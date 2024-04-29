@@ -2,12 +2,12 @@ package byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl;
 
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.ProceduralBodyToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagProvider;
+import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.IdentityStmtsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.IdentityStmtsTagProvider;
-import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagProvider;
-import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputsTag;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
 
@@ -34,8 +34,8 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
         printer.print("procedure ");
         encodeMethodName(sootMethod.makeRef());
         printer.print("(");
-        final IdentityStmtsTag identityStmtsTag = IdentityStmtsTagProvider.v().getOrThrow(sootMethod);
-        final List<Local> methodLocals = identityStmtsTag.getValues();
+        final InputsTag inputsTag = InputsTagAccessor.v().getOrThrow(sootMethod);
+        final List<Local> methodLocals = inputsTag.getInputLocals();
         printer.startItems(", ");
         valueToBplEncoder.encodeBindings(methodLocals);
         printer.endItems();
@@ -60,7 +60,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 
         printer.endLine();
 
-        PreconditionsTagProvider.v().get(sootMethod)
+        PreconditionsTagAccessor.v().get(sootMethod)
                 .ifPresent((preconditionsTag) -> {
                     final List<Value> preconditions = preconditionsTag.getConditions();
 
@@ -72,7 +72,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
                     }
                 });
 
-        PostconditionsTagProvider.v().get(sootMethod)
+        PostconditionsTagAccessor.v().get(sootMethod)
                 .ifPresent((postconditionsTag) -> {
                     final List<Value> postconditions = postconditionsTag.getConditions();
 
@@ -87,7 +87,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
         if (sootMethod.hasActiveBody()) {
             final Body body = sootMethod.getActiveBody();
 
-            if (InferredFramesTagProvider.v().isTagged(body)) {
+            if (InferredFramesTagAccessor.v().hasTag(body)) {
                 printer.print(SPEC_INDENT);
                 printer.printLine("modifies heap;");
             }

@@ -3,11 +3,11 @@ package byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.BehaviorBodyToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.tag.IdentityStmtsTagProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputsTagAccessor;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.Body;
@@ -33,25 +33,25 @@ public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
         printer.print("(");
         printer.startItems(", ");
 
-        if (!OperatorTagFlagger.v().isTagged(sootMethod)) {
+        if (!OperatorTagMarker.v().hasTag(sootMethod)) {
             printer.separate();
             printer.print(ValueToBplEncoder.HEAP_SYMBOL);
             printer.print(": Store");
 
-            if (TwoStateTagFlagger.v().isTagged(sootMethod)) {
+            if (TwoStateTagMarker.v().hasTag(sootMethod)) {
                 printer.separate();
                 printer.print(ValueToBplEncoder.OLD_HEAP_SYMBOL);
                 printer.print(": Store");
             }
 
-            if (ExceptionalTagFlagger.v().isTagged(sootMethod)) {
+            if (ExceptionalTagMarker.v().hasTag(sootMethod)) {
                 printer.separate();
                 printer.print(ValueToBplEncoder.THROWN_SYMBOL);
                 printer.print(": Reference");
             }
         }
 
-        final List<Local> parameterLocals = IdentityStmtsTagProvider.v().getOrThrow(sootMethod).getValues();
+        final List<Local> parameterLocals = InputsTagAccessor.v().getOrThrow(sootMethod).getInputLocals();
         new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE).encodeBindings(parameterLocals);
         printer.endItems();
 

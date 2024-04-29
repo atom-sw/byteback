@@ -10,9 +10,9 @@ public abstract class SceneTransformer extends soot.SceneTransformer {
     /**
      * Traverses the Scene through the context.
      *
-     * @param sceneTransformationContext The context built using `makeSceneContext`;
+     * @param sceneContext The context built using `makeSceneContext`;
      */
-    public abstract void transformScene(final SceneContext sceneTransformationContext);
+    public abstract void transformScene(final SceneContext sceneContext);
 
     /**
      * Defined for compatibility with Soot's whole-program transformation packs.

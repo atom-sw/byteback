@@ -9,6 +9,9 @@ import byteback.syntax.printer.Printer;
  */
 public abstract class Encoder {
 
+    /**
+     * The printer used by the encoder.
+     */
     protected final Printer printer;
 
     /**

@@ -1,6 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
 import soot.*;
+import soot.jimple.Jimple;
 import soot.jimple.internal.RValueBox;
 
 import java.util.ArrayList;
@@ -34,14 +35,13 @@ public class NestedExpr implements Immediate, DefaultCaseValue {
     @Override
     public Type getType() {
         final Value value = valueBox.getValue();
+
         return value.getType();
     }
 
     @Override
     public Object clone() {
-        final Value value = valueBox.getValue();
-
-        return new NestedExpr((Value) value.clone());
+        return new NestedExpr(Jimple.cloneIfNecessary(getValue()));
     }
 
     @Override
@@ -60,9 +60,8 @@ public class NestedExpr implements Immediate, DefaultCaseValue {
 
     @Override
     public void toString(final UnitPrinter printer) {
-        final Value value = valueBox.getValue();
         printer.literal("(");
-        value.toString(printer);
+        getValue().toString(printer);
         printer.literal(")");
     }
 

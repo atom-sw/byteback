@@ -8,10 +8,10 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.ValueEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.tag.PreludeTagProvider;
-import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.PreludeTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
 import soot.jimple.*;
@@ -164,7 +164,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 
     public void encodeCallExpr(final InvokeExpr invokeExpr) {
         final SootMethod calledMethod = invokeExpr.getMethod();
-        PreludeTagProvider.v().get(calledMethod)
+        PreludeTagAccessor.v().get(calledMethod)
                 .ifPresentOrElse(
                         (preludeDefinitionTag) -> printer.print(preludeDefinitionTag.getDefinitionSymbol()),
                         () -> new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethodRef())
@@ -172,16 +172,16 @@ public class ValueToBplEncoder extends ValueEncoder {
         printer.print("(");
         printer.startItems(", ");
 
-        if (!OperatorTagFlagger.v().isTagged(calledMethod)) {
+        if (!OperatorTagMarker.v().hasTag(calledMethod)) {
             printer.separate();
             encodeHeapReference();
 
-            if (TwoStateTagFlagger.v().isTagged(calledMethod)) {
+            if (TwoStateTagMarker.v().hasTag(calledMethod)) {
                 printer.separate();
                 encodeOldHeapReference();
             }
 
-            if (ExceptionalTagFlagger.v().isTagged(calledMethod)) {
+            if (ExceptionalTagMarker.v().hasTag(calledMethod)) {
                 printer.separate();
                 printer.print(THROWN_SYMBOL);
             }

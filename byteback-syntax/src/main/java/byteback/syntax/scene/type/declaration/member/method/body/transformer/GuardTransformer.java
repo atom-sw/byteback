@@ -4,7 +4,7 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.TrapCollectingIterator;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.VoidConstant;
 import soot.*;
 import soot.jimple.AssignStmt;
@@ -83,7 +83,7 @@ public class GuardTransformer extends BodyTransformer {
                     );
 
                     final Unit branchUnit = Vimp.v().newIfStmt(checkValue, trap.getHandlerUnit());
-                    ThrowTargetTagFlagger.v().flag(branchUnit);
+                    ThrowTargetTagMarker.v().flag(branchUnit);
                     units.insertBefore(branchUnit, baseUnit);
                 }
 

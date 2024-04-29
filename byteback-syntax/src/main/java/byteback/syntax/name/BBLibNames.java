@@ -37,11 +37,11 @@ public class BBLibNames {
 
     public static final String IGNORE_ANNOTATION = "Lbyteback/specification/Contract$Ignore;";
 
-    public static final String INVARIANT_ANNOTATION = "Lbyteback/specification/Contract$Invariant;";
-
     public static final String INVARIANT_NAME = "invariant";
 
-    public static final String LEMMA_ANNOTATION = "Lbyteback/specification/Contract$Lemma;";
+    public static final String ASSERTION_NAME = "assertion";
+
+    public static final String ASSUMPTION_NAME = "assumption";
 
     public static final String OPERATOR_ANNOTATION = "Lbyteback/specification/Contract$Operator;";
 
@@ -53,11 +53,7 @@ public class BBLibNames {
 
     public static final String UNIVERSAL_QUANTIFIER_NAME = "forall";
 
-    public static final String RAISES_ANNOTATION = "Lbyteback/specification/Contract$Raises;";
-
     public static final String RAISE_ANNOTATION = "Lbyteback/specification/Contract$Raise;";
-
-    public static final String REQUIRES_ANNOTATION = "Lbyteback/specification/Contract$Requires;";
 
     public static final String REQUIRE_ANNOTATION = "Lbyteback/specification/Contract$Require;";
 
@@ -70,8 +66,6 @@ public class BBLibNames {
     public static final String OLD_NAME = "old";
 
     public static final String THROWN_NAME = "thrown";
-
-
 
     public boolean isBindingsClass(final SootClass sootClass) {
         return sootClass.getName().equals(BINDINGS_CLASS_NAME);

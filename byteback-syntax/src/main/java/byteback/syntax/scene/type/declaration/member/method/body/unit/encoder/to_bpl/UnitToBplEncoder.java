@@ -28,31 +28,6 @@ public class UnitToBplEncoder extends UnitEncoder {
         this.valueEncoder = new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.POST_STATE);
     }
 
-    public void encodeCall(final String procedureName, final Value[] destValues, final Value[] argValues) {
-        printer.print("call ");
-        printer.startItems(", ");
-
-        for (final Value destValue : destValues) {
-            printer.separate();
-            valueEncoder.encodeValue(destValue);
-        }
-
-        printer.endItems();
-        printer.print(" := ");
-        printer.print(procedureName);
-        printer.print("(");
-        printer.startItems(", ");
-
-        for (final Value argValue : argValues) {
-            printer.separate();
-            valueEncoder.encodeValue(argValue);
-        }
-
-        printer.print(")");
-        printer.endItems();
-        printer.print(";");
-    }
-
     public void encodeInvoke(final InvokeExpr invokeExpr, final Value[] destValues) {
         printer.print("call ");
         printer.startItems(", ");

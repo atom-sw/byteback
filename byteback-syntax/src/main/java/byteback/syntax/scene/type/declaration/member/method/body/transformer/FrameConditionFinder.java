@@ -2,8 +2,8 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagProvider;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTag;
 import soot.Body;
 import soot.ValueBox;
@@ -26,7 +26,7 @@ public class FrameConditionFinder extends BodyTransformer {
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
-        if (!BehaviorTagFlagger.v().isTagged(bodyContext.getSootMethod())) {
+        if (!BehaviorTagMarker.v().hasTag(bodyContext.getSootMethod())) {
             final Body body = bodyContext.getBody();
             final var inferredFrames = new ArrayList<ConcreteRef>();
 
@@ -38,7 +38,7 @@ public class FrameConditionFinder extends BodyTransformer {
             }
 
             final InferredFramesTag inferredFramesTag = new InferredFramesTag(inferredFrames);
-            InferredFramesTagProvider.v().put(body, inferredFramesTag);
+            InferredFramesTagAccessor.v().put(body, inferredFramesTag);
         }
     }
 

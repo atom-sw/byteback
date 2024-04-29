@@ -10,6 +10,9 @@ import soot.Scene;
  */
 public class SceneContext implements Context {
 
+    /**
+     * The scene in this context
+     */
     private final Scene scene;
 
     /**

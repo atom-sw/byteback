@@ -15,6 +15,7 @@ public class AnnotationTagReader extends TagReader<Host, VisibilityAnnotationTag
 
     private static final Lazy<AnnotationTagReader> INSTANCE =
             Lazy.from(() -> new AnnotationTagReader(VisibilityAnnotationTag.NAME));
+
     /**
      * Designator for the value field of an annotation.
      */

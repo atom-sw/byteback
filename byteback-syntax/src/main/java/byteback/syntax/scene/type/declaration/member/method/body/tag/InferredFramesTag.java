@@ -22,15 +22,15 @@ public class InferredFramesTag implements Tag {
         this.frameRefs = frameRefs;
     }
 
-    public List<ConcreteRef> getFrameRefs() {
-        return frameRefs;
-    }
-
     /**
      * Constructs a new empty {@link InferredFramesTag}.
      */
     public InferredFramesTag() {
         this(new ArrayList<>());
+    }
+
+    public List<ConcreteRef> getFrameRefs() {
+        return frameRefs;
     }
 
     @Override

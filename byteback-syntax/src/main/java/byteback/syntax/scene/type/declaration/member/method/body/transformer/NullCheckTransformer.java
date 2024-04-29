@@ -43,11 +43,10 @@ public class NullCheckTransformer extends CheckTransformer {
             }
 
             if (base != null) {
-                final Value condition =
-                        Jimple.v().newNeExpr(
-                                Vimp.v().nest(base),
-                                NullConstant.v()
-                        );
+                final Value condition = Jimple.v().newNeExpr(
+                        Vimp.v().nest(base),
+                        NullConstant.v()
+                );
 
                 return Optional.of(condition);
             }

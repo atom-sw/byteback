@@ -3,6 +3,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.scene.type.declaration.member.method.tag.IgnoreTagMarker;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.Body;
 import soot.PatchingChain;
@@ -37,9 +38,9 @@ public class InvokeFilter extends BodyTransformer {
             final Unit unit = unitsIterator.next();
 
             if (unit instanceof final InvokeStmt invokeStmt) {
-                final SootMethod method = invokeStmt.getInvokeExpr().getMethod();
+                final SootMethod invokedMethod = invokeStmt.getInvokeExpr().getMethod();
 
-                if (AnnotationTagReader.v().hasAnnotation(method, BBLibNames.IGNORE_ANNOTATION)) {
+                if (IgnoreTagMarker.v().hasTag(invokedMethod)) {
                     units.remove(unit);
                 }
             }

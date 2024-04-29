@@ -11,8 +11,8 @@ import soot.tagkit.LineNumberTag;
  */
 public class LineNumberTagReader extends TagReader<Host, LineNumberTag> {
 
-    private static final Lazy<LineNumberTagReader> INSTANCE = Lazy.from(() ->
-            new LineNumberTagReader(LineNumberTag.NAME));
+    private static final Lazy<LineNumberTagReader> INSTANCE = Lazy.from(
+            () -> new LineNumberTagReader(LineNumberTag.NAME));
 
     /**
      * Constructs a new line number reader.

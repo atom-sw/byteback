@@ -1,7 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.unit.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import soot.*;
 import soot.javaToJimple.DefaultLocalGenerator;

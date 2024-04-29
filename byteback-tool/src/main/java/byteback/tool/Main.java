@@ -190,10 +190,9 @@ public class Main implements Callable<Integer> {
 
         PackManager.v().runBodyPacks();
 
-        InputRefsTagger.v().transform();
+        IdentityStmtsTagger.v().transform();
         ConditionsTagger.v().transform();
-        PreconditionsPropagator.v().transform();
-        PostconditionsPropagator.v().transform();
+        // ConditionsPropagator.v().transform();
         HierarchyAxiomTagger.v().transform();
 
         try (final Printer printer = new Printer(outputPath.toString())) {

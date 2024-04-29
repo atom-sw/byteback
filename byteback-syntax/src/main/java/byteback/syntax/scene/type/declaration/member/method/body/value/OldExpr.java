@@ -1,15 +1,12 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
 import byteback.syntax.scene.type.declaration.member.method.body.unit.printer.InlineUnitPrinter;
-import byteback.syntax.scene.type.declaration.member.method.body.value.box.ConcreteRefBox;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.grimp.internal.ObjExprBox;
-import soot.jimple.ConcreteRef;
 import soot.jimple.internal.AbstractUnopExpr;
-import soot.jimple.internal.ImmediateBox;
 
 /**
  * An expression to access the pre-state of a method.

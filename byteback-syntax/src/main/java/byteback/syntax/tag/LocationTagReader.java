@@ -10,8 +10,8 @@ import soot.tagkit.Host;
  */
 public class LocationTagReader extends TagReader<Host, LocationTag> {
 
-    private static final Lazy<LocationTagReader> INSTANCE = Lazy.from(() ->
-            new LocationTagReader(LocationTag.NAME));
+    private static final Lazy<LocationTagReader> INSTANCE =
+            Lazy.from(() -> new LocationTagReader(LocationTag.NAME));
 
     /**
      * Constructs a new location reader

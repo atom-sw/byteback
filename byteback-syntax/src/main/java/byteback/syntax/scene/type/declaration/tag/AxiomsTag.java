@@ -1,17 +1,20 @@
 package byteback.syntax.scene.type.declaration.tag;
 
-import byteback.syntax.tag.ValuesTag;
 import soot.Value;
+import soot.tagkit.AttributeValueException;
+import soot.tagkit.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AxiomsTag extends ValuesTag<Value> {
+public class AxiomsTag implements Tag {
 
     public static String NAME = "AxiomsTag";
 
-    public AxiomsTag(final List<Value> values) {
-        super(values);
+    final List<Value> axioms;
+
+    public AxiomsTag(final List<Value> axioms) {
+        this.axioms = axioms;
     }
 
     public AxiomsTag() {
@@ -21,6 +24,15 @@ public class AxiomsTag extends ValuesTag<Value> {
     @Override
     public String getName() {
         return NAME;
+    }
+
+    public List<Value> getAxioms() {
+        return axioms;
+    }
+
+    @Override
+    public byte[] getValue() throws AttributeValueException {
+        return new byte[0];
     }
 
 }

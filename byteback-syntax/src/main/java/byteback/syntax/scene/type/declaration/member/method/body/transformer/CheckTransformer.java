@@ -103,28 +103,24 @@ public abstract class CheckTransformer extends BodyTransformer {
         final Unit throwUnit = Jimple.v().newThrowStmt(local);
         units.addLast(throwUnit);
 
-
         return units;
     }
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
-        final Chain<Unit> units = body.getUnits();
+        final PatchingChain<Unit> units = body.getUnits();
         final Iterator<Unit> unitIterator = units.snapshotIterator();
         final LocalGenerator localGenerator = new DefaultLocalGenerator(body);
 
         while (unitIterator.hasNext()) {
             final Unit unit = unitIterator.next();
-            final Optional<Value> unitCheckOption = makeUnitCheck(unit);
-
-            if (unitCheckOption.isPresent()) {
-                final Value unitCheck = unitCheckOption.get();
+            makeUnitCheck(unit).ifPresent((unitCheck) -> {
                 final Chain<Unit> throwUnits = makeThrowUnits(localGenerator);
                 units.insertBefore(throwUnits, unit);
                 final Unit checkStmt = Vimp.v().newIfStmt(Vimp.v().nest(unitCheck), unit);
                 units.insertBefore(checkStmt, throwUnits.getFirst());
-            }
+            });
         }
     }
 

@@ -1,15 +1,12 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
-import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import soot.*;
 import soot.grimp.Grimp;
 import soot.jimple.Expr;
-import soot.jimple.Jimple;
 import soot.util.Chain;
 import soot.util.HashChain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 

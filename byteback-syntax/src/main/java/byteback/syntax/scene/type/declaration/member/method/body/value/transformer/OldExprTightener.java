@@ -1,21 +1,13 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.OldExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
-import byteback.syntax.tag.AnnotationTagReader;
-import soot.SootMethod;
-import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ConcreteRef;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InvokeExpr;
-
-import java.util.ArrayList;
 
 /**
  * Transforms invocations to behavioral functions to pure (mathematical) function calls.

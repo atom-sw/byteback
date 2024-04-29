@@ -10,8 +10,6 @@ import soot.Body;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.Stmt;
-import soot.jimple.internal.StmtBox;
 
 public abstract class BodyMatchValidator extends BodyTransformer {
 

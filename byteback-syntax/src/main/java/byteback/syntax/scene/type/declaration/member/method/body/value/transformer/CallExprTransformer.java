@@ -5,6 +5,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -40,7 +41,7 @@ public class CallExprTransformer extends ValueTransformer {
             final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
             final SootMethod invokedMethod = invokedMethodRef.resolve();
 
-            if (AnnotationTagReader.v().hasAnnotation(invokedMethod, BBLibNames.BEHAVIOR_ANNOTATION)) {
+            if (BehaviorTagMarker.v().hasTag(invokedMethod)) {
                 final var args = new ArrayList<>(invokeExpr.getArgs());
 
                 if (invokeExpr instanceof final InstanceInvokeExpr instanceInvokeExpr) {

@@ -2,7 +2,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import soot.*;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
@@ -28,7 +28,7 @@ public class ParameterLocalFinalizer extends BodyTransformer {
     public void transformBody(final BodyContext bodyContext) {
         final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        if (BehaviorTagFlagger.v().isTagged(sootMethod)) {
+        if (BehaviorTagMarker.v().hasTag(sootMethod)) {
             return;
         }
 

@@ -13,10 +13,10 @@ public class ThrowTargetTag implements Tag {
 
     public static String NAME = "ThrowTargetTag";
 
-    private static final Lazy<ThrowTargetTag> instance = Lazy.from(ThrowTargetTag::new);
+    private static final Lazy<ThrowTargetTag> INSTANCE = Lazy.from(ThrowTargetTag::new);
 
     public static ThrowTargetTag v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private ThrowTargetTag() {

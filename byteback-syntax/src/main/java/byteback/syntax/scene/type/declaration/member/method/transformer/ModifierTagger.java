@@ -29,19 +29,19 @@ public class ModifierTagger extends MethodTransformer {
 
                     switch (annotationType) {
                         case BBLibNames.BEHAVIOR_ANNOTATION ->
-                                BehaviorTagFlagger.v().flag(sootMethod);
+                                BehaviorTagMarker.v().flag(sootMethod);
                         case BBLibNames.OPERATOR_ANNOTATION ->
-                                OperatorTagFlagger.v().flag(sootMethod);
+                                OperatorTagMarker.v().flag(sootMethod);
                         case BBLibNames.TWOSTATE_ANNOTATION ->
-                                TwoStateTagFlagger.v().flag(sootMethod);
+                                TwoStateTagMarker.v().flag(sootMethod);
                         case BBLibNames.EXCEPTIONAL_ANNOTATION ->
-                                ExceptionalTagFlagger.v().flag(sootMethod);
+                                ExceptionalTagMarker.v().flag(sootMethod);
                         case BBLibNames.PRELUDE_ANNOTATION -> {
                             final var annotationStringElement =
                                     AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class)
                                             .orElseThrow();
                             final var preludeDefinitionTag = new PreludeTag(annotationStringElement.getValue());
-                            PreludeTagProvider.v().put(sootMethod, preludeDefinitionTag);
+                            PreludeTagAccessor.v().put(sootMethod, preludeDefinitionTag);
                         }
                     }
                 });

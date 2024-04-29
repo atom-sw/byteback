@@ -3,9 +3,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.value.transfor
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.name.BBLibNames;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.OldExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
 import soot.*;

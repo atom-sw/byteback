@@ -6,7 +6,6 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ArrayRef;
-import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 

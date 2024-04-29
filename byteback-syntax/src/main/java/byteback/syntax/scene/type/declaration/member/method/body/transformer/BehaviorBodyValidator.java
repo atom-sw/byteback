@@ -6,10 +6,8 @@ import byteback.syntax.scene.type.declaration.member.method.body.unit.context.Un
 import byteback.syntax.scene.type.declaration.member.method.body.value.OldExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
 import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
-import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagFlagger;
-import byteback.syntax.transformer.TransformationException;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import soot.*;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ReturnStmt;
@@ -48,7 +46,7 @@ public class BehaviorBodyValidator extends BodyMatchValidator {
                     .getBodyContext()
                     .getSootMethod();
 
-            return TwoStateTagFlagger.v().isTagged(sootMethod);
+            return TwoStateTagMarker.v().hasTag(sootMethod);
         } else {
             return !VimpEffectEvaluator.v().hasSideEffects(value);
         }
@@ -65,7 +63,7 @@ public class BehaviorBodyValidator extends BodyMatchValidator {
     public void transformBody(final BodyContext bodyContext) {
         final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        if (!BehaviorTagFlagger.v().isTagged(sootMethod)) {
+        if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
             return;
         }
 

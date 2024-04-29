@@ -4,7 +4,7 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ReturnRef;
-import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import soot.*;
 import soot.jimple.Jimple;
 import soot.jimple.ReturnStmt;
@@ -34,7 +34,7 @@ public class ReturnEliminator extends BodyTransformer {
     public void transformBody(final BodyContext bodyContext) {
         final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        if (BehaviorTagFlagger.v().isTagged(sootMethod)) {
+        if (BehaviorTagMarker.v().hasTag(sootMethod)) {
             return;
         }
 

@@ -5,6 +5,7 @@ import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.*;
+import soot.tagkit.AnnotationStringElem;
 
 public class ConditionsTagger extends MethodTransformer {
 
@@ -33,6 +34,14 @@ public class ConditionsTagger extends MethodTransformer {
 
                     switch (annotationType) {
                         case (BBLibNames.REQUIRE_ANNOTATION) -> {
+                            AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class)
+                                    .ifPresent(annotationStringElement -> {
+                                        final String behaviorName = annotationStringElement.getValue();
+                                        final Value condition =
+                                                PreBehaviorResolver.v().resolveBehavior(targetMethod, behaviorName);
+                                        System.out.println(condition);
+                                    });
+                            System.out.println();
                         }
                         case (BBLibNames.ENSURE_ANNOTATION) -> {
                         }

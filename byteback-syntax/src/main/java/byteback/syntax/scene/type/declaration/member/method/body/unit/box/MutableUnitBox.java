@@ -15,7 +15,7 @@ public class MutableUnitBox implements UnitBox {
 
     private volatile Unit unit;
 
-    final Body body;
+    private final Body body;
 
     /**
      * Constructs a new MutableUnitBox.

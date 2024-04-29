@@ -69,7 +69,7 @@ public class ImplementationPropagator extends SceneTransformer {
             }
 
             final List<SootMethod> methods = attachingClass.getMethods();
-            final List<SootMethod> methodsSnapshot = new ArrayList<>(methods);
+            final var methodsSnapshot = new ArrayList<>(methods);
 
             for (final SootMethod attachingMethod : methodsSnapshot) {
                 final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();

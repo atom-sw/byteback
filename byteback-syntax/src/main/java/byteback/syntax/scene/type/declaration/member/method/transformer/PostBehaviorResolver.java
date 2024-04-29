@@ -1,12 +1,15 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputsTag;
+import byteback.syntax.scene.type.declaration.member.method.tag.InputsTagAccessor;
 import soot.*;
-import soot.jimple.Jimple;
-import soot.jimple.ParameterRef;
 import soot.util.NumberedString;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PostBehaviorResolver extends BehaviorResolver {
 
@@ -35,9 +38,14 @@ public class PostBehaviorResolver extends BehaviorResolver {
 
     @Override
     protected Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod) {
-        for (int i = 0; i < targetMethod.getParameterCount(); ++i) {
-            final ParameterRef parameterRef = Jimple.v().newParameterRef();
+        final InputsTag inputsTag = InputsTagAccessor.v().getOrThrow(targetMethod);
+        final var inputs = new ArrayList<Value>(inputsTag.getInputRefs());
+
+        if (targetMethod.getReturnType() != VoidType.v()) {
+            inputs.add(0, Vimp.v().newReturnRef(targetMethod.getReturnType()));
         }
+
+        return Vimp.v().newCallExpr(behaviorMethod.makeRef(), inputs);
     }
 
 }

@@ -34,7 +34,7 @@ public class ConditionalExprTransformer extends ValueTransformer {
             final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
 
             if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {
-                if (invokedMethodRef.getName().equals("conditional")) {
+                if (invokedMethodRef.getName().equals(BBLibNames.CONDITIONAL_NAME)) {
                     assert invokeExpr.getArgs().size() == 3
                             : "BBLib's definition of conditional takes only 3 arguments";
                     valueBox.setValue(

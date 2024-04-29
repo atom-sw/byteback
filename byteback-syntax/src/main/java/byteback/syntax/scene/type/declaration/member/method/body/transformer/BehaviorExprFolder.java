@@ -2,12 +2,10 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagFlagger;
-import byteback.syntax.scene.type.declaration.member.method.body.value.ReturnRef;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import soot.SootMethod;
 import soot.Unit;
 import soot.ValueBox;
-import soot.jimple.AssignStmt;
 import soot.jimple.ReturnStmt;
 
 /**
@@ -27,7 +25,7 @@ public class BehaviorExprFolder extends ExprFolder {
     public void transformBody(final BodyContext bodyContext) {
         final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        if (BehaviorTagFlagger.v().isTagged(sootMethod)) {
+        if (BehaviorTagMarker.v().hasTag(sootMethod)) {
             super.transformBody(bodyContext);
         }
     }

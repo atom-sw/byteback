@@ -60,8 +60,7 @@ public class ExplicitTypeCaster extends BodyTransformer {
         final Body body = bodyContext.getBody();
 
         for (final Unit unit : body.getUnits()) {
-            if (unit instanceof AssignStmt assignStmt) {
-
+            if (unit instanceof final AssignStmt assignStmt) {
                 final ValueBox rightOpBox = assignStmt.getRightOpBox();
                 final Type leftType = VimpTypeInterpreter.v().typeOf(assignStmt.getLeftOp());
                 castIfNeeded(rightOpBox, leftType);

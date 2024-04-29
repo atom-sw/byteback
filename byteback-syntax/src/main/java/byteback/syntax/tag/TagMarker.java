@@ -10,7 +10,7 @@ import soot.tagkit.Tag;
  * @param <V> The type of the tags.
  * @author paganma
  */
-public abstract class TagFlagger<K extends Host, V extends Tag> extends TagProvider<K, V> {
+public abstract class TagMarker<K extends Host, V extends Tag> extends TagAccessor<K, V> {
 
     private final V tag;
 
@@ -19,7 +19,7 @@ public abstract class TagFlagger<K extends Host, V extends Tag> extends TagProvi
      *
      * @param tag The tag used to flag the hosts.
      */
-    public TagFlagger(final V tag) {
+    public TagMarker(final V tag) {
         super(tag.getName());
         this.tag = tag;
     }
@@ -33,6 +33,11 @@ public abstract class TagFlagger<K extends Host, V extends Tag> extends TagProvi
         if (!host.hasTag(tagName)) {
             put(host, tag);
         }
+    }
+
+    public void put(final K host, final V tag) {
+        assert this.tag == tag;
+        super.put(host, tag);
     }
 
 }

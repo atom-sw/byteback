@@ -12,11 +12,16 @@ import soot.tagkit.Tag;
 public class LocationTag implements Tag {
 
     public static final int DEFAULT_LINE = -1;
+
     public static final String DEFAULT_PATH = "unknown";
+
     private static final Lazy<LocationTag> DEFAULT_INSTANCE =
             Lazy.from(() -> new LocationTag(DEFAULT_PATH, DEFAULT_LINE));
+
     public static final String NAME = "LocationTag";
+
     private final int line;
+
     private final String path;
 
     /**

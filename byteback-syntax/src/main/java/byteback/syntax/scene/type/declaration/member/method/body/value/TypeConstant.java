@@ -4,7 +4,6 @@ import byteback.syntax.scene.type.TypeType;
 import soot.RefType;
 import soot.Type;
 import soot.UnitPrinter;
-import soot.jimple.ConcreteRef;
 import soot.jimple.Constant;
 
 public class TypeConstant extends Constant implements DefaultCaseValue {

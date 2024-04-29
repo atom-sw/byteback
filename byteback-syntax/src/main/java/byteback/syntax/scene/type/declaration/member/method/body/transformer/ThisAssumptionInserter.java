@@ -16,10 +16,10 @@ import soot.jimple.NullConstant;
  */
 public class ThisAssumptionInserter extends BodyTransformer {
 
-    private static final Lazy<ThisAssumptionInserter> instance = Lazy.from(ThisAssumptionInserter::new);
+    private static final Lazy<ThisAssumptionInserter> INSTANCE = Lazy.from(ThisAssumptionInserter::new);
 
     public static ThisAssumptionInserter v() {
-        return instance.get();
+        return INSTANCE.get();
     }
 
     private ThisAssumptionInserter() {

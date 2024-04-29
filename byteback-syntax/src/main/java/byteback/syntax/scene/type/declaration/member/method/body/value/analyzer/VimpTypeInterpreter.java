@@ -86,23 +86,6 @@ public class VimpTypeInterpreter implements TypeInterpreter<Value> {
         return type1;
     }
 
-    public Type getStrongest(final Type type1, final Type type2) {
-        if (typeOrder(type1) > typeOrder(type2)) {
-            return type1;
-        } else {
-            return type2;
-        }
-    }
-
-
-    public Type getWeakest(final Type type1, final Type type2) {
-        if (typeOrder(type1) < typeOrder(type2)) {
-            return type1;
-        } else {
-            return type2;
-        }
-    }
-
     public Type typeOf(final Value value) {
         if (value instanceof BinopExpr binopExpr) {
             // Our interpretation of the types for binary expressions concerning int-like types is different from the

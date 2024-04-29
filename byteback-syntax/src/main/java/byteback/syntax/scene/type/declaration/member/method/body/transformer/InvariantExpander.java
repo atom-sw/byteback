@@ -15,7 +15,6 @@ import soot.jimple.IfStmt;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
-import soot.toolkits.graph.LoopNestTree;
 
 import java.util.HashSet;
 import java.util.function.Supplier;

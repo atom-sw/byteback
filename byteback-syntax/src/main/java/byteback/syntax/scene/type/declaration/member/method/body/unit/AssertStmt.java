@@ -11,8 +11,8 @@ import soot.jimple.Jimple;
  */
 public class AssertStmt extends SpecificationStmt implements DefaultCaseUnit {
 
-    public AssertStmt(final Value behaviorValue) {
-        super(behaviorValue);
+    public AssertStmt(final Value condition) {
+        super(condition);
     }
 
     @Override

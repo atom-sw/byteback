@@ -11,8 +11,8 @@ import soot.jimple.Jimple;
  */
 public class InvariantStmt extends SpecificationStmt implements DefaultCaseUnit {
 
-    public InvariantStmt(final Value behaviorValue) {
-        super(behaviorValue);
+    public InvariantStmt(final Value condition) {
+        super(condition);
     }
 
     @Override
