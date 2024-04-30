@@ -1,13 +1,8 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
 import byteback.syntax.scene.type.declaration.member.method.body.unit.printer.InlineUnitPrinter;
-import soot.Local;
-import soot.Type;
-import soot.UnitPrinter;
-import soot.Value;
+import soot.*;
 import soot.jimple.AssignStmt;
-import soot.jimple.internal.JimpleLocal;
-import soot.jimple.internal.RValueBox;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -22,7 +17,7 @@ import java.util.Stack;
  *
  * @author paganma
  */
-public class AggregateExpr extends JimpleLocal {
+public class AggregateExpr extends NestedExpr implements Local {
 
     private final Local local;
 
@@ -42,7 +37,7 @@ public class AggregateExpr extends JimpleLocal {
     }
 
     public AggregateExpr(final Local local, final AssignStmt assignStmt) {
-        super(local.getName(), local.getType());
+        super(assignStmt.getRightOp());
         this.local = local;
         this.assignStmt = assignStmt;
     }
@@ -85,6 +80,21 @@ public class AggregateExpr extends JimpleLocal {
     }
 
     @Override
+    public String getName() {
+        return local.getName();
+    }
+
+    @Override
+    public void setName(final String name) {
+        local.setName(name);
+    }
+
+    @Override
+    public void setType(final Type type) {
+        local.setType(type);
+    }
+
+    @Override
     public boolean isStackLocal() {
         return local.isStackLocal();
     }
@@ -116,4 +126,13 @@ public class AggregateExpr extends JimpleLocal {
         return printer.toString();
     }
 
+    @Override
+    public void setNumber(int number) {
+        local.setNumber(number);
+    }
+
+    @Override
+    public int getNumber() {
+        return local.getNumber();
+    }
 }

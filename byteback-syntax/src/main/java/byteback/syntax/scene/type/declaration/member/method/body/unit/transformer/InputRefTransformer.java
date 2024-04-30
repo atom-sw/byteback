@@ -46,7 +46,7 @@ public class InputRefTransformer extends UnitTransformer {
                 InstanceRefTagAccessor.v().put(body, new InstanceRefTag(instanceRef));
                 newRightOp = instanceRef;
             } else {
-                throw new IllegalStateException("Unknown input reference: " + rightOp);
+                return;
             }
 
             final AssignStmt assignStmt = Jimple.v().newAssignStmt(leftOp, newRightOp);

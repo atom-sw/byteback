@@ -5,7 +5,6 @@ import byteback.syntax.scene.type.declaration.member.method.body.unit.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.*;
 import soot.*;
 import soot.jimple.AssignStmt;
-import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ConcreteRef;
 import soot.jimple.IfStmt;
 import soot.jimple.internal.ImmediateBox;
@@ -127,6 +126,10 @@ public class Vimp {
 
     public ExtendsExpr newExtendsExpr(final Value op1, final Value op2) {
         return new ExtendsExpr(op1, op2);
+    }
+
+    public ReadRefExpr newReadRefExpr(final ConcreteRef concreteRef) {
+        return new ReadRefExpr(concreteRef);
     }
 
     public Immediate nest(final Value value) {

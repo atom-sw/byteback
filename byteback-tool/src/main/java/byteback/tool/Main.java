@@ -123,8 +123,6 @@ public class Main implements Callable<Integer> {
         // Changes notion of a method's input/output
         jtpPack.add(new Transform("jtp.iri", InputRefTransformer.v()));
 
-        jtpPack.add(new Transform("jtp.bl", new BodyLogger()));
-
         // Basic flow transformations
         jtpPack.add(new Transform("jtp.swe", SwitchEliminator.v()));
         jtpPack.add(new Transform("jtp.rel", ReturnEliminator.v()));
@@ -145,7 +143,7 @@ public class Main implements Callable<Integer> {
 
         // - Transformations targeting behavioral methods
         jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
-        jtpPack.add(new Transform("jtp.ule1", UnusedLocalEliminator.v()));
+        jtpPack.add(new Transform("jtp.ule1", UnusedParameterRefEliminator.v()));
         jtpPack.add(new Transform("jtp.btg", BehaviorBodyValidator.v()));
 
         // - Transformations targeting procedural methods

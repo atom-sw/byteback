@@ -226,7 +226,7 @@ public class ValueToBplEncoder extends ValueEncoder {
         printer.print(")");
     }
 
-    public void encodeInstanceFieldRef(final InstanceFieldRef instanceFieldRef, final boolean isOld) {
+    public void encodeInstanceFieldRef(final InstanceFieldRef fieldReadExpr, final boolean isOld) {
         printer.print("store.read(");
         printer.startItems(", ");
         printer.separate();
@@ -238,9 +238,9 @@ public class ValueToBplEncoder extends ValueEncoder {
         }
 
         printer.separate();
-        encodeValue(instanceFieldRef.getBase());
+        encodeValue(fieldReadExpr.getBase());
         printer.separate();
-        new FieldToBplEncoder(printer).encodeFieldConstant(instanceFieldRef.getField());
+        new FieldToBplEncoder(printer).encodeFieldConstant(fieldReadExpr.getField());
         printer.endItems();
         printer.print(")");
     }
@@ -267,7 +267,7 @@ public class ValueToBplEncoder extends ValueEncoder {
         printer.print(")");
     }
 
-    public void encodeArrayRef(final ArrayRef arrayRef, final boolean isOld) {
+    public void encodeArrayRef(final ArrayRef arrayReadExpr, final boolean isOld) {
         printer.print("array.read(");
         printer.startItems(", ");
         printer.separate();
@@ -279,13 +279,13 @@ public class ValueToBplEncoder extends ValueEncoder {
         }
 
         printer.separate();
-        encodeValue(arrayRef.getBase());
+        encodeValue(arrayReadExpr.getBase());
         printer.separate();
-        encodeValue(arrayRef.getIndex());
+        encodeValue(arrayReadExpr.getIndex());
         printer.endItems();
         printer.print(")");
         printer.print(" : ");
-        new TypeAccessToBplEncoder(printer).encodeTypeAccess(arrayRef.getType());
+        new TypeAccessToBplEncoder(printer).encodeTypeAccess(arrayReadExpr.getType());
     }
 
 

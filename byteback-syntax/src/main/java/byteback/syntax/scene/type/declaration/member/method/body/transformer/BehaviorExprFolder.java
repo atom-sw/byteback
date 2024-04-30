@@ -25,6 +25,7 @@ public class BehaviorExprFolder extends ExprFolder {
     public void transformBody(final BodyContext bodyContext) {
         final SootMethod sootMethod = bodyContext.getSootMethod();
 
+        System.out.println(bodyContext.getBody());
         if (BehaviorTagMarker.v().hasTag(sootMethod)) {
             super.transformBody(bodyContext);
         }

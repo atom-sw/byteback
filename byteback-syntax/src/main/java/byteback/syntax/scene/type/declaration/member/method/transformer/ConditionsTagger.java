@@ -39,9 +39,7 @@ public class ConditionsTagger extends MethodTransformer {
                                         final String behaviorName = annotationStringElement.getValue();
                                         final Value condition =
                                                 PreBehaviorResolver.v().resolveBehavior(targetMethod, behaviorName);
-                                        System.out.println(condition);
                                     });
-                            System.out.println();
                         }
                         case (BBLibNames.ENSURE_ANNOTATION) -> {
                         }
