@@ -40,7 +40,7 @@ public class PostBehaviorResolver extends BehaviorResolver {
         final var inputs = new ArrayList<Value>(inputRefsTag.getInputRefs());
 
         if (targetMethod.getReturnType() != VoidType.v()) {
-            inputs.add(0, Vimp.v().newReturnRef(targetMethod.getReturnType()));
+            inputs.add(0, Vimp.v().newReturnLocal(targetMethod.getReturnType()));
         }
 
         return Vimp.v().newCallExpr(behaviorMethod.makeRef(), inputs);

@@ -3,7 +3,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.InstanceRefTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.body.tag.ThisLocalTagAccessor;
 import soot.Body;
 import soot.Unit;
 import soot.Value;
@@ -34,7 +34,7 @@ public class ThisAssumptionInserter extends BodyTransformer {
             final Value condition =
                     Vimp.v().nest(
                             Jimple.v().newNeExpr(
-                                    InstanceRefTagAccessor.v().getOrThrow(body).getInstanceRef(),
+                                    ThisLocalTagAccessor.v().getOrThrow(body).getThisLocal(),
                                     NullConstant.v()
                             )
                     );

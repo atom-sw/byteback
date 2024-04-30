@@ -304,9 +304,9 @@ public class ValueToBplEncoder extends ValueEncoder {
             encodeInstanceFieldRef(instanceFieldRef, isOld);
         } else if (concreteRef instanceof final StaticFieldRef staticFieldRef) {
             encodeStaticFieldRef(staticFieldRef, isOld);
-        } else if (concreteRef instanceof ThrownRef) {
+        } else if (concreteRef instanceof ThrownLocal) {
             encodeCaughtExceptionRef();
-        } else if (concreteRef instanceof ReturnRef) {
+        } else if (concreteRef instanceof ReturnLocal) {
             encodeReturnRef();
         } else {
             throw new RuntimeException("Unable to convert reference " + concreteRef + ".");

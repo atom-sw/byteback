@@ -7,15 +7,15 @@ import soot.Type;
  *
  * @author paganma
  */
-public class ReturnRef extends OutputRef implements DefaultCaseValue {
+public class ReturnLocal extends OutputLocal implements DefaultCaseValue {
 
-    public ReturnRef(final Type returnType) {
+    public ReturnLocal(final Type returnType) {
         super("return", returnType);
     }
 
     @Override
     public boolean equivTo(final Object object) {
-        return object instanceof final ReturnRef returnRef
+        return object instanceof final ReturnLocal returnRef
                 && returnRef.getType().equals(getType());
     }
 

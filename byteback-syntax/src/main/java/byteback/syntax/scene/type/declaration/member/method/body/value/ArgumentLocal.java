@@ -2,7 +2,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.value;
 
 import soot.Type;
 
-public class ArgumentRef extends InputRef implements DefaultCaseValue {
+public class ArgumentLocal extends InputLocal implements DefaultCaseValue {
 
     private final int index;
 
@@ -12,7 +12,7 @@ public class ArgumentRef extends InputRef implements DefaultCaseValue {
      * @param paramType The type of the parameter ref.
      * @param index The corresponding position in the parameters list.
      */
-    public ArgumentRef(final Type paramType, final int index) {
+    public ArgumentLocal(final Type paramType, final int index) {
         super("a" + index, paramType);
         this.index = index;
     }
@@ -23,7 +23,7 @@ public class ArgumentRef extends InputRef implements DefaultCaseValue {
 
     @Override
     public boolean equivTo(final Object object) {
-        return object instanceof final ArgumentRef argumentRef
+        return object instanceof final ArgumentLocal argumentRef
                 && argumentRef.index == index
                 && argumentRef.getType().equals(getType());
     }

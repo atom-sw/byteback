@@ -33,7 +33,7 @@ public class ThrownExprTransformer extends ValueTransformer {
 
             if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {
                 if (invokedMethodRef.getName().equals(BBLibNames.THROWN_NAME)) {
-                    valueBox.setValue(Vimp.v().newThrownRef());
+                    valueBox.setValue(Vimp.v().newThrownLocal());
                 }
             }
         }

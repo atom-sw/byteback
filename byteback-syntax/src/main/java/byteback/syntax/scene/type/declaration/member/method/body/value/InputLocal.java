@@ -2,9 +2,9 @@ package byteback.syntax.scene.type.declaration.member.method.body.value;
 
 import soot.Type;
 
-public abstract class OutputRef extends ParameterRef {
+public abstract class InputLocal extends ParameterLocal {
 
-    public OutputRef(String name, Type type) {
+    public InputLocal(final String name, final Type type) {
         super(name, type);
     }
 

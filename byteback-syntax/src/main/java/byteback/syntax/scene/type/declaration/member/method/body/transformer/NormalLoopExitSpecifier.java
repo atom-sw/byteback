@@ -5,7 +5,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownLocal;
 import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
 import soot.Body;
 import soot.PatchingChain;
@@ -47,7 +47,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
         final Set<Loop> loops = loopFinder.getLoops(unitGraph);
 
         for (final Loop loop : loops) {
-            final ThrownRef exceptionRef = Vimp.v().newThrownRef();
+            final ThrownLocal exceptionRef = Vimp.v().newThrownLocal();
             final UnitConstant unitConstant = UnitConstant.v();
             final Value behaviorValue =
                     Vimp.v().nest(

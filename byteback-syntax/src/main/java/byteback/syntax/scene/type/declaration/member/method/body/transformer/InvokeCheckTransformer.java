@@ -3,7 +3,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownLocal;
 import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
 import soot.*;
@@ -42,7 +42,7 @@ public class InvokeCheckTransformer extends BodyTransformer {
                 final Value value = valueBox.getValue();
 
                 if (VimpEffectEvaluator.v().isStatefulInvoke(value)) {
-                    final Unit thenBranch = Jimple.v().newThrowStmt(Vimp.v().newThrownRef());
+                    final Unit thenBranch = Jimple.v().newThrowStmt(Vimp.v().newThrownLocal());
                     units.insertAfter(thenBranch, unit);
                     final Unit elseBranch = units.getSuccOf(thenBranch);
                     final Unit ifUnit = Jimple.v().newIfStmt(makeCheckExpr(), elseBranch);
@@ -53,7 +53,7 @@ public class InvokeCheckTransformer extends BodyTransformer {
     }
 
     private Value makeCheckExpr() {
-        final ThrownRef caughtExceptionRef = Vimp.v().newThrownRef();
+        final ThrownLocal caughtExceptionRef = Vimp.v().newThrownLocal();
 
         return Jimple.v().newEqExpr(caughtExceptionRef, UnitConstant.v());
     }

@@ -2,7 +2,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.value.ParameterRef;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ParameterLocal;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import soot.*;
 import soot.jimple.AssignStmt;
@@ -44,7 +44,7 @@ public class UnusedParameterRefEliminator extends BodyTransformer {
 
             if (unit instanceof final AssignStmt assignStmt
                     && assignStmt.getLeftOp() instanceof final Local local
-                    && assignStmt.getRightOp() instanceof ParameterRef) {
+                    && assignStmt.getRightOp() instanceof ParameterLocal) {
                 for (final Unit defUnit : localDefs.getDefsOf(local)) {
                     if (!localUses.getUsesOf(defUnit).isEmpty()) {
                         continue NEXT_UNIT;

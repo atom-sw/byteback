@@ -1,20 +1,20 @@
 package byteback.syntax.scene.type.declaration.member.method.body.tag;
 
-import byteback.syntax.scene.type.declaration.member.method.body.value.InstanceRef;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ThisLocal;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
-public class InstanceRefTag implements Tag {
+public class ThisLocalTag implements Tag {
 
-    public static final String NAME = "InstanceRefTag";
+    public static final String NAME = "ThisLocalTag";
 
-    private final InstanceRef instanceRef;
+    private final ThisLocal instanceRef;
 
-    public InstanceRefTag(final InstanceRef instanceRef) {
-        this.instanceRef = instanceRef;
+    public ThisLocalTag(final ThisLocal thrownLocal) {
+        this.instanceRef = thrownLocal;
     }
 
-    public InstanceRef getInstanceRef() {
+    public ThisLocal getThisLocal() {
         return instanceRef;
     }
 

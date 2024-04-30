@@ -5,7 +5,6 @@ import byteback.syntax.scene.type.declaration.member.method.body.unit.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.*;
 import soot.*;
 import soot.jimple.AssignStmt;
-import soot.jimple.ConcreteRef;
 import soot.jimple.IfStmt;
 import soot.jimple.internal.ImmediateBox;
 import soot.util.Chain;
@@ -78,10 +77,10 @@ public class Vimp {
     }
 
     public ExistsExpr newLogicExistsExpr(final Local local, final Value value) {
-        final HashChain<Local> ls = new HashChain<>();
-        ls.add(local);
+        final HashChain<Local> locals = new HashChain<>();
+        locals.add(local);
 
-        return new ExistsExpr(ls, value);
+        return new ExistsExpr(locals, value);
     }
 
     public OldExpr newOldExpr(final Value value) {
@@ -100,8 +99,8 @@ public class Vimp {
         return new ConditionalExpr(op1, op2, op3);
     }
 
-    public ReturnRef newReturnRef(final Type type) {
-        return new ReturnRef(type);
+    public ReturnLocal newReturnLocal(final Type type) {
+        return new ReturnLocal(type);
     }
 
     public NestedExpr newNestedExpr(final Value value) {
@@ -128,10 +127,6 @@ public class Vimp {
         return new ExtendsExpr(op1, op2);
     }
 
-    public ReadRefExpr newReadRefExpr(final ConcreteRef concreteRef) {
-        return new ReadRefExpr(concreteRef);
-    }
-
     public Immediate nest(final Value value) {
         if (value instanceof Immediate immediate) {
             return immediate;
@@ -140,16 +135,16 @@ public class Vimp {
         }
     }
 
-    public ThrownRef newThrownRef() {
-        return new ThrownRef();
+    public ThrownLocal newThrownLocal() {
+        return new ThrownLocal();
     }
 
-    public InstanceRef newInstanceRef(final RefType instanceType) {
-        return new InstanceRef(instanceType);
+    public ThisLocal newThisLocal(final RefType instanceType) {
+        return new ThisLocal(instanceType);
     }
 
-    public ArgumentRef newArgumentRef(final Type argumentType, final int position) {
-        return new ArgumentRef(argumentType, position);
+    public ArgumentLocal newArgumentLocal(final Type argumentType, final int position) {
+        return new ArgumentLocal(argumentType, position);
     }
 
 }

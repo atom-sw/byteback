@@ -6,7 +6,6 @@ import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.transformer.*;
-import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.QuantifierValueTransformer;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -92,6 +91,7 @@ public class Main implements Callable<Integer> {
         final long startTime = System.currentTimeMillis();
 
         // We will add the classes using Options.v().classes, instead of using the Soot main.
+        Options.v().set_weak_map_structures(true);
         Options.v().set_unfriendly_mode(true);
         final List<String> startingClasses = getStartingClasses();
         startingClasses.addAll(List.of(pluginClasses));
@@ -121,11 +121,14 @@ public class Main implements Callable<Integer> {
 
         // - Vimp transformations
         // Changes notion of a method's input/output
-        jtpPack.add(new Transform("jtp.iri", InputRefTransformer.v()));
+        //jtpPack.add(new Transform("jtp.iri", InputRefTransformer.v()));
 
         // Basic flow transformations
         jtpPack.add(new Transform("jtp.swe", SwitchEliminator.v()));
-        jtpPack.add(new Transform("jtp.rel", ReturnEliminator.v()));
+        jtpPack.add(new Transform("jtp.tlt", ThisLocalTransformer.v()));
+        jtpPack.add(new Transform("jtp.plt", ArgumentLocalTransformer.v()));
+        jtpPack.add(new Transform("jtp.trlt", ThrownLocalTransformer.v()));
+        jtpPack.add(new Transform("jtp.rel", ReturnLocalTransformer.v()));
 
         // Removes subexpressions in if conditions
         jtpPack.add(new Transform("jtp.i2j", IfConditionExtractor.v()));
@@ -189,10 +192,10 @@ public class Main implements Callable<Integer> {
 
         PackManager.v().runBodyPacks();
 
-        IdentityStmtsTagger.v().transform();
-        ConditionsTagger.v().transform();
-        // ConditionsPropagator.v().transform();
-        HierarchyAxiomTagger.v().transform();
+        //IdentityStmtsTagger.v().transform();
+        //ConditionsTagger.v().transform();
+        //ConditionsPropagator.v().transform();
+        //HierarchyAxiomTagger.v().transform();
 
         try (final Printer printer = new Printer(outputPath.toString())) {
             //new SceneToBplEncoder(printer).encodeScene(scene);

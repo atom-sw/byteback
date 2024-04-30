@@ -4,7 +4,7 @@ import byteback.common.collection.SetHashMap;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.AggregateExpr;
-import byteback.syntax.scene.type.declaration.member.method.body.value.ParameterRef;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ParameterLocal;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
 import soot.*;
 import soot.jimple.AssignStmt;
@@ -114,7 +114,7 @@ public abstract class ExprFolder extends BodyTransformer {
                         if ((localDefs.getDefsOfAt(local, unit).size() == 1
                                 && localUses.getUsesOf(substitution).size() == 1
                                 && !VimpEffectEvaluator.v().hasSideEffects(substitutionValue))
-                                || substitutionValue instanceof ParameterRef) {
+                                || substitutionValue instanceof ParameterLocal) {
 
                             nextSubstitutions.addAll(substitution.getUseBoxes());
 

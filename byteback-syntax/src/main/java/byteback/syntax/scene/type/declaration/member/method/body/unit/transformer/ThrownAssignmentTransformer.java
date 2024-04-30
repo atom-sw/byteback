@@ -1,9 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.unit.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import soot.*;
 import soot.jimple.*;
@@ -31,7 +29,7 @@ public class ThrownAssignmentTransformer extends UnitTransformer {
                 && identityStmt.getRightOp() instanceof CaughtExceptionRef) {
             final Unit thrownAssignStmt = Jimple.v().newAssignStmt(
                     identityStmt.getLeftOp(),
-                    Vimp.v().newThrownRef()
+                    Vimp.v().newThrownLocal()
             );
             unitBox.setUnit(thrownAssignStmt);
         }
