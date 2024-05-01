@@ -18,7 +18,6 @@ import java.util.List;
 
 public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
 
-
     public BehaviorMethodToBplEncoder(final Printer printer) {
         super(printer);
     }

@@ -1,11 +1,12 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.transformer.Transformer;
 import soot.Body;
 
 import java.util.Map;
 
-public abstract class BodyTransformer extends soot.BodyTransformer {
+public abstract class BodyTransformer extends soot.BodyTransformer implements Transformer {
 
     public abstract void transformBody(final BodyContext bodyContext);
 

@@ -51,7 +51,7 @@ public abstract class SpecificationStmt extends AbstractStmt {
 
     @Override
     public String toString() {
-        final InlineUnitPrinter printer = new InlineUnitPrinter();
+        final var printer = new InlineUnitPrinter();
         toString(printer);
 
         return printer.toString();

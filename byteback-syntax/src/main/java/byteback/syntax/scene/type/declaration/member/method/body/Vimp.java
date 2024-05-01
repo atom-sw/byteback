@@ -59,17 +59,17 @@ public class Vimp {
     }
 
     public ForallExpr newForallExpr(final Local[] ls, final Value v) {
-        final var lsChain = new HashChain<Local>();
-        lsChain.addAll(Arrays.asList(ls));
+        final var bindings = new HashChain<Local>();
+        bindings.addAll(Arrays.asList(ls));
 
-        return new ForallExpr(lsChain, v);
+        return new ForallExpr(bindings, v);
     }
 
     public ForallExpr newForallExpr(final Local local, final Value value) {
-        final HashChain<Local> locals = new HashChain<>();
-        locals.add(local);
+        final HashChain<Local> bindings = new HashChain<>();
+        bindings.add(local);
 
-        return new ForallExpr(locals, value);
+        return new ForallExpr(bindings, value);
     }
 
     public ExistsExpr newLogicExistsExpr(final Chain<Local> locals, final Value value) {
@@ -77,18 +77,18 @@ public class Vimp {
     }
 
     public ExistsExpr newLogicExistsExpr(final Local local, final Value value) {
-        final HashChain<Local> locals = new HashChain<>();
-        locals.add(local);
+        final HashChain<Local> bindings = new HashChain<>();
+        bindings.add(local);
 
-        return new ExistsExpr(locals, value);
+        return new ExistsExpr(bindings, value);
     }
 
     public OldExpr newOldExpr(final Value value) {
         return new OldExpr(value);
     }
 
-    public CallExpr newCallExpr(final SootMethodRef methodRef, final List<Value> args) {
-        return new CallExpr(methodRef, args);
+    public CallExpr newCallExpr(final SootMethodRef methodRef, final List<Value> arguments) {
+        return new CallExpr(methodRef, arguments);
     }
 
     public OldExpr newOldExpr(final ValueBox opBox) {

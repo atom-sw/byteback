@@ -10,8 +10,8 @@ public class ThisLocal extends InputLocal implements DefaultCaseValue {
 
     @Override
     public boolean equivTo(final Object object) {
-        return object instanceof final ThisLocal instanceRef
-                && instanceRef.getType().equals(getType());
+        return object instanceof final ThisLocal thisLocal
+                && thisLocal.getType().equals(getType());
     }
 
     @Override

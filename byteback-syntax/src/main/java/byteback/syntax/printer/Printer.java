@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
- * A printer used to encode a syntax tree.
+ * A syntax tree printer.
  *
  * @author paganma
  */

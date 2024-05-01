@@ -34,10 +34,10 @@ public abstract class ExprFolder extends BodyTransformer {
     public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
         final PatchingChain<Unit> units = body.getUnits();
-        final BlockGraph blockGraph = new BriefBlockGraph(body);
-        final UnitGraph unitGraph = new BriefUnitGraph(body);
-        final LocalDefs localDefs = new SimpleLocalDefs(unitGraph);
-        final LocalUses localUses = new SimpleLocalUses(unitGraph, localDefs);
+        final var blockGraph = new BriefBlockGraph(body);
+        final var unitGraph = new BriefUnitGraph(body);
+        final var localDefs = new SimpleLocalDefs(unitGraph);
+        final var localUses = new SimpleLocalUses(unitGraph, localDefs);
 
         for (final Block block : blockGraph) {
             final var blockSnapshot = new HashChain<Unit>();

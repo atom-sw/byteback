@@ -35,8 +35,10 @@ public class IfConditionExtractor extends BodyTransformer {
 
             if (unit instanceof final IfStmt ifStmt) {
                 final Local local = localGenerator.generateLocal(BooleanType.v());
-                final AssignStmt conditionAssignStmt = Jimple.v().newAssignStmt(local, ifStmt.getCondition());
-                final IfStmt newIfStmt = Vimp.v().newIfStmt(local, ifStmt.getTarget());
+                final Value condition = ifStmt.getCondition();
+                final AssignStmt conditionAssignStmt = Jimple.v().newAssignStmt(local, condition);
+                final Unit thenBranch = ifStmt.getTarget();
+                final IfStmt newIfStmt = Vimp.v().newIfStmt(local, thenBranch);
                 units.insertAfter(List.of(conditionAssignStmt, newIfStmt), ifStmt);
                 units.remove(ifStmt);
             }

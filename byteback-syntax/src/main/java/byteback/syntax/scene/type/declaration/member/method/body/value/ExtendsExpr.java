@@ -5,6 +5,7 @@ import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.BinopExpr;
+import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractBinopExpr;
 import soot.jimple.internal.ImmediateBox;
 
@@ -20,7 +21,7 @@ public class ExtendsExpr extends AbstractBinopExpr implements BinopExpr, Default
     }
 
     public ExtendsExpr(final Value op1, final Value op2) {
-        this(new ImmediateBox(op1), new ImmediateBox(op2));
+        this(Jimple.v().newImmediateBox(op1), Jimple.v().newImmediateBox(op2));
     }
 
     @Override

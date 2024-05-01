@@ -61,7 +61,7 @@ public class ImplementationPropagator extends SceneTransformer {
 
             if (attachedClass == null) {
                 throw new TransformationException(
-                        "Unable to find attached class: "
+                        "Unable to find class: "
                                 + attachedName
                                 + " for attaching "
                                 + attachingClass

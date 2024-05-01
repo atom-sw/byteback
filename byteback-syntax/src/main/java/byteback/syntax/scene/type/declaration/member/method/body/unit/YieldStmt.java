@@ -10,4 +10,9 @@ public class YieldStmt extends JReturnVoidStmt {
         printer.literal("yield");
     }
 
+    @Override
+    public String toString() {
+        return "yield";
+    }
+
 }

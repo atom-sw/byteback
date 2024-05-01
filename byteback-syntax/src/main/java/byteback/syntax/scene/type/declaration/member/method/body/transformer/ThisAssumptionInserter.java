@@ -4,6 +4,7 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.ThisLocalTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ThisLocal;
 import soot.Body;
 import soot.Unit;
 import soot.Value;
@@ -31,10 +32,13 @@ public class ThisAssumptionInserter extends BodyTransformer {
         final Body body = bodyContext.getBody();
 
         if (!body.getMethod().isStatic()) {
+            final ThisLocal thisLocal = ThisLocalTagAccessor.v()
+                    .getOrThrow(body)
+                    .getThisLocal();
             final Value condition =
                     Vimp.v().nest(
                             Jimple.v().newNeExpr(
-                                    ThisLocalTagAccessor.v().getOrThrow(body).getThisLocal(),
+                                    thisLocal,
                                     NullConstant.v()
                             )
                     );

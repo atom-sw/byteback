@@ -43,9 +43,10 @@ public class ThisLocalTransformer extends BodyTransformer {
             final Unit unit = unitIterator.next();
 
             if (unit instanceof final IdentityStmt identityStmt
-                    && identityStmt.getRightOp() instanceof CaughtExceptionRef) {
+                    && identityStmt.getRightOp() instanceof ThisRef) {
+                final Value assignee = identityStmt.getLeftOp();
                 final AssignStmt assignStmt = Jimple.v().newAssignStmt(
-                        identityStmt.getLeftOp(),
+                        assignee,
                         newLocal
                 );
                 units.swapWith(unit, assignStmt);

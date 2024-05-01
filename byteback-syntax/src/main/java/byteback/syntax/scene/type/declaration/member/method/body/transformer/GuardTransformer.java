@@ -3,6 +3,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import byteback.syntax.scene.type.declaration.member.method.body.tag.ThrownLocalTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.TrapCollectingIterator;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownLocal;
@@ -40,6 +41,9 @@ public class GuardTransformer extends BodyTransformer {
         final PatchingChain<Unit> units = body.getUnits();
         final Chain<Trap> traps = body.getTraps();
         final var unitIterator = new TrapCollectingIterator(units, traps);
+        final ThrownLocal thrownLocal = ThrownLocalTagAccessor.v()
+                .getOrThrow(body)
+                .getThrownLocal();
 
         for (final Trap trap : traps) {
             final Unit handlerUnit = trap.getHandlerUnit();
@@ -47,7 +51,7 @@ public class GuardTransformer extends BodyTransformer {
                     final AssignStmt assignStmt
                     && assignStmt.getRightOp() instanceof CaughtExceptionRef;
             final AssignStmt thrownAssignStmt = Jimple.v().newAssignStmt(
-                    Vimp.v().newThrownLocal(),
+                    thrownLocal,
                     UnitConstant.v()
             );
             units.insertAfter(thrownAssignStmt, handlerUnit);
@@ -62,8 +66,7 @@ public class GuardTransformer extends BodyTransformer {
 
                 // If we are throwing the current @caughtexception, then there is no need to assign it.
                 if (!(throwUnit.getOp() instanceof CaughtExceptionRef)) {
-                    final ThrownLocal caughtExceptionRef = Vimp.v().newThrownLocal();
-                    final Unit assignUnit = Jimple.v().newAssignStmt(caughtExceptionRef, throwUnit.getOp());
+                    final Unit assignUnit = Jimple.v().newAssignStmt(thrownLocal, throwUnit.getOp());
                     units.insertBefore(assignUnit, baseUnit);
                     baseUnit.redirectJumpsToThisTo(assignUnit);
                 }
@@ -76,14 +79,16 @@ public class GuardTransformer extends BodyTransformer {
                 // been opened, hence making the jumps semantically equivalent to the control flow specified by the
                 // exception table.
                 for (final Trap trap : unitIterator.getActiveTraps()) {
+                    final Type exceptionType = trap.getException().getType();
                     final Immediate checkValue = Vimp.v().nest(
                             Jimple.v().newInstanceOfExpr(
-                                    Vimp.v().newThrownLocal(),
-                                    trap.getException().getType()
+                                    thrownLocal,
+                                    exceptionType
                             )
                     );
 
-                    final Unit branchUnit = Vimp.v().newIfStmt(checkValue, trap.getHandlerUnit());
+                    final Unit handlerUnit = trap.getHandlerUnit();
+                    final Unit branchUnit = Vimp.v().newIfStmt(checkValue, handlerUnit);
                     ThrowTargetTagMarker.v().flag(branchUnit);
                     units.insertBefore(branchUnit, baseUnit);
                 }

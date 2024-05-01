@@ -1,10 +1,8 @@
 package byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl;
 
-import byteback.syntax.name.BBLibNames;
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.encoder.MethodEncoder;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
-import byteback.syntax.tag.AnnotationTagReader;
 import soot.ArrayType;
 import soot.SootMethod;
 import soot.SootMethodRef;

@@ -64,15 +64,16 @@ public class InvariantExpander extends BodyTransformer {
 
                     return assertionUnit;
                 };
-
-                units.insertBefore(assertionSupplier.get(), loop.getHead());
+                final Unit loopHead = loop.getHead();
+                units.insertBefore(assertionSupplier.get(), loopHead);
 
                 if (loop.getHead() instanceof IfStmt) {
-                    units.insertAfter(assertionSupplier.get(), loop.getHead());
+                    units.insertAfter(assertionSupplier.get(), loopHead);
                 }
 
-                units.insertBefore(assertionSupplier.get(), loop.getBackJumpStmt());
-                final HashSet<Unit> exitTargets = new HashSet<>();
+                final Unit backJumpUnit = loop.getBackJumpStmt();
+                units.insertBefore(assertionSupplier.get(), backJumpUnit);
+                final var exitTargets = new HashSet<Unit>();
 
                 for (final Stmt exit : loop.getLoopExits()) {
                     exitTargets.addAll(loop.targetsOfLoopExit(exit));

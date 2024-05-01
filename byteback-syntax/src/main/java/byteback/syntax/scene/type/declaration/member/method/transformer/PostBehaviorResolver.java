@@ -1,9 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTagAccessor;
 import soot.*;
 import soot.util.NumberedString;
 
@@ -36,14 +33,15 @@ public class PostBehaviorResolver extends BehaviorResolver {
 
     @Override
     protected Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod) {
-        final InputRefsTag inputRefsTag = InputRefsTagAccessor.v().getOrThrow(targetMethod);
-        final var inputs = new ArrayList<Value>(inputRefsTag.getInputRefs());
+        //final InputRefsTag inputRefsTag = InputRefsTagAccessor.v().getOrThrow(targetMethod);
+        //final var inputs = new ArrayList<Value>(inputRefsTag.getInputRefs());
 
-        if (targetMethod.getReturnType() != VoidType.v()) {
-            inputs.add(0, Vimp.v().newReturnLocal(targetMethod.getReturnType()));
-        }
+        //if (targetMethod.getReturnType() != VoidType.v()) {
+        //    inputs.add(0, Vimp.v().newReturnLocal(targetMethod.getReturnType()));
+        //}
 
-        return Vimp.v().newCallExpr(behaviorMethod.makeRef(), inputs);
+        //return Vimp.v().newCallExpr(behaviorMethod.makeRef(), inputs);
+        return null;
     }
 
 }

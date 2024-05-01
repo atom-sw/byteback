@@ -10,6 +10,6 @@ public abstract class ValueEncoder extends Encoder {
         super(printer);
     }
 
-    public abstract void encodeValue(final Value value);
+    public abstract void encodeValue(Value value);
 
 }

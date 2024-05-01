@@ -6,6 +6,8 @@ import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarke
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTag;
 import soot.Body;
+import soot.SootMethod;
+import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ArrayRef;
 import soot.jimple.ConcreteRef;
@@ -26,18 +28,22 @@ public class FrameConditionFinder extends BodyTransformer {
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
-        if (!BehaviorTagMarker.v().hasTag(bodyContext.getSootMethod())) {
+        final SootMethod sootMethod = bodyContext.getSootMethod();
+
+        if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
             final Body body = bodyContext.getBody();
             final var inferredFrames = new ArrayList<ConcreteRef>();
 
             for (final ValueBox valueBox : body.getDefBoxes()) {
-                if (valueBox.getValue() instanceof final ConcreteRef concreteRef &&
+                final Value value = valueBox.getValue();
+
+                if (value instanceof final ConcreteRef concreteRef &&
                         (concreteRef instanceof ArrayRef || concreteRef instanceof FieldRef)) {
                     inferredFrames.add(concreteRef);
                 }
             }
 
-            final InferredFramesTag inferredFramesTag = new InferredFramesTag(inferredFrames);
+            final var inferredFramesTag = new InferredFramesTag(inferredFrames);
             InferredFramesTagAccessor.v().put(body, inferredFramesTag);
         }
     }

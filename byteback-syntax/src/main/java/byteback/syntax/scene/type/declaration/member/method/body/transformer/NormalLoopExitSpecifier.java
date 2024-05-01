@@ -42,7 +42,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
     public void transformBody(final BodyContext bodyContext) {
         final Body body = bodyContext.getBody();
         final PatchingChain<Unit> units = body.getUnits();
-        final LoopFinder loopFinder = new LoopFinder();
+        final var loopFinder = new LoopFinder();
         final var unitGraph = new BriefUnitGraph(body);
         final Set<Loop> loops = loopFinder.getLoops(unitGraph);
 

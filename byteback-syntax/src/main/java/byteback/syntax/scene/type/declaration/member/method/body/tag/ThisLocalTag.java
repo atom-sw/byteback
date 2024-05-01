@@ -8,14 +8,14 @@ public class ThisLocalTag implements Tag {
 
     public static final String NAME = "ThisLocalTag";
 
-    private final ThisLocal instanceRef;
+    private final ThisLocal thisLocal;
 
-    public ThisLocalTag(final ThisLocal thrownLocal) {
-        this.instanceRef = thrownLocal;
+    public ThisLocalTag(final ThisLocal thisLocal) {
+        this.thisLocal = thisLocal;
     }
 
     public ThisLocal getThisLocal() {
-        return instanceRef;
+        return thisLocal;
     }
 
     @Override

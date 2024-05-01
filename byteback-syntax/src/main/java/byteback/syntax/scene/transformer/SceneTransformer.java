@@ -1,11 +1,12 @@
 package byteback.syntax.scene.transformer;
 
 import byteback.syntax.scene.context.SceneContext;
+import byteback.syntax.transformer.Transformer;
 import soot.Scene;
 
 import java.util.Map;
 
-public abstract class SceneTransformer extends soot.SceneTransformer {
+public abstract class SceneTransformer extends soot.SceneTransformer implements Transformer {
 
     /**
      * Traverses the Scene through the context.

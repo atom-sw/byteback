@@ -16,7 +16,7 @@ public interface DefaultCaseType extends Switchable {
     default void apply(final Switch visitor) {
         assert this instanceof Type : "Implementer must be of type soot.Type.";
 
-        if (visitor instanceof TypeSwitch<?> typeSwitch) {
+        if (visitor instanceof final TypeSwitch<?> typeSwitch) {
             typeSwitch.defaultCase((Type) this);
         }
     }
