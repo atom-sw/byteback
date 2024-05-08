@@ -30,7 +30,7 @@ public class ModifierTagger extends MethodTransformer {
 
 					switch (annotationType) {
 						case BBLibNames.ABSTRACT_ANNOTATION ->
-							sootMethod.setModifiers(sootMethod.getModifiers() ^ Modifier.ABSTRACT);
+							sootMethod.setModifiers(sootMethod.getModifiers() | Modifier.ABSTRACT);
 						case BBLibNames.IGNORE_ANNOTATION ->
 							IgnoreTagMarker.v().flag(sootMethod);
 						case BBLibNames.BEHAVIOR_ANNOTATION ->
