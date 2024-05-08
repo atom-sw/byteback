@@ -3,11 +3,8 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.ThisLocalTagAccessor;
-import byteback.syntax.scene.type.declaration.member.method.body.value.ThisLocal;
-import soot.Body;
-import soot.Unit;
-import soot.Value;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
+import soot.*;
 import soot.jimple.Jimple;
 import soot.jimple.NullConstant;
 
@@ -29,22 +26,27 @@ public class ThisAssumptionInserter extends BodyTransformer {
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
-        final Body body = bodyContext.getBody();
+        final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        if (!body.getMethod().isStatic()) {
-            final ThisLocal thisLocal = ThisLocalTagAccessor.v()
-                    .getOrThrow(body)
-                    .getThisLocal();
-            final Value condition =
-                    Vimp.v().nest(
-                            Jimple.v().newNeExpr(
-                                    thisLocal,
-                                    NullConstant.v()
-                            )
-                    );
-            final Unit assumeUnit = Vimp.v().newAssumeStmt(condition);
-            body.getUnits().addFirst(assumeUnit);
+        if (BehaviorTagMarker.v().hasTag(sootMethod) || sootMethod.isStatic()) {
+            return;
         }
+
+        final Body body = bodyContext.getBody();
+        final SootClass sootClass = bodyContext.getSootClass();
+        final RefType declaringType = sootClass.getType();
+        final PatchingChain<Unit> units = body.getUnits();
+        final Value condition =
+                Vimp.v().nest(
+                        Jimple.v().newNeExpr(
+                                Vimp.v().nest(
+                                        Jimple.v().newThisRef(declaringType)
+                                ),
+                                NullConstant.v()
+                        )
+                );
+        final Unit assumeUnit = Vimp.v().newAssumeStmt(condition);
+        units.addFirst(assumeUnit);
     }
 
 }

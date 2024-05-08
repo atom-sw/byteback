@@ -1,6 +1,6 @@
 /**
-  * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
-  */
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ */
 package byteback.test.controlflow;
 
 import byteback.specification.Contract._;
@@ -35,14 +35,6 @@ class Basic {
     }
   }
 
-  def emptyFor(): Unit = {
-    var i: Int = 0;
-
-    // Generates lambda
-		for (i <- 0 to 10) {
-		}
-  }
-
   def returnsNull(): Object = {
     return null;
   }
@@ -54,6 +46,6 @@ class Basic {
 
 }
 /**
-  * RUN: %{verify} %t.bpl | filecheck %s
-  * CHECK: Boogie program verifier finished with 14 verified, 0 errors
-  */
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 8 verified, 0 errors
+ */

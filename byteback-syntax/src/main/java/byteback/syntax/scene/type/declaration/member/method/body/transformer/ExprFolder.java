@@ -4,14 +4,15 @@ import byteback.common.collection.SetHashMap;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.AggregateExpr;
-import byteback.syntax.scene.type.declaration.member.method.body.value.ParameterLocal;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.Ref;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.infoflow.CachedEquivalentValue;
-import soot.toolkits.graph.*;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BriefBlockGraph;
+import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.SimpleLocalDefs;
@@ -113,8 +114,7 @@ public abstract class ExprFolder extends BodyTransformer {
 
                         if ((localDefs.getDefsOfAt(local, unit).size() == 1
                                 && localUses.getUsesOf(substitution).size() == 1
-                                && !VimpEffectEvaluator.v().hasSideEffects(substitutionValue))
-                                || substitutionValue instanceof ParameterLocal) {
+                                && !VimpEffectEvaluator.v().hasSideEffects(substitutionValue))) {
 
                             nextSubstitutions.addAll(substitution.getUseBoxes());
 

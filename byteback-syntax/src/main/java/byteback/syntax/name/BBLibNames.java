@@ -59,6 +59,8 @@ public class BBLibNames {
 
     public static final String RETURN_ANNOTATION = "Lbyteback/specification/Contract$Return;";
 
+    public static final String ABSTRACT_ANNOTATION = "Lbyteback/specification/Contract$Abstract;";
+
     public static final String SPECIAL_CLASS_NAME = "byteback.specification.Special";
 
     public static final String CONDITIONAL_NAME = "conditional";

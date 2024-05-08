@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} --npe --iobe -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$Resource -c java.lang.IllegalStateException --npe --iobe -o %t.bpl
  */
 package byteback.test.examples;
 
@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 
 import byteback.specification.Contract.Ensure;
 import byteback.specification.Contract.Behavior;
-import byteback.specification.Contract.Function;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 import static byteback.specification.Contract.*;
@@ -28,30 +27,27 @@ public class ReadResource {
 			isClosed = true;
 		}
 
-		@Function
 		@Behavior
 		public boolean is_closed() {
 			return isClosed;
 		}
 
-		@Function
 		@Behavior
 		public boolean is_open() {
 			return not(isClosed);
 		}
 
-		@Function
 		@Behavior
 		public boolean has_next() {
 			return hasNext;
 		}
 
-		@Function
 		@Behavior
 		public boolean has_no_next() {
 			return not(hasNext);
 		}
 
+		@TwoState
 		@Behavior
 		public boolean open_invariant(int returns) {
 			return eq(old(isClosed), isClosed);
@@ -70,43 +66,36 @@ public class ReadResource {
 
 	}
 
-	@Function
 	@Behavior
 	public static boolean a_is_null(Resource r, int[] a) {
 		return eq(a, null) ;
 	}
 
-	@Function
 	@Behavior
 	public static boolean r_is_null(Resource r, int[] a) {
 		return eq(r, null) ;
 	}
 
-	@Function
 	@Behavior
 	public static boolean r_and_a_are_not_null(Resource r, int[] a) {
 		return neq(r, null) & neq(a, null);
 	}
 
-	@Function
 	@Behavior
 	public static boolean r_or_a_is_null(Resource r, int[] a) {
 		return neq(r, null) | neq(a, null);
 	}
 
-	@Function
 	@Behavior
 	public static boolean r_is_open(Resource r, final int[] a) {
 		return implies(neq(r, null), not(r.isClosed));
 	}
 
-	@Function
 	@Behavior
 	public static boolean r_is_closed(final Resource r, final int[] a) {
 		return implies(neq(r, null), r.isClosed);
 	}
 
-	@Function
 	@Behavior
 	public static boolean a_is_empty(final Resource r, final int[] a, final int n) {
 		return neq(a, null) & eq(a.length, 0);
@@ -120,7 +109,7 @@ public class ReadResource {
 		try (r) {
 			int i = 0;
 			while (true) {
-				invariant(lte(0, i) & lte(i, a.length));
+				invariant(lte(0, i) & lte(i, a.length + 1));
 				invariant(implies(neq(r, null), r.is_open()));
 				a[i] = r.read();
 				i++;
@@ -135,5 +124,5 @@ public class ReadResource {
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 4 verified
+ * CHECK: Boogie program verifier finished with 8 verified
  */

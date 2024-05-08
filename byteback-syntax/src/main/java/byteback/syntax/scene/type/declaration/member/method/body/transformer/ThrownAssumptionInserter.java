@@ -3,11 +3,9 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.ThrownLocalTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
-import soot.Body;
-import soot.Unit;
-import soot.Value;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
+import soot.*;
 import soot.jimple.Jimple;
 
 /**
@@ -28,19 +26,22 @@ public class ThrownAssumptionInserter extends BodyTransformer {
 
     @Override
     public void transformBody(final BodyContext bodyContext) {
-        final Body body = bodyContext.getBody();
+        final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        ThrownLocalTagAccessor.v().get(body).ifPresent(thrownLocalTag -> {
-            final Value condition =
-                    Vimp.v().nest(
-                            Jimple.v().newEqExpr(
-                                    thrownLocalTag.getThrownLocal(),
-                                    UnitConstant.v()
-                            )
-                    );
-            final Unit assumeUnit = Vimp.v().newAssumeStmt(condition);
-            body.getUnits().addFirst(assumeUnit);
-        });
+        if (BehaviorTagMarker.v().hasTag(sootMethod)) {
+            return;
+        }
+
+        final Body body = bodyContext.getBody();
+        final PatchingChain<Unit> units = body.getUnits();
+        final Value condition = Jimple.v().newEqExpr(
+                Vimp.v().nest(
+                        Vimp.v().newThrownRef()
+                ),
+                UnitConstant.v()
+        );
+        final Unit assumeUnit = Vimp.v().newAssumeStmt(Vimp.v().nest(condition));
+        units.addFirst(assumeUnit);
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$Node -c %{class}$ListItr -c %{class}$LLSpliterator -o %t.bpl
  */
 
 /*
@@ -636,7 +636,6 @@ public class LinkedList<E>
 	 * this "outlining" performs best with both server and client VMs.
 	 */
 	@Return
-	@Lemma
 	private String outOfBoundsMsg(int index) {
 		return "Index: " + index + ", Size: " + size;
 	}
@@ -1395,5 +1394,5 @@ public class LinkedList<E>
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 86 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 83 verified, 0 errors
  */

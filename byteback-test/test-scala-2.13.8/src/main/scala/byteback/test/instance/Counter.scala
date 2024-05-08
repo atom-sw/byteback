@@ -22,13 +22,14 @@ class Counter {
   @(Behavior @getter)
   var count: Int = 0;
 
+  @TwoState
   @Behavior
   def increments_count_by_1(): Boolean = {
     return equal(count, old(count) + 1);
   }
 
+  @TwoState
   @Behavior
-  @Return
   def increments_count_by_10(): Boolean = {
     return equal(count, old(count) + 10);
   }

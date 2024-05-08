@@ -23,7 +23,7 @@ public class NullCheckTransformer extends CheckTransformer {
     @Override
     public Optional<Value> makeUnitCheck(final Unit unit) {
 
-        for (final ValueBox valueBox : unit.getUseBoxes()) {
+        for (final ValueBox valueBox : unit.getUseAndDefBoxes()) {
             final Value value = valueBox.getValue();
 
             final Value base;

@@ -12,11 +12,7 @@ class GCD {
 
   @Behavior
   def gcd_recursive(a: Int, b: Int): Int = {
-    return conditional(equal(a, b),
-      a,
-      conditional(gt(a, b),
-        gcd_recursive(a - b, b),
-        gcd_recursive(a, b - a)));
+    return conditional(equal(a, b), a, conditional(gt(a, b), gcd_recursive(a - b, b), gcd_recursive(a, b - a)));
   }
 
   @Behavior

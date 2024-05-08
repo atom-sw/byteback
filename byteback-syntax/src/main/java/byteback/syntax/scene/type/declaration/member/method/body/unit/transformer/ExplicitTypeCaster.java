@@ -32,6 +32,7 @@ public class ExplicitTypeCaster extends BodyTransformer {
                     || binopExpr instanceof MulExpr
                     || binopExpr instanceof DivExpr
                     || binopExpr instanceof EqExpr
+                    || binopExpr instanceof NeExpr
                     || binopExpr instanceof LtExpr
                     || binopExpr instanceof LeExpr
                     || binopExpr instanceof GtExpr

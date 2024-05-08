@@ -7,19 +7,19 @@ import java.util.List;
 
 public class PreconditionsTag extends ConditionsTag {
 
-    public static final String NAME = "PreconditionsTag";
+	public static final String NAME = "PreconditionsTag";
 
-    public PreconditionsTag(final List<Value> conditions) {
-        super(conditions);
-    }
+	public PreconditionsTag(final List<Value> conditions) {
+		super(conditions);
+	}
 
-    public PreconditionsTag() {
-        this(new ArrayList<>());
-    }
+	public PreconditionsTag() {
+		this(new ArrayList<>());
+	}
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
 }

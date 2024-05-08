@@ -12,48 +12,48 @@ import static byteback.specification.Special.old;
 
 public class Counter {
 
-    public static void main() {
-        final Counter counter = new Counter();
-        counter.increment();
-        counter.countTo10();
-        counter.countTo10Indirectly();
-    }
+	public static void main() {
+		final Counter counter = new Counter();
+		counter.increment();
+		counter.countTo10();
+		counter.countTo10Indirectly();
+	}
 
-    int count;
+	int count;
 
 	@TwoState
-    @Behavior
-    public boolean increments_count_by_1() {
-        return eq(count, old(count) + 1);
-    }
+	@Behavior
+	public boolean increments_count_by_1() {
+		return eq(count, old(count) + 1);
+	}
 
-    @Return
-    public Counter() {
-        this.count = 0;
-    }
+	@Return
+	public Counter() {
+		this.count = 0;
+	}
 
-    @Ensure("increments_count_by_1")
-    @Return
-    public void increment() {
-        count++;
-    }
+	@Ensure("increments_count_by_1")
+	@Return
+	public void increment() {
+		count++;
+	}
 
-    @Return
-    public void countTo10() {
-        for (int i = 0; i < 10; ++i) {
-            invariant(lte(0, i) & lte(i, 10));
-            count++;
-        }
-    }
+	@Return
+	public void countTo10() {
+		for (int i = 0; i < 10; ++i) {
+			invariant(lte(0, i) & lte(i, 10));
+			count++;
+		}
+	}
 
-    @Return
-    public void countTo10Indirectly() {
-        for (int i = 0; i < 10; ++i) {
-            invariant(lte(0, i) & lte(i, 10));
-            invariant(eq(count, old(count) + i));
-            increment();
-        }
-    }
+	@Return
+	public void countTo10Indirectly() {
+		for (int i = 0; i < 10; ++i) {
+			invariant(lte(0, i) & lte(i, 10));
+			invariant(eq(count, old(count) + i));
+			increment();
+		}
+	}
 
 }
 /**

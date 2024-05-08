@@ -15,7 +15,6 @@ public class TryWithResources {
 	public static class Resource implements AutoCloseable {
 		private boolean closed;
 
-		@Lemma
 		@Return
 		@Ensure("isOpen")
 		@Ensure("otherResourcesAreClosed")

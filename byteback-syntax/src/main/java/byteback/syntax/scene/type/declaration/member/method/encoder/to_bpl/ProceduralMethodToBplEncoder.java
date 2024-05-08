@@ -3,99 +3,109 @@ package byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl;
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.ProceduralBodyToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.InputRefsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterRefFinder;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
+import soot.jimple.IdentityRef;
 
 import java.util.List;
 
 public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 
-    public static String SPEC_INDENT = "  ";
+	public static String SPEC_INDENT = "  ";
 
-    private final TypeAccessToBplEncoder typeAccessToBplEncoder;
+	public ProceduralMethodToBplEncoder(final Printer printer) {
+		super(printer);
+	}
 
-    private final ValueToBplEncoder valueToBplEncoder;
+	public void encodeInputRefs(final List<IdentityRef> inputRefs) {
+		final var valueToBplEncoder = new ValueToBplEncoder(printer);
+		final var typeAccessToBplEncoder = new TypeAccessToBplEncoder(printer);
 
-    private final ProceduralBodyToBplEncoder proceduralBodyToBplEncoder;
+		printer.print("(");
+		printer.startItems(", ");
 
-    public ProceduralMethodToBplEncoder(final Printer printer) {
-        super(printer);
-        this.typeAccessToBplEncoder = new TypeAccessToBplEncoder(printer);
-        this.valueToBplEncoder = new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE);
-        this.proceduralBodyToBplEncoder = new ProceduralBodyToBplEncoder(printer);
-    }
+		for (final IdentityRef identityRef : inputRefs) {
+			printer.separate();
+			valueToBplEncoder.encodeInputRef(identityRef);
+			printer.print(": ");
+			final Type type = VimpTypeInterpreter.v().typeOf(identityRef);
+			typeAccessToBplEncoder.encodeTypeAccess(type);
+		}
 
-    public void encodeMethod(final SootMethod sootMethod) {
-        printer.print("procedure ");
-        encodeMethodName(sootMethod.makeRef());
-        printer.print("(");
-        final InputRefsTag inputRefsTag = InputRefsTagAccessor.v().getOrThrow(sootMethod);
-        final List<Local> methodLocals = inputRefsTag.getInputLocals();
-        printer.startItems(", ");
-        valueToBplEncoder.encodeBindings(methodLocals);
-        printer.endItems();
-        printer.print(") returns (");
-        printer.startItems(", ");
-        final Type returnType = sootMethod.getReturnType();
+		printer.print(")");
+	}
 
-        if (returnType != VoidType.v()) {
-            printer.separate();
-            printer.print(ValueToBplEncoder.RETURN_SYMBOL + ": ");
-            typeAccessToBplEncoder.encodeTypeAccess(returnType);
-        }
+	public void encodeMethod(final SootMethod sootMethod) {
+		final var typeAccessToBplEncoder = new TypeAccessToBplEncoder(printer);
+		printer.print("procedure ");
+		encodeMethodName(sootMethod);
+		final List<IdentityRef> inputRefs = ParameterRefFinder.v().findInputRefs(sootMethod);
+		encodeInputRefs(inputRefs);
+		printer.print(" returns (");
+		printer.startItems(", ");
+		final Type returnType = sootMethod.getReturnType();
 
-        printer.separate();
-        printer.print(ValueToBplEncoder.THROWN_SYMBOL + ": Reference");
-        printer.print(")");
-        printer.endItems();
+		if (returnType != VoidType.v()) {
+			printer.separate();
+			printer.print(ValueToBplEncoder.RETURN_SYMBOL + ": ");
+			typeAccessToBplEncoder.encodeTypeAccess(returnType);
+		}
 
-        if (!sootMethod.hasActiveBody()) {
-            printer.print(";");
-        }
+		printer.separate();
+		printer.print(ValueToBplEncoder.THROWN_SYMBOL + ": Reference");
+		printer.print(")");
+		printer.endItems();
 
-        printer.endLine();
+		if (!sootMethod.hasActiveBody()) {
+			printer.print(";");
+		}
 
-        PreconditionsTagAccessor.v().get(sootMethod)
-                .ifPresent((preconditionsTag) -> {
-                    final List<Value> preconditions = preconditionsTag.getConditions();
+		printer.endLine();
 
-                    for (final Value value : preconditions) {
-                        printer.print(SPEC_INDENT);
-                        printer.print("requires ");
-                        new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE).encodeValue(value);
-                        printer.printLine(";");
-                    }
-                });
+		PreconditionsTagAccessor.v().get(sootMethod)
+			.ifPresent((preconditionsTag) -> {
+					final List<Value> preconditions = preconditionsTag.getConditions();
 
-        PostconditionsTagAccessor.v().get(sootMethod)
-                .ifPresent((postconditionsTag) -> {
-                    final List<Value> postconditions = postconditionsTag.getConditions();
+					for (final Value value : preconditions) {
+						printer.print(SPEC_INDENT);
+						printer.print("requires ");
+						new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE).encodeValue(value);
+						printer.printLine(";");
+					}
+				});
 
-                    for (final Value value : postconditions) {
-                        printer.print(SPEC_INDENT);
-                        printer.print("ensures ");
-                        new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.POST_STATE).encodeValue(value);
-                        printer.printLine(";");
-                    }
-                });
+		PostconditionsTagAccessor.v().get(sootMethod)
+			.ifPresent((postconditionsTag) -> {
+					final List<Value> postconditions = postconditionsTag.getConditions();
 
-        if (sootMethod.hasActiveBody()) {
-            final Body body = sootMethod.getActiveBody();
+					for (final Value value : postconditions) {
+						printer.print(SPEC_INDENT);
+						printer.print("ensures ");
+						new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.POST_STATE).encodeValue(value);
+						printer.printLine(";");
+					}
+				});
 
-            if (InferredFramesTagAccessor.v().hasTag(body)) {
-                printer.print(SPEC_INDENT);
-                printer.printLine("modifies heap;");
-            }
+		if (sootMethod.hasActiveBody()) {
+			final var proceduralBodyToBplEncoder = new ProceduralBodyToBplEncoder(printer);
+			final Body body = sootMethod.getActiveBody();
 
-            printer.printLine("{");
-            proceduralBodyToBplEncoder.encodeBody(body);
-            printer.printLine("}");
-        }
-    }
+			if (InferredFramesTagAccessor.v().hasTag(body)) {
+				printer.print(SPEC_INDENT);
+				printer.printLine("modifies heap;");
+				printer.print(SPEC_INDENT);
+				printer.printLine("free ensures heap.succeeds(old(heap), heap);");
+			}
+
+			printer.printLine("{");
+			proceduralBodyToBplEncoder.encodeBody(body);
+			printer.printLine("}");
+		}
+	}
 
 }

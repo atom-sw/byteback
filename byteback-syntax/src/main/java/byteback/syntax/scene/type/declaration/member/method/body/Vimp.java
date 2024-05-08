@@ -65,22 +65,8 @@ public class Vimp {
         return new ForallExpr(bindings, v);
     }
 
-    public ForallExpr newForallExpr(final Local local, final Value value) {
-        final HashChain<Local> bindings = new HashChain<>();
-        bindings.add(local);
-
-        return new ForallExpr(bindings, value);
-    }
-
     public ExistsExpr newLogicExistsExpr(final Chain<Local> locals, final Value value) {
         return new ExistsExpr(locals, value);
-    }
-
-    public ExistsExpr newLogicExistsExpr(final Local local, final Value value) {
-        final HashChain<Local> bindings = new HashChain<>();
-        bindings.add(local);
-
-        return new ExistsExpr(bindings, value);
     }
 
     public OldExpr newOldExpr(final Value value) {
@@ -91,16 +77,16 @@ public class Vimp {
         return new CallExpr(methodRef, arguments);
     }
 
-    public OldExpr newOldExpr(final ValueBox opBox) {
-        return new OldExpr(opBox);
-    }
-
     public ConditionalExpr newConditionExpr(final Value op1, final Value op2, final Value op3) {
         return new ConditionalExpr(op1, op2, op3);
     }
 
-    public ReturnLocal newReturnLocal(final Type type) {
-        return new ReturnLocal(type);
+    public ReturnRef newReturnRef(final Type type) {
+        return new ReturnRef(type);
+    }
+
+    public ThrownRef newThrownRef() {
+        return new ThrownRef();
     }
 
     public NestedExpr newNestedExpr(final Value value) {
@@ -135,16 +121,14 @@ public class Vimp {
         }
     }
 
-    public ThrownLocal newThrownLocal() {
-        return new ThrownLocal();
-    }
+    public Value unnest(final Value value) {
+        Value currentValue = value;
 
-    public ThisLocal newThisLocal(final RefType instanceType) {
-        return new ThisLocal(instanceType);
-    }
+        while (currentValue instanceof final NestedExpr nestedExpr) {
+            currentValue = nestedExpr.getValue();
+        }
 
-    public ArgumentLocal newArgumentLocal(final Type argumentType, final int position) {
-        return new ArgumentLocal(argumentType, position);
+        return currentValue;
     }
 
 }

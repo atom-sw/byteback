@@ -12,27 +12,27 @@ import java.lang.annotation.Target;
 public class Contract {
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
+	@Target({ ElementType.METHOD })
 	public @interface Behavior {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
+	@Target({ ElementType.METHOD })
 	public @interface Operator {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
+	@Target({ ElementType.METHOD })
 	public @interface Exceptional {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
+	@Target({ ElementType.METHOD })
 	public @interface TwoState {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Lemma {
 	}
 
@@ -40,66 +40,72 @@ public class Contract {
 	 * Declares that the function is already defined in the preamble.
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
+	@Target({ ElementType.METHOD })
 	public @interface Prelude {
 		String value();
 	}
 
 	@Repeatable(Requires.class)
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Require {
 		String value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Requires {
 		Require[] value();
 	}
 
 	@Repeatable(Ensures.class)
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Ensure {
 		String value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Ensures {
 		Ensure[] value();
 	}
 
 	@Repeatable(Raises.class)
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Raise {
 		Class<?> exception();
+
 		String when() default "[unassigned]";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Raises {
 		Raise[] value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Return {
 		String when() default "[unassigned]";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Returns {
 		Return[] value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.METHOD})
+	@Target({ ElementType.METHOD })
 	public @interface Ignore {
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.METHOD })
+	public @interface Abstract {
 	}
 
 	public static void assertion(boolean behavior) {

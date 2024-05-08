@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$Resource -o %t.bpl
  */
 package byteback.test.exceptions;
 
@@ -13,6 +13,7 @@ import static byteback.specification.Contract.*;
 public class TryWithResources {
 
 	public class Resource implements AutoCloseable {
+
 		private boolean closed;
 
 		@Return
@@ -25,7 +26,6 @@ public class TryWithResources {
 			closed = true;
 		}
 
-		@Function
 		@Behavior
 		public boolean isClosed() {
 			return closed;

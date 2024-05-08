@@ -12,23 +12,23 @@ import java.util.List;
  */
 public abstract class ConditionsTag implements Tag {
 
-    private List<Value> conditions;
+	private List<Value> conditions;
 
-    public ConditionsTag(final List<Value> conditions) {
-        this.conditions = conditions;
-    }
+	public ConditionsTag(final List<Value> conditions) {
+		this.conditions = conditions;
+	}
 
-    public List<Value> getConditions() {
-        return conditions;
-    }
+	public List<Value> getConditions() {
+		return conditions;
+	}
 
-    public void setConditions(final List<Value> conditions) {
-        this.conditions = conditions;
-    }
+	public void addCondition(final Value value) {
+		conditions.add(value);
+	}
 
-    @Override
-    public byte[] getValue() {
-        return new byte[0];
-    }
+	@Override
+	public byte[] getValue() {
+		return new byte[0];
+	}
 
 }

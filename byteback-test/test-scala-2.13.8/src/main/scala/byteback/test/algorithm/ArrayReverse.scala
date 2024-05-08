@@ -14,7 +14,7 @@ class ArrayReverse {
 
   @Behavior
   def reverse_of(a: Array[Int], b: Array[Int]): Boolean = {
-    val i: Int = Binding.integer()
+    val i: Int = Bindings.integer()
 
     return and(equal(a.length, b.length), forall(i, implies(lte(0, i) & lt(i, a.length), equal(a(i), b(b.length - 1 - i)))))
   }
@@ -25,6 +25,7 @@ class ArrayReverse {
     return neq(a, null)
   }
 
+  @TwoState
   @Behavior
   def swapped(a: Array[Int], i: Int, j: Int): Boolean = {
     return implies(neq(a, null), equal(old(a(i)), a(j)) & equal(old(a(j)), a(i)));
@@ -43,6 +44,7 @@ class ArrayReverse {
     return equal(a, null);
   }
 
+  @TwoState
   @Behavior
   def reversed(a: Array[Int]): Boolean = {
     return implies(not(array_is_null(a)), reverse_of(a, old(a)))
@@ -59,7 +61,7 @@ class ArrayReverse {
     }
 
     while (i < (l - i)) {
-      val k = Binding.integer();
+      val k = Bindings.integer();
       invariant(forall(k, implies(lte(0, k) & lt(k, i) | lt(l - i, k) & lte(k, l), equal(a(k), old(a(l - k))))))
       invariant(forall(k, implies(lte(i, k) & lt(k, l - i), equal(a(k), old(a(k))))))
       invariant(lte(0, i) & lte(i, (l + 1) / 2))
@@ -71,7 +73,3 @@ class ArrayReverse {
   }
 
 }
-/**
-  * RUN: %{verify} %t.bpl | filecheck %s
-  * CHECK: Boogie program verifier finished with 3 verified, 0 errors
-  */

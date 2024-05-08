@@ -18,42 +18,35 @@ import java.util.Optional;
  */
 public class IndexCheckTransformer extends CheckTransformer {
 
-    public IndexCheckTransformer(final Scene scene) {
-        super(scene, "java.lang.IndexOutOfBoundsException");
-    }
+	public IndexCheckTransformer(final Scene scene) {
+		super(scene, "java.lang.IndexOutOfBoundsException");
+	}
 
-    @Override
-    public Optional<Value> makeUnitCheck(final Unit unit) {
+	@Override
+	public Optional<Value> makeUnitCheck(final Unit unit) {
 
-        for (final ValueBox valueBox : unit.getUseBoxes()) {
-            final Value value = valueBox.getValue();
+		for (final ValueBox valueBox : unit.getUseAndDefBoxes()) {
+			final Value value = valueBox.getValue();
 
-            if (value instanceof final ArrayRef arrayRef) {
-                final Value indexValue = arrayRef.getIndex();
-                final Value arrayBase = arrayRef.getBase();
-                final Value condition =
-                        Jimple.v().newAndExpr(
-                                Vimp.v().nest(
-                                        Jimple.v().newLeExpr(
-                                                IntConstant.v(0),
-                                                indexValue
-                                        )
-                                ),
-                                Vimp.v().nest(
-                                        Jimple.v().newLtExpr(
-                                                indexValue,
-                                                Vimp.v().nest(
-                                                        Jimple.v().newLengthExpr(arrayBase)
-                                                )
-                                        )
-                                )
-                        );
+			if (value instanceof final ArrayRef arrayRef) {
+				final Value indexValue = arrayRef.getIndex();
+				final Value arrayBase = arrayRef.getBase();
+				final Value condition = Jimple.v().newAndExpr(
+						Vimp.v().nest(
+								Jimple.v().newLeExpr(
+										IntConstant.v(0),
+										indexValue)),
+						Vimp.v().nest(
+								Jimple.v().newLtExpr(
+										indexValue,
+										Vimp.v().nest(
+												Jimple.v().newLengthExpr(arrayBase)))));
 
-                return Optional.of(condition);
-            }
-        }
+				return Optional.of(condition);
+			}
+		}
 
-        return Optional.empty();
-    }
+		return Optional.empty();
+	}
 
 }

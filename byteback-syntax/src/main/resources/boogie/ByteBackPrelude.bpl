@@ -51,6 +51,10 @@ axiom (forall h1: Store, h2: Store ::
 		{ heap.allocated(h2, r) }
 		heap.allocated(h1, r) == heap.allocated(h2, r)));
 
+axiom (forall<a> h: Store, r: Reference, f: Field a, x: a ::
+	{ store.update(h, r, f, x) }
+	heap.is_good(h) ==> heap.succeeds(h, store.update(h, r, f, x)));
+
 procedure new(t: Type) returns (r: Reference, e: Reference);
 	ensures r != `null`;
 	ensures e == `void`;
@@ -117,7 +121,7 @@ function box<a>(a) returns (Box);
 
 function unbox<a>(Box) returns (a);
 
-axiom (forall <a> x : a :: { box(x) } unbox(box(x)) == x);
+axiom (forall <a> x : a :: { box(x) } unbox(box(x)) : a == x);
 
 function array.element(int) returns (Field Box);
 
@@ -127,7 +131,8 @@ axiom (forall i: int :: { array.element(i) } array.element_inverse(array.element
 
 function array.lengthof(r: Reference) returns (int);
 
-axiom (forall r: Reference :: array.lengthof(r) >= 0);
+axiom (forall r: Reference :: { array.lengthof(r) }
+	array.lengthof(r) >= 0);
 
 function array.type(Type) returns (Type);
 
@@ -135,17 +140,11 @@ function array.type_inverse(Type) returns (Type);
 
 axiom (forall t: Type :: { array.type(t) } array.type_inverse(array.type(t)) == t);
 
-function {:inline} array.read<b>(h: Store, a: Reference, i: int) returns (b)
-{ unbox(store.read(h, a, array.element(i))) : b }
-
-function {:inline} array.update<b>(h: Store, a: Reference, i: int, v: b) returns (Store)
-{ store.update(h, a, array.element(i), box(v)) }
-
 procedure array(t: Type, l: int) returns (r: Reference, e: Reference);
 	ensures r != `null`;
 	ensures e == `void`;
 	ensures heap.allocated(heap, r);
-	ensures array.lengthof(r) == l && array.lengthof(r) >= 0;
+	ensures array.lengthof(r) == l;
 	ensures reference.typeof(heap, r) == array.type(t);
 
 // -------------------------------------------------------------------
@@ -160,19 +159,34 @@ procedure string(chars: Reference) returns (r: Reference, e: Reference);
 function string.const(id: int) returns (r: Reference);
 
 // -------------------------------------------------------------------
+// Class constants
+// -------------------------------------------------------------------
+
+function type.const(id: int) returns (r: Reference);
+
+// -------------------------------------------------------------------
 // Binary operators
 // -------------------------------------------------------------------
 
 // Used to model cmpl, cmpg, cmp
-function int.cmp(i: int, j: int) returns (int)
-{
-  if (i == j) then 0 else (if (i > j) then 1 else -1)
-}
+function int.cmp(i: int, j: int) returns (int);
 
-function real.cmp(i: real, j: real) returns (int)
-{
-  if (i == j) then 0 else (if (i > j) then 1 else -1)
-}
+axiom (forall x: int, y: int :: { int.cmp(x, y) }
+	(int.gt(x, y) ==> eq(int.cmp(x, y), 1)));
+axiom (forall x: int, y: int :: { int.cmp(x, y) }
+	(int.lt(x, y) ==> eq(int.cmp(x, y), -1)));
+axiom (forall x: int, y: int :: { int.cmp(x, y) }
+	(eq(x, y) ==> eq(int.cmp(x, y), 0)));
+
+function real.cmp(i: real, j: real) returns (int);
+
+axiom (forall x: real, y: real :: { real.cmp(x, y) }
+	(x > y ==> real.cmp(x, y) == 1));
+axiom (forall x: real, y: real :: { real.cmp(x, y) }
+	(x < y ==> real.cmp(x, y) == -1));
+axiom (forall x: real, y: real :: { real.cmp(x, y) }
+	(eq(x, y) ==> real.cmp(x, y) == 0));
+
 
 function shl(a: int, p: int) returns (int);
 
@@ -181,77 +195,77 @@ function shr(a: int, p: int) returns (int);
 // -------------------------------------------------------------------
 // Surrogate functions
 // -------------------------------------------------------------------
-function and(a: bool, b: bool) returns (bool)
+function {:never_pattern true} and(a: bool, b: bool) returns (bool)
 {
   a && b
 }
 
-function or(a: bool, b: bool) returns (bool)
+function {:never_pattern true} or(a: bool, b: bool) returns (bool)
 {
   a || b
 }
 
-function implies(a: bool, b: bool) returns (bool)
+function {:never_pattern true} implies(a: bool, b: bool) returns (bool)
 {
   a ==> b
 }
 
-function iff(a: bool, b: bool) returns (bool)
+function {:never_pattern true} iff(a: bool, b: bool) returns (bool)
 {
   a <==> b
 }
 
-function eq<t>(a: t, b: t) returns (bool)
+function {:never_pattern true} eq<t>(a: t, b: t) returns (bool)
 {
 	a == b
 }
 
-function neq<t>(a: t, b: t) returns (bool)
+function {:never_pattern true} neq<t>(a: t, b: t) returns (bool)
 {
 	a != b
 }
 
-function int.lt(a: int, b: int) returns (bool)
+function {:never_pattern true} int.lt(a: int, b: int) returns (bool)
 {
 	a < b
 }
 
-function real.lt(a: real, b: real) returns (bool)
+function {:never_pattern true} real.lt(a: real, b: real) returns (bool)
 {
 	a < b
 }
 
-function int.lte(a: int, b: int) returns (bool)
+function {:never_pattern true} int.lte(a: int, b: int) returns (bool)
 {
 	a <= b
 }
 
-function real.lte(a: real, b: real) returns (bool)
+function {:never_pattern true} real.lte(a: real, b: real) returns (bool)
 {
 	a <= b
 }
 
-function int.gt(a: int, b: int) returns (bool)
+function {:never_pattern true} int.gt(a: int, b: int) returns (bool)
 {
 	a > b
 }
 
-function real.gt(a: real, b: real) returns (bool)
+function {:never_pattern true} real.gt(a: real, b: real) returns (bool)
 {
 	a > b
 }
 
-function int.gte(a: int, b: int) returns (bool)
+function {:never_pattern true} int.gte(a: int, b: int) returns (bool)
 {
 	a >= b
 }
 
-function real.gte(a: real, b: real) returns (bool)
+function {:never_pattern true} real.gte(a: real, b: real) returns (bool)
 {
 	a >= b
 }
 
-function not(a: bool) returns (bool)
+function {:never_pattern} not(a: bool) returns (bool)
 {
 	!a
 }
@@ -264,16 +278,16 @@ function boolean.to.int(a: `boolean`): `int`
 { if (a) then 1 else 0  }
 
 function int.to.float(a: `int`): `float`
-{ real(a)  }
+{ real(a) }
 
 function int.to.double(a: `int`): `double`
-{ real(a)  }
+{ real(a) }
 
 function float.to.int(a: `float`): `int`
-{ int(a)  }
+{ int(a) }
 
 function double.to.int(a: `double`): `int`
-{ int(a)  }
+{ int(a) }
 
 // -------------------------------------------------------------------
 // The program starts here

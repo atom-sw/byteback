@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$LessThanComparator -c %{class}$GreaterThanComparator -o %t.bpl
  */
 package byteback.test.instance;
 
@@ -8,50 +8,38 @@ import byteback.specification.Special._;
 import byteback.specification.Operators._;
 import byteback.specification.Operators.{eq => equal};
 
-class DefaultComparator {
+trait Comparator {
 
-  @Behavior
-  def compare_default(a: Int, b: Int, returns: Boolean): Boolean = {
-    return returns;
+  def compare(a: Int, b: Int): Boolean
+
+  class LessThanComparator extends Comparator {
+
+    @Behavior
+    def compare_less_than(a: Int, b: Int, returns: Boolean): Boolean = {
+      return implies(returns, lt(a, b))
+    }
+
+    @Ensure("compare_less_than")
+    override def compare(a: Int, b: Int): Boolean = {
+      return a < b
+    }
+
   }
 
-  @Ensure("compare_default")
-  def compare(a: Int, b: Int): Boolean = {
-    return true;
+
+  class GreaterThanComparator extends Comparator {
+
+    @Behavior
+    def compare_greater_than(a: Int, b: Int, returns: Boolean): Boolean = {
+      return implies(returns, gt(a, b));
+    }
+
+    @Ensure("compare_greater_than")
+    override def compare(a: Int, b: Int): Boolean = {
+      return a > b;
+    }
+
   }
-
-}
-
-class LessThanComparator extends DefaultComparator {
-
-  @Behavior
-  def compare_less_than(a: Int, b: Int, returns: Boolean): Boolean = {
-    return implies(returns, lt(a, b));
-  }
-
-  @Ensure("compare_less_than")
-  override def compare(a: Int, b: Int): Boolean = {
-    return a < b;
-  }
-
-}
-
-
-class GreaterThanComparator extends DefaultComparator {
-
-  @Behavior
-  def compare_greater_than(a: Int, b: Int, returns: Boolean): Boolean = {
-    return implies(returns, gt(a, b));
-  }
-
-  @Ensure("compare_greater_than")
-  override def compare(a: Int, b: Int): Boolean = {
-    return a > b;
-  }
-
-}
-
-class Comparator {
 
   def main(): Unit = {
     var ltComparator: LessThanComparator = new LessThanComparator();
@@ -67,5 +55,5 @@ class Comparator {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 8 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 11 verified, 0 errors
  */

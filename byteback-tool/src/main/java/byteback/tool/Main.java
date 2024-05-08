@@ -1,12 +1,14 @@
 package byteback.tool;
 
 import byteback.syntax.printer.Printer;
+import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
+import byteback.syntax.scene.transformer.ConditionsTagPropagator;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.transformer.*;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.QuantifierValueTransformer;
+import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -23,196 +25,186 @@ import java.util.concurrent.Callable;
 @Command(name = "byteback", mixinStandardHelpOptions = true, description = "")
 public class Main implements Callable<Integer> {
 
-    @Option(names = "--help", help = true)
-    private boolean help;
+	@Option(names = "--help", help = true)
+	private boolean help;
 
-    @Option(names = {"-cp", "--classpath"}, description = "Conversion classpath", required = true)
-    private List<Path> classPaths;
+	@Option(names = {"-cp", "--classpath"}, description = "Conversion classpath", required = true)
+	private List<Path> classPaths;
 
-    @Option(names = {"-c", "--class"}, description = "Starting class for the conversion", required = true)
-    private List<String> startingClasses;
+	@Option(names = {"-c", "--class"}, description = "Starting class for the conversion", required = true)
+	private List<String> startingClasses;
 
-    @Option(names = {"-p", "--prelude"}, description = "Path to the prelude file")
-    private Path preludePath;
+	@Option(names = {"-p", "--prelude"}, description = "Path to the prelude file")
+	private Path preludePath;
 
-    @Option(names = {"--npe"}, description = "Models implicit NullPointerExceptions")
-    public boolean transformNullCheck = false;
+	@Option(names = {"--npe"}, description = "Models implicit NullPointerExceptions")
+	public boolean transformNullCheck = false;
 
-    @Option(names = {"--iobe"}, description = "Models implicit IndexOutOfBoundsExceptions")
-    public boolean transformArrayCheck = false;
+	@Option(names = {"--iobe"}, description = "Models implicit IndexOutOfBoundsExceptions")
+	public boolean transformArrayCheck = false;
 
-    @Option(names = {"-o", "--output"}, description = "Path to the output verification conditions")
-    private Path outputPath;
+	@Option(names = {"-o", "--output"}, description = "Path to the output verification conditions")
+	private Path outputPath;
 
-    public boolean getHelp() {
-        return help;
-    }
+	public boolean getHelp() {
+		return help;
+	}
 
-    public List<Path> getClassPaths() {
-        return classPaths;
-    }
+	public List<Path> getClassPaths() {
+		return classPaths;
+	}
 
-    public String formatClassPaths() {
-        StringBuilder finalClassPath = new StringBuilder();
+	public String formatClassPaths() {
+		StringBuilder finalClassPath = new StringBuilder();
 
-        for (final Path cp : getClassPaths()) {
-            finalClassPath.append(File.pathSeparator).append(cp);
-        }
+		for (final Path cp : getClassPaths()) {
+			finalClassPath.append(File.pathSeparator).append(cp);
+		}
 
-        return finalClassPath.toString();
-    }
+		return finalClassPath.toString();
+	}
 
-    public List<String> getStartingClasses() {
-        return startingClasses;
-    }
+	public List<String> getStartingClasses() {
+		return startingClasses;
+	}
 
-    public Path getPreludePath() {
-        return preludePath;
-    }
+	public Path getPreludePath() {
+		return preludePath;
+	}
 
-    public Path getOutputPath() {
-        return outputPath;
-    }
+	public Path getOutputPath() {
+		return outputPath;
+	}
 
-    public boolean getTransformNullCheck() {
-        return transformNullCheck;
-    }
+	public boolean getTransformNullCheck() {
+		return transformNullCheck;
+	}
 
-    public boolean getTransformArrayCheck() {
-        return transformArrayCheck;
-    }
+	public boolean getTransformArrayCheck() {
+		return transformArrayCheck;
+	}
 
-    private final String[] pluginClasses = new String[] {
-            "byteback.specification.plugin.ObjectSpec",
-            "byteback.specification.plugin.ExceptionSpec"
-    };
+	private final String[] pluginClasses = new String[] {
+		"byteback.specification.plugin.ObjectSpec",
+		"byteback.specification.plugin.ExceptionSpec",
+		"byteback.specification.plugin.InvokeDynamicSpec",
+		"byteback.specification.plugin.KotlinIntrinsicsSpec"
+	};
 
-    public Integer call() throws Exception {
-        final long startTime = System.currentTimeMillis();
+	public Integer call() throws Exception {
+		final long startTime = System.currentTimeMillis();
 
-        // We will add the classes using Options.v().classes, instead of using the Soot main.
-        Options.v().set_weak_map_structures(true);
-        Options.v().set_unfriendly_mode(true);
-        final List<String> startingClasses = getStartingClasses();
-        startingClasses.addAll(List.of(pluginClasses));
-        Options.v().classes().addAll(startingClasses);
+		// We will add the classes using Options.v().classes, instead of using the Soot main.
+		Options.v().set_weak_map_structures(true);
+		Options.v().set_unfriendly_mode(true);
+		final List<String> startingClasses = getStartingClasses();
+		startingClasses.addAll(List.of(pluginClasses));
+		Options.v().classes().addAll(startingClasses);
 
-        // For now ByteBack will not produce any output. Especially since we still haven't defined how Vimp should be
-        // compiled.
-        Options.v().set_output_format(Options.output_format_none);
+		// For now ByteBack will not produce any output. Especially since we still haven't defined how Vimp should be
+		// compiled.
+		Options.v().set_output_format(Options.output_format_none);
 
-        // By default, Soot includes the $CLASSPATH env variable. To this we append the classpath specified by the
-        // user.
-        Options.v().set_prepend_classpath(true);
-        Options.v().set_soot_classpath(formatClassPaths());
+		// By default, Soot includes the $CLASSPATH env variable. To this we append the classpath specified by the
+		// user.
+		Options.v().set_prepend_classpath(true);
+		Options.v().set_soot_classpath(formatClassPaths());
 
-        // Keeping the original names makes debugging the output simpler (though it is not strictly necessary).
-        Options.v().setPhaseOption("jb", "use-original-names:true");
+		// Keeping the original names makes debugging the output simpler (though it is not strictly necessary).
+		Options.v().setPhaseOption("jb", "use-original-names:true");
 
-        // We will put most of the transformations needed before the conversion to the IVL in this pack.
-        Options.v().setPhaseOption("jtp", "enabled:true");
+		// We will put most of the transformations needed before the conversion to the IVL in this pack.
+		Options.v().setPhaseOption("jtp", "enabled:true");
 
-        final Pack jtpPack = PackManager.v().getPack("jtp");
+		final Pack jtpPack = PackManager.v().getPack("jtp");
 
-        final Scene scene = Scene.v();
+		final Scene scene = Scene.v();
 
-        // - Jimple transformations
-        jtpPack.add(new Transform("jtp.ivf", InvokeFilter.v()));
+		// - Jimple transformations
+		jtpPack.add(new Transform("jtp.ivf", InvokeFilter.v()));
 
-        // - Vimp transformations
-        // Changes notion of a method's input/output
-        //jtpPack.add(new Transform("jtp.iri", InputRefTransformer.v()));
+		// - Vimp transformations
+		// Initial structural transformations
+		jtpPack.add(new Transform("jtp.swe", SwitchEliminator.v()));
+		jtpPack.add(new Transform("jtp.rte", ReturnEliminator.v()));
+		jtpPack.add(new Transform("jtp.i2j", IfConditionExtractor.v()));
 
-        // Basic flow transformations
-        jtpPack.add(new Transform("jtp.swe", SwitchEliminator.v()));
-        jtpPack.add(new Transform("jtp.tlt", ThisLocalTransformer.v()));
-        jtpPack.add(new Transform("jtp.plt", ArgumentLocalTransformer.v()));
-        jtpPack.add(new Transform("jtp.trlt", ThrownLocalTransformer.v()));
-        jtpPack.add(new Transform("jtp.rel", ReturnLocalTransformer.v()));
+		// Introduce the new Vimp expression types
+		jtpPack.add(new Transform("jtp.vvt", LogicConstantTransformer.v()));
+		jtpPack.add(new Transform("jtp.etc", ExplicitTypeCaster.v()));
+		jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
+		jtpPack.add(new Transform("jtp.oet", OldExprTransformer.v()));
+		jtpPack.add(new Transform("jtp.tet", ThrownExprTransformer.v()));
+		jtpPack.add(new Transform("jtp.tat", ThrownAssignmentTransformer.v()));
+		jtpPack.add(new Transform("jtp.cot", ConditionalExprTransformer.v()));
+		jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
 
-        // Removes subexpressions in if conditions
-        jtpPack.add(new Transform("jtp.i2j", IfConditionExtractor.v()));
+		// - Transformations targeting behavioral methods
+		jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
+		jtpPack.add(new Transform("jtp.btg", BehaviorBodyValidator.v()));
 
-        // Introduce the new Vimp expression types
-        jtpPack.add(new Transform("jtp.vvt", LogicConstantTransformer.v()));
-        jtpPack.add(new Transform("jtp.etc", ExplicitTypeCaster.v()));
-        jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
-        jtpPack.add(new Transform("jtp.oet", OldExprTransformer.v()));
-        jtpPack.add(new Transform("jtp.tet", ThrownExprTransformer.v()));
-        jtpPack.add(new Transform("jtp.tat", ThrownAssignmentTransformer.v()));
-        jtpPack.add(new Transform("jtp.cot", ConditionalExprTransformer.v()));
-        jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
-        jtpPack.add(new Transform("jtp.ias", InvokeAssigner.v()));
+		// - Transformations targeting procedural methods
+		jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
+		jtpPack.add(new Transform("jtp.cai", ThrownAssumptionInserter.v()));
 
-        // - Transformations targeting behavioral methods
-        jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
-        jtpPack.add(new Transform("jtp.ule1", UnusedParameterRefEliminator.v()));
-        jtpPack.add(new Transform("jtp.btg", BehaviorBodyValidator.v()));
+		// Create the specification statements and expressions
+		jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
+		jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
+		jtpPack.add(new Transform("jtp.oett", OldExprTightener.v()));
+		jtpPack.add(new Transform("jtp.ias", InvokeAssigner.v()));
 
-        // - Transformations targeting procedural methods
-        // Create the specification statements and expressions
-        jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
-        jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-        jtpPack.add(new Transform("jtp.oett", OldExprTightener.v()));
+		// - Transformations of the exceptional control flow
+		// Create explicit checks for implicit exceptions
+		if (getTransformArrayCheck()) {
+			scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
+			jtpPack.add(new Transform("jtp.ict", new IndexCheckTransformer(scene)));
+		}
 
-        // Generate initial assumptions.
-        jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
-        jtpPack.add(new Transform("jtp.cai", ThrownAssumptionInserter.v()));
+		if (getTransformNullCheck()) {
+			scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
+			jtpPack.add(new Transform("jtp.nct", new NullCheckTransformer(scene)));
+		}
 
-        // - Transformations of the exceptional control flow
-        // Create explicit checks for implicit exceptions
-        if (getTransformArrayCheck()) {
-            scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
-            jtpPack.add(new Transform("jtp.ict", new IndexCheckTransformer(scene)));
-        }
+		jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
+		jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
+		jtpPack.add(new Transform("jtp.gat", GuardTransformer.v()));
+		jtpPack.add(new Transform("jtp.ine", InvariantExpander.v()));
 
-        if (getTransformNullCheck()) {
-            scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
-            jtpPack.add(new Transform("jtp.nct", new NullCheckTransformer(scene)));
-        }
+		// Cleanup the output
+		jtpPack.add(new Transform("jtp.ule2", UnusedLocalEliminator.v()));
+		jtpPack.add(new Transform("jtp.lns", LocalNameStandardizer.v()));
 
-        jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
-        jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
-        jtpPack.add(new Transform("jtp.gat", GuardTransformer.v()));
-        jtpPack.add(new Transform("jtp.ine", InvariantExpander.v()));
+		// Assign local specification
+		jtpPack.add(new Transform("jtp.lif", FrameConditionFinder.v()));
 
-        // Cleanup the output
-        jtpPack.add(new Transform("jtp.ule2", UnusedLocalEliminator.v()));
-        jtpPack.add(new Transform("jtp.lns", LocalNameStandardizer.v()));
+		scene.loadBasicClasses();
+		scene.loadNecessaryClasses();
 
-        // Assign local specification
-        jtpPack.add(new Transform("jtp.lif", FrameConditionFinder.v()));
+		ModifierTagger.v().transform();
+		ImplementationPropagator.v().transform();
 
+		PackManager.v().runPacks();
 
-        scene.loadBasicClasses();
-        scene.loadNecessaryClasses();
+		ConditionsTagger.v().transform();
+		ConditionsTagPropagator.v().transform();
+		HierarchyAxiomTagger.v().transform();
 
-        ModifierTagger.v().transform();
-        ImplementationPropagator.v().transform();
+		try (final Printer printer = new Printer(outputPath.toString())) {
+			new SceneToBplEncoder(printer).encodeScene(scene);
+		}
 
-        PackManager.v().runBodyPacks();
+		final long endTime = System.currentTimeMillis();
 
-        //IdentityStmtsTagger.v().transform();
-        //ConditionsTagger.v().transform();
-        //ConditionsPropagator.v().transform();
-        //HierarchyAxiomTagger.v().transform();
+		System.out.println("Precise time (ms): ");
+		System.out.println(endTime - startTime);
 
-        try (final Printer printer = new Printer(outputPath.toString())) {
-            //new SceneToBplEncoder(printer).encodeScene(scene);
-        }
+		return 0;
+	}
 
-        final long endTime = System.currentTimeMillis();
-
-        System.out.println("Precise time (ms): ");
-        System.out.println(endTime - startTime);
-
-        return 0;
-    }
-
-    public static void main(final String... args) throws Exception {
-        // Thread.sleep(10000L); // For attaching visualvm.
-        int exitCode = new CommandLine(new Main()).execute(args);
-        System.exit(exitCode);
-    }
+	public static void main(final String... args) throws Exception {
+		// Thread.sleep(10000L); // For attaching visualvm.
+		int exitCode = new CommandLine(new Main()).execute(args);
+		System.exit(exitCode);
+	}
 
 }

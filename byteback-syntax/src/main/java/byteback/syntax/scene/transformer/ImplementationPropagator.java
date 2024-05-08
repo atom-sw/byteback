@@ -18,72 +18,75 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Propagates method implementations and specification through the @Attach annotation.
+ * Propagates method implementations and specification through the @Attach
+ * annotation.
  *
  * @author paganma
  */
 public class ImplementationPropagator extends SceneTransformer {
 
-    private static final Lazy<ImplementationPropagator> INSTANCE = Lazy.from(ImplementationPropagator::new);
+	private static final Logger logger = LoggerFactory.getLogger(ImplementationPropagator.class);
 
-    public static ImplementationPropagator v() {
-        return INSTANCE.get();
-    }
+	private static final Lazy<ImplementationPropagator> INSTANCE = Lazy.from(ImplementationPropagator::new);
 
-    private ImplementationPropagator() {
-    }
+	public static ImplementationPropagator v() {
+		return INSTANCE.get();
+	}
 
-    @Override
-    public void transformScene(final SceneContext sceneContext) {
-        final Scene scene = sceneContext.getScene();
-        final Chain<SootClass> classes = scene.getClasses();
-        final Iterator<SootClass> classIterator = classes.snapshotIterator();
+	private ImplementationPropagator() {
+	}
 
-        while (classIterator.hasNext()) {
-            final SootClass attachingClass = classIterator.next();
-            final AnnotationTag annotationTag;
-            final String attachedName;
-            final Optional<AnnotationTag> annotationOptional =
-                    AnnotationTagReader.v().getAnnotation(attachingClass, BBLibNames.ATTACH_ANNOTATION);
+	@Override
+	public void transformScene(final SceneContext sceneContext) {
+		final Scene scene = sceneContext.getScene();
+		final Chain<SootClass> classes = scene.getClasses();
+		final Iterator<SootClass> classIterator = classes.snapshotIterator();
 
-            if (annotationOptional.isPresent()) {
-                annotationTag = annotationOptional.get();
-                final AnnotationStringElem annotationStringElement =
-                        AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class)
-                                .orElseThrow();
-                attachedName = annotationStringElement.getValue();
-            } else {
-                continue;
-            }
+		while (classIterator.hasNext()) {
+			final SootClass attachingClass = classIterator.next();
+			final AnnotationTag annotationTag;
+			final String attachedName;
+			final Optional<AnnotationTag> annotationOptional = AnnotationTagReader.v().getAnnotation(
+					attachingClass,
+					BBLibNames.ATTACH_ANNOTATION);
 
-            final SootClass attachedClass = scene.getSootClassUnsafe(attachedName);
+			if (annotationOptional.isPresent()) {
+				annotationTag = annotationOptional.get();
+				final AnnotationStringElem annotationStringElement = AnnotationTagReader.v()
+						.getValue(annotationTag, AnnotationStringElem.class)
+						.orElseThrow();
+				attachedName = annotationStringElement.getValue();
+			} else {
+				continue;
+			}
 
-            if (attachedClass == null) {
-                throw new TransformationException(
-                        "Unable to find class: "
-                                + attachedName
-                                + " for attaching "
-                                + attachingClass
-                );
-            }
+			final SootClass attachedClass = scene.getSootClassUnsafe(attachedName);
 
-            final List<SootMethod> methods = attachingClass.getMethods();
-            final var methodsSnapshot = new ArrayList<>(methods);
+			if (attachedClass == null) {
+				logger.warn("Unable to find class: " + attachedName + " for attaching " + attachingClass);
+				continue;
+			}
 
-            for (final SootMethod attachingMethod : methodsSnapshot) {
-                final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();
-                final SootMethod attachedMethod = attachedClass.getMethodUnsafe(attachedSubSignature);
-                attachingClass.removeMethod(attachingMethod);
-                attachingMethod.setDeclared(false);
+			final List<SootMethod> methods = attachingClass.getMethods();
+			final var methodsSnapshot = new ArrayList<>(methods);
 
-                if (attachedMethod != null) {
-                    attachedClass.removeMethod(attachedMethod);
-                }
+			for (final SootMethod attachingMethod : methodsSnapshot) {
+				final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();
+				final SootMethod attachedMethod = attachedClass.getMethodUnsafe(attachedSubSignature);
+				attachingClass.removeMethod(attachingMethod);
+				attachingMethod.setDeclared(false);
 
-                attachedClass.addMethod(attachingMethod);
-            }
-        }
-    }
+				if (attachedMethod != null) {
+					attachedClass.removeMethod(attachedMethod);
+				}
+
+				attachedClass.addMethod(attachingMethod);
+			}
+		}
+	}
 
 }

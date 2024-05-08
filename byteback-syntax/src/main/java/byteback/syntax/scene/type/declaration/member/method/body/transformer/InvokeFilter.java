@@ -4,7 +4,6 @@ import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.IgnoreTagMarker;
-import byteback.syntax.tag.AnnotationTagReader;
 import soot.Body;
 import soot.PatchingChain;
 import soot.SootMethod;

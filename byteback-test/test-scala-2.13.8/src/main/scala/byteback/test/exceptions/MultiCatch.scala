@@ -12,9 +12,10 @@ import scala.annotation.meta._;
 
 class MultiCatch {
 
+  @Exceptional
   @Behavior
-  def always_throws_exception1_exception2(e: Throwable): Boolean = {
-    return e.isInstanceOf[Exception1] | e.isInstanceOf[Exception2]
+  def always_throws_exception1_exception2(): Boolean = {
+    return thrown().isInstanceOf[Exception1] | thrown().isInstanceOf[Exception2]
   }
 
   @Ensure("always_throws_exception1_exception2")
@@ -43,5 +44,5 @@ class MultiCatch {
 }
 /**
   * RUN: %{verify} %t.bpl | filecheck %s
-  * CHECK: Boogie program verifier finished with 6 verified, 0 errors
+  * CHECK: Boogie program verifier finished with 4 verified, 0 errors
   */

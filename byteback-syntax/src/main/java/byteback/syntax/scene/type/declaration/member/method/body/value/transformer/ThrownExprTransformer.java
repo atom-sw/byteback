@@ -2,14 +2,15 @@ package byteback.syntax.scene.type.declaration.member.method.body.value.transfor
 
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
-import byteback.syntax.scene.type.declaration.member.method.body.tag.ThrownLocalTagAccessor;
-import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownLocal;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
 import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
 import soot.Body;
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.InvokeExpr;
+import soot.jimple.Jimple;
 
 /**
  * @author paganma
@@ -35,12 +36,8 @@ public class ThrownExprTransformer extends ValueTransformer {
 
             if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {
                 if (invokedMethodRef.getName().equals(BBLibNames.THROWN_NAME)) {
-                    final Body body = valueContext
-                            .getUnitContext()
-                            .getBodyContext()
-                            .getBody();
-                    final ThrownLocal thrownLocal = ThrownLocalTagAccessor.v().getOrThrow(body).getThrownLocal();
-                    valueBox.setValue(thrownLocal);
+                    final ThrownRef thrownRef = Vimp.v().newThrownRef();
+                    valueBox.setValue(thrownRef);
                 }
             }
         }

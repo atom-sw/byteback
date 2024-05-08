@@ -1,5 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
+import byteback.syntax.scene.type.declaration.member.method.body.value.box.AssignedValueBox;
 import soot.*;
 import soot.jimple.Jimple;
 import soot.jimple.internal.RValueBox;
@@ -9,14 +10,14 @@ import java.util.List;
 
 public class NestedExpr implements Immediate, DefaultCaseValue {
 
-    private final RValueBox valueBox;
+    private final AssignedValueBox valueBox;
 
-    public NestedExpr(final RValueBox valueBox) {
+    public NestedExpr(final AssignedValueBox valueBox) {
         this.valueBox = valueBox;
     }
 
     public NestedExpr(final Value value) {
-        this(new RValueBox(value));
+        this(new AssignedValueBox(value));
     }
 
     public Value getValue() {

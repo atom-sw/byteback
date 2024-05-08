@@ -40,7 +40,7 @@ public class UnitToBplEncoder extends UnitEncoder {
         printer.endItems();
         printer.print(" := ");
 
-        new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethodRef());
+        new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethod());
 
         printer.print("(");
         printer.startItems(", ");
@@ -77,20 +77,20 @@ public class UnitToBplEncoder extends UnitEncoder {
             return;
         }
 
-        if (unit instanceof final AssignStmt assignStmt) {
+        if (unit instanceof final DefinitionStmt assignStmt) {
             final Value leftOp = assignStmt.getLeftOp();
             final Value rightOp = assignStmt.getRightOp();
 
             if (rightOp instanceof final InvokeExpr invokeExpr && VimpEffectEvaluator.v().hasSideEffects(invokeExpr)) {
                 if (leftOp instanceof final Local local) {
-                    encodeInvoke(invokeExpr, new Value[]{local, Vimp.v().newThrownLocal()});
+                    encodeInvoke(invokeExpr, new Value[]{ local, Vimp.v().newThrownRef() });
                     return;
                 }
             } else if (rightOp instanceof final NewExpr newExpr) {
                 printer.print("call ");
                 valueEncoder.encodeValue(leftOp);
                 printer.print(", ");
-                valueEncoder.encodeValue(Vimp.v().newThrownLocal());
+                valueEncoder.encodeValue(Vimp.v().newThrownRef());
                 printer.print(" := ");
                 printer.print("new(");
                 new ClassToBplEncoder(printer).encodeClassConstant(newExpr.getBaseType().getSootClass());
@@ -100,7 +100,7 @@ public class UnitToBplEncoder extends UnitEncoder {
                 printer.print("call ");
                 valueEncoder.encodeValue(leftOp);
                 printer.print(", ");
-                valueEncoder.encodeValue(Vimp.v().newThrownLocal());
+                valueEncoder.encodeValue(Vimp.v().newThrownRef());
                 printer.print(" := ");
                 printer.print("array(");
                 printer.startItems(", ");
@@ -136,19 +136,42 @@ public class UnitToBplEncoder extends UnitEncoder {
                     printer.endItems();
                     printer.print(");");
                     return;
+                } else if (leftOp instanceof final StaticFieldRef staticFieldRef) {
+                    printer.print(ValueToBplEncoder.HEAP_SYMBOL);
+                    printer.print(" := ");
+                    printer.print("store.update(");
+                    printer.startItems(", ");
+                    printer.separate();
+                    printer.print(ValueToBplEncoder.HEAP_SYMBOL);
+                    printer.separate();
+										printer.print("type.reference(");
+										final SootField sootField = staticFieldRef.getField();
+										new ClassToBplEncoder(printer).encodeClassConstant(sootField.getDeclaringClass());
+										printer.print(")");
+                    printer.separate();
+                    new FieldToBplEncoder(printer).encodeFieldConstant(staticFieldRef.getField());
+                    printer.separate();
+                    valueEncoder.encodeValue(rightOp);
+                    printer.endItems();
+                    printer.print(");");
+                    return;
                 } else if (leftOp instanceof final ArrayRef arrayRef) {
                     printer.print(ValueToBplEncoder.HEAP_SYMBOL);
                     printer.print(" := ");
-                    printer.print("array.update(");
+                    printer.print("store.update(");
                     printer.startItems(", ");
                     printer.separate();
                     printer.print(ValueToBplEncoder.HEAP_SYMBOL);
                     printer.separate();
                     valueEncoder.encodeValue(arrayRef.getBase());
                     printer.separate();
+										printer.print("array.element(");
                     valueEncoder.encodeValue(arrayRef.getIndex());
+										printer.print(")");
                     printer.separate();
+										printer.print("box(");
                     valueEncoder.encodeValue(rightOp);
+										printer.print(")");
                     printer.endItems();
                     printer.print(")");
                     printer.print(";");
@@ -165,7 +188,7 @@ public class UnitToBplEncoder extends UnitEncoder {
 
         if (unit instanceof final InvokeStmt invokeStmt) {
             final InvokeExpr invokeExpr = invokeStmt.getInvokeExpr();
-            encodeInvoke(invokeExpr, new Value[]{ Vimp.v().newThrownLocal() });
+            encodeInvoke(invokeExpr, new Value[]{ Vimp.v().newThrownRef() });
             return;
         }
 

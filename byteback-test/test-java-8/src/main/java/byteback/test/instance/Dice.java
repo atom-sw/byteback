@@ -8,31 +8,38 @@ import static byteback.specification.Operators.*;
 
 public class Dice {
 
-	public interface Die {
+	public static abstract class Die {
 
 		@Behavior
-		default boolean outcome_is_positive(int max, int outcome) {
+		public boolean outcome_is_positive(int max, int outcome) {
 			return lte(1, outcome);
 		}
 
 		@Behavior
-		default boolean outcome_is_leq_max(int max, int outcome) {
+		public boolean outcome_is_leq_max(int max, int outcome) {
 			return lte(outcome, max);
 		}
 
+		@Behavior
+		public boolean max_is_positive(int max) {
+			return gte(max, 1);
+		}
+
+		@Require("max_is_positive")
 		@Ensure("outcome_is_positive")
 		@Ensure("outcome_is_leq_max")
-		int roll(int max);
+		public abstract int roll(int max);
 
 	}
 
-	public static class FixedDie implements Die {
+	public static class FixedDie extends Die {
 
 		@Behavior
 		public boolean result_is_max(int max, int returns) {
 			return eq(max, returns);
 		}
 
+		@Override
 		@Ensure("result_is_max")
 		public int roll(int max) {
 			return max;
@@ -50,5 +57,5 @@ public class Dice {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 4 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 5 verified, 0 errors
  */

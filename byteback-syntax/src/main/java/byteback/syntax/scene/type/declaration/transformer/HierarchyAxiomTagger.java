@@ -19,89 +19,75 @@ import java.util.List;
 
 public class HierarchyAxiomTagger extends ClassTransformer {
 
-    private static final Lazy<HierarchyAxiomTagger> INSTANCE = Lazy.from(HierarchyAxiomTagger::new);
+	private static final Lazy<HierarchyAxiomTagger> INSTANCE = Lazy.from(HierarchyAxiomTagger::new);
 
-    public static HierarchyAxiomTagger v() {
-        return INSTANCE.get();
-    }
+	public static HierarchyAxiomTagger v() {
+		return INSTANCE.get();
+	}
 
-    @Override
-    public void transformClass(final ClassContext classContext) {
-        final SceneContext sceneContext = classContext.getSceneContext();
-        final SootClass sootClass = classContext.getSootClass();
-        final Scene scene = sceneContext.getScene();
+	@Override
+	public void transformClass(final ClassContext classContext) {
+		final SceneContext sceneContext = classContext.getSceneContext();
+		final SootClass sootClass = classContext.getSootClass();
+		final Scene scene = sceneContext.getScene();
 
-        if (sootClass.resolvingLevel() < SootClass.HIERARCHY) {
-            return;
-        }
+		if (sootClass.resolvingLevel() < SootClass.HIERARCHY) {
+			return;
+		}
 
-        final var superTypes = new ArrayList<SootClass>();
-        final SootClass superClass = sootClass.getSuperclassUnsafe();
+		final var superTypes = new ArrayList<SootClass>();
+		final SootClass superClass = sootClass.getSuperclassUnsafe();
 
-        if (superClass != null) {
-            superTypes.add(superClass);
-        }
+		if (superClass != null) {
+			superTypes.add(superClass);
+		}
 
-        final Collection<SootClass> superInterfaces = sootClass.getInterfaces();
-        superTypes.addAll(superInterfaces);
-        final Hierarchy hierarchy = scene.getActiveHierarchy();
-        final AxiomsTag axiomsTag = AxiomsTagAccessor.v().putIfAbsent(sootClass, AxiomsTag::new);
-        final List<Value> axioms = axiomsTag.getAxioms();
+		final Collection<SootClass> superInterfaces = sootClass.getInterfaces();
+		superTypes.addAll(superInterfaces);
+		final Hierarchy hierarchy = scene.getActiveHierarchy();
+		final AxiomsTag axiomsTag = AxiomsTagAccessor.v().putIfAbsent(sootClass, AxiomsTag::new);
+		final List<Value> axioms = axiomsTag.getAxioms();
 
-        for (final SootClass superType : superTypes) {
-            final TypeConstant classTypeValue = Vimp.v().newTypeConstant(sootClass.getType());
-            final TypeConstant superTypeValue = Vimp.v().newTypeConstant(superType.getType());
-            axioms.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
-        }
+		for (final SootClass superType : superTypes) {
+			final TypeConstant classTypeValue = Vimp.v().newTypeConstant(sootClass.getType());
+			final TypeConstant superTypeValue = Vimp.v().newTypeConstant(superType.getType());
+			axioms.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
+		}
 
-        if (!sootClass.isInterface() && !sootClass.getName().equals("java.lang.Object")) {
-            final Collection<SootClass> subTypes = hierarchy.getDirectSubclassesOf(sootClass);
-            final SootClass[] subTypesArray = subTypes.toArray(new SootClass[0]);
+		if (!sootClass.isInterface() && !sootClass.getName().equals("java.lang.Object")) {
+			final Collection<SootClass> subTypes = hierarchy.getDirectSubclassesOf(sootClass);
+			final SootClass[] subTypesArray = subTypes.toArray(new SootClass[0]);
 
-            for (int i = 0; i < subTypesArray.length; ++i) {
-                for (int j = i + 1; j < subTypesArray.length; ++j) {
-                    final TypeConstant st1 = Vimp.v().newTypeConstant(subTypesArray[i].getType());
-                    final TypeConstant st2 = Vimp.v().newTypeConstant(subTypesArray[j].getType());
-                    final Local t1Local = Grimp.v().newLocal("t1", TypeType.v());
-                    final Local t2Local = Grimp.v().newLocal("t2", TypeType.v());
-                    final ForallExpr axiom = Vimp.v().newForallExpr(
-                            new Local[]{t1Local, t2Local},
-                            Vimp.v().newImpliesExpr(
-                                    Vimp.v().nest(
-                                            Jimple.v().newAndExpr(
-                                                    Vimp.v().nest(
-                                                            Vimp.v().newExtendsExpr(t1Local, st1)
-                                                    ),
-                                                    Vimp.v().nest(
-                                                            Vimp.v().newExtendsExpr(t2Local, st2)
-                                                    )
-                                            )
-                                    ),
-                                    Vimp.v().nest(
-                                            Jimple.v().newAndExpr(
-                                                    Vimp.v().nest(
-                                                            Jimple.v().newNegExpr(
-                                                                    Vimp.v().nest(
-                                                                            Vimp.v().newExtendsExpr(t1Local, st2)
-                                                                    )
-                                                            )
-                                                    ),
-                                                    Vimp.v().nest(
-                                                            Jimple.v().newNegExpr(
-                                                                    Vimp.v().nest(
-                                                                            Vimp.v().newExtendsExpr(t2Local, st1)
-                                                                    )
-                                                            )
-                                                    )
-                                            )
-                                    )
-                            )
-                    );
-                    axioms.add(axiom);
-                }
-            }
-        }
+			for (int i = 0; i < subTypesArray.length; ++i) {
+				for (int j = i + 1; j < subTypesArray.length; ++j) {
+					final TypeConstant st1 = Vimp.v().newTypeConstant(subTypesArray[i].getType());
+					final TypeConstant st2 = Vimp.v().newTypeConstant(subTypesArray[j].getType());
+					final Local t1Local = Grimp.v().newLocal("t1", TypeType.v());
+					final Local t2Local = Grimp.v().newLocal("t2", TypeType.v());
+					final ForallExpr axiom = Vimp.v().newForallExpr(
+							new Local[] { t1Local, t2Local },
+							Vimp.v().newImpliesExpr(
+									Vimp.v().nest(
+											Jimple.v().newAndExpr(
+													Vimp.v().nest(
+															Vimp.v().newExtendsExpr(t1Local, st1)),
+													Vimp.v().nest(
+															Vimp.v().newExtendsExpr(t2Local, st2)))),
+									Vimp.v().nest(
+											Jimple.v().newAndExpr(
+													Vimp.v().nest(
+															Jimple.v().newNegExpr(
+																	Vimp.v().nest(
+																			Vimp.v().newExtendsExpr(t1Local, st2)))),
+													Vimp.v().nest(
+															Jimple.v().newNegExpr(
+																	Vimp.v().nest(
+																			Vimp.v().newExtendsExpr(t2Local, st1))))))));
+					axioms.add(axiom);
+				}
+			}
+		}
 
-    }
+	}
 
 }
