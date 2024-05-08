@@ -1,5 +1,3 @@
-/**
- */
 package byteback.test.patternmatching;
 
 public class Basic {
@@ -17,5 +15,3 @@ public class Basic {
 	}
 
 }
-/**
- */

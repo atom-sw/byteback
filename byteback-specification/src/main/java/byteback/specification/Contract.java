@@ -104,7 +104,7 @@ public class Contract {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.METHOD })
+	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Abstract {
 	}
 

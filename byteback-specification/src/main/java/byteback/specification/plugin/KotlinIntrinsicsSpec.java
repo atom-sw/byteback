@@ -22,6 +22,10 @@ public abstract class KotlinIntrinsicsSpec {
 	}
 
 	@Abstract
+	public KotlinIntrinsicsSpec() {
+	}
+
+	@Abstract
 	@Ignore
 	public static void checkNotNull(Object o) {
 	}

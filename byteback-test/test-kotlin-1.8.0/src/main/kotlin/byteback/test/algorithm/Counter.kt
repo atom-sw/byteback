@@ -52,5 +52,5 @@ class Counter {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 7 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 4 verified, 0 errors
  */
