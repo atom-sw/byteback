@@ -6,13 +6,13 @@ import soot.jimple.Jimple;
 
 public class ReadExpr extends HeapExpr {
 
-	public ReadExpr(final Value heap, final Value base, final Value field) {
-		super(heap, base, field);
+	public ReadExpr(final Value heap, final Value base, final Value pointer) {
+		super(heap, base, pointer);
 	}
 
 	@Override
 	public Type getType() {
-		return getField().getType();
+		return getPointer().getType();
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class ReadExpr extends HeapExpr {
 		return new ReadExpr(
 				Jimple.cloneIfNecessary(getHeap()),
 				Jimple.cloneIfNecessary(getBase()),
-				Jimple.cloneIfNecessary(getField()));
+				Jimple.cloneIfNecessary(getPointer()));
 	}
 
 }

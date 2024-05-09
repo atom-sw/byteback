@@ -15,12 +15,12 @@ public abstract class HeapExpr implements Expr, DefaultCaseValue {
 
 	private final ImmediateBox baseBox;
 
-	private final ImmediateBox fieldBox;
+	private final ImmediateBox pointerBox;
 
-	public HeapExpr(final ImmediateBox heapBox, final ImmediateBox baseBox, final ImmediateBox fieldBox) {
+	public HeapExpr(final ImmediateBox heapBox, final ImmediateBox baseBox, final ImmediateBox pointerBox) {
 		this.heapBox = heapBox;
 		this.baseBox = baseBox;
-		this.fieldBox = fieldBox;
+		this.pointerBox = pointerBox;
 	}
 
 	public HeapExpr(final Value heap, final Value base, final Value field) {
@@ -43,12 +43,12 @@ public abstract class HeapExpr implements Expr, DefaultCaseValue {
 		return baseBox.getValue();
 	}
 
-	public ValueBox getFieldBox() {
-		return fieldBox;
+	public ValueBox getPointerBox() {
+		return pointerBox;
 	}
 
-	public Value getField() {
-		return fieldBox.getValue();
+	public Value getPointer() {
+		return pointerBox.getValue();
 	}
 
 	@Override

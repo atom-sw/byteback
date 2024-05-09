@@ -26,7 +26,7 @@ public class UpdateExpr extends HeapExpr {
 		return new UpdateExpr(
 				Jimple.cloneIfNecessary(getHeap()),
 				Jimple.cloneIfNecessary(getBase()),
-				Jimple.cloneIfNecessary(getField()));
+				Jimple.cloneIfNecessary(getPointer()));
 	}
 
 }
