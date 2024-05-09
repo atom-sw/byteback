@@ -8,12 +8,12 @@ import java.util.Map;
 
 public abstract class BodyTransformer extends soot.BodyTransformer implements Transformer {
 
-    public abstract void transformBody(final BodyContext bodyContext);
+	public abstract void transformBody(final BodyContext bodyContext);
 
-    @Override
-    public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
-        final var bodyContext = new BodyContext(body);
-        transformBody(bodyContext);
-    }
+	@Override
+	public void internalTransform(final Body body, final String phaseName, final Map<String, String> options) {
+		final var bodyContext = new BodyContext(body);
+		transformBody(bodyContext);
+	}
 
 }

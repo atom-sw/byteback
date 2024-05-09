@@ -15,33 +15,31 @@ import soot.jimple.Jimple;
  */
 public class ThrownAssumptionInserter extends BodyTransformer {
 
-    private static final Lazy<ThrownAssumptionInserter> INSTANCE = Lazy.from(ThrownAssumptionInserter::new);
+	private static final Lazy<ThrownAssumptionInserter> INSTANCE = Lazy.from(ThrownAssumptionInserter::new);
 
-    public static ThrownAssumptionInserter v() {
-        return INSTANCE.get();
-    }
+	public static ThrownAssumptionInserter v() {
+		return INSTANCE.get();
+	}
 
-    private ThrownAssumptionInserter() {
-    }
+	private ThrownAssumptionInserter() {
+	}
 
-    @Override
-    public void transformBody(final BodyContext bodyContext) {
-        final SootMethod sootMethod = bodyContext.getSootMethod();
+	@Override
+	public void transformBody(final BodyContext bodyContext) {
+		final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        if (BehaviorTagMarker.v().hasTag(sootMethod)) {
-            return;
-        }
+		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
+			return;
+		}
 
-        final Body body = bodyContext.getBody();
-        final PatchingChain<Unit> units = body.getUnits();
-        final Value condition = Jimple.v().newEqExpr(
-                Vimp.v().nest(
-                        Vimp.v().newThrownRef()
-                ),
-                UnitConstant.v()
-        );
-        final Unit assumeUnit = Vimp.v().newAssumeStmt(Vimp.v().nest(condition));
-        units.addFirst(assumeUnit);
-    }
+		final Body body = bodyContext.getBody();
+		final PatchingChain<Unit> units = body.getUnits();
+		final Value condition = Jimple.v().newEqExpr(
+				Vimp.v().nest(
+						Vimp.v().newThrownRef()),
+				UnitConstant.v());
+		final Unit assumeUnit = Vimp.v().newAssumeStmt(Vimp.v().nest(condition));
+		units.addFirst(assumeUnit);
+	}
 
 }
