@@ -5,7 +5,7 @@ import soot.Type;
 import soot.Value;
 import soot.jimple.Jimple;
 
-public class UpdateExpr extends HeapExpr {
+public class UpdateExpr extends DerefExpr {
 
 	public UpdateExpr(final Value heap, final Value base, final Value field) {
 		super(heap, base, field);
