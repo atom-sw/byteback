@@ -90,7 +90,7 @@ public class QuantifierValueTransformer extends BodyTransformer {
                             case BBLibNames.UNIVERSAL_QUANTIFIER_NAME ->
                                     Vimp.v().newForallExpr(locals, expressionValue);
                             case BBLibNames.EXISTENTIAL_QUANTIFIER_NAME ->
-                                    Vimp.v().newLogicExistsExpr(locals, expressionValue);
+                                    Vimp.v().newExistsExpr(locals, expressionValue);
                             default -> throw new IllegalStateException(
                                     "Unknown quantifier method "
                                             + invokedMethod.getName()

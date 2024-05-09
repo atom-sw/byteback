@@ -54,7 +54,7 @@ public class HierarchyAxiomTagger extends ClassTransformer {
 			axioms.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
 		}
 
-		if (!sootClass.isInterface() && !sootClass.getName().equals("java.lang.Object")) {
+		if (!sootClass.isInterface()) {
 			final Collection<SootClass> subTypes = hierarchy.getDirectSubclassesOf(sootClass);
 			final SootClass[] subTypesArray = subTypes.toArray(new SootClass[0]);
 
@@ -66,6 +66,12 @@ public class HierarchyAxiomTagger extends ClassTransformer {
 					final Local t2Local = Grimp.v().newLocal("t2", TypeType.v());
 					final ForallExpr axiom = Vimp.v().newForallExpr(
 							new Local[] { t1Local, t2Local },
+							new Value[] {
+									Vimp.v().nest(
+											Vimp.v().newExtendsExpr(t1Local, st1)),
+									Vimp.v().nest(
+											Vimp.v().newExtendsExpr(t2Local, st2))
+							},
 							Vimp.v().newImpliesExpr(
 									Vimp.v().nest(
 											Jimple.v().newAndExpr(

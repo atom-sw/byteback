@@ -95,6 +95,21 @@ public class ValueToBplEncoder extends ValueEncoder {
 		encodeQuantifierBindings(bindings);
 		printer.endItems();
 		printer.print(" :: ");
+		final Chain<Value> triggers = quantifierExpr.getTriggers();
+		
+		if (!triggers.isEmpty()) {
+			printer.print("{ ");
+			printer.startItems(", ");
+
+			for (final Value trigger : triggers) {
+				printer.separate();
+				encodeValue(trigger);
+			}
+
+			printer.endItems();
+			printer.print(" } ");
+		}
+
 		final Value value = quantifierExpr.getValue();
 		encodeValue(value);
 		printer.print(")");

@@ -19,20 +19,24 @@ public abstract class QuantifierExpr implements Expr {
 
 	private Chain<Local> bindings;
 
+	private Chain<Value> triggers;
+
 	private final ValueBox conditionBox;
 
-	public QuantifierExpr(final Chain<Local> bindings, final ValueBox conditionBox) {
+	public QuantifierExpr(final Chain<Local> bindings, final Chain<Value> triggers, final ValueBox conditionBox) {
 		this.conditionBox = conditionBox;
 		setBindings(bindings);
+		setTriggers(triggers);
 	}
 
-	/**
-	 * Constructor for a quantifier expression.
-	 *
-	 * @param bindings  The bindings of this quantification.
-	 * @param condition The actual expression (which may refer to the above
-	 *                  bindings).
-	 */
+	public QuantifierExpr(final Chain<Local> bindings, final ValueBox conditionBox) {
+		this(bindings, new HashChain<>(), conditionBox);
+	}
+
+	public QuantifierExpr(final Chain<Local> bindings, final Chain<Value> triggers, final Value condition) {
+		this(bindings, triggers, Grimp.v().newExprBox(condition));
+	}
+
 	public QuantifierExpr(final Chain<Local> bindings, final Value condition) {
 		this(bindings, Grimp.v().newExprBox(condition));
 	}
@@ -51,7 +55,7 @@ public abstract class QuantifierExpr implements Expr {
 
 	public final void setBindings(final Chain<Local> bindings) {
 		if (bindings.isEmpty()) {
-			throw new IllegalArgumentException("A Quantifier must have at least one free local");
+			throw new IllegalArgumentException("A Quantifier must have at least one binding local.");
 		}
 
 		this.bindings = bindings;
@@ -67,27 +71,54 @@ public abstract class QuantifierExpr implements Expr {
 		return locals;
 	}
 
+	public Chain<Value> getTriggers() {
+		return triggers;
+	}
+
+	public final void setTriggers(final Chain<Value> triggers) {
+		this.triggers = triggers;
+	}
+
 	public abstract String getSymbol();
 
 	@Override
 	public void toString(final UnitPrinter printer) {
-		final Iterator<Local> freeIt = bindings.iterator();
+		final Iterator<Local> bindingsIterator = bindings.iterator();
 		printer.literal("(");
 		printer.literal(getSymbol());
 		printer.literal(" ");
 
-		while (freeIt.hasNext()) {
-			final Local local = freeIt.next();
+		while (bindingsIterator.hasNext()) {
+			final Local local = bindingsIterator.next();
 			printer.type(local.getType());
 			printer.literal(" ");
 			local.toString(printer);
 
-			if (freeIt.hasNext()) {
+			if (bindingsIterator.hasNext()) {
 				printer.literal(", ");
 			}
 		}
 
 		printer.literal(" :: ");
+
+		if (!triggers.isEmpty()) {
+			printer.literal("{ ");
+
+			final Iterator<Value> triggersIterator = triggers.iterator();
+			while (triggersIterator.hasNext()) {
+				final Value trigger = triggersIterator.next();
+				printer.type(trigger.getType());
+				printer.literal(" ");
+				trigger.toString(printer);
+
+				if (bindingsIterator.hasNext()) {
+					printer.literal(", ");
+				}
+			}
+
+			printer.literal(" } ");
+		}
+		
 		getValue().toString(printer);
 		printer.literal(")");
 	}

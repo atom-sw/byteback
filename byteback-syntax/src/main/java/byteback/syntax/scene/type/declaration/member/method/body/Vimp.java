@@ -20,115 +20,125 @@ import java.util.List;
  */
 public class Vimp {
 
-    private static final Lazy<Vimp> INSTANCE = Lazy.from(Vimp::new);
+	private static final Lazy<Vimp> INSTANCE = Lazy.from(Vimp::new);
 
-    public static Vimp v() {
-        return INSTANCE.get();
-    }
+	public static Vimp v() {
+		return INSTANCE.get();
+	}
 
-    public ValueBox newImmediateBox(final Value value) {
-        return new ImmediateBox(value);
-    }
+	public ValueBox newImmediateBox(final Value value) {
+		return new ImmediateBox(value);
+	}
 
-    public ValueBox newArgBox(final Value value) {
-        return newImmediateBox(value);
-    }
+	public ValueBox newArgBox(final Value value) {
+		return newImmediateBox(value);
+	}
 
-    public AssertStmt newAssertStmt(final Value value) {
-        return new AssertStmt(value);
-    }
+	public AssertStmt newAssertStmt(final Value value) {
+		return new AssertStmt(value);
+	}
 
-    public AssumeStmt newAssumeStmt(final Value value) {
-        return new AssumeStmt(value);
-    }
+	public AssumeStmt newAssumeStmt(final Value value) {
+		return new AssumeStmt(value);
+	}
 
-    public InvariantStmt newInvariantStmt(final Value value) {
-        return new InvariantStmt(value);
-    }
+	public InvariantStmt newInvariantStmt(final Value value) {
+		return new InvariantStmt(value);
+	}
 
-    public IffExpr newLogicIffExpr(final Value op1, final Value op2) {
-        return new IffExpr(op1, op2);
-    }
+	public IffExpr newIffExpr(final Value op1, final Value op2) {
+		return new IffExpr(op1, op2);
+	}
 
-    public ImpliesExpr newImpliesExpr(final Value op1, final Value op2) {
-        return new ImpliesExpr(op1, op2);
-    }
+	public ImpliesExpr newImpliesExpr(final Value op1, final Value op2) {
+		return new ImpliesExpr(op1, op2);
+	}
 
-    public ForallExpr newForallExpr(final Chain<Local> ls, final Value v) {
-        return new ForallExpr(ls, v);
-    }
+	public ForallExpr newForallExpr(final Chain<Local> bindings, final Value condition) {
+		return new ForallExpr(bindings, condition);
+	}
 
-    public ForallExpr newForallExpr(final Local[] ls, final Value v) {
-        final var bindings = new HashChain<Local>();
-        bindings.addAll(Arrays.asList(ls));
+	public ForallExpr newForallExpr(final Local[] bindings, final Value[] triggers, final Value condition) {
+		final var bindingChain = new HashChain<Local>();
+		bindingChain.addAll(Arrays.asList(bindings));
 
-        return new ForallExpr(bindings, v);
-    }
+		final var triggerChain = new HashChain<Value>();
+		triggerChain.addAll(Arrays.asList(triggers));
 
-    public ExistsExpr newLogicExistsExpr(final Chain<Local> locals, final Value value) {
-        return new ExistsExpr(locals, value);
-    }
+		return new ForallExpr(bindingChain, triggerChain, condition);
+	}
 
-    public OldExpr newOldExpr(final Value value) {
-        return new OldExpr(value);
-    }
+	public ForallExpr newForallExpr(final Local[] bindings, final Value condition) {
+		final var bindingChain = new HashChain<Local>();
+		bindingChain.addAll(Arrays.asList(bindings));
 
-    public CallExpr newCallExpr(final SootMethodRef methodRef, final List<Value> arguments) {
-        return new CallExpr(methodRef, arguments);
-    }
+		return new ForallExpr(bindingChain, condition);
+	}
 
-    public ConditionalExpr newConditionExpr(final Value op1, final Value op2, final Value op3) {
-        return new ConditionalExpr(op1, op2, op3);
-    }
+	public ExistsExpr newExistsExpr(final Chain<Local> bindings, final Value condition) {
+		return new ExistsExpr(bindings, condition);
+	}
 
-    public ReturnRef newReturnRef(final Type type) {
-        return new ReturnRef(type);
-    }
+	public OldExpr newOldExpr(final Value value) {
+		return new OldExpr(value);
+	}
 
-    public ThrownRef newThrownRef() {
-        return new ThrownRef();
-    }
+	public CallExpr newCallExpr(final SootMethodRef methodRef, final List<Value> arguments) {
+		return new CallExpr(methodRef, arguments);
+	}
 
-    public NestedExpr newNestedExpr(final Value value) {
-        return new NestedExpr(value);
-    }
+	public ConditionalExpr newConditionExpr(final Value op1, final Value op2, final Value op3) {
+		return new ConditionalExpr(op1, op2, op3);
+	}
 
-    public AggregateExpr newAggregateExpr(final AssignStmt assignStmt) {
-        return new AggregateExpr(assignStmt);
-    }
+	public ReturnRef newReturnRef(final Type type) {
+		return new ReturnRef(type);
+	}
 
-    public IfStmt newIfStmt(final Value condition, final Unit target) {
-        return new JumpStmt(condition, target);
-    }
+	public ThrownRef newThrownRef() {
+		return new ThrownRef();
+	}
 
-    public YieldStmt newYieldStmt() {
-        return new YieldStmt();
-    }
+	public NestedExpr newNestedExpr(final Value value) {
+		return new NestedExpr(value);
+	}
 
-    public TypeConstant newTypeConstant(final RefType refType) {
-        return new TypeConstant(refType);
-    }
+	public AggregateExpr newAggregateExpr(final AssignStmt assignStmt) {
+		return new AggregateExpr(assignStmt);
+	}
 
-    public ExtendsExpr newExtendsExpr(final Value op1, final Value op2) {
-        return new ExtendsExpr(op1, op2);
-    }
+	public IfStmt newIfStmt(final Value condition, final Unit target) {
+		return new JumpStmt(condition, target);
+	}
 
-    public Immediate nest(final Value value) {
-        if (value instanceof Immediate immediate) {
-            return immediate;
-        } else {
-            return Vimp.v().newNestedExpr(value);
-        }
-    }
+	public YieldStmt newYieldStmt() {
+		return new YieldStmt();
+	}
 
-    public Value unnest(final Value value) {
-        Value currentValue = value;
+	public TypeConstant newTypeConstant(final RefType refType) {
+		return new TypeConstant(refType);
+	}
 
-        while (currentValue instanceof final NestedExpr nestedExpr) {
-            currentValue = nestedExpr.getValue();
-        }
+	public ExtendsExpr newExtendsExpr(final Value op1, final Value op2) {
+		return new ExtendsExpr(op1, op2);
+	}
 
-        return currentValue;
-    }
+	public Immediate nest(final Value value) {
+		if (value instanceof Immediate immediate) {
+			return immediate;
+		} else {
+			return Vimp.v().newNestedExpr(value);
+		}
+	}
+
+	public Value unnest(final Value value) {
+		Value currentValue = value;
+
+		while (currentValue instanceof final NestedExpr nestedExpr) {
+			currentValue = nestedExpr.getValue();
+		}
+
+		return currentValue;
+	}
 
 }
