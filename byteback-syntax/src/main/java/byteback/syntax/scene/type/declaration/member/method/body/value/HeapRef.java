@@ -4,6 +4,7 @@ import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.jimple.ConcreteRef;
+import soot.jimple.IdentityRef;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +16,7 @@ import byteback.syntax.scene.type.HeapType;
  *
  * @author paganma
  */
-public class HeapRef implements ConcreteRef, DefaultCaseValue {
+public class HeapRef implements IdentityRef, ConcreteRef, DefaultCaseValue {
 
 	public HeapRef() {
 	}
