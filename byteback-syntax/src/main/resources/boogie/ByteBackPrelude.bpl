@@ -38,7 +38,9 @@ var heap: Store where heap.is_good(heap) && heap.is_anchor(heap);
 
 axiom (forall h1: Store, h2: Store, h3: Store ::
 	{ heap.succeeds(h1, h2), heap.succeeds(h2, h3) }
-	h1 != h3 ==> heap.succeeds(h1, h2) && heap.succeeds(h2, h3) ==> heap.succeeds(h1, h3));
+	h1 != h3
+	  ==> heap.succeeds(h1, h2) && heap.succeeds(h2, h3)
+	  ==> heap.succeeds(h1, h3));
 
 axiom (forall h1: Store, h2: Store ::
 	heap.succeeds(h1, h2) &&
@@ -90,7 +92,9 @@ function type.extends(t1: Type, t2: Type) returns (bool);
  
 axiom (forall t1: Type :: type.extends(t1, t1));
 
-axiom (forall t1: Type, t2: Type, t3: Type :: type.extends(t1, t2) && type.extends(t2, t3) ==> type.extends(t1, t3));
+axiom (forall t1: Type, t2: Type, t3: Type ::
+	{ type.extends(t1, t2), type.extends(t2, t3) }
+	type.extends(t1, t2) && type.extends(t2, t3) ==> type.extends(t1, t3));
 
 axiom (forall t1: Type, t2: Type :: t1 != t2 && type.extends(t1, t2) ==> !type.extends(t2, t1));
 
@@ -105,6 +109,8 @@ function {:inline} reference.instanceof(h: Store, r: Reference, t: Type) returns
 }
 
 axiom (forall h: Store, t: Type :: !reference.instanceof(h, `void`, t));
+
+axiom (forall h: Store, t: Type :: !reference.instanceof(h, `null`, t));
 
 function type.reference(Type) returns (Reference);
 
