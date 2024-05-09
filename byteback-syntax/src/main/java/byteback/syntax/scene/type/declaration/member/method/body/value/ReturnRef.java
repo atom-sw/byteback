@@ -15,41 +15,41 @@ import java.util.List;
  */
 public class ReturnRef implements ConcreteRef, DefaultCaseValue {
 
-    private final Type type;
+	private final Type type;
 
-    public ReturnRef(final Type type) {
-        this.type = type;
-    }
+	public ReturnRef(final Type type) {
+		this.type = type;
+	}
 
-    @Override
-    public boolean equivTo(final Object object) {
-        return object instanceof final ReturnRef returnRef
-                && returnRef.getType().equals(getType());
-    }
+	@Override
+	public boolean equivTo(final Object object) {
+		return object instanceof final ReturnRef returnRef
+				&& returnRef.getType().equals(getType());
+	}
 
-    @Override
-    public int equivHashCode() {
-        return 31 * getType().hashCode();
-    }
+	@Override
+	public int equivHashCode() {
+		return 31 * getType().hashCode();
+	}
 
-    @Override
-    public List<ValueBox> getUseBoxes() {
-        return Collections.emptyList();
-    }
+	@Override
+	public List<ValueBox> getUseBoxes() {
+		return Collections.emptyList();
+	}
 
-    @Override
-    public Type getType() {
-        return type;
-    }
+	@Override
+	public Type getType() {
+		return type;
+	}
 
-    @Override
-    public Object clone() {
-        return new ReturnRef(type);
-    }
+	@Override
+	public Object clone() {
+		return new ReturnRef(type);
+	}
 
-    @Override
-    public void toString(final UnitPrinter printer) {
-        printer.literal("@return");
-    }
+	@Override
+	public void toString(final UnitPrinter printer) {
+		printer.literal("@return");
+	}
 
 }
