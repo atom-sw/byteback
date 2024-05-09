@@ -123,6 +123,10 @@ public class Vimp {
 		return new ExtendsExpr(op1, op2);
 	}
 
+	public HeapRef newHeapRef() {
+		return new HeapRef();
+	}
+
 	public Immediate nest(final Value value) {
 		if (value instanceof Immediate immediate) {
 			return immediate;
