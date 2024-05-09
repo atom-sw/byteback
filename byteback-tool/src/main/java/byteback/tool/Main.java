@@ -176,7 +176,7 @@ public class Main implements Callable<Integer> {
 
 		// Assign local specification
 		jtpPack.add(new Transform("jtp.lif", FrameConditionFinder.v()));
-		jtpPack.add(new Transform("jtp.hli", HeapLocalInserter.v()));
+		// jtpPack.add(new Transform("jtp.hli", HeapLocalInserter.v()));
 
 		scene.loadBasicClasses();
 		scene.loadNecessaryClasses();
