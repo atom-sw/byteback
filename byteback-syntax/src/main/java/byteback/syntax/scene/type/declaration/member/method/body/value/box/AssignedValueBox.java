@@ -9,16 +9,16 @@ import soot.jimple.IdentityRef;
 
 public class AssignedValueBox extends AbstractValueBox {
 
-    public AssignedValueBox(final Value value) {
-        setValue(value);
-    }
+	public AssignedValueBox(final Value value) {
+		setValue(value);
+	}
 
-    @Override
-    public boolean canContainValue(final Value value) {
-        return value instanceof Immediate
-                || value instanceof IdentityRef
-                || value instanceof ConcreteRef
-                || value instanceof Expr;
-    }
+	@Override
+	public boolean canContainValue(final Value value) {
+		return value instanceof Immediate
+				|| value instanceof IdentityRef
+				|| value instanceof ConcreteRef
+				|| value instanceof Expr;
+	}
 
 }
