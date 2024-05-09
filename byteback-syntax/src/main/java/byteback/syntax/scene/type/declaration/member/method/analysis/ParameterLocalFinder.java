@@ -1,6 +1,9 @@
 package byteback.syntax.scene.type.declaration.member.method.analysis;
 
 import byteback.common.function.Lazy;
+import byteback.syntax.scene.type.HeapType;
+import byteback.syntax.scene.type.declaration.member.method.body.value.HeapRef;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import soot.*;
 import soot.jimple.Jimple;
 
@@ -16,6 +19,18 @@ public class ParameterLocalFinder {
 	}
 
 	private ParameterLocalFinder() {
+	}
+
+	public Local findHeapLocal(final Body body) {
+		for (final Unit unit : body.getUnits()) {
+			if (unit instanceof final IdentityUnit identityUnit) {
+				if (identityUnit.getRightOp() instanceof HeapRef) {
+					return (Local) identityUnit.getLeftOp();
+				}
+			}
+		}
+
+		throw new IllegalArgumentException("Body does not assigns heap local");
 	}
 
 	public List<Local> findParameterLocals(final SootMethod sootMethod) {
