@@ -4,7 +4,6 @@ import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.context.SceneContext;
 import byteback.syntax.tag.AnnotationTagReader;
-import byteback.syntax.transformer.TransformationException;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
