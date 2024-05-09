@@ -5,7 +5,7 @@ import soot.Type;
 
 
 /**
- * A type designating any class type.
+ * A type for a type value.
  *
  * @author paganma
  */
