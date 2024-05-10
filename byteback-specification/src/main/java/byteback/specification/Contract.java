@@ -108,6 +108,11 @@ public class Contract {
 	public @interface Abstract {
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.METHOD })
+	public @interface Pure {
+	}
+
 	public static void assertion(boolean behavior) {
 	}
 
