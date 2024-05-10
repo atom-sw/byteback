@@ -4,52 +4,52 @@ import soot.jimple.ConcreteRef;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class InferredFramesTag implements Tag {
 
-    public static final String NAME = "InferredFramesTag";
+	public static final String NAME = "InferredFramesTag";
 
-    final List<ConcreteRef> frameRefs;
+	final Set<ConcreteRef> frameRefs;
 
-    /**
-     * Constructs a new {@link InferredFramesTag}.
-     *
-     * @param frameRefs The references in the frame condition.
-     */
-    public InferredFramesTag(final List<ConcreteRef> frameRefs) {
-        this.frameRefs = frameRefs;
-    }
+	/**
+	 * Constructs a new {@link InferredFramesTag}.
+	 *
+	 * @param frameRefs The references in the frame condition.
+	 */
+	public InferredFramesTag(final Set<ConcreteRef> frameRefs) {
+		this.frameRefs = frameRefs;
+	}
 
-    /**
-     * Constructs a new empty {@link InferredFramesTag}.
-     */
-    public InferredFramesTag() {
-        this(new ArrayList<>());
-    }
+	/**
+	 * Constructs a new empty {@link InferredFramesTag}.
+	 */
+	public InferredFramesTag() {
+		this(new HashSet<>());
+	}
 
-    public List<ConcreteRef> getFrameRefs() {
-        return Collections.unmodifiableList(frameRefs);
-    }
+	public Set<ConcreteRef> getFrameRefs() {
+		return Collections.unmodifiableSet(frameRefs);
+	}
 
-    public void addFrameRef(final ConcreteRef concreteRef) {
-        frameRefs.add(concreteRef);
-    }
+	public void addFrameRef(final ConcreteRef concreteRef) {
+		frameRefs.add(concreteRef);
+	}
 
-    public void removeFrameRef(final ConcreteRef concreteRef) {
-        frameRefs.remove(concreteRef);
-    }
+	public void removeFrameRef(final ConcreteRef concreteRef) {
+		frameRefs.remove(concreteRef);
+	}
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-    @Override
-    public byte[] getValue() throws AttributeValueException {
-        return new byte[0];
-    }
+	@Override
+	public byte[] getValue() throws AttributeValueException {
+		return new byte[0];
+	}
 
 }

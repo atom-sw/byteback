@@ -6,15 +6,15 @@ import soot.Body;
 
 public class InferredFramesTagAccessor extends TagAccessor<Body, InferredFramesTag> {
 
-    private static final Lazy<InferredFramesTagAccessor> INSTANCE =
-            Lazy.from(() -> new InferredFramesTagAccessor(InferredFramesTag.NAME));
+	private static final Lazy<InferredFramesTagAccessor> INSTANCE = Lazy
+			.from(() -> new InferredFramesTagAccessor(InferredFramesTag.NAME));
 
-    public static InferredFramesTagAccessor v() {
-        return INSTANCE.get();
-    }
+	public static InferredFramesTagAccessor v() {
+		return INSTANCE.get();
+	}
 
-    private InferredFramesTagAccessor(final String tagName) {
-        super(tagName);
-    }
+	private InferredFramesTagAccessor(final String tagName) {
+		super(tagName);
+	}
 
 }
