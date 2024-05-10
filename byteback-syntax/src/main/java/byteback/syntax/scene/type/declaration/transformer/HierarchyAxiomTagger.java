@@ -54,42 +54,49 @@ public class HierarchyAxiomTagger extends ClassTransformer {
 			axioms.add(Vimp.v().newExtendsExpr(classTypeValue, superTypeValue));
 		}
 
-		if (!sootClass.isInterface() && !sootClass.getName().equals("java.lang.Object")) {
+		if (!sootClass.isInterface()) {
 			final Collection<SootClass> subTypes = hierarchy.getDirectSubclassesOf(sootClass);
 			final SootClass[] subTypesArray = subTypes.toArray(new SootClass[0]);
 
 			for (int i = 0; i < subTypesArray.length; ++i) {
 				for (int j = i + 1; j < subTypesArray.length; ++j) {
-					final TypeConstant st1 = Vimp.v().newTypeConstant(subTypesArray[i].getType());
-					final TypeConstant st2 = Vimp.v().newTypeConstant(subTypesArray[j].getType());
+					final TypeConstant subType1 = Vimp.v().newTypeConstant(subTypesArray[i].getType());
+					final TypeConstant subType2 = Vimp.v().newTypeConstant(subTypesArray[j].getType());
 					final Local t1Local = Grimp.v().newLocal("t1", TypeType.v());
 					final Local t2Local = Grimp.v().newLocal("t2", TypeType.v());
-					final ForallExpr axiom = Vimp.v().newForallExpr(
-							new Local[] { t1Local, t2Local },
+					final ForallExpr axiom1 = Vimp.v().newForallExpr(
+							new Local[] { t1Local },
 							new Value[] {
 									Vimp.v().nest(
-											Vimp.v().newExtendsExpr(t1Local, st1)),
-									Vimp.v().nest(
-											Vimp.v().newExtendsExpr(t2Local, st2))
+											Vimp.v().newExtendsExpr(t1Local, subType1))
 							},
 							Vimp.v().newImpliesExpr(
 									Vimp.v().nest(
-											Jimple.v().newAndExpr(
-													Vimp.v().nest(
-															Vimp.v().newExtendsExpr(t1Local, st1)),
-													Vimp.v().nest(
-															Vimp.v().newExtendsExpr(t2Local, st2)))),
+											Vimp.v().nest(
+													Vimp.v().newExtendsExpr(t1Local, subType1))),
 									Vimp.v().nest(
-											Jimple.v().newAndExpr(
-													Vimp.v().nest(
-															Jimple.v().newNegExpr(
-																	Vimp.v().nest(
-																			Vimp.v().newExtendsExpr(t1Local, st2)))),
-													Vimp.v().nest(
-															Jimple.v().newNegExpr(
-																	Vimp.v().nest(
-																			Vimp.v().newExtendsExpr(t2Local, st1))))))));
-					axioms.add(axiom);
+											Vimp.v().nest(
+													Jimple.v().newNegExpr(
+															Vimp.v().nest(
+																	Vimp.v().newExtendsExpr(t1Local, subType2)))))));
+					axioms.add(axiom1);
+
+					final ForallExpr axiom2 = Vimp.v().newForallExpr(
+							new Local[] { t2Local },
+							new Value[] {
+									Vimp.v().nest(
+											Vimp.v().newExtendsExpr(t2Local, subType2))
+							},
+							Vimp.v().newImpliesExpr(
+									Vimp.v().nest(
+											Vimp.v().nest(
+													Vimp.v().newExtendsExpr(t2Local, subType2))),
+									Vimp.v().nest(
+											Vimp.v().nest(
+													Jimple.v().newNegExpr(
+															Vimp.v().nest(
+																	Vimp.v().newExtendsExpr(t2Local, subType1)))))));
+					axioms.add(axiom2);
 				}
 			}
 		}
