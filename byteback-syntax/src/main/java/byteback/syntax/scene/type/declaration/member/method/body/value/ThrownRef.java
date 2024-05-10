@@ -6,6 +6,7 @@ import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.jimple.ConcreteRef;
+import soot.jimple.IdentityRef;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  * @author paganma
  * @see GuardTransformer
  */
-public class ThrownRef implements ConcreteRef, DefaultCaseValue {
+public class ThrownRef implements IdentityRef, ConcreteRef, DefaultCaseValue {
 
     public ThrownRef() {
     }

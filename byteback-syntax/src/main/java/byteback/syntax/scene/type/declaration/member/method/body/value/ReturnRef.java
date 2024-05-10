@@ -4,6 +4,7 @@ import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.jimple.ConcreteRef;
+import soot.jimple.IdentityRef;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  *
  * @author paganma
  */
-public class ReturnRef implements ConcreteRef, DefaultCaseValue {
+public class ReturnRef implements IdentityRef, ConcreteRef, DefaultCaseValue {
 
 	private final Type type;
 
