@@ -13,39 +13,41 @@ import soot.jimple.ArrayRef;
 import soot.jimple.ConcreteRef;
 import soot.jimple.FieldRef;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class FrameConditionFinder extends BodyTransformer {
 
-    private final static Lazy<FrameConditionFinder> INSTANCE = Lazy.from(FrameConditionFinder::new);
+	private final static Lazy<FrameConditionFinder> INSTANCE = Lazy.from(FrameConditionFinder::new);
 
-    public static FrameConditionFinder v() {
-        return INSTANCE.get();
-    }
+	public static FrameConditionFinder v() {
+		return INSTANCE.get();
+	}
 
-    private FrameConditionFinder() {
-    }
+	private FrameConditionFinder() {
+	}
 
-    @Override
-    public void transformBody(final BodyContext bodyContext) {
-        final SootMethod sootMethod = bodyContext.getSootMethod();
+	@Override
+	public void transformBody(final BodyContext bodyContext) {
+		final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
-            final Body body = bodyContext.getBody();
-            final var inferredFrames = new ArrayList<ConcreteRef>();
+		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
+			return;
+		}
 
-            for (final ValueBox valueBox : body.getDefBoxes()) {
-                final Value value = valueBox.getValue();
+		final Body body = bodyContext.getBody();
+		final var inferredFrames = new HashSet<ConcreteRef>();
 
-                if (value instanceof final ConcreteRef concreteRef &&
-                        (concreteRef instanceof ArrayRef || concreteRef instanceof FieldRef)) {
-                    inferredFrames.add(concreteRef);
-                }
-            }
+		for (final ValueBox valueBox : body.getDefBoxes()) {
+			final Value value = valueBox.getValue();
 
-            final var inferredFramesTag = new InferredFramesTag(inferredFrames);
-            InferredFramesTagAccessor.v().put(body, inferredFramesTag);
-        }
-    }
+			if (value instanceof final ConcreteRef concreteRef &&
+					(concreteRef instanceof ArrayRef || concreteRef instanceof FieldRef)) {
+				inferredFrames.add(concreteRef);
+			}
+		}
+
+		final var inferredFramesTag = new InferredFramesTag(inferredFrames);
+		InferredFramesTagAccessor.v().put(body, inferredFramesTag);
+	}
 
 }
