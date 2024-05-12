@@ -3,10 +3,9 @@ package byteback.specification.plugin;
 import static byteback.specification.Operators.*;
 
 import byteback.specification.Contract.Ignore;
+import byteback.specification.plugin.Plugin.Export;
 import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Behavior;
-import byteback.specification.Contract.Raise;
-import byteback.specification.Contract.Return;
 
 @Plugin.Attach("kotlin.jvm.internal.Intrinsics")
 public abstract class KotlinIntrinsicsSpec {
@@ -21,23 +20,23 @@ public abstract class KotlinIntrinsicsSpec {
 		return neq(parameter, null);
 	}
 
+	@Export
 	@Abstract
 	public KotlinIntrinsicsSpec() {
 	}
 
-	@Abstract
 	@Ignore
+	@Export
+	@Abstract
 	public static void checkNotNull(Object o) {
+		throw new UnsupportedOperationException();
 	}
 
-	@Abstract
 	@Ignore
-	@Raise(exception = IllegalArgumentException.class, when = "parameter_is_null")
-	@Return(when = "parameter_is_not_null")
+	@Export
+	@Abstract
 	public static void checkNotNullParameter(Object parameter, String name) {
-		if (parameter == null) {
-			throw new IllegalArgumentException();
-		}
+		throw new UnsupportedOperationException();
 	}
 
 }

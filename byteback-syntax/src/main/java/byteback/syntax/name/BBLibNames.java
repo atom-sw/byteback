@@ -21,6 +21,10 @@ public class BBLibNames {
 
     public static final String ATTACH_ANNOTATION = "Lbyteback/specification/plugin/Plugin$Attach;";
 
+    public static final String EXPORT_ANNOTATION = "Lbyteback/specification/plugin/Plugin$Export;";
+
+    public static final String IMPORT_ANNOTATION = "Lbyteback/specification/plugin/Plugin$Import;";
+
     public static final String BEHAVIOR_ANNOTATION = "Lbyteback/specification/Contract$Behavior;";
 
     public static final String TWOSTATE_ANNOTATION = "Lbyteback/specification/Contract$TwoState;";

@@ -50,8 +50,7 @@ public class ImplementationPropagator extends SceneTransformer {
 			final AnnotationTag annotationTag;
 			final String attachedName;
 			final Optional<AnnotationTag> annotationOptional = AnnotationTagReader.v().getAnnotation(
-					attachingClass,
-					BBLibNames.ATTACH_ANNOTATION);
+					attachingClass, BBLibNames.ATTACH_ANNOTATION);
 
 			if (annotationOptional.isPresent()) {
 				annotationTag = annotationOptional.get();

@@ -7,13 +7,17 @@ import byteback.specification.Contract.Return;
 public abstract class InvokeDynamicSpec {
 
 	@Abstract
+	public InvokeDynamicSpec() {
+	}
+
 	@Return
+	@Abstract
 	public static String makeConcatWithConstants(int fromIndex, int toIndex) {
 		throw new UnsupportedOperationException();
 	}
 
-	@Abstract
 	@Return
+	@Abstract
 	public static String makeConcatWithConstants(int index) {
 		throw new UnsupportedOperationException();
 	}
