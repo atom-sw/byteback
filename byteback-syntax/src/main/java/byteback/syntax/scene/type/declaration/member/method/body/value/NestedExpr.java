@@ -3,7 +3,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.value;
 import byteback.syntax.scene.type.declaration.member.method.body.value.box.AssignedValueBox;
 import soot.*;
 import soot.jimple.Jimple;
-import soot.jimple.internal.RValueBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +19,16 @@ public class NestedExpr implements Immediate, DefaultCaseValue {
         this(new AssignedValueBox(value));
     }
 
-    public Value getValue() {
+    public final Value getValue() {
         return valueBox.getValue();
     }
 
     @Override
     public List<ValueBox> getUseBoxes() {
-        final Value value = valueBox.getValue();
-        final var useBoxes = new ArrayList<ValueBox>(value.getUseBoxes());
+        final var useBoxes = new ArrayList<ValueBox>();
         useBoxes.add(valueBox);
+        final Value value = valueBox.getValue();
+				useBoxes.addAll(value.getUseBoxes());
 
         return useBoxes;
     }
@@ -61,9 +61,9 @@ public class NestedExpr implements Immediate, DefaultCaseValue {
 
     @Override
     public void toString(final UnitPrinter printer) {
-        printer.literal("(");
+        printer.literal("<");
         getValue().toString(printer);
-        printer.literal(")");
+        printer.literal(">");
     }
 
 }

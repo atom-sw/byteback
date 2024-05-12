@@ -21,7 +21,7 @@ public class PointerType extends Type implements DefaultCaseType {
 
 	@Override
 	public String toString() {
-		return "*" + pointedType.toString();
+		return "Pointer<" + pointedType.toString() + ">";
 	}
 
 }

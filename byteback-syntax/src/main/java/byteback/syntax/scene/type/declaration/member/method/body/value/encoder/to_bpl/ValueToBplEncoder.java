@@ -8,10 +8,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.ValueEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreludeTagAccessor;
-import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
 import soot.asm.AsmUtil;
@@ -96,7 +93,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 		printer.endItems();
 		printer.print(" :: ");
 		final Chain<Value> triggers = quantifierExpr.getTriggers();
-		
+
 		if (!triggers.isEmpty()) {
 			printer.print("{ ");
 			printer.startItems(", ");
@@ -172,7 +169,6 @@ public class ValueToBplEncoder extends ValueEncoder {
 		}
 
 		printer.endItems();
-
 		printer.print(")");
 	}
 
@@ -181,29 +177,20 @@ public class ValueToBplEncoder extends ValueEncoder {
 	}
 
 	public void encodeCallExpr(final InvokeExpr invokeExpr) {
-		final SootMethod calledMethod = invokeExpr.getMethod();
-		PreludeTagAccessor.v().get(calledMethod)
-				.ifPresentOrElse(
-						(preludeDefinitionTag) -> printer.print(preludeDefinitionTag.getDefinitionSymbol()),
-						() -> new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethod()));
-		printer.print("(");
-		printer.startItems(", ");
+		final SootMethodRef sootMethodRef = invokeExpr.getMethodRef();
 
-		if (!OperatorTagMarker.v().hasTag(calledMethod)) {
-			printer.separate();
-			encodeHeapReference();
-
-			if (TwoStateTagMarker.v().hasTag(calledMethod)) {
-				printer.separate();
-				encodeOldHeapReference();
-			}
-
-			if (ExceptionalTagMarker.v().hasTag(calledMethod)) {
-				printer.separate();
-				printer.print(THROWN_SYMBOL);
-			}
+		if (sootMethodRef instanceof PreludeRef) {
+			printer.print(sootMethodRef.getName());
+		} else {
+			final SootMethod calledMethod = invokeExpr.getMethod();
+			PreludeTagAccessor.v().get(calledMethod)
+					.ifPresentOrElse(
+							(preludeDefinitionTag) -> printer.print(preludeDefinitionTag.getDefinitionSymbol()),
+							() -> new MethodToBplEncoder(printer).encodeMethodName(invokeExpr.getMethod()));
 		}
 
+		printer.print("(");
+		printer.startItems(", ");
 		encodeArguments(invokeExpr.getArgs());
 		printer.endItems();
 		printer.print(")");
@@ -268,6 +255,16 @@ public class ValueToBplEncoder extends ValueEncoder {
 		printer.print(")");
 	}
 
+	public void encodeFieldPointer(final FieldPointer fieldPointer) {
+		new FieldToBplEncoder(printer).encodeFieldConstant(fieldPointer.getField());
+	}
+
+	public void encodeArrayPointer(final ArrayPointer arrayPointer) {
+		printer.print("array.element(");
+		encodeValue(arrayPointer.getIndex());
+		printer.print(")");
+	}
+
 	public void encodeStaticFieldRef(final StaticFieldRef staticFieldRef) {
 		final SootField sootField = staticFieldRef.getField();
 		printer.print("store.read(");
@@ -311,7 +308,12 @@ public class ValueToBplEncoder extends ValueEncoder {
 	}
 
 	public void encodeConcreteRef(final ConcreteRef concreteRef) {
-		if (concreteRef instanceof final ArrayRef arrayRef) {
+		if (concreteRef instanceof HeapRef) {
+			printer.print("heap");
+		} else if (concreteRef instanceof final FieldPointer fieldPointer) {
+			encodeFieldPointer(fieldPointer);
+			return;
+		} else if (concreteRef instanceof final ArrayRef arrayRef) {
 			encodeArrayRef(arrayRef);
 		} else if (concreteRef instanceof final InstanceFieldRef instanceFieldRef) {
 			encodeInstanceFieldRef(instanceFieldRef);
@@ -327,14 +329,9 @@ public class ValueToBplEncoder extends ValueEncoder {
 	}
 
 	public void encodeOldExpr(final OldExpr oldExpr) {
-		new ValueToBplEncoder(printer, heapContext) {
-
-			@Override
-			public void encodeHeapReference() {
-				encodeOldHeapReference();
-			}
-
-		}.encodeValue(oldExpr.getOp());;
+		printer.print("old(");
+		encodeValue(oldExpr.getOp());
+		printer.print(")");
 	}
 
 	public void encodeParameterRef(final ParameterRef parameterRef) {
@@ -373,6 +370,11 @@ public class ValueToBplEncoder extends ValueEncoder {
 
 		if (value instanceof final ConcreteRef concreteRef) {
 			encodeConcreteRef(concreteRef);
+			return;
+		}
+
+		if (value instanceof final ArrayPointer arrayPointer) {
+			encodeArrayPointer(arrayPointer);
 			return;
 		}
 

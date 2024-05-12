@@ -1,35 +1,29 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
+import java.util.Collections;
+import java.util.List;
+
+import byteback.syntax.scene.type.HeapType;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.jimple.ConcreteRef;
 import soot.jimple.IdentityRef;
 
-import java.util.Collections;
-import java.util.List;
+public class OldHeapRef implements IdentityRef, ConcreteRef, DefaultCaseValue {
 
-import byteback.syntax.scene.type.HeapType;
-
-/**
- * Reference corresponding to the heap manipulated by a method.
- *
- * @author paganma
- */
-public class HeapRef implements IdentityRef, ConcreteRef, DefaultCaseValue {
-
-	public HeapRef() {
+	public OldHeapRef() {
 	}
 
 	@Override
 	public boolean equivTo(final Object object) {
-		return object instanceof final HeapRef heapRef
-				&& heapRef.getType().equals(getType());
+		return object instanceof final ReturnRef returnRef
+				&& returnRef.getType().equals(getType());
 	}
 
 	@Override
 	public int equivHashCode() {
-		return 67 * getType().hashCode();
+		return 31 * getType().hashCode();
 	}
 
 	@Override
@@ -44,12 +38,12 @@ public class HeapRef implements IdentityRef, ConcreteRef, DefaultCaseValue {
 
 	@Override
 	public Object clone() {
-		return new HeapRef();
+		return new OldHeapRef();
 	}
 
 	@Override
 	public void toString(final UnitPrinter printer) {
-		printer.literal("@heap");
+		printer.literal("@heap'");
 	}
 
 }

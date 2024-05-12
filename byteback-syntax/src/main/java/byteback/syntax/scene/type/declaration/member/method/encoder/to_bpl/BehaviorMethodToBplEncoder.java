@@ -7,10 +7,7 @@ import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterLo
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.BehaviorBodyToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreludeTagAccessor;
-import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.Body;
 import soot.Local;
@@ -46,25 +43,7 @@ public class BehaviorMethodToBplEncoder extends MethodToBplEncoder {
 		printer.print("(");
 		printer.startItems(", ");
 
-		if (!OperatorTagMarker.v().hasTag(sootMethod)) {
-			printer.separate();
-			printer.print(ValueToBplEncoder.HEAP_SYMBOL);
-			printer.print(": Store");
-
-			if (TwoStateTagMarker.v().hasTag(sootMethod)) {
-				printer.separate();
-				printer.print(ValueToBplEncoder.OLD_HEAP_SYMBOL);
-				printer.print(": Store");
-			}
-
-			if (ExceptionalTagMarker.v().hasTag(sootMethod)) {
-				printer.separate();
-				printer.print(ValueToBplEncoder.THROWN_SYMBOL);
-				printer.print(": Reference");
-			}
-		}
-
-		final List<Local> inputLocals = ParameterLocalFinder.v().findParameterLocals(sootMethod);
+		final List<Local> inputLocals = ParameterLocalFinder.v().findInputLocals(sootMethod);
 		encodeInputLocals(inputLocals);
 		printer.endItems();
 

@@ -5,7 +5,6 @@ import com.google.common.base.Optional;
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.value.LogicConstant;
 import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
 import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
@@ -18,7 +17,6 @@ import soot.asm.AsmUtil;
 import soot.jimple.Jimple;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationStringElem;
-import soot.util.backend.ASMBackendUtils;
 
 public class ConditionsTagger extends MethodTransformer {
 

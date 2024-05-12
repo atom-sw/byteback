@@ -54,8 +54,11 @@ public abstract class TernaryExpr implements Expr, DefaultCaseValue {
     public List<ValueBox> getUseBoxes() {
         final var useBoxes = new ArrayList<ValueBox>();
         useBoxes.add(op1Box);
+        useBoxes.addAll(getOp1().getUseBoxes());
         useBoxes.add(op2Box);
+        useBoxes.addAll(getOp2().getUseBoxes());
         useBoxes.add(op3Box);
+        useBoxes.addAll(getOp3().getUseBoxes());
 
         return useBoxes;
     }

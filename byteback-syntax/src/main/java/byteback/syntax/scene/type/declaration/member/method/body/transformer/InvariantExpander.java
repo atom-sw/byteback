@@ -20,72 +20,74 @@ import java.util.HashSet;
 import java.util.function.Supplier;
 
 /**
- * Expands loop invariants into a set of assertions and assumptions. The criteria used is as follows: ``` java HEAD: ...
- * invariant e; ... if (c) goto EXIT; ... goto HEAD; ... EXIT: ... ``` is transformed into: ``` java assert e; HEAD:
- * assume e; ... assert e; if (c) goto EXIT; ... assert e; goto HEAD; ... EXIT: assume e ... ```
+ * Expands loop invariants into a set of assertions and assumptions. The
+ * criteria used is as follows: ``` java HEAD: ...
+ * invariant e; ... if (c) goto EXIT; ... goto HEAD; ... EXIT: ... ``` is
+ * transformed into: ``` java assert e; HEAD:
+ * assume e; ... assert e; if (c) goto EXIT; ... assert e; goto HEAD; ... EXIT:
+ * assume e ... ```
  *
  * @author paganma
  */
 public class InvariantExpander extends BodyTransformer {
 
-    private static final Lazy<InvariantExpander> INSTANCE = Lazy.from(InvariantExpander::new);
+	private static final Lazy<InvariantExpander> INSTANCE = Lazy.from(InvariantExpander::new);
 
-    private InvariantExpander() {
-    }
+	private InvariantExpander() {
+	}
 
-    public static InvariantExpander v() {
-        return INSTANCE.get();
-    }
+	public static InvariantExpander v() {
+		return INSTANCE.get();
+	}
 
-    @Override
-    public void transformBody(final BodyContext bodyContext) {
-        final Body body = bodyContext.getBody();
-        final PatchingChain<Unit> units = body.getUnits();
-        final var loopFinder = new LoopFinder();
-        final var unitIterator = new LoopCollectingIterator(units, loopFinder.getLoops(body));
+	@Override
+	public void transformBody(final BodyContext bodyContext) {
+		final Body body = bodyContext.getBody();
+		final PatchingChain<Unit> units = body.getUnits();
+		final var loopFinder = new LoopFinder();
+		final var unitIterator = new LoopCollectingIterator(units, loopFinder.getLoops(body));
 
-        while (unitIterator.hasNext()) {
-            final Unit unit = unitIterator.next();
+		while (unitIterator.hasNext()) {
+			final Unit unit = unitIterator.next();
 
-            if (unit instanceof final InvariantStmt invariantUnit) {
-                final Value condition = invariantUnit.getCondition();
-                final Loop loop = unitIterator.getActiveLoops().peek();
+			if (unit instanceof final InvariantStmt invariantUnit) {
+				final Value condition = invariantUnit.getCondition();
+				final Loop loop = unitIterator.getActiveLoops().peek();
 
-                if (loop == null) {
-                    throw new TransformationException(
-                            "Unable to expand an `invariant` that is not in a loop.",
-                            unit
-                    );
-                }
+				if (loop == null) {
+					throw new TransformationException(
+							"Unable to expand an `invariant` that is not in a loop.",
+							unit);
+				}
 
-                final Supplier<AssertStmt> assertionSupplier = () -> {
-                    final AssertStmt assertionUnit = Vimp.v().newAssertStmt(condition);
-                    assertionUnit.addAllTagsOf(invariantUnit);
+				final Supplier<AssertStmt> assertionSupplier = () -> {
+					final AssertStmt assertionUnit = Vimp.v().newAssertStmt(condition);
+					assertionUnit.addAllTagsOf(invariantUnit);
 
-                    return assertionUnit;
-                };
-                final Unit loopHead = loop.getHead();
-                units.insertBefore(assertionSupplier.get(), loopHead);
+					return assertionUnit;
+				};
+				final Unit loopHead = loop.getHead();
+				units.insertBefore(assertionSupplier.get(), loopHead);
 
-                if (loop.getHead() instanceof IfStmt) {
-                    units.insertAfter(assertionSupplier.get(), loopHead);
-                }
+				if (loop.getHead() instanceof IfStmt) {
+					units.insertAfter(assertionSupplier.get(), loopHead);
+				}
 
-                final Unit backJumpUnit = loop.getBackJumpStmt();
-                units.insertBefore(assertionSupplier.get(), backJumpUnit);
-                final var exitTargets = new HashSet<Unit>();
+				final Unit backJumpUnit = loop.getBackJumpStmt();
+				units.insertBefore(assertionSupplier.get(), backJumpUnit);
+				final var exitTargets = new HashSet<Unit>();
 
-                for (final Stmt exit : loop.getLoopExits()) {
-                    exitTargets.addAll(loop.targetsOfLoopExit(exit));
-                }
+				for (final Stmt exit : loop.getLoopExits()) {
+					exitTargets.addAll(loop.targetsOfLoopExit(exit));
+				}
 
-                for (final Unit exitTarget : exitTargets) {
-                    units.insertBefore(assertionSupplier.get(), exitTarget);
-                }
+				for (final Unit exitTarget : exitTargets) {
+					units.insertBefore(assertionSupplier.get(), exitTarget);
+				}
 
-                units.remove(invariantUnit);
-            }
-        }
-    }
+				units.remove(invariantUnit);
+			}
+		}
+	}
 
 }

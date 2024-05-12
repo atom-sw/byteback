@@ -83,10 +83,6 @@ public class AggregateExpr extends NestedExpr implements Local {
 		return local;
 	}
 
-	public Value getValue() {
-		return assignStmt.getRightOp();
-	}
-
 	@Override
 	public String getName() {
 		return local.getName();
@@ -117,13 +113,6 @@ public class AggregateExpr extends NestedExpr implements Local {
 	@Override
 	public int equivHashCode() {
 		return assignStmt.getLeftOp().equivHashCode() * 101 + assignStmt.getRightOp().equivHashCode() * 17;
-	}
-
-	@Override
-	public void toString(final UnitPrinter printer) {
-		printer.literal("(");
-		assignStmt.getRightOp().toString(printer);
-		printer.literal(")");
 	}
 
 	@Override

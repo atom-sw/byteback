@@ -24,134 +24,136 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * Folds expressions used in the Body as nested expressions based on some condition.
+ * Folds expressions used in the Body as nested expressions based on some
+ * condition.
  *
  * @author paganma
  * @see AggregateExpr
  */
 public abstract class ExprFolder extends BodyTransformer {
 
-    @Override
-    public void transformBody(final BodyContext bodyContext) {
-        final Body body = bodyContext.getBody();
-        final PatchingChain<Unit> units = body.getUnits();
-        final var blockGraph = new BriefBlockGraph(body);
-        final var unitGraph = new BriefUnitGraph(body);
-        final var localDefs = new SimpleLocalDefs(unitGraph);
-        final var localUses = new SimpleLocalUses(unitGraph, localDefs);
+	@Override
+	public void transformBody(final BodyContext bodyContext) {
+		final Body body = bodyContext.getBody();
+		final PatchingChain<Unit> units = body.getUnits();
+		final var blockGraph = new BriefBlockGraph(body);
+		final var unitGraph = new BriefUnitGraph(body);
+		final var localDefs = new SimpleLocalDefs(unitGraph);
+		final var localUses = new SimpleLocalUses(unitGraph, localDefs);
 
-        for (final Block block : blockGraph) {
-            final var blockSnapshot = new HashChain<Unit>();
-            final var blockFolder = new BlockFolder(units, localDefs, localUses);
+		for (final Block block : blockGraph) {
+			final var blockSnapshot = new HashChain<Unit>();
+			final var blockFolder = new BlockFolder(units, localDefs, localUses);
 
-            for (final Unit unit : block) {
-                blockSnapshot.add(unit);
-            }
+			for (final Unit unit : block) {
+				blockSnapshot.add(unit);
+			}
 
-            blockFolder.fold(blockSnapshot);
-        }
-    }
+			blockFolder.fold(blockSnapshot);
+		}
+	}
 
-    /**
-     * Whether a value can be substituted at position `valueBox` in `unit`.
-     *
-     * @param unit     The unit in which the substitution may occur.
-     * @param valueBox The position in the unit in which the substitution may occur.
-     * @return `true` if a value can be inlined in `valueBox`, `false` otherwise.
-     */
-    protected boolean canSubstituteUse(final Unit unit, final ValueBox valueBox) {
-        return true;
-    }
+	/**
+	 * Whether a value can be substituted at position `valueBox` in `unit`.
+	 *
+	 * @param unit The unit in which the substitution may occur.
+	 * @param valueBox The position in the unit in which the substitution may occur.
+	 * @return `true` if a value can be inlined in `valueBox`, `false` otherwise.
+	 */
+	protected boolean canSubstituteUse(final Unit unit, final ValueBox valueBox) {
+		return true;
+	}
 
-    public class BlockFolder {
+	public class BlockFolder {
 
-        protected final HashMap<Local, AssignStmt> localToSubstitution;
+		protected final HashMap<Local, AssignStmt> localToSubstitution;
 
-        protected final SetHashMap<Value, Local> dependencyToLocals;
+		protected final SetHashMap<Value, Local> dependencyToLocals;
 
-        protected final PatchingChain<Unit> units;
+		protected final PatchingChain<Unit> units;
 
-        protected final LocalDefs localDefs;
+		protected final LocalDefs localDefs;
 
-        protected final LocalUses localUses;
+		protected final LocalUses localUses;
 
-        public BlockFolder(final PatchingChain<Unit> units, final LocalDefs localDefs, final LocalUses localUses) {
-            this.localToSubstitution = new HashMap<>();
-            this.dependencyToLocals = new SetHashMap<>();
-            this.units = units;
-            this.localDefs = localDefs;
-            this.localUses = localUses;
-        }
+		public BlockFolder(final PatchingChain<Unit> units, final LocalDefs localDefs, final LocalUses localUses) {
+			this.localToSubstitution = new HashMap<>();
+			this.dependencyToLocals = new SetHashMap<>();
+			this.units = units;
+			this.localDefs = localDefs;
+			this.localUses = localUses;
+		}
 
-        protected void track(final AssignStmt AssignStmt) {
-            if (AssignStmt.getLeftOp() instanceof Local local) {
-                localToSubstitution.put(local, AssignStmt);
-            } else if (AssignStmt.getLeftOp() instanceof Ref dependency) {
-                final Set<Local> dependentLocals = dependencyToLocals.get(new CachedEquivalentValue(dependency));
+		protected void track(final AssignStmt AssignStmt) {
+			if (AssignStmt.getLeftOp() instanceof Local local) {
+				localToSubstitution.put(local, AssignStmt);
+			} else if (AssignStmt.getLeftOp() instanceof Ref dependency) {
+				final Set<Local> dependentLocals = dependencyToLocals.get(new CachedEquivalentValue(dependency));
 
-                if (dependentLocals != null) {
-                    for (final Local dependentLocal : dependentLocals) {
-                        localToSubstitution.remove(dependentLocal);
-                    }
-                }
+				if (dependentLocals != null) {
+					for (final Local dependentLocal : dependentLocals) {
+						localToSubstitution.remove(dependentLocal);
+					}
+				}
 
-                dependencyToLocals.remove(dependency);
-            }
-        }
+				dependencyToLocals.remove(dependency);
+			}
+		}
 
-        protected void substituteFrom(final Unit unit, final ValueBox startBox) {
-            final var nextSubstitutions = new ArrayDeque<ValueBox>();
-            nextSubstitutions.add(startBox);
+		protected void substituteFrom(final Unit unit, final ValueBox startBox) {
+			final var nextSubstitutions = new ArrayDeque<ValueBox>();
+			nextSubstitutions.add(startBox);
 
-            while (!nextSubstitutions.isEmpty()) {
-                final ValueBox substitutionBox = nextSubstitutions.pop();
+			while (!nextSubstitutions.isEmpty()) {
+				final ValueBox substitutionBox = nextSubstitutions.pop();
 
-                if (substitutionBox.getValue() instanceof final Local local) {
-                    final AssignStmt substitution = localToSubstitution.get(local);
+				if (substitutionBox.getValue() instanceof final Local local) {
+					final AssignStmt substitution = localToSubstitution.get(local);
 
-                    if (substitution != null) {
-                        final Value substitutionValue = substitution.getRightOp();
+					if (substitution != null) {
+						final Value substitutionValue = substitution.getRightOp();
 
-                        if ((localDefs.getDefsOfAt(local, unit).size() == 1
-                                && localUses.getUsesOf(substitution).size() == 1
-                                && !VimpEffectEvaluator.v().hasSideEffects(substitutionValue))) {
+						if ((localDefs.getDefsOfAt(local, unit).size() == 1
+								&& localUses.getUsesOf(substitution).size() == 1
+								&& !VimpEffectEvaluator.v().hasSideEffects(substitutionValue))) {
 
-                            nextSubstitutions.addAll(substitution.getUseBoxes());
+							nextSubstitutions.addAll(substitution.getUseBoxes());
 
-                            if (substitutionValue instanceof JimpleLocal) {
-                                substitutionBox.setValue(substitutionValue);
-                            } else {
-                                // Notice the condition above specifies that the local has exactly one def and one use at
-                                // the position at which nestedExpr is being inserted, hence the substitution obeys
-                                // NestedExpr's contract.
-                                substitutionBox.setValue(Vimp.v().newAggregateExpr(substitution));
-                            }
+							if (substitutionValue instanceof JimpleLocal) {
+								substitutionBox.setValue(substitutionValue);
+							} else {
+								// Notice the condition above specifies that the local
+								// has exactly one def and one use at the position at
+								// which nestedExpr is being inserted, hence the
+								// substitution obeys NestedExpr's contract.
+								substitutionBox.setValue(Vimp.v().newAggregateExpr(substitution));
+							}
 
-                            units.remove(substitution);
-                        }
-                    }
-                }
-            }
-        }
+							units.remove(substitution);
+						}
+					}
+				}
+			}
+		}
 
-        protected void substituteUses(final Unit unit) {
-            for (final ValueBox useBox : unit.getUseBoxes()) {
-                if (canSubstituteUse(unit, useBox)) {
-                    substituteFrom(unit, useBox);
-                }
-            }
-        }
+		protected void substituteUses(final Unit unit) {
+			for (final ValueBox useBox : unit.getUseBoxes()) {
+				if (canSubstituteUse(unit, useBox)) {
+					substituteFrom(unit, useBox);
+				}
+			}
+		}
 
-        protected void fold(final Iterable<Unit> block) {
-            for (final Unit unit : block) {
-                if (unit instanceof final AssignStmt assignStmt) {
-                    track(assignStmt);
-                }
+		protected void fold(final Iterable<Unit> block) {
+			for (final Unit unit : block) {
+				if (unit instanceof final AssignStmt assignStmt) {
+					track(assignStmt);
+				}
 
-                substituteUses(unit);
-            }
-        }
+				substituteUses(unit);
+			}
+		}
 
-    }
+	}
 
 }

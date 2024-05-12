@@ -87,6 +87,10 @@ public class Vimp {
 		return new CallExpr(methodRef, arguments);
 	}
 
+	public CallExpr newCallExpr(final SootMethodRef methodRef, Value... arguments) {
+		return newCallExpr(methodRef, List.of(arguments));
+	}
+
 	public ConditionalExpr newConditionExpr(final Value op1, final Value op2, final Value op3) {
 		return new ConditionalExpr(op1, op2, op3);
 	}
@@ -127,8 +131,20 @@ public class Vimp {
 		return new HeapRef();
 	}
 
+	public OldHeapRef newOldHeapRef() {
+		return new OldHeapRef();
+	}
+
+	public FieldPointer newFieldPointer(final SootFieldRef fieldRef) {
+		return new FieldPointer(fieldRef);
+	}
+
+	public ArrayPointer newArrayPointer(final Type type, final Value index) {
+		return new ArrayPointer(index, type);
+	}
+
 	public Immediate nest(final Value value) {
-		if (value instanceof Immediate immediate) {
+		if (value instanceof final Immediate immediate) {
 			return immediate;
 		} else {
 			return Vimp.v().newNestedExpr(value);

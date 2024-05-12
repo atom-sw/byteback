@@ -271,7 +271,7 @@ function {:never_pattern true} real.gte(a: real, b: real) returns (bool)
 	a >= b
 }
 
-function {:never_pattern} not(a: bool) returns (bool)
+function {:never_pattern true} not(a: bool) returns (bool)
 {
 	!a
 }

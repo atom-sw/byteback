@@ -150,7 +150,6 @@ public class Main implements Callable<Integer> {
 		// Create the specification statements and expressions
 		jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
 		jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-		jtpPack.add(new Transform("jtp.oett", OldExprTightener.v()));
 		jtpPack.add(new Transform("jtp.ias", InvokeAssigner.v()));
 
 		// - Transformations of the exceptional control flow
@@ -177,7 +176,9 @@ public class Main implements Callable<Integer> {
 		// Assign local specification
 		jtpPack.add(new Transform("jtp.fif", FrameConditionFinder.v()));
 		jtpPack.add(new Transform("jtp.fcv", FrameConditionValidator.v()));
-		// jtpPack.add(new Transform("jtp.hli", HeapLocalInserter.v()));
+		jtpPack.add(new Transform("jtp.tli", ThrownLocalInserter.v()));
+		jtpPack.add(new Transform("jtp.ohli", OldHeapLocalInserter.v()));
+		jtpPack.add(new Transform("jtp.hli", HeapLocalInserter.v()));
 
 		scene.loadBasicClasses();
 		scene.loadNecessaryClasses();
@@ -188,6 +189,8 @@ public class Main implements Callable<Integer> {
 		PackManager.v().runPacks();
 
 		ConditionsTagger.v().transform();
+		HeapReadTransformer.v().transform();
+		OldHeapReadTransformer.v().transform();
 		ConditionsTagPropagator.v().transform();
 		HierarchyAxiomTagger.v().transform();
 
