@@ -19,11 +19,11 @@ public class BBLibNames {
         return INSTANCE.get();
     }
 
-    public static final String ATTACH_ANNOTATION = "Lbyteback/specification/plugin/Plugin$Attach;";
+    public static final String ATTACH_ANNOTATION = "Lbyteback/specification/ghost/Ghost$Attach;";
 
-    public static final String EXPORT_ANNOTATION = "Lbyteback/specification/plugin/Plugin$Export;";
+    public static final String EXPORT_ANNOTATION = "Lbyteback/specification/ghost/Ghost$Export;";
 
-    public static final String IMPORT_ANNOTATION = "Lbyteback/specification/plugin/Plugin$Import;";
+    public static final String IMPORT_ANNOTATION = "Lbyteback/specification/ghost/Ghost$Import;";
 
     public static final String BEHAVIOR_ANNOTATION = "Lbyteback/specification/Contract$Behavior;";
 

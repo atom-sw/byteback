@@ -84,11 +84,11 @@ public class Main implements Callable<Integer> {
 		return transformArrayCheck;
 	}
 
-	private final String[] pluginClasses = new String[] {
-		"byteback.specification.plugin.ObjectSpec",
-		"byteback.specification.plugin.ExceptionSpec",
-		"byteback.specification.plugin.InvokeDynamicSpec",
-		"byteback.specification.plugin.KotlinIntrinsicsSpec"
+	private final String[] ghostClasses = new String[] {
+		"byteback.specification.ghost.ObjectSpec",
+		"byteback.specification.ghost.ExceptionSpec",
+		"byteback.specification.ghost.InvokeDynamicSpec",
+		"byteback.specification.ghost.KotlinIntrinsicsSpec"
 	};
 
 	public Integer call() throws Exception {
@@ -98,7 +98,7 @@ public class Main implements Callable<Integer> {
 		Options.v().set_weak_map_structures(true);
 		Options.v().set_unfriendly_mode(true);
 		final List<String> startingClasses = getStartingClasses();
-		startingClasses.addAll(List.of(pluginClasses));
+		startingClasses.addAll(List.of(ghostClasses));
 		Options.v().classes().addAll(startingClasses);
 
 		// For now ByteBack will not produce any output. Especially since we still haven't defined how Vimp should be
@@ -213,3 +213,4 @@ public class Main implements Callable<Integer> {
 	}
 
 }
+

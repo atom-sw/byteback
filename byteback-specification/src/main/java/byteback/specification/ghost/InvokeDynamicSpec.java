@@ -1,9 +1,10 @@
-package byteback.specification.plugin;
+package byteback.specification.ghost;
 
 import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Return;
+import byteback.specification.ghost.Ghost.Attach;
 
-@Plugin.Attach("soot.dummy.InvokeDynamic")
+@Attach("soot.dummy.InvokeDynamic")
 public abstract class InvokeDynamicSpec {
 
 	@Abstract
