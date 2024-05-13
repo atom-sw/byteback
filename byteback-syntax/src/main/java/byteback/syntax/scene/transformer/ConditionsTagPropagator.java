@@ -22,8 +22,8 @@ import soot.jimple.Jimple;
 import soot.util.NumberedString;
 
 /**
- * Propagates method implementations and specification through the @Attach
- * annotation.
+ * Propagates method implementations and specification through the
+ * {@link byteback.specification.ghost.Ghost.Attach} annotation.
  *
  * @author paganma
  */

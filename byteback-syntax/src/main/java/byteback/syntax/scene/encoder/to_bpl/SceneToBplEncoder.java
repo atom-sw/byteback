@@ -12,46 +12,40 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Encodes an entire Scene into the Boogie Intermediate Verification Language.
+ * Encodes a Soot Scene into the Boogie Intermediate Verification
+ * Language.
  *
  * @author paganma
  */
 public class SceneToBplEncoder extends SceneEncoder {
 
-    private static final String DEFAULT_PRELUDE_SOURCE_PATH = "/boogie/ByteBackPrelude.bpl";
+	private static final String PRELUDE_SOURCE_PATH = "/boogie/ByteBackPrelude.bpl";
 
-    private final String preludeSourcePath;
+	public SceneToBplEncoder(final Printer printer) {
+		super(printer);
+	}
 
-    public SceneToBplEncoder(final Printer printer) {
-        this(printer, DEFAULT_PRELUDE_SOURCE_PATH);
-    }
+	@Override
+	public void encodeScene(final Scene scene) {
+		try (final InputStream preludeStream = getClass().getResourceAsStream(PRELUDE_SOURCE_PATH)) {
+			if (preludeStream == null) {
+				throw new IllegalStateException("Unable to find Boogie prelude.");
+			}
 
-    public SceneToBplEncoder(final Printer printer, final String preludeSourcePath) {
-        super(printer);
-        this.preludeSourcePath = preludeSourcePath;
-    }
+			final var preludeStreamReader = new InputStreamReader(preludeStream);
+			final var preludeBufferedReader = new BufferedReader(preludeStreamReader);
+			String line;
 
-    @Override
-    public void encodeScene(final Scene scene) {
-        try (final InputStream preludeStream = getClass().getResourceAsStream(preludeSourcePath)) {
-            if (preludeStream == null) {
-                throw new IllegalStateException("Unable to find Boogie prelude.");
-            }
+			while ((line = preludeBufferedReader.readLine()) != null) {
+				printer.printLine(line);
+			}
+		} catch (final IOException exception) {
+			throw new RuntimeException("Error reading the Boogie prelude.", exception);
+		}
 
-            final var preludeStreamReader = new InputStreamReader(preludeStream);
-            final var preludeBufferedReader = new BufferedReader(preludeStreamReader);
-            String line;
-
-            while ((line = preludeBufferedReader.readLine()) != null) {
-                printer.printLine(line);
-            }
-        } catch (final IOException exception) {
-            throw new RuntimeException("Error reading the Boogie prelude.", exception);
-        }
-
-        for (final SootClass sootClass : scene.getClasses()) {
-            new ClassToBplEncoder(printer).encodeClass(sootClass);
-        }
-    }
+		for (final SootClass sootClass : scene.getClasses()) {
+			new ClassToBplEncoder(printer).encodeClass(sootClass);
+		}
+	}
 
 }

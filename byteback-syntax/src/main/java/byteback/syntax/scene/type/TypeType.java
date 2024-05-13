@@ -3,7 +3,6 @@ package byteback.syntax.scene.type;
 import byteback.common.function.Lazy;
 import soot.Type;
 
-
 /**
  * A type for a type value.
  *
@@ -11,18 +10,18 @@ import soot.Type;
  */
 public class TypeType extends Type implements DefaultCaseType {
 
-    private static final Lazy<TypeType> INSTANCE = Lazy.from(TypeType::new);
+	private static final Lazy<TypeType> INSTANCE = Lazy.from(TypeType::new);
 
-    public static TypeType v() {
-        return INSTANCE.get();
-    }
+	public static TypeType v() {
+		return INSTANCE.get();
+	}
 
-    private TypeType() {
-    }
+	private TypeType() {
+	}
 
-    @Override
-    public String toString() {
-        return "type";
-    }
+	@Override
+	public String toString() {
+		return "type";
+	}
 
 }

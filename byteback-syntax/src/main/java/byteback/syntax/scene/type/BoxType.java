@@ -3,7 +3,8 @@ package byteback.syntax.scene.type;
 import soot.Type;
 
 /**
- * A type for a heap reference.
+ * A generic Box type representing a modifiable area of memory. This
+ * is mostly used to model array elements.
  *
  * @author paganma
  */

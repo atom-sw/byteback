@@ -3,7 +3,6 @@ package byteback.syntax.scene.type;
 import byteback.common.function.Lazy;
 import soot.Type;
 
-
 /**
  * A type for a heap reference.
  *
@@ -11,18 +10,18 @@ import soot.Type;
  */
 public class HeapType extends Type implements DefaultCaseType {
 
-    private static final Lazy<HeapType> INSTANCE = Lazy.from(HeapType::new);
+	private static final Lazy<HeapType> INSTANCE = Lazy.from(HeapType::new);
 
-    public static HeapType v() {
-        return INSTANCE.get();
-    }
+	public static HeapType v() {
+		return INSTANCE.get();
+	}
 
-    private HeapType() {
-    }
+	private HeapType() {
+	}
 
-    @Override
-    public String toString() {
-        return "heap";
-    }
+	@Override
+	public String toString() {
+		return "heap";
+	}
 
 }

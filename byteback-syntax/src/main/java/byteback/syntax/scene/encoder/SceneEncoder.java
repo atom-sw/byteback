@@ -6,10 +6,10 @@ import soot.Scene;
 
 public abstract class SceneEncoder extends Encoder {
 
-    public SceneEncoder(final Printer printer) {
-        super(printer);
-    }
+	public SceneEncoder(final Printer printer) {
+		super(printer);
+	}
 
-    public abstract void encodeScene(Scene scene);
+	public abstract void encodeScene(Scene scene);
 
 }
