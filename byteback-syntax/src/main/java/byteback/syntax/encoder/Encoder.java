@@ -9,18 +9,18 @@ import byteback.syntax.printer.Printer;
  */
 public abstract class Encoder {
 
-    /**
-     * The printer used by the encoder.
-     */
-    protected final Printer printer;
+	/**
+	 * The printer used by the encoder.
+	 */
+	protected final Printer printer;
 
-    /**
-     * Constructs a new Encoder.
-     *
-     * @param printer The printer to which the encoder will output the syntax tree.
-     */
-    public Encoder(final Printer printer) {
-        this.printer = printer;
-    }
+	/**
+	 * Constructs a new Encoder.
+	 *
+	 * @param printer The printer to which the encoder will output the syntax tree.
+	 */
+	public Encoder(final Printer printer) {
+		this.printer = printer;
+	}
 
 }
