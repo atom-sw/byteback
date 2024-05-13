@@ -11,19 +11,20 @@ import soot.Value;
  */
 public class JimpleTypeInterpreter implements TypeInterpreter<Value> {
 
-    private static final Lazy<JimpleTypeInterpreter> INSTANCE = Lazy.from(JimpleTypeInterpreter::new);
+	private static final Lazy<JimpleTypeInterpreter> INSTANCE = Lazy.from(JimpleTypeInterpreter::new);
 
-    public static JimpleTypeInterpreter v() {
-        return INSTANCE.get();
-    }
+	public static JimpleTypeInterpreter v() {
+		return INSTANCE.get();
+	}
 
-    private JimpleTypeInterpreter() {
-    }
+	private JimpleTypeInterpreter() {
+	}
 
-    @Override
-    public Type typeOf(final Value value) {
-        // The Jimple type corresponds to whatever the `getType` implementation of the `value` returns.
-        return value.getType();
-    }
+	@Override
+	public Type typeOf(final Value value) {
+		// The Jimple type corresponds to whatever the `getType` implementation of the
+		// `value` returns.
+		return value.getType();
+	}
 
 }

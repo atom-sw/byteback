@@ -7,6 +7,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.T
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
 import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
+import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import soot.*;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
@@ -20,8 +21,13 @@ import soot.util.Chain;
  * instructions. Given a statement `throw e`, the transformation
  * introduces an assignment `@caughtexception := e`. For each active
  * trap at that point [e, handler], we then introduce an instance
- * check: ``` java if (@caughtexception instanceof e) goto handler;
- * ``` At the end of these checks, we simply append a `return`
+ * check:
+ *
+ * ``` java
+ * if (@caughtexception instanceof e) goto handler;
+ * ```
+ * 
+ * At the end of these checks, we simply append a `return`
  * statement, signaling that the method will return without yielding
  * any value, leaving the caller method to check for the exceptions
  * that were unchecked in the called method.
@@ -88,7 +94,7 @@ public class GuardTransformer extends BodyTransformer {
 					final Unit handlerUnit = trap.getHandlerUnit();
 					final Unit branchUnit;
 
-					if (exceptionType.merge((RefType) thrownValue.getType(), Scene.v()) == exceptionType) {
+					if (VimpTypeInterpreter.v().join(thrownValue.getType(), exceptionType) == exceptionType) {
 						branchUnit = Jimple.v().newGotoStmt(handlerUnit);
 					} else {
 						final Immediate checkValue = Vimp.v().nest(
@@ -101,6 +107,8 @@ public class GuardTransformer extends BodyTransformer {
 					ThrowTargetTagMarker.v().flag(branchUnit);
 					units.insertBefore(branchUnit, baseUnit);
 
+					// This means that the branch can be statically determined,
+					// hence we don't need to output the other branches.
 					if (branchUnit instanceof GotoStmt) {
 						units.remove(baseUnit);
 						baseUnit = branchUnit;

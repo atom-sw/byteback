@@ -26,24 +26,24 @@ public class Vimp {
 		return INSTANCE.get();
 	}
 
-	public ValueBox newImmediateBox(final Value value) {
+	public ImmediateBox newImmediateBox(final Value value) {
 		return new ImmediateBox(value);
 	}
 
-	public ValueBox newArgBox(final Value value) {
+	public ImmediateBox newArgBox(final Value value) {
 		return newImmediateBox(value);
 	}
 
-	public AssertStmt newAssertStmt(final Value value) {
-		return new AssertStmt(value);
+	public AssertStmt newAssertStmt(final Value condition) {
+		return new AssertStmt(condition);
 	}
 
-	public AssumeStmt newAssumeStmt(final Value value) {
-		return new AssumeStmt(value);
+	public AssumeStmt newAssumeStmt(final Value condition) {
+		return new AssumeStmt(condition);
 	}
 
-	public InvariantStmt newInvariantStmt(final Value value) {
-		return new InvariantStmt(value);
+	public InvariantStmt newInvariantStmt(final Value condition) {
+		return new InvariantStmt(condition);
 	}
 
 	public IffExpr newIffExpr(final Value op1, final Value op2) {
@@ -79,6 +79,23 @@ public class Vimp {
 		return new ExistsExpr(bindings, condition);
 	}
 
+	public ExistsExpr newExistsExpr(final Local[] bindings, final Value[] triggers, final Value condition) {
+		final var bindingChain = new HashChain<Local>();
+		bindingChain.addAll(Arrays.asList(bindings));
+
+		final var triggerChain = new HashChain<Value>();
+		triggerChain.addAll(Arrays.asList(triggers));
+
+		return new ExistsExpr(bindingChain, triggerChain, condition);
+	}
+
+	public ExistsExpr newExistsExpr(final Local[] bindings, final Value condition) {
+		final var bindingChain = new HashChain<Local>();
+		bindingChain.addAll(Arrays.asList(bindings));
+
+		return new ExistsExpr(bindingChain, condition);
+	}
+
 	public OldExpr newOldExpr(final Value value) {
 		return new OldExpr(value);
 	}
@@ -88,7 +105,7 @@ public class Vimp {
 	}
 
 	public CallExpr newCallExpr(final SootMethodRef methodRef, Value... arguments) {
-		return newCallExpr(methodRef, List.of(arguments));
+		return new CallExpr(methodRef, List.of(arguments));
 	}
 
 	public ConditionalExpr newConditionExpr(final Value op1, final Value op2, final Value op3) {

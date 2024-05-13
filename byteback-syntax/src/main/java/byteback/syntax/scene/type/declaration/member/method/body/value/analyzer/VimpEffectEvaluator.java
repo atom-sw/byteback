@@ -14,28 +14,29 @@ import soot.jimple.NewExpr;
  */
 public class VimpEffectEvaluator {
 
-    private static final Lazy<VimpEffectEvaluator> INSTANCE = Lazy.from(VimpEffectEvaluator::new);
+	private static final Lazy<VimpEffectEvaluator> INSTANCE = Lazy.from(VimpEffectEvaluator::new);
 
-    public static VimpEffectEvaluator v() {
-        return INSTANCE.get();
-    }
+	public static VimpEffectEvaluator v() {
+		return INSTANCE.get();
+	}
 
-    /**
-     * @param value A Vimp value.
-     * @return `true` if `value` may have side effects, false` otherwise.
-     */
-    public boolean hasSideEffects(final Value value) {
-        return isStatefulInvoke(value)
-                || value instanceof NewExpr
-                || value instanceof NewArrayExpr;
-    }
+	/**
+	 * @param value A Vimp value.
+	 * @return `true` if `value` may have side effects, false` otherwise.
+	 */
+	public boolean hasSideEffects(final Value value) {
+		return isStatefulInvoke(value)
+				|| value instanceof NewExpr
+				|| value instanceof NewArrayExpr;
+	}
 
-    /**
-     * @param value A Vimp value.
-     * @return `true` if `value` is an invoke expression and may have side effects, false` otherwise.
-     */
-    public boolean isStatefulInvoke(final Value value) {
-        return value instanceof InvokeExpr && !(value instanceof CallExpr);
-    }
+	/**
+	 * @param value A Vimp value.
+	 * @return `true` if `value` is an invoke expression and may have side effects,
+	 *         false` otherwise.
+	 */
+	public boolean isStatefulInvoke(final Value value) {
+		return value instanceof InvokeExpr && !(value instanceof CallExpr);
+	}
 
 }

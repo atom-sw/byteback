@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * Folds expressions used in the Body as nested expressions based on some
- * condition.
+ * Folds expressions used in the Body as nested expressions based on
+ * some condition.
  *
  * @author paganma
  * @see AggregateExpr
@@ -54,11 +54,14 @@ public abstract class ExprFolder extends BodyTransformer {
 	}
 
 	/**
-	 * Whether a value can be substituted at position `valueBox` in `unit`.
+	 * Whether a value can be substituted at position `valueBox` in
+	 * `unit`.
 	 *
-	 * @param unit The unit in which the substitution may occur.
-	 * @param valueBox The position in the unit in which the substitution may occur.
-	 * @return `true` if a value can be inlined in `valueBox`, `false` otherwise.
+	 * @param unit     The unit in which the substitution may occur.
+	 * @param valueBox The position in the unit in which the
+	 *                 substitution may occur.
+	 * @return `true` if a value can be inlined in `valueBox`, `false`
+	 *         otherwise.
 	 */
 	protected boolean canSubstituteUse(final Unit unit, final ValueBox valueBox) {
 		return true;

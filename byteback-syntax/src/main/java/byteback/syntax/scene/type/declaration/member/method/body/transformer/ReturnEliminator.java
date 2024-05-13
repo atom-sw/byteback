@@ -14,50 +14,50 @@ import soot.util.Chain;
 import java.util.Iterator;
 
 /**
- * Removes return statements and replaces them to an assignment to the @return reference followed by a `yield`
- * statement.
+ * Removes return statements and replaces them to an assignment to the @return
+ * reference followed by a `yield` statement.
  *
  * @author paganma
  */
 public class ReturnEliminator extends BodyTransformer {
 
-    private static final Lazy<ReturnEliminator> INSTANCE = Lazy.from(ReturnEliminator::new);
+	private static final Lazy<ReturnEliminator> INSTANCE = Lazy.from(ReturnEliminator::new);
 
-    private ReturnEliminator() {
-    }
+	private ReturnEliminator() {
+	}
 
-    public static ReturnEliminator v() {
-        return INSTANCE.get();
-    }
+	public static ReturnEliminator v() {
+		return INSTANCE.get();
+	}
 
-    @Override
-    public void transformBody(final BodyContext bodyContext) {
-        final SootMethod sootMethod = bodyContext.getSootMethod();
+	@Override
+	public void transformBody(final BodyContext bodyContext) {
+		final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        if (BehaviorTagMarker.v().hasTag(sootMethod)) {
-            return;
-        }
+		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
+			return;
+		}
 
-        final Body body = bodyContext.getBody();
-        final Type returnType = body.getMethod().getReturnType();
-        final Chain<Unit> units = body.getUnits();
-        final ReturnRef returnRef = new ReturnRef(returnType);
-        final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
+		final Body body = bodyContext.getBody();
+		final Type returnType = body.getMethod().getReturnType();
+		final Chain<Unit> units = body.getUnits();
+		final ReturnRef returnRef = new ReturnRef(returnType);
+		final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
 
-        while (unitIterator.hasNext()) {
-            final Unit unit = unitIterator.next();
+		while (unitIterator.hasNext()) {
+			final Unit unit = unitIterator.next();
 
-            if (unit instanceof final ReturnStmt returnStmt) {
-                final Value returnValue = returnStmt.getOp();
-                final Unit returnAssignUnit = Jimple.v().newAssignStmt(returnRef, returnValue);
-                units.insertBefore(returnAssignUnit, returnStmt);
-                returnStmt.redirectJumpsToThisTo(returnAssignUnit);
-                returnAssignUnit.addAllTagsOf(returnStmt);
-                units.swapWith(returnStmt, Vimp.v().newYieldStmt());
-            } else if (unit instanceof final ReturnVoidStmt returnVoidStmt) {
-                units.swapWith(returnVoidStmt, Vimp.v().newYieldStmt());
-            }
-        }
-    }
+			if (unit instanceof final ReturnStmt returnStmt) {
+				final Value returnValue = returnStmt.getOp();
+				final Unit returnAssignUnit = Jimple.v().newAssignStmt(returnRef, returnValue);
+				units.insertBefore(returnAssignUnit, returnStmt);
+				returnStmt.redirectJumpsToThisTo(returnAssignUnit);
+				returnAssignUnit.addAllTagsOf(returnStmt);
+				units.swapWith(returnStmt, Vimp.v().newYieldStmt());
+			} else if (unit instanceof final ReturnVoidStmt returnVoidStmt) {
+				units.swapWith(returnVoidStmt, Vimp.v().newYieldStmt());
+			}
+		}
+	}
 
 }

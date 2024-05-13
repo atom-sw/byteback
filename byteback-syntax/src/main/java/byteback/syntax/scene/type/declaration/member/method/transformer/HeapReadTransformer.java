@@ -70,7 +70,7 @@ public class HeapReadTransformer extends MethodTransformer {
 			}
 		} else {
 			heap = Vimp.v().newHeapRef();
-			oldHeap = Vimp.v().newOldExpr(heap);
+			oldHeap = Vimp.v().newOldExpr(Vimp.v().nest(heap));
 			thrown = Vimp.v().newThrownRef();
 
 			PreconditionsTagAccessor.v().get(sootMethod).ifPresent((preconditionsTag) -> {

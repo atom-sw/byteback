@@ -10,13 +10,12 @@ import java.util.Stack;
 
 /**
  * An expression that can be nested on multiple levels, breaking the
- * three-address-code form of Jimple. Each subexpression must be
- * indirectly associated to an assignment to a local variable. Nested
- * expressions can be treated as locals in a way that does not break
- * the three-address-code form of the representation. It is always
- * possible given a nested expression to extract an equivalent
- * sequence of local assignments, and hence they can be considered as
- * a convenient mean to creating more complex and idiomatic
+ * three-address-code form of Jimple. Each subexpression must be indirectly
+ * associated to an assignment to a local variable. Nested expressions can be
+ * treated as locals in a way that does not break the three-address-code form of
+ * the representation. It is always possible given a nested expression to
+ * extract an equivalent sequence of local assignments, and hence they can be
+ * considered as a convenient mean to creating more complex and idiomatic
  * expressions, than outputting TAC statements.
  *
  * @author paganma
@@ -28,15 +27,14 @@ public class AggregateExpr extends NestedExpr implements Local {
 	private final AssignStmt assignStmt;
 
 	/**
-	 * Constructs a new nested expression based on a local
-	 * assignment. We need a pretty big assumption: The definition is
-	 * completely independent of other statements in the body. This
-	 * entails that the local used in the definition assignment will
-	 * have exactly one possible definition and one use at the position
-	 * in which the constructed nested expression is used. Notice that
-	 * you do not really need to take this into account when creating
-	 * nested expressions using the ExprFolder classes and the
-	 * NestedExprConstructor, as they already enforce this condition.
+	 * Constructs a new nested expression based on a local assignment. We need a
+	 * pretty big assumption: The definition is completely independent of other
+	 * statements in the body. This entails that the local used in the definition
+	 * assignment will have exactly one possible definition and one use at the
+	 * position in which the constructed nested expression is used. Notice that you
+	 * do not really need to take this into account when creating nested expressions
+	 * using the ExprFolder classes and the NestedExprConstructor, as they already
+	 * enforce this condition.
 	 *
 	 * @param assignStmt The definition associated with this nested expression.
 	 */

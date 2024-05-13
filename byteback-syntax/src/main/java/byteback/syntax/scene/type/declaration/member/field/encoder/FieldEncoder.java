@@ -6,10 +6,10 @@ import soot.SootField;
 
 public abstract class FieldEncoder extends Encoder {
 
-    public FieldEncoder(final Printer printer) {
-        super(printer);
-    }
+	public FieldEncoder(final Printer printer) {
+		super(printer);
+	}
 
-    public abstract void encodeField(final SootField field);
+	public abstract void encodeField(final SootField field);
 
 }

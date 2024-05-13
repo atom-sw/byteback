@@ -11,19 +11,19 @@ import soot.jimple.Jimple;
  */
 public class InvariantStmt extends SpecificationStmt implements DefaultCaseUnit {
 
-    public InvariantStmt(final Value condition) {
-        super(condition);
-    }
+	public InvariantStmt(final Value condition) {
+		super(condition);
+	}
 
-    @Override
-    public InvariantStmt clone() {
-        return new InvariantStmt(Jimple.cloneIfNecessary(getCondition()));
-    }
+	@Override
+	public InvariantStmt clone() {
+		return new InvariantStmt(Jimple.cloneIfNecessary(getCondition()));
+	}
 
-    @Override
-    public void toString(final UnitPrinter printer) {
-        printer.literal("invariant ");
-        getCondition().toString(printer);
-    }
+	@Override
+	public void toString(final UnitPrinter printer) {
+		printer.literal("invariant ");
+		getCondition().toString(printer);
+	}
 
 }

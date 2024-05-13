@@ -4,25 +4,25 @@ import byteback.syntax.scene.type.declaration.member.method.body.context.BodyCon
 
 public class BodyLogger extends BodyTransformer {
 
-    private String methodName;
+	private String methodName;
 
-    public BodyLogger(final String methodName) {
-        this.methodName = methodName;
-    }
+	public BodyLogger(final String methodName) {
+		this.methodName = methodName;
+	}
 
-    public BodyLogger() {
-        this.methodName = null;
-    }
+	public BodyLogger() {
+		this.methodName = null;
+	}
 
-    @Override
-    public void transformBody(final BodyContext bodyContext) {
-        if (methodName != null) {
-            if (bodyContext.getSootMethod().getName().equals(methodName)) {
-                System.out.println(bodyContext.getBody());
-            }
-        } else {
-            System.out.println(bodyContext.getBody());
-        }
-    }
+	@Override
+	public void transformBody(final BodyContext bodyContext) {
+		if (methodName != null) {
+			if (bodyContext.getSootMethod().getName().equals(methodName)) {
+				System.out.println(bodyContext.getBody());
+			}
+		} else {
+			System.out.println(bodyContext.getBody());
+		}
+	}
 
 }

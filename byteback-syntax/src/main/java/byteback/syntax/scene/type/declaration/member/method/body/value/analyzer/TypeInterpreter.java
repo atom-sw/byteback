@@ -11,12 +11,12 @@ import soot.Value;
  */
 public interface TypeInterpreter<T extends Value> {
 
-    /**
-     * Queries a value for its type.
-     *
-     * @param value The value of which we want to find the type.
-     * @return The type of the value according to some interpretation.
-     */
-    Type typeOf(final T value);
+	/**
+	 * Queries a value for its type.
+	 *
+	 * @param value The value of which we want to find the type.
+	 * @return The type of the value according to some interpretation.
+	 */
+	Type typeOf(final T value);
 
 }

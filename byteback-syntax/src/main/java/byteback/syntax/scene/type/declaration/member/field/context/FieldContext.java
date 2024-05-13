@@ -11,29 +11,29 @@ import soot.SootField;
  */
 public class FieldContext extends MemberContext {
 
-    /**
-     * The field in this context.
-     */
-    private final SootField sootField;
+	/**
+	 * The field in this context.
+	 */
+	private final SootField sootField;
 
-    /**
-     * Constructs a new {@link FieldContext}.
-     *
-     * @param classContext The outer class context.
-     * @param sootField    The field in this context.
-     */
-    public FieldContext(final ClassContext classContext, final SootField sootField) {
-        super(classContext);
-        this.sootField = sootField;
-    }
+	/**
+	 * Constructs a new {@link FieldContext}.
+	 *
+	 * @param classContext The outer class context.
+	 * @param sootField The field in this context.
+	 */
+	public FieldContext(final ClassContext classContext, final SootField sootField) {
+		super(classContext);
+		this.sootField = sootField;
+	}
 
-    /**
-     * Getter for the Soot field in this context.
-     *
-     * @return The Soot field in this context.
-     */
-    public SootField getSootField() {
-        return sootField;
-    }
+	/**
+	 * Getter for the Soot field in this context.
+	 *
+	 * @return The Soot field in this context.
+	 */
+	public SootField getSootField() {
+		return sootField;
+	}
 
 }

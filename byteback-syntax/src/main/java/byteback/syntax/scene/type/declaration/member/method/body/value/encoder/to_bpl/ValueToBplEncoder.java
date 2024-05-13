@@ -22,10 +22,6 @@ import com.google.common.base.Optional;
 
 public class ValueToBplEncoder extends ValueEncoder {
 
-	public enum HeapContext {
-		TWO_STATE, POST_STATE, PRE_STATE
-	}
-
 	public static final String HEAP_SYMBOL = "heap";
 
 	public static final String OLD_HEAP_SYMBOL = "heap'";
@@ -34,15 +30,8 @@ public class ValueToBplEncoder extends ValueEncoder {
 
 	public static final String RETURN_SYMBOL = "`#r`";
 
-	private final HeapContext heapContext;
-
-	public ValueToBplEncoder(final Printer printer, final HeapContext heapContext) {
-		super(printer);
-		this.heapContext = heapContext;
-	}
-
 	public ValueToBplEncoder(final Printer printer) {
-		this(printer, HeapContext.PRE_STATE);
+		super(printer);
 	}
 
 	public void encodeTypeConstant(final TypeConstant typeConstant) {
@@ -136,19 +125,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 	}
 
 	public void encodeOldHeapReference() {
-		switch (heapContext) {
-			case TWO_STATE -> {
-				printer.print(OLD_HEAP_SYMBOL);
-			}
-			case POST_STATE -> {
-				printer.print("old(");
-				printer.print(HEAP_SYMBOL);
-				printer.print(")");
-			}
-			default -> {
-				throw new IllegalStateException();
-			}
-		}
+		printer.print(OLD_HEAP_SYMBOL);
 	}
 
 	public void encodeHeapReference() {

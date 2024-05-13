@@ -6,10 +6,10 @@ import soot.Unit;
 
 public abstract class UnitEncoder extends Encoder {
 
-    public UnitEncoder(final Printer printer) {
-        super(printer);
-    }
+	public UnitEncoder(final Printer printer) {
+		super(printer);
+	}
 
-    public abstract void encodeUnit(Unit unit);
+	public abstract void encodeUnit(Unit unit);
 
 }

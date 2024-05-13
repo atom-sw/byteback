@@ -12,62 +12,62 @@ import soot.*;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ReturnStmt;
 
-
 /**
- * Ensures the validity of methods annotated with @Behavior, and tags them accordingly.
+ * Ensures the validity of methods annotated with @Behavior, and tags
+ * them accordingly.
  *
  * @author paganma
  */
 public class BehaviorBodyValidator extends BodyMatchValidator {
 
-    private static final Lazy<BehaviorBodyValidator> INSTANCE = Lazy.from(BehaviorBodyValidator::new);
+	private static final Lazy<BehaviorBodyValidator> INSTANCE = Lazy.from(BehaviorBodyValidator::new);
 
-    private BehaviorBodyValidator() {
-    }
+	private BehaviorBodyValidator() {
+	}
 
-    public static BehaviorBodyValidator v() {
-        return INSTANCE.get();
-    }
+	public static BehaviorBodyValidator v() {
+		return INSTANCE.get();
+	}
 
-    @Override
-    public boolean admitsDef(final ValueContext valueContext) {
-        final Value value = valueContext.getValueBox().getValue();
+	@Override
+	public boolean admitsDef(final ValueContext valueContext) {
+		final Value value = valueContext.getValueBox().getValue();
 
-        return value instanceof Local;
-    }
+		return value instanceof Local;
+	}
 
-    @Override
-    public boolean admitsUse(final ValueContext valueContext) {
-        final Value value = valueContext.getValueBox().getValue();
+	@Override
+	public boolean admitsUse(final ValueContext valueContext) {
+		final Value value = valueContext.getValueBox().getValue();
 
-        if (value instanceof OldExpr) {
-            final SootMethod sootMethod = valueContext
-                    .getUnitContext()
-                    .getBodyContext()
-                    .getSootMethod();
+		if (value instanceof OldExpr) {
+			final SootMethod sootMethod = valueContext
+					.getUnitContext()
+					.getBodyContext()
+					.getSootMethod();
 
-            return TwoStateTagMarker.v().hasTag(sootMethod);
-        } else {
-            return !VimpEffectEvaluator.v().hasSideEffects(value);
-        }
-    }
+			return TwoStateTagMarker.v().hasTag(sootMethod);
+		} else {
+			return !VimpEffectEvaluator.v().hasSideEffects(value);
+		}
+	}
 
-    @Override
-    public boolean admitsUnit(final UnitContext unitContext) {
-        final Unit unit = unitContext.getUnitBox().getUnit();
+	@Override
+	public boolean admitsUnit(final UnitContext unitContext) {
+		final Unit unit = unitContext.getUnitBox().getUnit();
 
-        return unit instanceof IdentityStmt || unit instanceof ReturnStmt;
-    }
+		return unit instanceof IdentityStmt || unit instanceof ReturnStmt;
+	}
 
-    @Override
-    public void transformBody(final BodyContext bodyContext) {
-        final SootMethod sootMethod = bodyContext.getSootMethod();
+	@Override
+	public void transformBody(final BodyContext bodyContext) {
+		final SootMethod sootMethod = bodyContext.getSootMethod();
 
-        if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
-            return;
-        }
+		if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
+			return;
+		}
 
-        super.transformBody(bodyContext);
-    }
+		super.transformBody(bodyContext);
+	}
 
 }

@@ -1,7 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl;
 
 import byteback.syntax.printer.Printer;
-import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.BodyEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.to_bpl.UnitToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
@@ -23,7 +22,7 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
 
 	public ProceduralBodyToBplEncoder(final Printer printer) {
 		super(printer);
-		this.valueToBplEncoder = new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE);
+		this.valueToBplEncoder = new ValueToBplEncoder(printer);
 		this.typeAccessToBplEncoder = new TypeAccessToBplEncoder(printer);
 	}
 

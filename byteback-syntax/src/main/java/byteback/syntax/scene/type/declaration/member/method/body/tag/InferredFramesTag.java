@@ -34,14 +34,6 @@ public class InferredFramesTag implements Tag {
 		return Collections.unmodifiableSet(frameRefs);
 	}
 
-	public void addFrameRef(final ConcreteRef concreteRef) {
-		frameRefs.add(concreteRef);
-	}
-
-	public void removeFrameRef(final ConcreteRef concreteRef) {
-		frameRefs.remove(concreteRef);
-	}
-
 	@Override
 	public String getName() {
 		return NAME;

@@ -10,52 +10,51 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 
 /**
- * Converts BBLib's invoke statements into specification statements, corresponding to assertions, assumptions, and
- * invariants.
+ * Converts BBLib's invoke statements into specification statements,
+ * corresponding to assertions, assumptions, and invariants.
  *
  * @author paganma
  */
 public class SpecificationStmtTransformer extends UnitTransformer {
 
-    private static final Lazy<SpecificationStmtTransformer> INSTANCE = Lazy.from(SpecificationStmtTransformer::new);
+	private static final Lazy<SpecificationStmtTransformer> INSTANCE = Lazy.from(SpecificationStmtTransformer::new);
 
-    private SpecificationStmtTransformer() {
-    }
+	private SpecificationStmtTransformer() {
+	}
 
-    public static SpecificationStmtTransformer v() {
-        return INSTANCE.get();
-    }
+	public static SpecificationStmtTransformer v() {
+		return INSTANCE.get();
+	}
 
-    @Override
-    public void transformUnit(final UnitContext unitContext) {
-        final UnitBox unitBox = unitContext.getUnitBox();
-        final Unit unit = unitBox.getUnit();
+	@Override
+	public void transformUnit(final UnitContext unitContext) {
+		final UnitBox unitBox = unitContext.getUnitBox();
+		final Unit unit = unitBox.getUnit();
 
-        if (unit instanceof final InvokeStmt invokeStmt) {
-            final InvokeExpr invokeExpr = invokeStmt.getInvokeExpr();
-            final SootMethodRef methodRef = invokeExpr.getMethodRef();
-            final SootClass declaringClass = methodRef.getDeclaringClass();
+		if (unit instanceof final InvokeStmt invokeStmt) {
+			final InvokeExpr invokeExpr = invokeStmt.getInvokeExpr();
+			final SootMethodRef methodRef = invokeExpr.getMethodRef();
+			final SootClass declaringClass = methodRef.getDeclaringClass();
 
-            if (BBLibNames.v().isContractClass(declaringClass)) {
-                assert invokeExpr.getArgCount() == 1;
-                final Value argument = invokeExpr.getArg(0);
+			if (BBLibNames.v().isContractClass(declaringClass)) {
+				assert invokeExpr.getArgCount() == 1;
+				final Value argument = invokeExpr.getArg(0);
 
-                final SpecificationStmt newUnit = switch (methodRef.getName()) {
-                    case BBLibNames.ASSERTION_NAME -> Vimp.v().newAssertStmt(argument);
-                    case BBLibNames.ASSUMPTION_NAME -> Vimp.v().newAssumeStmt(argument);
-                    case BBLibNames.INVARIANT_NAME -> Vimp.v().newInvariantStmt(argument);
-                    default -> throw new IllegalStateException(
-                            "Unknown specification statement "
-                                    + methodRef.getName()
-                                    + "."
-                    );
-                };
+				final SpecificationStmt newUnit = switch (methodRef.getName()) {
+					case BBLibNames.ASSERTION_NAME -> Vimp.v().newAssertStmt(argument);
+					case BBLibNames.ASSUMPTION_NAME -> Vimp.v().newAssumeStmt(argument);
+					case BBLibNames.INVARIANT_NAME -> Vimp.v().newInvariantStmt(argument);
+					default -> throw new IllegalStateException(
+							"Unknown specification statement "
+									+ methodRef.getName()
+									+ ".");
+				};
 
-                unit.redirectJumpsToThisTo(newUnit);
-                newUnit.addAllTagsOf(invokeStmt);
-                unitBox.setUnit(newUnit);
-            }
-        }
-    }
+				unit.redirectJumpsToThisTo(newUnit);
+				newUnit.addAllTagsOf(invokeStmt);
+				unitBox.setUnit(newUnit);
+			}
+		}
+	}
 
 }

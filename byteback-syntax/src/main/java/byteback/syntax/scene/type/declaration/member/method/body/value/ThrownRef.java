@@ -12,45 +12,45 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A concrete version of JCaughtExceptionRef, which can be assigned to. We use this to model exceptional behavior using
- * branches/guards.
+ * A concrete version of JCaughtExceptionRef, which can be assigned to. We use
+ * this to model exceptional behavior using branches/guards.
  *
  * @author paganma
  * @see GuardTransformer
  */
 public class ThrownRef implements IdentityRef, ConcreteRef, DefaultCaseValue {
 
-    public ThrownRef() {
-    }
+	public ThrownRef() {
+	}
 
-    @Override
-    public boolean equivTo(final Object object) {
-        return object instanceof ThrownRef;
-    }
+	@Override
+	public boolean equivTo(final Object object) {
+		return object instanceof ThrownRef;
+	}
 
-    @Override
-    public int equivHashCode() {
-        return 34949;
-    }
+	@Override
+	public int equivHashCode() {
+		return 34949;
+	}
 
-    @Override
-    public List<ValueBox> getUseBoxes() {
-        return Collections.emptyList();
-    }
+	@Override
+	public List<ValueBox> getUseBoxes() {
+		return Collections.emptyList();
+	}
 
-    @Override
-    public Type getType() {
-        return RefType.v("java.lang.Throwable");
-    }
+	@Override
+	public Type getType() {
+		return RefType.v("java.lang.Throwable");
+	}
 
-    @Override
-    public Object clone() {
-        return new ThrownRef();
-    }
+	@Override
+	public Object clone() {
+		return new ThrownRef();
+	}
 
-    @Override
-    public void toString(final UnitPrinter printer) {
-        printer.literal("@thrown");
-    }
+	@Override
+	public void toString(final UnitPrinter printer) {
+		printer.literal("@thrown");
+	}
 
 }

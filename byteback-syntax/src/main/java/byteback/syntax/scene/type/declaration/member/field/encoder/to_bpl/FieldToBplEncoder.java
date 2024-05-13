@@ -8,30 +8,30 @@ import soot.SootField;
 
 public class FieldToBplEncoder extends FieldEncoder {
 
-    public FieldToBplEncoder(final Printer printer) {
-        super(printer);
-    }
+	public FieldToBplEncoder(final Printer printer) {
+		super(printer);
+	}
 
-    public void encodeFieldConstant(final SootField sootField) {
-        final SootClass declaringClass = sootField.getDeclaringClass();
-        printer.print("`");
-        printer.print(declaringClass.getName());
-        printer.print(".");
-        printer.print(sootField.getName());
-        printer.print("`");
-    }
+	public void encodeFieldConstant(final SootField sootField) {
+		final SootClass declaringClass = sootField.getDeclaringClass();
+		printer.print("`");
+		printer.print(declaringClass.getName());
+		printer.print(".");
+		printer.print(sootField.getName());
+		printer.print("`");
+	}
 
-    public void encodeFieldConstantDeclaration(final SootField sootField) {
-        printer.print("const unique ");
-        encodeFieldConstant(sootField);
-        printer.print(": Field ");
-        new TypeAccessToBplEncoder(printer).encodeTypeAccess(sootField.getType());
-        printer.print(";");
-        printer.endLine();
-    }
+	public void encodeFieldConstantDeclaration(final SootField sootField) {
+		printer.print("const unique ");
+		encodeFieldConstant(sootField);
+		printer.print(": Field ");
+		new TypeAccessToBplEncoder(printer).encodeTypeAccess(sootField.getType());
+		printer.print(";");
+		printer.endLine();
+	}
 
-    public void encodeField(final SootField sootField) {
-        encodeFieldConstantDeclaration(sootField);
-    }
+	public void encodeField(final SootField sootField) {
+		encodeFieldConstantDeclaration(sootField);
+	}
 
 }

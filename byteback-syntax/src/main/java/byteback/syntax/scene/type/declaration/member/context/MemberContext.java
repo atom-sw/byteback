@@ -5,14 +5,14 @@ import byteback.syntax.scene.type.declaration.context.ClassContext;
 
 public abstract class MemberContext implements Context {
 
-    private final ClassContext classContext;
+	private final ClassContext classContext;
 
-    public MemberContext(final ClassContext classContext) {
-        this.classContext = classContext;
-    }
+	public MemberContext(final ClassContext classContext) {
+		this.classContext = classContext;
+	}
 
-    public ClassContext getClassContext() {
-        return classContext;
-    }
+	public ClassContext getClassContext() {
+		return classContext;
+	}
 
 }

@@ -21,11 +21,38 @@ import java.util.function.Supplier;
 
 /**
  * Expands loop invariants into a set of assertions and assumptions. The
- * criteria used is as follows: ``` java HEAD: ...
- * invariant e; ... if (c) goto EXIT; ... goto HEAD; ... EXIT: ... ``` is
- * transformed into: ``` java assert e; HEAD:
- * assume e; ... assert e; if (c) goto EXIT; ... assert e; goto HEAD; ... EXIT:
- * assume e ... ```
+ * criteria used is as follows:
+ *
+ * ``` java
+ * HEAD:
+ * ...
+ * invariant e;
+ * ...
+ * if (c) goto EXIT;
+ * ...
+ * goto HEAD;
+ * ...
+ * EXIT:
+ * ...
+ * ```
+ *
+ * is transformed into:
+ *
+ * ``` java
+ * assert e;
+ * HEAD:
+ * assume e;
+ * ...
+ * assert e;
+ * if (c) goto EXIT;
+ * ...
+ * assert e;
+ * goto HEAD;
+ * ...
+ * EXIT:
+ * assume e
+ * ...
+ * ```
  *
  * @author paganma
  */

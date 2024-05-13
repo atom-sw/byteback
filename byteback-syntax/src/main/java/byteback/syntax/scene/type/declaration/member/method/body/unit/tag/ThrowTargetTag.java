@@ -11,25 +11,25 @@ import soot.tagkit.Tag;
  */
 public class ThrowTargetTag implements Tag {
 
-    public static String NAME = "ThrowTargetTag";
+	public static String NAME = "ThrowTargetTag";
 
-    private static final Lazy<ThrowTargetTag> INSTANCE = Lazy.from(ThrowTargetTag::new);
+	private static final Lazy<ThrowTargetTag> INSTANCE = Lazy.from(ThrowTargetTag::new);
 
-    public static ThrowTargetTag v() {
-        return INSTANCE.get();
-    }
+	public static ThrowTargetTag v() {
+		return INSTANCE.get();
+	}
 
-    private ThrowTargetTag() {
-    }
+	private ThrowTargetTag() {
+	}
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-    @Override
-    public byte[] getValue() throws AttributeValueException {
-        return new byte[0];
-    }
+	@Override
+	public byte[] getValue() throws AttributeValueException {
+		return new byte[0];
+	}
 
 }

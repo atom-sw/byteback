@@ -9,7 +9,8 @@ import soot.*;
 import soot.jimple.Jimple;
 
 /**
- * Explicitly introduces the basic assumption that @Caught != null.
+ * Explicitly introduces the basic assumption that @thrown != unit at the start
+ * of the method.
  *
  * @author paganma
  */

@@ -1,6 +1,5 @@
 package byteback.syntax.scene.type.declaration.member.method.body.unit;
 
-import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.Jimple;
@@ -13,8 +12,8 @@ import soot.jimple.internal.JIfStmt;
  */
 public class JumpStmt extends JIfStmt {
 
-    public JumpStmt(final Value condition, final Unit target) {
-        super(Jimple.v().newImmediateBox(condition), Jimple.v().newStmtBox(target));
-    }
+	public JumpStmt(final Value condition, final Unit target) {
+		super(Jimple.v().newImmediateBox(condition), Jimple.v().newStmtBox(target));
+	}
 
 }

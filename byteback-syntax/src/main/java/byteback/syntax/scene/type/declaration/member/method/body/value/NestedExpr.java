@@ -1,6 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
-import byteback.syntax.scene.type.declaration.member.method.body.value.box.AssignedValueBox;
+import byteback.syntax.scene.type.declaration.member.method.body.value.box.DefValueBox;
 import soot.*;
 import soot.jimple.Jimple;
 
@@ -9,61 +9,61 @@ import java.util.List;
 
 public class NestedExpr implements Immediate, DefaultCaseValue {
 
-    private final AssignedValueBox valueBox;
+	private final DefValueBox valueBox;
 
-    public NestedExpr(final AssignedValueBox valueBox) {
-        this.valueBox = valueBox;
-    }
+	public NestedExpr(final DefValueBox valueBox) {
+		this.valueBox = valueBox;
+	}
 
-    public NestedExpr(final Value value) {
-        this(new AssignedValueBox(value));
-    }
+	public NestedExpr(final Value value) {
+		this(new DefValueBox(value));
+	}
 
-    public final Value getValue() {
-        return valueBox.getValue();
-    }
+	public final Value getValue() {
+		return valueBox.getValue();
+	}
 
-    @Override
-    public List<ValueBox> getUseBoxes() {
-        final var useBoxes = new ArrayList<ValueBox>();
-        useBoxes.add(valueBox);
-        final Value value = valueBox.getValue();
-				useBoxes.addAll(value.getUseBoxes());
+	@Override
+	public List<ValueBox> getUseBoxes() {
+		final var useBoxes = new ArrayList<ValueBox>();
+		useBoxes.add(valueBox);
+		final Value value = valueBox.getValue();
+		useBoxes.addAll(value.getUseBoxes());
 
-        return useBoxes;
-    }
+		return useBoxes;
+	}
 
-    @Override
-    public Type getType() {
-        final Value value = valueBox.getValue();
+	@Override
+	public Type getType() {
+		final Value value = valueBox.getValue();
 
-        return value.getType();
-    }
+		return value.getType();
+	}
 
-    @Override
-    public Object clone() {
-        return new NestedExpr(Jimple.cloneIfNecessary(getValue()));
-    }
+	@Override
+	public Object clone() {
+		return new NestedExpr(Jimple.cloneIfNecessary(getValue()));
+	}
 
-    @Override
-    public boolean equivTo(final Object object) {
-        final Value value = valueBox.getValue();
+	@Override
+	public boolean equivTo(final Object object) {
+		final Value value = valueBox.getValue();
 
-        return value.equivTo(object);
-    }
+		return value.equivTo(object);
+	}
 
-    @Override
-    public int equivHashCode() {
-        final Value value = valueBox.getValue();
+	@Override
+	public int equivHashCode() {
+		final Value value = valueBox.getValue();
 
-        return value.equivHashCode();
-    }
+		return value.equivHashCode();
+	}
 
-    @Override
-    public void toString(final UnitPrinter printer) {
-        printer.literal("<");
-        getValue().toString(printer);
-        printer.literal(">");
-    }
+	@Override
+	public void toString(final UnitPrinter printer) {
+		printer.literal("<");
+		getValue().toString(printer);
+		printer.literal(">");
+	}
 
 }

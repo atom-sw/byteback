@@ -10,40 +10,41 @@ import soot.ValueBox;
 import soot.jimple.ConcreteRef;
 
 /**
- * Transforms invocations to behavioral functions to pure (mathematical) function calls.
+ * Transforms invocations to behavioral functions to pure (mathematical)
+ * function calls.
  *
  * @author paganma
  */
 public class OldExprTightener extends ValueTransformer {
 
-    private static final Lazy<OldExprTightener> INSTANCE = Lazy.from(OldExprTightener::new);
+	private static final Lazy<OldExprTightener> INSTANCE = Lazy.from(OldExprTightener::new);
 
-    public static OldExprTightener v() {
-        return INSTANCE.get();
-    }
+	public static OldExprTightener v() {
+		return INSTANCE.get();
+	}
 
-    private OldExprTightener() {
-    }
+	private OldExprTightener() {
+	}
 
-    @Override
-    public void transformValue(final ValueContext valueContext) {
-        final ValueBox valueBox = valueContext.getValueBox();
-        final Value value = valueBox.getValue();
+	@Override
+	public void transformValue(final ValueContext valueContext) {
+		final ValueBox valueBox = valueContext.getValueBox();
+		final Value value = valueBox.getValue();
 
-        if (value instanceof final OldExpr oldExpr) {
-            final Value opValue = oldExpr.getOp();
+		if (value instanceof final OldExpr oldExpr) {
+			final Value opValue = oldExpr.getOp();
 
-            for (final ValueBox useBox : opValue.getUseBoxes()) {
-                final Value useValue = useBox.getValue();
+			for (final ValueBox useBox : opValue.getUseBoxes()) {
+				final Value useValue = useBox.getValue();
 
-                if (useValue instanceof ConcreteRef || useValue instanceof CallExpr) {
-                    final OldExpr newOldExpr = Vimp.v().newOldExpr(useValue);
-                    useBox.setValue(newOldExpr);
-                }
-            }
+				if (useValue instanceof ConcreteRef || useValue instanceof CallExpr) {
+					final OldExpr newOldExpr = Vimp.v().newOldExpr(useValue);
+					useBox.setValue(newOldExpr);
+				}
+			}
 
-            valueBox.setValue(opValue);
-        }
-    }
+			valueBox.setValue(opValue);
+		}
+	}
 
 }

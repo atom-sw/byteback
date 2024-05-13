@@ -7,41 +7,40 @@ import soot.ValueBox;
 import soot.jimple.BinopExpr;
 import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractBinopExpr;
-import soot.jimple.internal.ImmediateBox;
 
 public class ExtendsExpr extends AbstractBinopExpr implements BinopExpr, DefaultCaseValue {
 
-    public ExtendsExpr(final ValueBox op1Box, final ValueBox op2Box) {
-        super(op1Box, op2Box);
-    }
+	public ExtendsExpr(final ValueBox op1Box, final ValueBox op2Box) {
+		super(op1Box, op2Box);
+	}
 
-    @Override
-    public String getSymbol() {
-        return " <: ";
-    }
+	@Override
+	public String getSymbol() {
+		return " <: ";
+	}
 
-    public ExtendsExpr(final Value op1, final Value op2) {
-        this(Jimple.v().newImmediateBox(op1), Jimple.v().newImmediateBox(op2));
-    }
+	public ExtendsExpr(final Value op1, final Value op2) {
+		this(Jimple.v().newImmediateBox(op1), Jimple.v().newImmediateBox(op2));
+	}
 
-    @Override
-    public Type getType() {
-        return BooleanType.v();
-    }
+	@Override
+	public Type getType() {
+		return BooleanType.v();
+	}
 
-    @Override
-    public Object clone() {
-        return new ExtendsExpr(op1Box, op2Box);
-    }
+	@Override
+	public Object clone() {
+		return new ExtendsExpr(op1Box, op2Box);
+	}
 
-    @Override
-    public boolean equivTo(Object o) {
-        return false;
-    }
+	@Override
+	public boolean equivTo(Object o) {
+		return false;
+	}
 
-    @Override
-    public int equivHashCode() {
-        return (getOp1().equivHashCode() + getOp2().equivHashCode()) * 31;
-    }
+	@Override
+	public int equivHashCode() {
+		return (getOp1().equivHashCode() + getOp2().equivHashCode()) * 31;
+	}
 
 }

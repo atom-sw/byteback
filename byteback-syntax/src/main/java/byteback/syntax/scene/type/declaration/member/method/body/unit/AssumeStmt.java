@@ -11,19 +11,19 @@ import soot.jimple.Jimple;
  */
 public class AssumeStmt extends SpecificationStmt implements DefaultCaseUnit {
 
-    public AssumeStmt(final Value condition) {
-        super(condition);
-    }
+	public AssumeStmt(final Value condition) {
+		super(condition);
+	}
 
-    @Override
-    public AssumeStmt clone() {
-        return new AssumeStmt(Jimple.cloneIfNecessary(getCondition()));
-    }
+	@Override
+	public AssumeStmt clone() {
+		return new AssumeStmt(Jimple.cloneIfNecessary(getCondition()));
+	}
 
-    @Override
-    public void toString(final UnitPrinter printer) {
-        printer.literal("assume ");
-        getCondition().toString(printer);
-    }
+	@Override
+	public void toString(final UnitPrinter printer) {
+		printer.literal("assume ");
+		getCondition().toString(printer);
+	}
 
 }

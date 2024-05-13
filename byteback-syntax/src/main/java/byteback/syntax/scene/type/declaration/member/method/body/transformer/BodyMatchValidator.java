@@ -13,44 +13,44 @@ import soot.ValueBox;
 
 public abstract class BodyMatchValidator extends BodyTransformer {
 
-    public abstract boolean admitsDef(final ValueContext value);
+	public abstract boolean admitsDef(final ValueContext value);
 
-    public abstract boolean admitsUse(final ValueContext value);
+	public abstract boolean admitsUse(final ValueContext value);
 
-    public abstract boolean admitsUnit(final UnitContext unit);
+	public abstract boolean admitsUnit(final UnitContext unit);
 
-    @Override
-    public void transformBody(final BodyContext bodyContext) {
-        final Body body = bodyContext.getBody();
+	@Override
+	public void transformBody(final BodyContext bodyContext) {
+		final Body body = bodyContext.getBody();
 
-        for (final Unit unit : body.getUnits()) {
-            final var unitBox = new ImmutableUnitBox(unit);
-            final var unitContext = new UnitContext(bodyContext, unitBox);
+		for (final Unit unit : body.getUnits()) {
+			final var unitBox = new ImmutableUnitBox(unit);
+			final var unitContext = new UnitContext(bodyContext, unitBox);
 
-            if (!admitsUnit(unitContext)) {
-                throw new TransformationException("Invalid statement: " + unit + ".", unit);
-            }
+			if (!admitsUnit(unitContext)) {
+				throw new TransformationException("Invalid statement: " + unit + ".", unit);
+			}
 
-            for (final ValueBox useBox : unit.getUseBoxes()) {
-                final Value value = useBox.getValue();
-                final var immutableUseBox = new ImmutableValueBox(value);
-                final var valueContext = new ValueContext(unitContext, immutableUseBox);
+			for (final ValueBox useBox : unit.getUseBoxes()) {
+				final Value value = useBox.getValue();
+				final var immutableUseBox = new ImmutableValueBox(value);
+				final var valueContext = new ValueContext(unitContext, immutableUseBox);
 
-                if (!admitsUse(valueContext)) {
-                    throw new TransformationException("Invalid use expression: " + value + ".", unit);
-                }
-            }
+				if (!admitsUse(valueContext)) {
+					throw new TransformationException("Invalid use expression: " + value + ".", unit);
+				}
+			}
 
-            for (final ValueBox defBox : unit.getDefBoxes()) {
-                final Value value = defBox.getValue();
-                final var immutableUseBox = new ImmutableValueBox(value);
-                final var valueContext = new ValueContext(unitContext, immutableUseBox);
+			for (final ValueBox defBox : unit.getDefBoxes()) {
+				final Value value = defBox.getValue();
+				final var immutableUseBox = new ImmutableValueBox(value);
+				final var valueContext = new ValueContext(unitContext, immutableUseBox);
 
-                if (!admitsDef(valueContext)) {
-                    throw new TransformationException("Invalid definition expression: " + value + ".", unit);
-                }
-            }
-        }
-    }
+				if (!admitsDef(valueContext)) {
+					throw new TransformationException("Invalid definition expression: " + value + ".", unit);
+				}
+			}
+		}
+	}
 
 }

@@ -8,41 +8,41 @@ import soot.jimple.Constant;
 
 public class TypeConstant extends Constant implements DefaultCaseValue {
 
-    public final RefType value;
+	public final RefType value;
 
-    public TypeConstant(final RefType type) {
-        this.value = type;
-    }
+	public TypeConstant(final RefType type) {
+		this.value = type;
+	}
 
-    @Override
-    public Type getType() {
-        return TypeType.v();
-    }
+	@Override
+	public Type getType() {
+		return TypeType.v();
+	}
 
-    @Override
-    public Object clone() {
-        return new TypeConstant(value);
-    }
+	@Override
+	public Object clone() {
+		return new TypeConstant(value);
+	}
 
-    @Override
-    public boolean equivTo(final Object object) {
-        return object instanceof final TypeConstant typeConstant
-                && typeConstant.value == value;
-    }
+	@Override
+	public boolean equivTo(final Object object) {
+		return object instanceof final TypeConstant typeConstant
+				&& typeConstant.value == value;
+	}
 
-    @Override
-    public int equivHashCode() {
-        return value.getNumber() * 31;
-    }
+	@Override
+	public int equivHashCode() {
+		return value.getNumber() * 31;
+	}
 
-    @Override
-    public void toString(final UnitPrinter printer) {
-        printer.literal("@" + value.toString());
-    }
+	@Override
+	public void toString(final UnitPrinter printer) {
+		printer.literal("@" + value.toString());
+	}
 
-    @Override
-    public String toString() {
-        return "@" + value.toString();
-    }
+	@Override
+	public String toString() {
+		return "@" + value.toString();
+	}
 
 }

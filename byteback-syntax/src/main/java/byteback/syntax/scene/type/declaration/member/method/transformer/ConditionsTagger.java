@@ -72,7 +72,8 @@ public class ConditionsTagger extends MethodTransformer {
 								final Value behaviorCall = PreBehaviorResolver.v().resolveBehavior(targetMethod, behaviorName);
 								final Value condition = Vimp.v().newImpliesExpr(
 										Vimp.v().nest(
-												Vimp.v().newOldExpr(behaviorCall)),
+												Vimp.v().newOldExpr(
+														Vimp.v().nest(behaviorCall))),
 										Vimp.v().nest(
 												Jimple.v().newEqExpr(Vimp.v().nest(
 														Vimp.v().newThrownRef()),
@@ -105,7 +106,7 @@ public class ConditionsTagger extends MethodTransformer {
 													targetMethod, behaviorName);
 											final Value condition = Vimp.v().newImpliesExpr(
 													Vimp.v().nest(
-															Vimp.v().newOldExpr(behaviorCall)),
+															Vimp.v().newOldExpr(Vimp.v().nest(behaviorCall))),
 													Vimp.v().nest(
 															Jimple.v().newInstanceOfExpr(
 																	Vimp.v().nest(Vimp.v().newThrownRef()),

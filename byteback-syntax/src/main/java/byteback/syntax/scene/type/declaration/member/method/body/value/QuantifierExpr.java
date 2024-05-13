@@ -118,7 +118,7 @@ public abstract class QuantifierExpr implements Expr {
 
 			printer.literal(" } ");
 		}
-		
+
 		getValue().toString(printer);
 		printer.literal(")");
 	}

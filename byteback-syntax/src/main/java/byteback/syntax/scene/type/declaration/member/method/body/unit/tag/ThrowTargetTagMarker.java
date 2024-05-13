@@ -11,15 +11,15 @@ import soot.tagkit.Host;
  */
 public class ThrowTargetTagMarker extends TagMarker<Host, ThrowTargetTag> {
 
-    private static final Lazy<ThrowTargetTagMarker> INSTANCE =
-            Lazy.from(() -> new ThrowTargetTagMarker(ThrowTargetTag.v()));
+	private static final Lazy<ThrowTargetTagMarker> INSTANCE = Lazy
+			.from(() -> new ThrowTargetTagMarker(ThrowTargetTag.v()));
 
-    public static ThrowTargetTagMarker v() {
-        return INSTANCE.get();
-    }
+	public static ThrowTargetTagMarker v() {
+		return INSTANCE.get();
+	}
 
-    private ThrowTargetTagMarker(final ThrowTargetTag tag) {
-        super(tag);
-    }
+	private ThrowTargetTagMarker(final ThrowTargetTag tag) {
+		super(tag);
+	}
 
 }

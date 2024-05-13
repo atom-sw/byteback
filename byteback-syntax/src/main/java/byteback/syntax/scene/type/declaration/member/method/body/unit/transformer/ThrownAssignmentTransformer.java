@@ -11,28 +11,27 @@ import soot.jimple.*;
  */
 public class ThrownAssignmentTransformer extends UnitTransformer {
 
-    private static final Lazy<ThrownAssignmentTransformer> INSTANCE = Lazy.from(ThrownAssignmentTransformer::new);
+	private static final Lazy<ThrownAssignmentTransformer> INSTANCE = Lazy.from(ThrownAssignmentTransformer::new);
 
-    private ThrownAssignmentTransformer() {
-    }
+	private ThrownAssignmentTransformer() {
+	}
 
-    public static ThrownAssignmentTransformer v() {
-        return INSTANCE.get();
-    }
+	public static ThrownAssignmentTransformer v() {
+		return INSTANCE.get();
+	}
 
-    @Override
-    public void transformUnit(final UnitContext unitContext) {
-        final UnitBox unitBox = unitContext.getUnitBox();
-        final Unit unit = unitBox.getUnit();
+	@Override
+	public void transformUnit(final UnitContext unitContext) {
+		final UnitBox unitBox = unitContext.getUnitBox();
+		final Unit unit = unitBox.getUnit();
 
-        if (unit instanceof final IdentityStmt identityStmt
-                && identityStmt.getRightOp() instanceof CaughtExceptionRef) {
-            final Unit thrownAssignStmt = Jimple.v().newAssignStmt(
-                    identityStmt.getLeftOp(),
-                    Vimp.v().newThrownRef()
-            );
-            unitBox.setUnit(thrownAssignStmt);
-        }
-    }
+		if (unit instanceof final IdentityStmt identityStmt
+				&& identityStmt.getRightOp() instanceof CaughtExceptionRef) {
+			final Unit thrownAssignStmt = Jimple.v().newAssignStmt(
+					identityStmt.getLeftOp(),
+					Vimp.v().newThrownRef());
+			unitBox.setUnit(thrownAssignStmt);
+		}
+	}
 
 }

@@ -74,7 +74,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 					for (final Value value : preconditions) {
 						printer.print(SPEC_INDENT);
 						printer.print("requires ");
-						new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.PRE_STATE).encodeValue(value);
+						new ValueToBplEncoder(printer).encodeValue(value);
 						printer.printLine(";");
 					}
 				});
@@ -86,7 +86,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 					for (final Value value : postconditions) {
 						printer.print(SPEC_INDENT);
 						printer.print("ensures ");
-						new ValueToBplEncoder(printer, ValueToBplEncoder.HeapContext.POST_STATE).encodeValue(value);
+						new ValueToBplEncoder(printer).encodeValue(value);
 						printer.printLine(";");
 					}
 				});

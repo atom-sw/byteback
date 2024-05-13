@@ -16,43 +16,41 @@ import java.util.Optional;
  */
 public class NullCheckTransformer extends CheckTransformer {
 
-    public NullCheckTransformer(final Scene scene) {
-        super(scene, "java.lang.NullPointerException");
-    }
+	public NullCheckTransformer(final Scene scene) {
+		super(scene, "java.lang.NullPointerException");
+	}
 
-    @Override
-    public Optional<Value> makeUnitCheck(final Unit unit) {
+	@Override
+	public Optional<Value> makeUnitCheck(final Unit unit) {
 
-        for (final ValueBox valueBox : unit.getUseAndDefBoxes()) {
-            final Value value = valueBox.getValue();
+		for (final ValueBox valueBox : unit.getUseAndDefBoxes()) {
+			final Value value = valueBox.getValue();
+			final Value base;
 
-            final Value base;
+			if (value instanceof final Ref ref) {
+				if (ref instanceof final InstanceFieldRef instanceFieldRef) {
+					base = instanceFieldRef.getBase();
+				} else if (ref instanceof final ArrayRef arrayRef) {
+					base = arrayRef.getBase();
+				} else {
+					continue;
+				}
+			} else if (value instanceof final InstanceInvokeExpr invokeExpr) {
+				base = invokeExpr.getBase();
+			} else {
+				continue;
+			}
 
-            if (value instanceof final Ref ref) {
-                if (ref instanceof final InstanceFieldRef instanceFieldRef) {
-                    base = instanceFieldRef.getBase();
-                } else if (ref instanceof final ArrayRef arrayRef) {
-                    base = arrayRef.getBase();
-                } else {
-                    continue;
-                }
-            } else if (value instanceof final InstanceInvokeExpr invokeExpr) {
-                base = invokeExpr.getBase();
-            } else {
-                continue;
-            }
+			if (base != null) {
+				final Value condition = Jimple.v().newNeExpr(
+						Vimp.v().nest(base),
+						NullConstant.v());
 
-            if (base != null) {
-                final Value condition = Jimple.v().newNeExpr(
-                        Vimp.v().nest(base),
-                        NullConstant.v()
-                );
+				return Optional.of(condition);
+			}
+		}
 
-                return Optional.of(condition);
-            }
-        }
-
-        return Optional.empty();
-    }
+		return Optional.empty();
+	}
 
 }

@@ -7,9 +7,9 @@ import soot.jimple.ConcreteRef;
 import soot.jimple.Expr;
 import soot.jimple.IdentityRef;
 
-public class AssignedValueBox extends AbstractValueBox {
+public class DefValueBox extends AbstractValueBox {
 
-	public AssignedValueBox(final Value value) {
+	public DefValueBox(final Value value) {
 		setValue(value);
 	}
 

@@ -7,26 +7,25 @@ import byteback.syntax.scene.type.declaration.member.method.body.unit.context.Un
 import soot.Body;
 import soot.PatchingChain;
 import soot.Unit;
-import soot.UnitBox;
 
 import java.util.Iterator;
 
 public abstract class UnitTransformer extends BodyTransformer {
 
-    public abstract void transformUnit(final UnitContext unitContext);
+	public abstract void transformUnit(final UnitContext unitContext);
 
-    @Override
-    public void transformBody(final BodyContext bodyTransformationContext) {
-        final Body body = bodyTransformationContext.getBody();
-        final PatchingChain<Unit> units = body.getUnits();
-        final Iterator<Unit> unitIterator = units.snapshotIterator();
+	@Override
+	public void transformBody(final BodyContext bodyTransformationContext) {
+		final Body body = bodyTransformationContext.getBody();
+		final PatchingChain<Unit> units = body.getUnits();
+		final Iterator<Unit> unitIterator = units.snapshotIterator();
 
-        while (unitIterator.hasNext()) {
-            final Unit unit = unitIterator.next();
-            final var unitBox = new MutableUnitBox(unit, body);
-            final var unitContext = new UnitContext(bodyTransformationContext, unitBox);
-            transformUnit(unitContext);
-        }
-    }
+		while (unitIterator.hasNext()) {
+			final Unit unit = unitIterator.next();
+			final var unitBox = new MutableUnitBox(unit, body);
+			final var unitContext = new UnitContext(bodyTransformationContext, unitBox);
+			transformUnit(unitContext);
+		}
+	}
 
 }
