@@ -65,7 +65,7 @@ public class ImplementationPropagator extends SceneTransformer {
 			final SootClass attachedClass = scene.getSootClassUnsafe(attachedName);
 
 			if (attachedClass == null) {
-				logger.warn("Unable to find class: " + attachedName + " for attaching " + attachingClass);
+				logger.warn("Unable to find class: " + attachedName + " for attaching " + attachingClass + ".");
 				continue;
 			}
 
