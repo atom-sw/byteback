@@ -3,6 +3,7 @@ package byteback.syntax.scene.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.context.SceneContext;
+import byteback.syntax.scene.type.declaration.member.method.tag.ExportTagMarker;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.Scene;
 import soot.SootClass;
@@ -73,16 +74,18 @@ public class ImplementationPropagator extends SceneTransformer {
 			final var methodsSnapshot = new ArrayList<>(methods);
 
 			for (final SootMethod attachingMethod : methodsSnapshot) {
-				final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();
-				final SootMethod attachedMethod = attachedClass.getMethodUnsafe(attachedSubSignature);
-				attachingClass.removeMethod(attachingMethod);
-				attachingMethod.setDeclared(false);
+				if (ExportTagMarker.v().hasTag(attachingMethod)) {
+					final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();
+					final SootMethod attachedMethod = attachedClass.getMethodUnsafe(attachedSubSignature);
+					attachingClass.removeMethod(attachingMethod);
+					attachingMethod.setDeclared(false);
 
-				if (attachedMethod != null) {
-					attachedClass.removeMethod(attachedMethod);
+					if (attachedMethod != null) {
+						attachedClass.removeMethod(attachedMethod);
+					}
+
+					attachedClass.addMethod(attachingMethod);
 				}
-
-				attachedClass.addMethod(attachingMethod);
 			}
 		}
 	}
