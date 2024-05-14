@@ -8,7 +8,7 @@ import byteback.specification.Contract.Abstract;
 public abstract class ListSpec<T> {
 
 	@Export
-	public boolean isImmutable;
+	public abstract boolean isMutable();
 
 	@Export
 	@Abstract

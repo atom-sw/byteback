@@ -28,7 +28,7 @@ public abstract class CollectionSpec {
 
 	@Behavior
 	public static <T> boolean returns_unmodifiable(List<T> list, List<T> returned) {
-		return eq(of(ListSpec.class, returned).isImmutable, true);
+		return eq(of(ListSpec.class, returned).isMutable(), true);
 	}
 
 	@Export
