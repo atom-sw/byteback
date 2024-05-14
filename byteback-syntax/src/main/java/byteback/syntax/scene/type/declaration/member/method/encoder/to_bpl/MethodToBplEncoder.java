@@ -20,9 +20,9 @@ public class MethodToBplEncoder extends MethodEncoder {
 		printer.print(sootMethod.getDeclaringClass().getName());
 		printer.print(".");
 		final String methodName = sootMethod.getName()
-			.replace("<", "_LT_")
-			.replace(">", "_GT_")
-			.replace(" ", "$");
+			.replace("<", "?LT?")
+			.replace(">", "?GT?")
+			.replace(" ", "?");
 		printer.print(methodName);
 		printer.print("#");
 		printer.startItems("#");
@@ -48,7 +48,6 @@ public class MethodToBplEncoder extends MethodEncoder {
 
 	@Override
 	public void encodeMethod(final SootMethod sootMethod) {
-
 		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
 			new BehaviorMethodToBplEncoder(printer).encodeMethod(sootMethod);
 		} else {
