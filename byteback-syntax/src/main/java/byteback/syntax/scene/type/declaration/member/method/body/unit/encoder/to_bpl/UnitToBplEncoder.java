@@ -112,9 +112,7 @@ public class UnitToBplEncoder extends UnitEncoder {
 
 				printer.separate();
 				valueEncoder.encodeValue(newArrayExpr.getSize());
-
 				printer.endItems();
-
 				printer.print(");");
 				return;
 			} else {
