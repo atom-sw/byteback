@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ImplementationPropagator extends SceneTransformer {
 
-	private static final Logger logger = LoggerFactory.getLogger(ImplementationPropagator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationPropagator.class);
 
 	private static final Lazy<ImplementationPropagator> INSTANCE = Lazy.from(ImplementationPropagator::new);
 
@@ -40,6 +40,14 @@ public class ImplementationPropagator extends SceneTransformer {
 	private ImplementationPropagator() {
 	}
 
+	private SootMethod cloneMethodImplementation(final SootMethod sootMethod) {
+		final var clonedSootMethod = new SootMethod(sootMethod.getName(), sootMethod.getParameterTypes(),
+				sootMethod.getReturnType(), sootMethod.getModifiers());
+		clonedSootMethod.addAllTagsOf(sootMethod);
+
+		return clonedSootMethod;
+	}
+
 	@Override
 	public void transformScene(final SceneContext sceneContext) {
 		final Scene scene = sceneContext.getScene();
@@ -47,11 +55,11 @@ public class ImplementationPropagator extends SceneTransformer {
 		final Iterator<SootClass> classIterator = classes.snapshotIterator();
 
 		while (classIterator.hasNext()) {
-			final SootClass attachingClass = classIterator.next();
+			final SootClass pluginClass = classIterator.next();
 			final AnnotationTag annotationTag;
 			final String attachedName;
-			final Optional<AnnotationTag> annotationOptional = AnnotationTagReader.v().getAnnotation(
-					attachingClass, BBLibNames.ATTACH_ANNOTATION);
+			final Optional<AnnotationTag> annotationOptional = AnnotationTagReader.v().getAnnotation(pluginClass,
+					BBLibNames.ATTACH_ANNOTATION);
 
 			if (annotationOptional.isPresent()) {
 				annotationTag = annotationOptional.get();
@@ -66,18 +74,18 @@ public class ImplementationPropagator extends SceneTransformer {
 			final SootClass attachedClass = scene.getSootClassUnsafe(attachedName);
 
 			if (attachedClass == null) {
-				logger.warn("Unable to find class: " + attachedName + " for attaching " + attachingClass + ".");
+				LOGGER.warn("Unable to find class: " + attachedName + " for attaching " + pluginClass + ".");
 				continue;
 			}
 
-			final List<SootMethod> methods = attachingClass.getMethods();
+			final List<SootMethod> methods = pluginClass.getMethods();
 			final var methodsSnapshot = new ArrayList<>(methods);
 
-			for (final SootMethod attachingMethod : methodsSnapshot) {
-				if (ExportTagMarker.v().hasTag(attachingMethod)) {
+			for (final SootMethod pluginMethod : methodsSnapshot) {
+				if (ExportTagMarker.v().hasTag(pluginMethod)) {
+					final SootMethod attachingMethod = cloneMethodImplementation(pluginMethod);
 					final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();
 					final SootMethod attachedMethod = attachedClass.getMethodUnsafe(attachedSubSignature);
-					attachingClass.removeMethod(attachingMethod);
 					attachingMethod.setDeclared(false);
 
 					if (attachedMethod != null) {
@@ -85,6 +93,7 @@ public class ImplementationPropagator extends SceneTransformer {
 					}
 
 					attachedClass.addMethod(attachingMethod);
+					attachingMethod.setDeclared(true);
 				}
 			}
 		}

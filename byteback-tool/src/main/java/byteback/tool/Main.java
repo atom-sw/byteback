@@ -28,22 +28,22 @@ public class Main implements Callable<Integer> {
 	@Option(names = "--help", help = true)
 	private boolean help;
 
-	@Option(names = {"-cp", "--classpath"}, description = "Conversion classpath", required = true)
+	@Option(names = { "-cp", "--classpath" }, description = "Conversion classpath", required = true)
 	private List<Path> classPaths;
 
-	@Option(names = {"-c", "--class"}, description = "Starting class for the conversion", required = true)
+	@Option(names = { "-c", "--class" }, description = "Starting class for the conversion", required = true)
 	private List<String> startingClasses;
 
-	@Option(names = {"-p", "--prelude"}, description = "Path to the prelude file")
+	@Option(names = { "-p", "--prelude" }, description = "Path to the prelude file")
 	private Path preludePath;
 
-	@Option(names = {"--npe"}, description = "Models implicit NullPointerExceptions")
+	@Option(names = { "--npe" }, description = "Models implicit NullPointerExceptions")
 	public boolean transformNullCheck = false;
 
-	@Option(names = {"--iobe"}, description = "Models implicit IndexOutOfBoundsExceptions")
+	@Option(names = { "--iobe" }, description = "Models implicit IndexOutOfBoundsExceptions")
 	public boolean transformArrayCheck = false;
 
-	@Option(names = {"-o", "--output"}, description = "Path to the output verification conditions")
+	@Option(names = { "-o", "--output" }, description = "Path to the output verification conditions")
 	private Path outputPath;
 
 	public boolean getHelp() {
@@ -85,35 +85,40 @@ public class Main implements Callable<Integer> {
 	}
 
 	private final String[] ghostClasses = new String[] {
-		"byteback.specification.ghost.ObjectSpec",
-		"byteback.specification.ghost.ExceptionSpec",
-		"byteback.specification.ghost.InvokeDynamicSpec",
-		"byteback.specification.ghost.KotlinIntrinsicsSpec"
+			"byteback.specification.ghost.ObjectSpec",
+			"byteback.specification.ghost.ExceptionSpec",
+			"byteback.specification.ghost.InvokeDynamicSpec",
+			"byteback.specification.ghost.KotlinIntrinsicsSpec"
 	};
 
 	public Integer call() throws Exception {
 		final long startTime = System.currentTimeMillis();
 
-		// We will add the classes using Options.v().classes, instead of using the Soot main.
+		// We will add the classes using Options.v().classes, instead of using the Soot
+		// main.
 		Options.v().set_weak_map_structures(true);
 		Options.v().set_unfriendly_mode(true);
 		final List<String> startingClasses = getStartingClasses();
 		startingClasses.addAll(List.of(ghostClasses));
 		Options.v().classes().addAll(startingClasses);
 
-		// For now ByteBack will not produce any output. Especially since we still haven't defined how Vimp should be
+		// For now ByteBack will not produce any output. Especially since we still
+		// haven't defined how Vimp should be
 		// compiled.
 		Options.v().set_output_format(Options.output_format_none);
 
-		// By default, Soot includes the $CLASSPATH env variable. To this we append the classpath specified by the
+		// By default, Soot includes the $CLASSPATH env variable. To this we append the
+		// classpath specified by the
 		// user.
 		Options.v().set_prepend_classpath(true);
 		Options.v().set_soot_classpath(formatClassPaths());
 
-		// Keeping the original names makes debugging the output simpler (though it is not strictly necessary).
+		// Keeping the original names makes debugging the output simpler (though it is
+		// not strictly necessary).
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 
-		// We will put most of the transformations needed before the conversion to the IVL in this pack.
+		// We will put most of the transformations needed before the conversion to the
+		// IVL in this pack.
 		Options.v().setPhaseOption("jtp", "enabled:true");
 
 		final Pack jtpPack = PackManager.v().getPack("jtp");
@@ -122,6 +127,7 @@ public class Main implements Callable<Integer> {
 
 		// - Jimple transformations
 		jtpPack.add(new Transform("jtp.ivf", InvokeFilter.v()));
+		jtpPack.add(new Transform("jtp.gor", GhostInliner.v()));
 
 		// - Vimp transformations
 		// Initial structural transformations
@@ -213,4 +219,3 @@ public class Main implements Callable<Integer> {
 	}
 
 }
-

@@ -25,6 +25,15 @@ public class VimpTypeInterpreter implements TypeInterpreter<Value> {
 		this.scene = scene;
 	}
 
+	public static Type toMachineType(Type type) {
+		if (type.equals(ShortType.v()) || type.equals(ByteType.v()) || type.equals(BooleanType.v())
+				|| type.equals(LongType.v()) || type.equals(CharType.v())) {
+			return IntType.v();
+		} else {
+			return type;
+		}
+	}
+
 	/**
 	 * Relates types based on the following partially-ordered relation:
 	 * 
@@ -71,7 +80,7 @@ public class VimpTypeInterpreter implements TypeInterpreter<Value> {
 				return NullType.v();
 			}
 
-			if (Type.toMachineType(type1) == Type.toMachineType(type2)) {
+			if (toMachineType(type1) == toMachineType(type2)) {
 				if (typeOrder(type1) < typeOrder(type2)) {
 					return type1;
 				} else {
