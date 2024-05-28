@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public abstract class ConditionsTag implements Tag {
 
-	private List<ValueBox> conditionBoxes;
+	private final List<ValueBox> conditionBoxes;
 
 	public ConditionsTag(final List<Value> conditions) {
 		this.conditionBoxes = conditions.stream()
