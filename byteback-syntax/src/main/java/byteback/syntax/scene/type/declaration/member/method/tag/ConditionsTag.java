@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * specific for conditional expressions and use it to parametrize the Tag.
- *
  * @author paganma
  */
 public abstract class ConditionsTag implements Tag {

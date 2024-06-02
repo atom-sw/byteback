@@ -198,6 +198,7 @@ public class Main implements Callable<Integer> {
 		HeapReadTransformer.v().transform();
 		OldHeapReadTransformer.v().transform();
 		ConditionsTagPropagator.v().transform();
+		InstanceChecksTagger.v().transform();
 		HierarchyAxiomTagger.v().transform();
 
 		try (final Printer printer = new Printer(outputPath.toString())) {

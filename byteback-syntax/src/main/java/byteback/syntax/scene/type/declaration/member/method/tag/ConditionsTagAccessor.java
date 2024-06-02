@@ -5,8 +5,8 @@ import soot.SootMethod;
 
 public abstract class ConditionsTagAccessor<T extends ConditionsTag> extends TagAccessor<SootMethod, T> {
 
-    public ConditionsTagAccessor(final String tagName) {
-        super(tagName);
-    }
+	public ConditionsTagAccessor(final String tagName) {
+		super(tagName);
+	}
 
 }
