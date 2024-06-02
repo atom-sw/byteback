@@ -4,15 +4,15 @@ includeBuild('./conventions')
 
 include(
 		':byteback-common',
-		':byteback-tool',
-		':byteback-syntax',
-    ':byteback-converter:boogie-converter',
 		':byteback-specification',
+		':byteback-syntax',
 		':byteback-test',
-		':byteback-test:test-scala-2.13.8',
-		':byteback-test:test-java-8',
 		':byteback-test:test-java-17',
-		':byteback-test:test-kotlin-1.8.0'
+		':byteback-test:test-java-8',
+		':byteback-test:test-kotlin-1.8.0',
+		':byteback-test:test-scala-2.13.8',
+		':byteback-tool',
+    ':byteback-converter:boogie-converter',
 )
 
 
