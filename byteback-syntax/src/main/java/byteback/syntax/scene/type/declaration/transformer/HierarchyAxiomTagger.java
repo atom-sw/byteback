@@ -72,13 +72,11 @@ public class HierarchyAxiomTagger extends ClassTransformer {
 							},
 							Vimp.v().newImpliesExpr(
 									Vimp.v().nest(
-											Vimp.v().nest(
-													Vimp.v().newExtendsExpr(t1Local, subType1))),
+											Vimp.v().newExtendsExpr(t1Local, subType1)),
 									Vimp.v().nest(
-											Vimp.v().nest(
-													Jimple.v().newNegExpr(
-															Vimp.v().nest(
-																	Vimp.v().newExtendsExpr(t1Local, subType2)))))));
+											Jimple.v().newNegExpr(
+													Vimp.v().nest(
+															Vimp.v().newExtendsExpr(t1Local, subType2))))));
 					axioms.add(axiom1);
 
 					final ForallExpr axiom2 = Vimp.v().newForallExpr(
