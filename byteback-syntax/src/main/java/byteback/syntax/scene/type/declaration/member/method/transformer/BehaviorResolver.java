@@ -10,38 +10,36 @@ import soot.util.NumberedString;
  */
 public abstract class BehaviorResolver {
 
-    protected abstract NumberedString makeBehaviorSignature(final SootMethod targetMethod, final String behaviorName);
+	protected abstract NumberedString makeBehaviorSignature(final SootMethod targetMethod, final String behaviorName);
 
-    protected abstract Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod);
+	protected abstract Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod);
 
-    protected SootMethod lookupBehavior(final SootMethod targetMethod, final String behaviorName) {
-        final SootClass declaringClass = targetMethod.getDeclaringClass();
-        final NumberedString behaviorSignature = makeBehaviorSignature(targetMethod, behaviorName);
-        final SootMethod behaviorMethod = declaringClass.getMethodUnsafe(behaviorSignature);
+	protected SootMethod lookupBehavior(final SootMethod targetMethod, final String behaviorName) {
+		final SootClass declaringClass = targetMethod.getDeclaringClass();
+		final NumberedString behaviorSignature = makeBehaviorSignature(targetMethod, behaviorName);
+		final SootMethod behaviorMethod = declaringClass.getMethodUnsafe(behaviorSignature);
 
-        if (behaviorMethod != null) {
-            if (!BehaviorTagMarker.v().hasTag(behaviorMethod)) {
-                throw new TransformationException(
-                        "Not a behavior method: "
-                                + behaviorName,
-                        targetMethod
-                );
-            }
+		if (behaviorMethod != null) {
+			if (!BehaviorTagMarker.v().hasTag(behaviorMethod)) {
+				throw new TransformationException(
+						"Not a behavior method: "
+								+ behaviorName,
+						targetMethod);
+			}
 
-            return behaviorMethod;
-        } else {
-            throw new TransformationException(
-                    "Could not find behavior method: "
-                            + behaviorName,
-                    targetMethod
-            );
-        }
-    }
+			return behaviorMethod;
+		} else {
+			throw new TransformationException(
+					"Could not find behavior method: "
+							+ behaviorName,
+					targetMethod);
+		}
+	}
 
-    public final Value resolveBehavior(final SootMethod targetMethod, final String behaviorName) {
-        final SootMethod behaviorMethod = lookupBehavior(targetMethod, behaviorName);
+	public final Value resolveBehavior(final SootMethod targetMethod, final String behaviorName) {
+		final SootMethod behaviorMethod = lookupBehavior(targetMethod, behaviorName);
 
-        return makeBehaviorExpr(targetMethod, behaviorMethod);
-    }
+		return makeBehaviorExpr(targetMethod, behaviorMethod);
+	}
 
 }

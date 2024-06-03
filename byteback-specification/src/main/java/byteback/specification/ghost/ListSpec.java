@@ -2,19 +2,33 @@ package byteback.specification.ghost;
 
 import byteback.specification.ghost.Ghost.Attach;
 import byteback.specification.ghost.Ghost.Export;
-import byteback.specification.Contract.Abstract;
-import byteback.specification.Contract.Return;
+
+import static byteback.specification.Operators.not;
+
+import byteback.specification.Contract.Behavior;
+import byteback.specification.Contract.Raise;
 
 @Attach("java.util.List")
-public abstract class ListSpec<T> {
+public interface ListSpec<T> {
 
 	@Export
-	public abstract boolean isMutable();
+	@Behavior
+	boolean is_modifiable();
 
 	@Export
-	@Abstract
-	@Return
-	public ListSpec() {
+	@Behavior
+	default boolean is_unmodifiable() {
+		return not(this.is_modifiable());
 	}
+
+	@Raise(exception = UnsupportedOperationException.class,
+				 when = "is_unmodifiable")
+	@Export
+	void add(T element);
+
+	@Raise(exception = UnsupportedOperationException.class,
+				 when = "is_unmodifiable")
+	@Export
+	void remove(T element);
 
 }

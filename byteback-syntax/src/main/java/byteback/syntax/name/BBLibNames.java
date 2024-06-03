@@ -60,6 +60,9 @@ public class BBLibNames {
 
 	public static final String THROWN_NAME = "thrown";
 
+	/** Class annotations */
+	public static final String CLASS_INVARIANT_ANNOTATION = "Lbyteback/specification/Contract$Invariant;";
+
 	/** Procedure annotations */
 	public static final String ENSURES_ANNOTATION = "Lbyteback/specification/Contract$Ensures;";
 

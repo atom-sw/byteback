@@ -11,7 +11,6 @@ import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Ensure;
 
 import static byteback.specification.Operators.eq;
-import static byteback.specification.ghost.Ghost.of;
 
 @Attach("java.util.Collection")
 public abstract class CollectionSpec {
@@ -28,7 +27,7 @@ public abstract class CollectionSpec {
 
 	@Behavior
 	public static <T> boolean returns_unmodifiable(List<T> list, List<T> returned) {
-		return eq(of(ListSpec.class, returned).isMutable(), true);
+		return eq(Ghost.of(ListSpec.class, returned).is_unmodifiable(), true);
 	}
 
 	@Export

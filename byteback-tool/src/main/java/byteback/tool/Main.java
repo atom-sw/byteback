@@ -8,6 +8,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
 import byteback.syntax.scene.type.declaration.member.method.transformer.*;
+import byteback.syntax.scene.type.declaration.transformer.ClassInvariantTagger;
 import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -195,6 +196,7 @@ public class Main implements Callable<Integer> {
 		PackManager.v().runPacks();
 
 		ConditionsTagger.v().transform();
+		ClassInvariantTagger.v().transform();
 		HeapReadTransformer.v().transform();
 		OldHeapReadTransformer.v().transform();
 		ConditionsTagPropagator.v().transform();
