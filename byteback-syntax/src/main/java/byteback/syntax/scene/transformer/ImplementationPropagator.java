@@ -73,6 +73,10 @@ public class ImplementationPropagator extends SceneTransformer {
 			}
 
 			final SootClass attachedClass = scene.getSootClassUnsafe(attachedName);
+			AnnotationTagReader.v()
+					.getAnnotations(pluginClass)
+					.filter((t) -> t.getName() == BBLibNames.ATTACH_ANNOTATION)
+					.forEach((t) -> attachedClass.addTag(t));
 
 			if (attachedClass == null) {
 				LOGGER.warn("Unable to find class: " + attachedName + " for attaching " + pluginClass + ".");
