@@ -4,6 +4,7 @@ import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.ProceduralBodyToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
+import byteback.syntax.scene.type.declaration.member.method.body.value.box.tag.FreeTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterRefFinder;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
@@ -69,10 +70,16 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 
 		PreconditionsTagAccessor.v().get(sootMethod)
 			.ifPresent((preconditionsTag) -> {
-					final List<Value> preconditions = preconditionsTag.getConditions();
+					final List<ValueBox> conditionBoxes = preconditionsTag.getConditionBoxes();
 
-					for (final Value value : preconditions) {
+					for (final ValueBox valueBox : conditionBoxes) {
+						final Value value = valueBox.getValue();
 						printer.print(SPEC_INDENT);
+
+						if (FreeTagMarker.v().hasTag(valueBox)) {
+							printer.print("free ");
+						}
+
 						printer.print("requires ");
 						new ValueToBplEncoder(printer).encodeValue(value);
 						printer.printLine(";");
@@ -81,10 +88,16 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 
 		PostconditionsTagAccessor.v().get(sootMethod)
 			.ifPresent((postconditionsTag) -> {
-					final List<Value> postconditions = postconditionsTag.getConditions();
+					final List<ValueBox> conditionBoxes = postconditionsTag.getConditionBoxes();
 
-					for (final Value value : postconditions) {
+					for (final ValueBox valueBox : conditionBoxes) {
+						final Value value = valueBox.getValue();
 						printer.print(SPEC_INDENT);
+
+						if (FreeTagMarker.v().hasTag(valueBox)) {
+							printer.print("free ");
+						}
+
 						printer.print("ensures ");
 						new ValueToBplEncoder(printer).encodeValue(value);
 						printer.printLine(";");
