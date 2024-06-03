@@ -11,25 +11,25 @@ import soot.tagkit.Tag;
  */
 public class ExceptionalTag implements Tag {
 
-    public static String NAME = "ExceptionalTag";
+	public static String NAME = "ExceptionalTag";
 
-    private static final Lazy<ExceptionalTag> INSTANCE = Lazy.from(ExceptionalTag::new);
+	private static final Lazy<ExceptionalTag> INSTANCE = Lazy.from(ExceptionalTag::new);
 
-    public static ExceptionalTag v() {
-        return INSTANCE.get();
-    }
+	public static ExceptionalTag v() {
+		return INSTANCE.get();
+	}
 
-    private ExceptionalTag() {
-    }
+	private ExceptionalTag() {
+	}
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-    @Override
-    public byte[] getValue() throws AttributeValueException {
-        return new byte[0];
-    }
+	@Override
+	public byte[] getValue() throws AttributeValueException {
+		return new byte[0];
+	}
 
 }

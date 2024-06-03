@@ -6,15 +6,14 @@ import soot.SootMethod;
 
 public class ExportTagMarker extends TagMarker<SootMethod, ExportTag> {
 
-    private static final Lazy<ExportTagMarker> INSTANCE =
-            Lazy.from(() -> new ExportTagMarker(ExportTag.v()));
+	private static final Lazy<ExportTagMarker> INSTANCE = Lazy.from(() -> new ExportTagMarker(ExportTag.v()));
 
-    public static ExportTagMarker v() {
-        return INSTANCE.get();
-    }
+	public static ExportTagMarker v() {
+		return INSTANCE.get();
+	}
 
-    private ExportTagMarker(final ExportTag tag) {
-        super(tag);
-    }
+	private ExportTagMarker(final ExportTag tag) {
+		super(tag);
+	}
 
 }

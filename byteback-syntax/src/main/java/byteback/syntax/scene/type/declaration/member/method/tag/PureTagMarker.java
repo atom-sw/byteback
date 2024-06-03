@@ -11,15 +11,14 @@ import soot.SootMethod;
  */
 public class PureTagMarker extends TagMarker<SootMethod, PureTag> {
 
-    private static final Lazy<PureTagMarker> INSTANCE =
-            Lazy.from(() -> new PureTagMarker(PureTag.v()));
+	private static final Lazy<PureTagMarker> INSTANCE = Lazy.from(() -> new PureTagMarker(PureTag.v()));
 
-    public static PureTagMarker v() {
-        return INSTANCE.get();
-    }
+	public static PureTagMarker v() {
+		return INSTANCE.get();
+	}
 
-    private PureTagMarker(final PureTag tag) {
-        super(tag);
-    }
+	private PureTagMarker(final PureTag tag) {
+		super(tag);
+	}
 
 }

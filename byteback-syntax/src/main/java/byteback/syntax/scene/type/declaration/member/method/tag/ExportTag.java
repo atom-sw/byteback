@@ -6,25 +6,25 @@ import soot.tagkit.Tag;
 
 public class ExportTag implements Tag {
 
-    public static String NAME = "ExportTag";
+	public static String NAME = "ExportTag";
 
-    private static final Lazy<ExportTag> INSTANCE = Lazy.from(ExportTag::new);
+	private static final Lazy<ExportTag> INSTANCE = Lazy.from(ExportTag::new);
 
-    public static ExportTag v() {
-        return INSTANCE.get();
-    }
+	public static ExportTag v() {
+		return INSTANCE.get();
+	}
 
-    private ExportTag() {
-    }
+	private ExportTag() {
+	}
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-    @Override
-    public byte[] getValue() throws AttributeValueException {
-        return new byte[0];
-    }
+	@Override
+	public byte[] getValue() throws AttributeValueException {
+		return new byte[0];
+	}
 
 }

@@ -11,15 +11,14 @@ import soot.SootMethod;
  */
 public class TwoStateTagMarker extends TagMarker<SootMethod, TwoStateTag> {
 
-    private static final Lazy<TwoStateTagMarker> INSTANCE =
-            Lazy.from(() -> new TwoStateTagMarker(TwoStateTag.v()));
+	private static final Lazy<TwoStateTagMarker> INSTANCE = Lazy.from(() -> new TwoStateTagMarker(TwoStateTag.v()));
 
-    public static TwoStateTagMarker v() {
-        return INSTANCE.get();
-    }
+	public static TwoStateTagMarker v() {
+		return INSTANCE.get();
+	}
 
-    private TwoStateTagMarker(final TwoStateTag tag) {
-        super(tag);
-    }
+	private TwoStateTagMarker(final TwoStateTag tag) {
+		super(tag);
+	}
 
 }

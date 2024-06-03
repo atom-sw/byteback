@@ -6,15 +6,14 @@ import soot.SootMethod;
 
 public class OperatorTagMarker extends TagMarker<SootMethod, OperatorTag> {
 
-    private static final Lazy<OperatorTagMarker> INSTANCE =
-            Lazy.from(() -> new OperatorTagMarker(OperatorTag.v()));
+	private static final Lazy<OperatorTagMarker> INSTANCE = Lazy.from(() -> new OperatorTagMarker(OperatorTag.v()));
 
-    public static OperatorTagMarker v() {
-        return INSTANCE.get();
-    }
+	public static OperatorTagMarker v() {
+		return INSTANCE.get();
+	}
 
-    private OperatorTagMarker(final OperatorTag tag) {
-        super(tag);
-    }
+	private OperatorTagMarker(final OperatorTag tag) {
+		super(tag);
+	}
 
 }

@@ -11,15 +11,14 @@ import soot.SootMethod;
  */
 public class BehaviorTagMarker extends TagMarker<SootMethod, BehaviorTag> {
 
-    private static final Lazy<BehaviorTagMarker> INSTANCE =
-            Lazy.from(() -> new BehaviorTagMarker(BehaviorTag.v()));
+	private static final Lazy<BehaviorTagMarker> INSTANCE = Lazy.from(() -> new BehaviorTagMarker(BehaviorTag.v()));
 
-    public static BehaviorTagMarker v() {
-        return INSTANCE.get();
-    }
+	public static BehaviorTagMarker v() {
+		return INSTANCE.get();
+	}
 
-    private BehaviorTagMarker(final BehaviorTag tag) {
-        super(tag);
-    }
+	private BehaviorTagMarker(final BehaviorTag tag) {
+		super(tag);
+	}
 
 }

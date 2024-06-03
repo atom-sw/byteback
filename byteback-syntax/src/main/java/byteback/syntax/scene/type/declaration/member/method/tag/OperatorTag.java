@@ -6,25 +6,25 @@ import soot.tagkit.Tag;
 
 public class OperatorTag implements Tag {
 
-    public static final String NAME = "OperatorTag";
+	public static final String NAME = "OperatorTag";
 
-    private static final Lazy<OperatorTag> INSTANCE = Lazy.from(OperatorTag::new);
+	private static final Lazy<OperatorTag> INSTANCE = Lazy.from(OperatorTag::new);
 
-    public static OperatorTag v() {
-        return INSTANCE.get();
-    }
+	public static OperatorTag v() {
+		return INSTANCE.get();
+	}
 
-    private OperatorTag() {
-    }
+	private OperatorTag() {
+	}
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-    @Override
-    public byte[] getValue() throws AttributeValueException {
-        return new byte[0];
-    }
+	@Override
+	public byte[] getValue() throws AttributeValueException {
+		return new byte[0];
+	}
 
 }

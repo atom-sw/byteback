@@ -11,15 +11,14 @@ import soot.SootMethod;
  */
 public class IgnoreTagMarker extends TagMarker<SootMethod, IgnoreTag> {
 
-    private static final Lazy<IgnoreTagMarker> INSTANCE =
-            Lazy.from(() -> new IgnoreTagMarker(IgnoreTag.v()));
+	private static final Lazy<IgnoreTagMarker> INSTANCE = Lazy.from(() -> new IgnoreTagMarker(IgnoreTag.v()));
 
-    public static IgnoreTagMarker v() {
-        return INSTANCE.get();
-    }
+	public static IgnoreTagMarker v() {
+		return INSTANCE.get();
+	}
 
-    private IgnoreTagMarker(final IgnoreTag tag) {
-        super(tag);
-    }
+	private IgnoreTagMarker(final IgnoreTag tag) {
+		super(tag);
+	}
 
 }

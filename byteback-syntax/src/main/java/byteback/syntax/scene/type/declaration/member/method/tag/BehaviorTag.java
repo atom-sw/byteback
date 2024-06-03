@@ -11,25 +11,25 @@ import soot.tagkit.Tag;
  */
 public class BehaviorTag implements Tag {
 
-    public static String NAME = "BehaviorTag";
+	public static String NAME = "BehaviorTag";
 
-    private static final Lazy<BehaviorTag> INSTANCE = Lazy.from(BehaviorTag::new);
+	private static final Lazy<BehaviorTag> INSTANCE = Lazy.from(BehaviorTag::new);
 
-    public static BehaviorTag v() {
-        return INSTANCE.get();
-    }
+	public static BehaviorTag v() {
+		return INSTANCE.get();
+	}
 
-    private BehaviorTag() {
-    }
+	private BehaviorTag() {
+	}
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-    @Override
-    public byte[] getValue() throws AttributeValueException {
-        return new byte[0];
-    }
+	@Override
+	public byte[] getValue() throws AttributeValueException {
+		return new byte[0];
+	}
 
 }

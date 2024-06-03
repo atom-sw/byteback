@@ -31,6 +31,8 @@ public class ModifierTagger extends MethodTransformer {
 					switch (annotationType) {
 						case BBLibNames.EXPORT_ANNOTATION ->
 							ExportTagMarker.v().flag(sootMethod);
+						case BBLibNames.IMPORT_ANNOTATION ->
+							ImportTagMarker.v().flag(sootMethod);
 						case BBLibNames.ABSTRACT_ANNOTATION ->
 							sootMethod.setModifiers(sootMethod.getModifiers() | Modifier.ABSTRACT);
 						case BBLibNames.PURE_ANNOTATION ->

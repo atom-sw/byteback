@@ -11,25 +11,25 @@ import soot.tagkit.Tag;
  */
 public class PureTag implements Tag {
 
-    public static String NAME = "PureTag";
+	public static String NAME = "PureTag";
 
-    private static final Lazy<PureTag> instance = Lazy.from(PureTag::new);
+	private static final Lazy<PureTag> instance = Lazy.from(PureTag::new);
 
-    public static PureTag v() {
-        return instance.get();
-    }
+	public static PureTag v() {
+		return instance.get();
+	}
 
-    private PureTag() {
-    }
+	private PureTag() {
+	}
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-    @Override
-    public byte[] getValue() throws AttributeValueException {
-        return new byte[0];
-    }
+	@Override
+	public byte[] getValue() throws AttributeValueException {
+		return new byte[0];
+	}
 
 }

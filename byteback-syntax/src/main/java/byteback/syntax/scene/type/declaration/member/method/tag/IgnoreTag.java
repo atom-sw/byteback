@@ -11,25 +11,25 @@ import soot.tagkit.Tag;
  */
 public class IgnoreTag implements Tag {
 
-    public static String NAME = "IgnoreTag";
+	public static String NAME = "IgnoreTag";
 
-    private static final Lazy<IgnoreTag> INSTANCE = Lazy.from(IgnoreTag::new);
+	private static final Lazy<IgnoreTag> INSTANCE = Lazy.from(IgnoreTag::new);
 
-    public static IgnoreTag v() {
-        return INSTANCE.get();
-    }
+	public static IgnoreTag v() {
+		return INSTANCE.get();
+	}
 
-    private IgnoreTag() {
-    }
+	private IgnoreTag() {
+	}
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-    @Override
-    public byte[] getValue() throws AttributeValueException {
-        return new byte[0];
-    }
+	@Override
+	public byte[] getValue() throws AttributeValueException {
+		return new byte[0];
+	}
 
 }
