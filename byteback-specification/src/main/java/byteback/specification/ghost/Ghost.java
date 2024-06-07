@@ -20,11 +20,6 @@ public class Ghost {
 	public @interface Export {
 	}
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD })
-	public @interface Import {
-	}
-
 	@Prelude("plug")
 	public static <T> T of(final Class<T> type, final Object object) {
 		throw new UnsupportedOperationException();

@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.PureTagMarker;
@@ -27,14 +26,11 @@ public class FrameConditionValidator extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final SootMethod sootMethod = bodyContext.getSootMethod();
-
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
 			return;
 		}
 
-		final Body body = bodyContext.getBody();
 		final Set<ConcreteRef> allowedRefs;
 
 		if (PureTagMarker.v().hasTag(sootMethod)) {

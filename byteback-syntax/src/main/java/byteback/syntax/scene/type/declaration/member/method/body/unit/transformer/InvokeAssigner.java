@@ -1,7 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.unit.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import soot.*;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.*;
@@ -21,8 +20,7 @@ public class InvokeAssigner extends UnitTransformer {
 	}
 
 	@Override
-	public void transformUnit(final UnitContext unitContext) {
-		final UnitBox unitBox = unitContext.getUnitBox();
+	public void transformUnit(final SootMethod sootMethod, final Body body, final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 
 		if (unit instanceof final InvokeStmt invokeStmt) {
@@ -31,7 +29,6 @@ public class InvokeAssigner extends UnitTransformer {
 			final Type returnType = invokedMethodRef.getReturnType();
 
 			if (returnType != VoidType.v()) {
-				final Body body = unitContext.getBodyContext().getBody();
 				final LocalGenerator localGenerator = new DefaultLocalGenerator(body);
 				final Local local = localGenerator.generateLocal(returnType);
 				final AssignStmt assignStmt = Jimple.v().newAssignStmt(local, invokeExpr);

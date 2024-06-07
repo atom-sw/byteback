@@ -3,13 +3,13 @@ package byteback.syntax.scene.type.declaration.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
-import byteback.syntax.scene.type.declaration.context.ClassContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.box.tag.FreeTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
 import byteback.syntax.tag.AnnotationTagReader;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Value;
@@ -25,30 +25,26 @@ public class ClassInvariantTagger extends ClassTransformer {
 	}
 
 	@Override
-	public void transformClass(final ClassContext classContext) {
-		final SootClass sootClass = classContext.getSootClass();
-
+	public void transformClass(final Scene scene, final SootClass sootClass) {
 		AnnotationTagReader.v().getAnnotation(sootClass, BBLibNames.CLASS_INVARIANT_ANNOTATION)
-				.ifPresent((annotationTag) -> {
-					AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class)
-							.ifPresent(annotationStringElement -> {
-								final String behaviorName = annotationStringElement.getValue();
-								final Value behaviorValue = InvariantBehaviorResolver.v().resolveBehavior(sootClass, behaviorName);
+				.flatMap(annotationTag -> AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class))
+				.ifPresent(annotationStringElement -> {
+			final String behaviorName = annotationStringElement.getValue();
+			final Value behaviorValue = InvariantBehaviorResolver.v().resolveBehavior(sootClass, behaviorName);
 
-								for (final SootMethod sootMethod : sootClass.getMethods()) {
-									final var preconditionBox = new ExprBox(behaviorValue);
-									FreeTagMarker.v().flag(preconditionBox);
-									final var postconditionBox = new ExprBox(behaviorValue);
+			for (final SootMethod sootMethod : sootClass.getMethods()) {
+				final var preconditionBox = new ExprBox(behaviorValue);
+				FreeTagMarker.v().flag(preconditionBox);
+				final var postconditionBox = new ExprBox(behaviorValue);
 
-									PreconditionsTagAccessor.v()
-											.putIfAbsent(sootMethod, PreconditionsTag::new)
-											.addConditionBox(preconditionBox);
-									PostconditionsTagAccessor.v()
-											.putIfAbsent(sootMethod, PostconditionsTag::new)
-											.addConditionBox(postconditionBox);
-								}
-							});
-				});
+				PreconditionsTagAccessor.v()
+						.putIfAbsent(sootMethod, PreconditionsTag::new)
+						.addConditionBox(preconditionBox);
+				PostconditionsTagAccessor.v()
+						.putIfAbsent(sootMethod, PostconditionsTag::new)
+						.addConditionBox(postconditionBox);
+			}
+		});
 	}
 
 }

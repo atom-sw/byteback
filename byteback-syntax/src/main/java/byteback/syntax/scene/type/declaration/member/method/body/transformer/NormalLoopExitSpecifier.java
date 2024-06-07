@@ -2,15 +2,11 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
 import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
-import soot.Body;
-import soot.PatchingChain;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
@@ -40,8 +36,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final Body body = bodyContext.getBody();
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final var loopFinder = new LoopFinder();
 		final var unitGraph = new BriefUnitGraph(body);

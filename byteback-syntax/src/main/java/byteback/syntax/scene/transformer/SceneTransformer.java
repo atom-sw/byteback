@@ -1,6 +1,5 @@
 package byteback.syntax.scene.transformer;
 
-import byteback.syntax.scene.context.SceneContext;
 import byteback.syntax.transformer.Transformer;
 import soot.Scene;
 
@@ -9,11 +8,11 @@ import java.util.Map;
 public abstract class SceneTransformer extends soot.SceneTransformer implements Transformer {
 
     /**
-     * Traverses the Scene through the context.
+     * Transforms the Scene.
      *
-     * @param sceneContext The context built using `makeSceneContext`;
+     * @param scene The scene to be transformed.
      */
-    public abstract void transformScene(final SceneContext sceneContext);
+    public abstract void transformScene(final Scene scene);
 
     /**
      * Defined for compatibility with Soot's whole-program transformation packs.
@@ -24,8 +23,7 @@ public abstract class SceneTransformer extends soot.SceneTransformer implements 
     @Override
     protected void internalTransform(final String phaseName, final Map<String, String> options) {
         final Scene scene = Scene.v();
-        final var sceneContext = new SceneContext(scene);
-        transformScene(sceneContext);
+        transformScene(scene);
     }
 
 }

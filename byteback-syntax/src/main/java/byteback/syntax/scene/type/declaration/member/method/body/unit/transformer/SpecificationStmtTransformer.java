@@ -4,7 +4,6 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import soot.*;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
@@ -27,8 +26,7 @@ public class SpecificationStmtTransformer extends UnitTransformer {
 	}
 
 	@Override
-	public void transformUnit(final UnitContext unitContext) {
-		final UnitBox unitBox = unitContext.getUnitBox();
+	public void transformUnit(final SootMethod sootMethod, final Body body, final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 
 		if (unit instanceof final InvokeStmt invokeStmt) {

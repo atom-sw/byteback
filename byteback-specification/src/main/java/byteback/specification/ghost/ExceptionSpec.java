@@ -17,7 +17,7 @@ public abstract class ExceptionSpec {
 	@Return
 	@Export
 	@Abstract
-	public ExceptionSpec(String message) {
+	public ExceptionSpec(final String message) {
 		throw new UnsupportedOperationException();
 	}
 

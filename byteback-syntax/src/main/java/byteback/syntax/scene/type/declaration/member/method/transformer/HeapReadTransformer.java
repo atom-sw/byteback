@@ -15,18 +15,13 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeRe
 import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeTypeToObjectRef;
 import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeUnboxRef;
 import byteback.syntax.scene.type.declaration.member.method.body.value.TypeConstant;
-import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
-import soot.Body;
-import soot.RefType;
-import soot.SootMethod;
-import soot.Value;
-import soot.ValueBox;
+import soot.*;
 import soot.jimple.ArrayRef;
 import soot.jimple.ConcreteRef;
 import soot.jimple.FieldRef;
@@ -47,8 +42,7 @@ public class HeapReadTransformer extends MethodTransformer {
 	}
 
 	@Override
-	public void transformMethod(final MethodContext methodContext) {
-		final SootMethod sootMethod = methodContext.getSootMethod();
+	public void transformMethod(final Scene scene, final SootClass sootClass, final SootMethod sootMethod) {
 		final Value heap;
 		final Value oldHeap;
 		final Value thrown;

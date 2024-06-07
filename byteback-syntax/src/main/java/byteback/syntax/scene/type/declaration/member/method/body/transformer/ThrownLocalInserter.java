@@ -2,7 +2,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import soot.Body;
@@ -28,14 +27,11 @@ public class ThrownLocalInserter extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final SootMethod sootMethod = bodyContext.getSootMethod();
-
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
 			return;
 		}
 
-		final Body body = (Body) bodyContext.getBody();
 		final PatchingChain<Unit> units = body.getUnits();
 		final Chain<Local> locals = body.getLocals();
 		final Local local = Jimple.v().newLocal("e#", RefType.v("java.lang.Throwable"));

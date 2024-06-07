@@ -2,15 +2,11 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.InvariantStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.LoopCollectingIterator;
 import byteback.syntax.transformer.TransformationException;
-import soot.Body;
-import soot.PatchingChain;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.jimple.IfStmt;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.logic.Loop;
@@ -22,7 +18,7 @@ import java.util.function.Supplier;
 /**
  * Expands loop invariants into a set of assertions and assumptions. The
  * criteria used is as follows:
- *
+ * <p>
  * ``` java
  * HEAD:
  * ...
@@ -35,9 +31,9 @@ import java.util.function.Supplier;
  * EXIT:
  * ...
  * ```
- *
+ * <p>
  * is transformed into:
- *
+ * <p>
  * ``` java
  * assert e;
  * HEAD:
@@ -68,8 +64,7 @@ public class InvariantExpander extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final Body body = bodyContext.getBody();
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final var loopFinder = new LoopFinder();
 		final var unitIterator = new LoopCollectingIterator(units, loopFinder.getLoops(body));

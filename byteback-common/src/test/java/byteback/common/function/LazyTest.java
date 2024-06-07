@@ -1,9 +1,8 @@
-package byteback.common;
+package byteback.common.function;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import byteback.common.function.Lazy;
 import org.junit.Test;
 
 public class LazyTest {

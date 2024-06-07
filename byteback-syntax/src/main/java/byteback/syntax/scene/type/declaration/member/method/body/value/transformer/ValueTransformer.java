@@ -1,11 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value.transformer;
 
-import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.UnitTransformer;
-import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
-import soot.Unit;
-import soot.UnitBox;
-import soot.ValueBox;
+import soot.*;
 
 import java.util.List;
 
@@ -16,20 +12,18 @@ import java.util.List;
  */
 public abstract class ValueTransformer extends UnitTransformer {
 
-    public abstract void transformValue(final ValueContext valueContext);
+    public abstract void transformValue(final SootMethod sootMethod, final Body body, final ValueBox valueBox);
 
     public List<ValueBox> extractValueBoxes(final Unit unit) {
         return unit.getUseBoxes();
     }
 
     @Override
-    public void transformUnit(final UnitContext unitContext) {
-        final UnitBox unitBox = unitContext.getUnitBox();
+    public void transformUnit(final SootMethod sootMethod, final Body body, final UnitBox unitBox) {
         final Unit unit = unitBox.getUnit();
 
         for (final ValueBox valueBox : extractValueBoxes(unit)) {
-            final var valueContext = new ValueContext(unitContext, valueBox);
-            transformValue(valueContext);
+            transformValue(sootMethod, body, valueBox);
         }
     }
 

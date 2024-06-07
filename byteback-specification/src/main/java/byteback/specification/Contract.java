@@ -31,11 +31,6 @@ public class Contract {
 	public @interface TwoState {
 	}
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
-	public @interface Lemma {
-	}
-
 	/**
 	 * Declares that the function is already defined in the preamble.
 	 */

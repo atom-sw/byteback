@@ -2,10 +2,11 @@ package byteback.syntax.scene.type.declaration.member.method.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
-import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.*;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.Modifier;
+import soot.Scene;
+import soot.SootClass;
 import soot.SootMethod;
 import soot.tagkit.AnnotationStringElem;
 
@@ -21,9 +22,7 @@ public class ModifierTagger extends MethodTransformer {
 	}
 
 	@Override
-	public void transformMethod(final MethodContext methodContext) {
-		final SootMethod sootMethod = methodContext.getSootMethod();
-
+	public void transformMethod(final Scene scene, final SootClass sootClass, final SootMethod sootMethod) {
 		AnnotationTagReader.v().getAnnotations(sootMethod)
 				.forEach((annotationTag) -> {
 					final String annotationType = annotationTag.getType();

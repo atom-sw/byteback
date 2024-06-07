@@ -2,7 +2,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.IgnoreTagMarker;
 import soot.Body;
 import soot.PatchingChain;
@@ -29,8 +28,7 @@ public class InvokeFilter extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final Body body = bodyContext.getBody();
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final Iterator<Unit> unitsIterator = units.snapshotIterator();
 

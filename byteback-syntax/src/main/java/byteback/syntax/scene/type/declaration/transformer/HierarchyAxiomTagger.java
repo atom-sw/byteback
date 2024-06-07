@@ -1,9 +1,7 @@
 package byteback.syntax.scene.type.declaration.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.context.SceneContext;
 import byteback.syntax.scene.type.TypeType;
-import byteback.syntax.scene.type.declaration.context.ClassContext;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ForallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.TypeConstant;
@@ -26,11 +24,7 @@ public class HierarchyAxiomTagger extends ClassTransformer {
 	}
 
 	@Override
-	public void transformClass(final ClassContext classContext) {
-		final SceneContext sceneContext = classContext.getSceneContext();
-		final SootClass sootClass = classContext.getSootClass();
-		final Scene scene = sceneContext.getScene();
-
+	public void transformClass(final Scene scene, final SootClass sootClass) {
 		if (sootClass.resolvingLevel() < SootClass.HIERARCHY) {
 			return;
 		}

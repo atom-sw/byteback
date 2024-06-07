@@ -4,7 +4,8 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.OldExpr;
-import byteback.syntax.scene.type.declaration.member.method.body.value.context.ValueContext;
+import soot.Body;
+import soot.SootMethod;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ConcreteRef;
@@ -27,8 +28,7 @@ public class OldExprTightener extends ValueTransformer {
 	}
 
 	@Override
-	public void transformValue(final ValueContext valueContext) {
-		final ValueBox valueBox = valueContext.getValueBox();
+	public void transformValue(final SootMethod sootMethod, final Body body, final ValueBox valueBox) {
 		final Value value = valueBox.getValue();
 
 		if (value instanceof final OldExpr oldExpr) {

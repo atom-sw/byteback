@@ -2,9 +2,7 @@ package byteback.syntax.scene.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
-import byteback.syntax.scene.context.SceneContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.ExportTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.tag.ImportTagMarker;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.Scene;
 import soot.SootClass;
@@ -50,8 +48,7 @@ public class ImplementationPropagator extends SceneTransformer {
 	}
 
 	@Override
-	public void transformScene(final SceneContext sceneContext) {
-		final Scene scene = sceneContext.getScene();
+	public void transformScene(final Scene scene) {
 		final Chain<SootClass> classes = scene.getClasses();
 		final Iterator<SootClass> classIterator = classes.snapshotIterator();
 
@@ -73,15 +70,16 @@ public class ImplementationPropagator extends SceneTransformer {
 			}
 
 			final SootClass attachedClass = scene.getSootClassUnsafe(attachedName);
-			AnnotationTagReader.v()
-					.getAnnotations(pluginClass)
-					.filter((t) -> t.getName() == BBLibNames.ATTACH_ANNOTATION)
-					.forEach((t) -> attachedClass.addTag(t));
 
 			if (attachedClass == null) {
 				LOGGER.warn("Unable to find class: " + attachedName + " for attaching " + pluginClass + ".");
 				continue;
 			}
+
+			AnnotationTagReader.v()
+					.getAnnotations(pluginClass)
+					.filter((t) -> t.getName().equals(BBLibNames.ATTACH_ANNOTATION))
+					.forEach(attachedClass::addTag);
 
 			final List<SootMethod> methods = pluginClass.getMethods();
 			final var methodsSnapshot = new ArrayList<>(methods);
@@ -99,18 +97,6 @@ public class ImplementationPropagator extends SceneTransformer {
 
 					attachedClass.addMethod(attachingMethod);
 					attachingMethod.setDeclared(true);
-				} else if (ImportTagMarker.v().hasTag(pluginMethod)) {
-					final NumberedString pluginSubSignature = pluginMethod.getNumberedSubSignature();
-					final SootMethod attachedMethod = cloneMethodImplementation(
-							attachedClass.getMethodUnsafe(pluginSubSignature));
-					attachedMethod.setDeclared(false);
-
-					if (attachedMethod != null) {
-						pluginClass.removeMethod(pluginMethod);
-					}
-
-					pluginClass.addMethod(attachedMethod);
-					attachedMethod.setDeclared(true);
 				}
 			}
 		}

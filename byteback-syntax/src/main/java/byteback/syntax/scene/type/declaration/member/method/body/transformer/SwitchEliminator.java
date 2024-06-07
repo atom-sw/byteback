@@ -1,7 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.transformer.TransformationException;
 import soot.*;
 import soot.jimple.*;
@@ -46,8 +45,7 @@ public class SwitchEliminator extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final Body body = bodyContext.getBody();
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final Iterator<Unit> unitIterator = units.snapshotIterator();
 

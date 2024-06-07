@@ -1,8 +1,8 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
+import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
 import soot.ValueBox;
@@ -22,11 +22,9 @@ public class BehaviorExprFolder extends ExprFolder {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final SootMethod sootMethod = bodyContext.getSootMethod();
-
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
-			super.transformBody(bodyContext);
+			super.transformBody(sootMethod, body);
 		}
 	}
 

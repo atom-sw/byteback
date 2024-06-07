@@ -3,15 +3,11 @@ package byteback.syntax.scene.type.declaration.member.method.transformer;
 import java.util.List;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.InstanceChecksTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.InstanceChecksTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
-import soot.RefType;
-import soot.SootMethod;
-import soot.Value;
-import soot.ValueBox;
+import soot.*;
 import soot.jimple.InstanceOfExpr;
 
 public class InstanceChecksTagger extends MethodTransformer {
@@ -37,9 +33,7 @@ public class InstanceChecksTagger extends MethodTransformer {
 		}
 	}
 
-	public void transformMethod(final MethodContext methodContext) {
-		final SootMethod sootMethod = methodContext.getSootMethod();
-
+	public void transformMethod(final Scene scene, final SootClass sootClass, final SootMethod sootMethod) {
 		PreconditionsTagAccessor.v().get(sootMethod)
 			.ifPresent((preconditionsTag) -> tagValues(sootMethod, preconditionsTag.getUseBoxes()));
 

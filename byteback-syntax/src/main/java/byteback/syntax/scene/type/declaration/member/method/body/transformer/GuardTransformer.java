@@ -2,7 +2,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.TrapCollectingIterator;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
@@ -46,8 +45,7 @@ public class GuardTransformer extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final Body body = bodyContext.getBody();
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final Chain<Trap> traps = body.getTraps();
 		final var unitIterator = new TrapCollectingIterator(units, traps);

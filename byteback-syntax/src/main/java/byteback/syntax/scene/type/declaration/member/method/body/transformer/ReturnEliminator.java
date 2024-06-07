@@ -1,7 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ReturnRef;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
@@ -31,14 +30,11 @@ public class ReturnEliminator extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final SootMethod sootMethod = bodyContext.getSootMethod();
-
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
 			return;
 		}
 
-		final Body body = bodyContext.getBody();
 		final Type returnType = body.getMethod().getReturnType();
 		final Chain<Unit> units = body.getUnits();
 		final ReturnRef returnRef = new ReturnRef(returnType);

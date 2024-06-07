@@ -87,6 +87,7 @@ public class BBLibNames {
 
 	public static final String ASSUMPTION_NAME = "assumption";
 
+	/** Predicates for special classes */
 	public boolean isBindingsClass(final SootClass sootClass) {
 		return sootClass.getName().equals(BINDINGS_CLASS_NAME);
 	}

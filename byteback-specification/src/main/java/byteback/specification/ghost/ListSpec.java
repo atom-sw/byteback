@@ -15,12 +15,6 @@ public interface ListSpec<T> {
 	@Behavior
 	boolean is_modifiable();
 
-	@Export
-	@Behavior
-	default boolean is_unmodifiable() {
-		return not(this.is_modifiable());
-	}
-
 	@Raise(exception = UnsupportedOperationException.class,
 				 when = "is_unmodifiable")
 	@Export

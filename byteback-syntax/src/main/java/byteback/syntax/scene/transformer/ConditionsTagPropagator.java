@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.context.SceneContext;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
@@ -75,8 +74,7 @@ public class ConditionsTagPropagator extends SceneTransformer {
 	}
 
 	@Override
-	public void transformScene(final SceneContext sceneContext) {
-		final Scene scene = sceneContext.getScene();
+	public void transformScene(final Scene scene) {
 		final Hierarchy hierarchy = scene.getActiveHierarchy();
 		final var nextClasses = new ArrayDeque<SootClass>();
 
@@ -144,7 +142,6 @@ public class ConditionsTagPropagator extends SceneTransformer {
 					}
 				}
 
-				final var currentMethods = parentMethods;
 				final List<SootClass> childClasses;
 
 				if (currentClass.isInterface()) {
@@ -154,7 +151,7 @@ public class ConditionsTagPropagator extends SceneTransformer {
 				}
 
 				for (final SootClass childClass : childClasses) {
-					classToParentMethods.put(childClass, new HashMap<>(currentMethods));
+					classToParentMethods.put(childClass, new HashMap<>(parentMethods));
 					nextClasses.add(childClass);
 				}
 			}

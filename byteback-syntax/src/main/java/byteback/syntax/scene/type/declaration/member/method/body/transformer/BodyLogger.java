@@ -1,10 +1,11 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
+import soot.Body;
+import soot.SootMethod;
 
 public class BodyLogger extends BodyTransformer {
 
-	private String methodName;
+	private final String methodName;
 
 	public BodyLogger(final String methodName) {
 		this.methodName = methodName;
@@ -15,13 +16,13 @@ public class BodyLogger extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		if (methodName != null) {
-			if (bodyContext.getSootMethod().getName().equals(methodName)) {
-				System.out.println(bodyContext.getBody());
+			if (sootMethod.getName().equals(methodName)) {
+				System.out.println(body);
 			}
 		} else {
-			System.out.println(bodyContext.getBody());
+			System.out.println(body);
 		}
 	}
 

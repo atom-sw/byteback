@@ -6,13 +6,10 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterLocalFinder;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.OldExpr;
-import byteback.syntax.scene.type.declaration.member.method.context.MethodContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
-import soot.SootMethod;
-import soot.Value;
-import soot.ValueBox;
+import soot.*;
 
 public class OldHeapReadTransformer extends MethodTransformer {
 
@@ -26,8 +23,7 @@ public class OldHeapReadTransformer extends MethodTransformer {
 	}
 
 	@Override
-	public void transformMethod(final MethodContext methodContext) {
-		final SootMethod sootMethod = methodContext.getSootMethod();
+	public void transformMethod(final Scene scene, final SootClass sootClass, final SootMethod sootMethod) {
 		final var useBoxes = new HashSet<ValueBox>();
 		final Value heap;
 		final Value oldHeap;

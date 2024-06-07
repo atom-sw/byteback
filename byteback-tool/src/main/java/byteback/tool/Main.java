@@ -98,7 +98,6 @@ public class Main implements Callable<Integer> {
 		// We will add the classes using Options.v().classes, instead of using the Soot
 		// main.
 		Options.v().set_weak_map_structures(true);
-		Options.v().set_unfriendly_mode(true);
 		final List<String> startingClasses = getStartingClasses();
 		startingClasses.addAll(List.of(ghostClasses));
 		Options.v().classes().addAll(startingClasses);
@@ -148,7 +147,7 @@ public class Main implements Callable<Integer> {
 
 		// - Transformations targeting behavioral methods
 		jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
-		jtpPack.add(new Transform("jtp.btg", BehaviorBodyValidator.v()));
+		// jtpPack.add(new Transform("jtp.btg", BehaviorBodyValidator.v()));
 
 		// - Transformations targeting procedural methods
 		jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));

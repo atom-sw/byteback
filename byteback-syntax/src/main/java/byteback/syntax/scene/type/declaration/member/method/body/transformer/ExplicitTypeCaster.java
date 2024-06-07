@@ -1,9 +1,7 @@
-package byteback.syntax.scene.type.declaration.member.method.body.unit.transformer;
+package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.BodyTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import soot.*;
 import soot.jimple.*;
@@ -58,9 +56,7 @@ public class ExplicitTypeCaster extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final Body body = bodyContext.getBody();
-
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		for (final Unit unit : body.getUnits()) {
 			if (unit instanceof final AssignStmt assignStmt) {
 				final ValueBox rightOpBox = assignStmt.getRightOpBox();

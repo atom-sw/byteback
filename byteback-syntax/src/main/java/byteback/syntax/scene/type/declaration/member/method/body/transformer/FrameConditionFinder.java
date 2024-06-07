@@ -1,7 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.body.context.BodyContext;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTag;
@@ -27,14 +26,11 @@ public class FrameConditionFinder extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final BodyContext bodyContext) {
-		final SootMethod sootMethod = bodyContext.getSootMethod();
-
+	public void transformBody(final SootMethod sootMethod, final Body body) {
 		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
 			return;
 		}
 
-		final Body body = bodyContext.getBody();
 		final var inferredFrames = new HashSet<ConcreteRef>();
 
 		for (final ValueBox valueBox : body.getDefBoxes()) {

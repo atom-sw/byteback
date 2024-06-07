@@ -2,7 +2,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.unit.transform
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import byteback.syntax.scene.type.declaration.member.method.body.value.LogicConstant;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import soot.*;
@@ -25,8 +24,7 @@ public class LogicConstantTransformer extends UnitTransformer {
 	}
 
 	@Override
-	public void transformUnit(final UnitContext unitContext) {
-		final UnitBox unitBox = unitContext.getUnitBox();
+	public void transformUnit(final SootMethod sootMethod, final Body body, final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 
 		if (unit instanceof final AssignStmt assignStmt) {
@@ -42,7 +40,6 @@ public class LogicConstantTransformer extends UnitTransformer {
 			final ValueBox conditionValueBox = specificationStmt.getConditionBox();
 			transformValueOfType(BooleanType.v(), conditionValueBox);
 		} else if (unit instanceof final ReturnStmt returnStmt) {
-			final SootMethod sootMethod = unitContext.getBodyContext().getSootMethod();
 			transformValueOfType(sootMethod.getReturnType(), returnStmt.getOpBox());
 		}
 	}

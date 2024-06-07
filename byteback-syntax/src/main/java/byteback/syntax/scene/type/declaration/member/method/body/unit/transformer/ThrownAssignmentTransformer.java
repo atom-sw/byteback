@@ -2,7 +2,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.unit.transform
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.context.UnitContext;
 import soot.*;
 import soot.jimple.*;
 
@@ -21,8 +20,7 @@ public class ThrownAssignmentTransformer extends UnitTransformer {
 	}
 
 	@Override
-	public void transformUnit(final UnitContext unitContext) {
-		final UnitBox unitBox = unitContext.getUnitBox();
+	public void transformUnit(final SootMethod sootMethod, final Body body, final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 
 		if (unit instanceof final IdentityStmt identityStmt
