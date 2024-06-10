@@ -108,6 +108,14 @@ public class Vimp {
 		return new CallExpr(methodRef, List.of(arguments));
 	}
 
+	public CallStmt newCallStmt(final Value[] targets, final CallExpr callExpr) {
+		return new CallStmt(targets, callExpr);
+	}
+
+	public CallStmt newCallStmt(final List<Value> targets, final CallExpr callExpr) {
+		return new CallStmt(targets.toArray(new Value[0]), callExpr);
+	}
+
 	public ConditionalExpr newConditionExpr(final Value op1, final Value op2, final Value op3) {
 		return new ConditionalExpr(op1, op2, op3);
 	}

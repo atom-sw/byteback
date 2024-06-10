@@ -68,12 +68,12 @@ public class ReadResource {
 
 	@Behavior
 	public static boolean a_is_null(Resource r, int[] a) {
-		return eq(a, null) ;
+		return eq(a, null);
 	}
 
 	@Behavior
 	public static boolean r_is_null(Resource r, int[] a) {
-		return eq(r, null) ;
+		return eq(r, null);
 	}
 
 	@Behavior
@@ -120,7 +120,6 @@ public class ReadResource {
 	}
 
 }
-
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s

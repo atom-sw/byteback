@@ -1,5 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
+import java.sql.CallableStatement;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -21,6 +22,7 @@ import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarke
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.CallStmt;
 import soot.*;
 import soot.jimple.ArrayRef;
 import soot.jimple.ConcreteRef;
@@ -78,7 +80,14 @@ public class HeapReadTransformer extends MethodTransformer {
 
 		if (sootMethod.hasActiveBody()) {
 			final Body body = sootMethod.getActiveBody();
-			valueBoxes.addAll(body.getUseBoxes());
+
+			for (final Unit unit : body.getUnits()) {
+				if (unit instanceof CallStmt callStmt) {
+					valueBoxes.addAll(callStmt.getInvokeExpr().getUseBoxes());
+				} else {
+					valueBoxes.addAll(unit.getUseBoxes());
+				}
+			}
 		}
 
 		// Convert heap uses

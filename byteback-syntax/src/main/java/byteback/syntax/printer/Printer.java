@@ -16,7 +16,7 @@ public class Printer implements AutoCloseable {
 
 		public final String string;
 
-		public volatile boolean isFirst;
+		public boolean isFirst;
 
 		public Separator(final String string) {
 			this.string = string;

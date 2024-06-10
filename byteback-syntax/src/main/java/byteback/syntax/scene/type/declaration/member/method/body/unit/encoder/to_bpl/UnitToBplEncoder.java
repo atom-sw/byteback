@@ -6,6 +6,7 @@ import byteback.syntax.scene.type.declaration.member.field.encoder.to_bpl.FieldT
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssertStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.AssumeStmt;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.CallStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.YieldStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.UnitEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
@@ -79,22 +80,7 @@ public class UnitToBplEncoder extends UnitEncoder {
 			final Value leftOp = assignStmt.getLeftOp();
 			final Value rightOp = assignStmt.getRightOp();
 
-			if (rightOp instanceof final InvokeExpr invokeExpr && VimpEffectEvaluator.v().hasSideEffects(invokeExpr)) {
-				if (leftOp instanceof final Local local) {
-					encodeInvoke(invokeExpr, new Value[] { local, Vimp.v().newThrownRef() });
-					return;
-				}
-			} else if (rightOp instanceof final NewExpr newExpr) {
-				printer.print("call ");
-				valueEncoder.encodeValue(leftOp);
-				printer.print(", ");
-				valueEncoder.encodeValue(Vimp.v().newThrownRef());
-				printer.print(" := ");
-				printer.print("new(");
-				new ClassToBplEncoder(printer).encodeClassConstant(newExpr.getBaseType().getSootClass());
-				printer.print(");");
-				return;
-			} else if (rightOp instanceof final NewArrayExpr newArrayExpr) {
+			if (rightOp instanceof final NewArrayExpr newArrayExpr) {
 				printer.print("call ");
 				valueEncoder.encodeValue(leftOp);
 				printer.print(", ");
@@ -180,6 +166,23 @@ public class UnitToBplEncoder extends UnitEncoder {
 					return;
 				}
 			}
+		}
+
+		if (unit instanceof final CallStmt callStmt) {
+			printer.print("call ");
+			printer.startItems(", ");
+
+			for (final Value target : callStmt.getTargets()) {
+				printer.separate();
+				new ValueToBplEncoder(printer).encodeValue(target);
+			}
+
+			printer.endItems();
+			printer.print(" := ");
+
+			new ValueToBplEncoder(printer).encodeValue(callStmt.getInvokeExpr());
+			printer.print(";");
+			return;
 		}
 
 		if (unit instanceof final InvokeStmt invokeStmt) {

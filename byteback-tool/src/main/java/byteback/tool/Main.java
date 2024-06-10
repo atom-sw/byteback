@@ -1,27 +1,63 @@
 package byteback.tool;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ConditionsTagPropagator;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.*;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.*;
-import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.*;
-import byteback.syntax.scene.type.declaration.member.method.transformer.*;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.BehaviorExprFolder;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.ExplicitTypeCaster;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.FrameConditionFinder;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.FrameConditionValidator;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.GuardTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.HeapLocalInserter;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.IfConditionExtractor;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.IndexCheckTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.InvariantExpander;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.InvokeCheckTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.InvokeFilter;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.NormalLoopExitSpecifier;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.NullCheckTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.OldHeapLocalInserter;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.QuantifierValueTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.ReturnEliminator;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.SpecificationExprFolder;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.SwitchEliminator;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.ThisAssumptionInserter;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.ThrownAssumptionInserter;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.ThrownLocalInserter;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.CallStmtTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.InvokeAssigner;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.LogicConstantTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.SpecificationStmtTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.transformer.ThrownAssignmentTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.CallExprTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.ConditionalExprTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.GhostInliner;
+import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.OldExprTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.ThrownExprTransformer;
+import byteback.syntax.scene.type.declaration.member.method.transformer.ConditionsTagger;
+import byteback.syntax.scene.type.declaration.member.method.transformer.HeapReadTransformer;
+import byteback.syntax.scene.type.declaration.member.method.transformer.InstanceChecksTagger;
+import byteback.syntax.scene.type.declaration.member.method.transformer.ModifierTagger;
+import byteback.syntax.scene.type.declaration.member.method.transformer.OldHeapReadTransformer;
 import byteback.syntax.scene.type.declaration.transformer.ClassInvariantTagger;
 import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import soot.*;
+import soot.Pack;
+import soot.PackManager;
+import soot.Scene;
+import soot.SootClass;
+import soot.Transform;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 @Command(name = "byteback", mixinStandardHelpOptions = true, description = "")
 public class Main implements Callable<Integer> {
@@ -172,6 +208,7 @@ public class Main implements Callable<Integer> {
 
 		jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
 		jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
+		jtpPack.add(new Transform("jtp.cst", CallStmtTransformer.v()));
 		jtpPack.add(new Transform("jtp.gat", GuardTransformer.v()));
 		jtpPack.add(new Transform("jtp.ine", InvariantExpander.v()));
 

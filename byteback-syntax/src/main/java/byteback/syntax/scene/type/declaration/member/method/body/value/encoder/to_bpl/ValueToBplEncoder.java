@@ -290,12 +290,6 @@ public class ValueToBplEncoder extends ValueEncoder {
 		} else if (concreteRef instanceof final FieldPointer fieldPointer) {
 			encodeFieldPointer(fieldPointer);
 			return;
-		} else if (concreteRef instanceof final ArrayRef arrayRef) {
-			encodeArrayRef(arrayRef);
-		} else if (concreteRef instanceof final InstanceFieldRef instanceFieldRef) {
-			encodeInstanceFieldRef(instanceFieldRef);
-		} else if (concreteRef instanceof final StaticFieldRef staticFieldRef) {
-			encodeStaticFieldRef(staticFieldRef);
 		} else if (concreteRef instanceof ThrownRef) {
 			encodeCaughtExceptionRef();
 		} else if (concreteRef instanceof ReturnRef) {
@@ -333,16 +327,14 @@ public class ValueToBplEncoder extends ValueEncoder {
 
 	@Override
 	public void encodeValue(final Value value) {
-		if (value instanceof final Immediate immediate) {
-			if (immediate instanceof final NestedExpr nestedExpr) {
-				encodeValue(nestedExpr.getValue());
-				return;
-			}
+		if (value instanceof final NestedExpr nestedExpr) {
+			encodeValue(nestedExpr.getValue());
+			return;
+		}
 
-			if (value instanceof final Local local) {
-				encodeLocal(local);
-				return;
-			}
+		if (value instanceof final Local local) {
+			encodeLocal(local);
+			return;
 		}
 
 		if (value instanceof final ConcreteRef concreteRef) {
@@ -360,56 +352,54 @@ public class ValueToBplEncoder extends ValueEncoder {
 			return;
 		}
 
-		if (value instanceof final Constant constant) {
-			if (constant instanceof final TypeConstant typeConstant) {
-				encodeTypeConstant(typeConstant);
-				return;
-			}
+		if (value instanceof final TypeConstant typeConstant) {
+			encodeTypeConstant(typeConstant);
+			return;
+		}
 
-			if (constant instanceof final LogicConstant logicConstant) {
-				encodeLogicConstant(logicConstant);
-				return;
-			}
+		if (value instanceof final LogicConstant logicConstant) {
+			encodeLogicConstant(logicConstant);
+			return;
+		}
 
-			if (constant instanceof final IntConstant intConstant) {
-				encodeIntConstant(intConstant);
-				return;
-			}
+		if (value instanceof final IntConstant intConstant) {
+			encodeIntConstant(intConstant);
+			return;
+		}
 
-			if (constant instanceof final LongConstant longConstant) {
-				encodeLongConstant(longConstant);
-				return;
-			}
+		if (value instanceof final LongConstant longConstant) {
+			encodeLongConstant(longConstant);
+			return;
+		}
 
-			if (constant instanceof final DoubleConstant doubleConstant) {
-				encodeDoubleConstant(doubleConstant);
-				return;
-			}
+		if (value instanceof final DoubleConstant doubleConstant) {
+			encodeDoubleConstant(doubleConstant);
+			return;
+		}
 
-			if (constant instanceof final FloatConstant floatConstant) {
-				encodeFloatConstant(floatConstant);
-				return;
-			}
+		if (value instanceof final FloatConstant floatConstant) {
+			encodeFloatConstant(floatConstant);
+			return;
+		}
 
-			if (constant instanceof NullConstant) {
-				printer.print("`null`");
-				return;
-			}
+		if (value instanceof NullConstant) {
+			printer.print("`null`");
+			return;
+		}
 
-			if (constant instanceof UnitConstant) {
-				printer.print("`void`");
-				return;
-			}
+		if (value instanceof UnitConstant) {
+			printer.print("`void`");
+			return;
+		}
 
-			if (constant instanceof StringConstant stringConstant) {
-				encodeStringConstant(stringConstant);
-				return;
-			}
+		if (value instanceof StringConstant stringConstant) {
+			encodeStringConstant(stringConstant);
+			return;
+		}
 
-			if (constant instanceof ClassConstant classConstant) {
-				encodeClassConstant(classConstant);
-				return;
-			}
+		if (value instanceof ClassConstant classConstant) {
+			encodeClassConstant(classConstant);
+			return;
 		}
 
 		if (value instanceof final CastExpr castExpr) {
@@ -446,151 +436,146 @@ public class ValueToBplEncoder extends ValueEncoder {
 			return;
 		}
 
-		if (value instanceof final BinopExpr binopExpr) {
-			if (binopExpr instanceof final ExtendsExpr extendsExpr) {
-				encodeFunctionCall("type.extends", extendsExpr.getOp1(), extendsExpr.getOp2());
-				return;
-			}
-
-			if (binopExpr instanceof final ImpliesExpr impliesExpr) {
-				encodeBinaryExpr(impliesExpr, " ==> ");
-				return;
-			}
-
-			if (binopExpr instanceof final AndExpr andExpr) {
-				final Type type = VimpTypeInterpreter.v().typeOf(andExpr);
-
-				if (type == BooleanType.v()) {
-					encodeBinaryExpr(andExpr, " && ");
-					return;
-				}
-			}
-
-			if (binopExpr instanceof final OrExpr orExpr) {
-				final Type type = VimpTypeInterpreter.v().typeOf(orExpr);
-
-				if (type == BooleanType.v()) {
-					encodeBinaryExpr(orExpr, " || ");
-					return;
-				}
-			}
-
-			if (binopExpr instanceof final XorExpr xorExpr) {
-				final Type type = VimpTypeInterpreter.v().typeOf(xorExpr);
-
-				if (type == BooleanType.v()) {
-					encodeBinaryExpr(xorExpr, " != ");
-					return;
-				}
-			}
-
-			if (binopExpr instanceof final SubExpr subExpr) {
-				encodeBinaryExpr(subExpr, " - ");
-				return;
-			}
-
-			if (binopExpr instanceof final AddExpr addExpr) {
-				encodeBinaryExpr(addExpr, " + ");
-				return;
-			}
-
-			if (binopExpr instanceof final MulExpr mulExpr) {
-				encodeBinaryExpr(mulExpr, " * ");
-				return;
-			}
-
-			if (binopExpr instanceof final RemExpr remExpr) {
-				encodeBinaryExpr(remExpr, " mod ");
-				return;
-			}
-
-			if (binopExpr instanceof final DivExpr divExpr) {
-				if (Type.toMachineType(binopExpr.getType()) == IntType.v()) {
-					encodeBinaryExpr(divExpr, " div ");
-				} else {
-					encodeBinaryExpr(divExpr, " / ");
-				}
-				return;
-			}
-
-			if (binopExpr instanceof final EqExpr eqExpr) {
-				encodeBinaryExpr(eqExpr, " == ");
-				return;
-			}
-
-			if (binopExpr instanceof final NeExpr neExpr) {
-				encodeBinaryExpr(neExpr, " != ");
-				return;
-			}
-
-			if (binopExpr instanceof final GeExpr geExpr) {
-				encodeBinaryExpr(geExpr, " >= ");
-				return;
-			}
-
-			if (binopExpr instanceof final GtExpr gtExpr) {
-				encodeBinaryExpr(gtExpr, " > ");
-				return;
-			}
-
-			if (binopExpr instanceof final LeExpr leExpr) {
-				encodeBinaryExpr(leExpr, " <= ");
-				return;
-			}
-
-			if (binopExpr instanceof final LtExpr ltExpr) {
-				encodeBinaryExpr(ltExpr, " < ");
-				return;
-			}
-
-			if (binopExpr instanceof final CmplExpr cmplExpr) {
-				encodeFunctionCall("real.cmp", cmplExpr.getOp1(), cmplExpr.getOp2());
-				return;
-			}
-
-			if (binopExpr instanceof final CmpgExpr cmpgExpr) {
-				encodeFunctionCall("real.cmp", cmpgExpr.getOp1(), cmpgExpr.getOp2());
-				return;
-			}
-
-			if (binopExpr instanceof final CmpExpr cmpExpr) {
-				encodeFunctionCall("int.cmp", cmpExpr.getOp1(), cmpExpr.getOp2());
-				return;
-			}
-
-			if (binopExpr instanceof final ShlExpr shlExpr) {
-				encodeFunctionCall("shl", shlExpr.getOp1(), shlExpr.getOp2());
-				return;
-			}
-
-			if (binopExpr instanceof final ShrExpr shrExpr) {
-				encodeFunctionCall("shr", shrExpr.getOp1(), shrExpr.getOp2());
-				return;
-			}
-
+		if (value instanceof final ExtendsExpr extendsExpr) {
+			encodeFunctionCall("type.extends", extendsExpr.getOp1(), extendsExpr.getOp2());
+			return;
 		}
 
-		if (value instanceof final UnopExpr unopExpr) {
-			if (unopExpr instanceof NegExpr negExpr) {
-				final Type type = VimpTypeInterpreter.v().typeOf(negExpr);
+		if (value instanceof final ImpliesExpr impliesExpr) {
+			encodeBinaryExpr(impliesExpr, " ==> ");
+			return;
+		}
 
-				if (type == BooleanType.v()) {
-					printer.print("!");
-					encodeValue(negExpr.getOp());
-					return;
-				}
+		if (value instanceof final AndExpr andExpr) {
+			final Type type = VimpTypeInterpreter.v().typeOf(andExpr);
 
-				if (Type.toMachineType(type) == IntType.v()) {
-					printer.print("-");
-					encodeValue(negExpr.getOp());
-					return;
-				}
-			}
-
-			if (unopExpr instanceof final LengthExpr lengthExpr) {
-				encodeFunctionCall("array.lengthof", lengthExpr.getOp());
+			if (type == BooleanType.v()) {
+				encodeBinaryExpr(andExpr, " && ");
 				return;
 			}
+		}
+
+		if (value instanceof final OrExpr orExpr) {
+			final Type type = VimpTypeInterpreter.v().typeOf(orExpr);
+
+			if (type == BooleanType.v()) {
+				encodeBinaryExpr(orExpr, " || ");
+				return;
+			}
+		}
+
+		if (value instanceof final XorExpr xorExpr) {
+			final Type type = VimpTypeInterpreter.v().typeOf(xorExpr);
+
+			if (type == BooleanType.v()) {
+				encodeBinaryExpr(xorExpr, " != ");
+				return;
+			}
+		}
+
+		if (value instanceof final SubExpr subExpr) {
+			encodeBinaryExpr(subExpr, " - ");
+			return;
+		}
+
+		if (value instanceof final AddExpr addExpr) {
+			encodeBinaryExpr(addExpr, " + ");
+			return;
+		}
+
+		if (value instanceof final MulExpr mulExpr) {
+			encodeBinaryExpr(mulExpr, " * ");
+			return;
+		}
+
+		if (value instanceof final RemExpr remExpr) {
+			encodeBinaryExpr(remExpr, " mod ");
+			return;
+		}
+
+		if (value instanceof final DivExpr divExpr) {
+			if (Type.toMachineType(divExpr.getType()) == IntType.v()) {
+				encodeBinaryExpr(divExpr, " div ");
+			} else {
+				encodeBinaryExpr(divExpr, " / ");
+			}
+			return;
+		}
+
+		if (value instanceof final EqExpr eqExpr) {
+			encodeBinaryExpr(eqExpr, " == ");
+			return;
+		}
+
+		if (value instanceof final NeExpr neExpr) {
+			encodeBinaryExpr(neExpr, " != ");
+			return;
+		}
+
+		if (value instanceof final GeExpr geExpr) {
+			encodeBinaryExpr(geExpr, " >= ");
+			return;
+		}
+
+		if (value instanceof final GtExpr gtExpr) {
+			encodeBinaryExpr(gtExpr, " > ");
+			return;
+		}
+
+		if (value instanceof final LeExpr leExpr) {
+			encodeBinaryExpr(leExpr, " <= ");
+			return;
+		}
+
+		if (value instanceof final LtExpr ltExpr) {
+			encodeBinaryExpr(ltExpr, " < ");
+			return;
+		}
+
+		if (value instanceof final CmplExpr cmplExpr) {
+			encodeFunctionCall("real.cmp", cmplExpr.getOp1(), cmplExpr.getOp2());
+			return;
+		}
+
+		if (value instanceof final CmpgExpr cmpgExpr) {
+			encodeFunctionCall("real.cmp", cmpgExpr.getOp1(), cmpgExpr.getOp2());
+			return;
+		}
+
+		if (value instanceof final CmpExpr cmpExpr) {
+			encodeFunctionCall("int.cmp", cmpExpr.getOp1(), cmpExpr.getOp2());
+			return;
+		}
+
+		if (value instanceof final ShlExpr shlExpr) {
+			encodeFunctionCall("shl", shlExpr.getOp1(), shlExpr.getOp2());
+			return;
+		}
+
+		if (value instanceof final ShrExpr shrExpr) {
+			encodeFunctionCall("shr", shrExpr.getOp1(), shrExpr.getOp2());
+			return;
+		}
+
+		if (value instanceof NegExpr negExpr) {
+			final Type type = VimpTypeInterpreter.v().typeOf(negExpr);
+
+			if (type == BooleanType.v()) {
+				printer.print("!");
+				encodeValue(negExpr.getOp());
+				return;
+			}
+
+			if (Type.toMachineType(type) == IntType.v()) {
+				printer.print("-");
+				encodeValue(negExpr.getOp());
+				return;
+			}
+		}
+
+		if (value instanceof final LengthExpr lengthExpr) {
+			encodeFunctionCall("array.lengthof", lengthExpr.getOp());
+			return;
 		}
 
 		if (value instanceof final InstanceOfExpr instanceOfExpr) {
@@ -599,11 +584,9 @@ public class ValueToBplEncoder extends ValueEncoder {
 			return;
 		}
 
-		if (value instanceof final InvokeExpr invokeExpr) {
-			if (invokeExpr instanceof final CallExpr callExpr) {
-				encodeCallExpr(callExpr);
-				return;
-			}
+		if (value instanceof final CallExpr callExpr) {
+			encodeCallExpr(callExpr);
+			return;
 		}
 
 		if (value instanceof final QuantifierExpr quantifierExpr) {
