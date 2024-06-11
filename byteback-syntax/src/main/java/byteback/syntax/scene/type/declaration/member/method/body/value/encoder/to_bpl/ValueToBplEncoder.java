@@ -34,10 +34,28 @@ public class ValueToBplEncoder extends ValueEncoder {
 		super(printer);
 	}
 
+	public void encodeTypeConstant(final Type type) {
+		if (type instanceof final ArrayType arrayType) {
+			final Type baseType = arrayType.getArrayElementType();
+			
+			if (baseType instanceof PrimType) {
+				new TypeAccessToBplEncoder(printer).encodeTypeAccess(baseType);
+				printer.print(".array");
+			} else {
+				printer.print("array.type(");
+				encodeTypeConstant(baseType);
+				printer.print(")");
+			}
+		} else if (type instanceof final RefType refType) {
+			new ClassToBplEncoder(printer)
+				.encodeClassConstant(refType.getSootClass());
+		} else {
+			throw new IllegalStateException("Unable to extract type constant from " + type);
+		}
+	}
+
 	public void encodeTypeConstant(final TypeConstant typeConstant) {
-		printer.print("`");
-		printer.print(typeConstant.value.getClassName());
-		printer.print("`");
+		encodeTypeConstant(typeConstant.type);
 	}
 
 	public void encodeFunctionCall(final String functionName, final Value... arguments) {
@@ -77,6 +95,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 		printer.print(quantifierExpr.getSymbol());
 		printer.print(" ");
 		final Chain<Local> bindings = quantifierExpr.getBindings();
+
 		printer.startItems(", ");
 		encodeQuantifierBindings(bindings);
 		printer.endItems();
@@ -419,7 +438,6 @@ public class ValueToBplEncoder extends ValueEncoder {
 					encodeFunctionCall("int.to.float", castExpr.getOp());
 					return;
 				}
-
 			} else if (fromType == DoubleType.v()) {
 				if (toType == IntType.v()) {
 					encodeFunctionCall("double.to.int", castExpr.getOp());

@@ -68,25 +68,39 @@ procedure new(t: Type) returns (r: Reference, e: Reference);
 // -------------------------------------------------------------------
 type Type;
 
-const unique Primitive: Type;
-
-const unique Object.Type: Field Type;
+const unique `java.lang.Object.#TYPE`: Field Type;
 
 type `boolean` = bool;
 
+const unique `boolean`.array: Type;
+
 type `byte` = int;
+
+const unique `byte`.array: Type;
 
 type `short` = int;
 
+const unique `short`.array: Type;
+
 type `int` = int;
+
+const unique `int`.array: Type;
 
 type `char` = int;
 
+const unique `char`.array: Type;
+
 type `long` = int;
+
+const unique `long`.array: Type;
 
 type `float` = real;
 
+const unique `float`.array: Type;
+
 type `double` = real;
+
+const unique `double`.array: Type;
 
 function type.extends(t1: Type, t2: Type) returns (bool);
  
@@ -100,12 +114,12 @@ axiom (forall t1: Type, t2: Type :: t1 != t2 && type.extends(t1, t2) ==> !type.e
 
 function {:inline} reference.typeof(h: Store, r: Reference) returns (Type)
 {
-  store.read(h, r, Object.Type)
+  store.read(h, r, `java.lang.Object.#TYPE`)
 }
 
 function {:inline} reference.instanceof(h: Store, r: Reference, t: Type) returns (bool)
 {
-	type.extends(store.read(h, r, Object.Type), t)
+	type.extends(store.read(h, r, `java.lang.Object.#TYPE`), t)
 }
 
 axiom (forall h: Store, t: Type :: !reference.instanceof(h, `void`, t));
@@ -151,7 +165,7 @@ procedure array(t: Type, l: int) returns (r: Reference, e: Reference);
 	ensures e == `void`;
 	ensures heap.allocated(heap, r);
 	ensures array.lengthof(r) == l;
-	ensures reference.typeof(heap, r) == array.type(t);
+	ensures reference.typeof(heap, r) == t;
 
 // -------------------------------------------------------------------
 // String model

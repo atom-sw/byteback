@@ -9,7 +9,6 @@ import byteback.syntax.scene.type.declaration.member.method.body.unit.AssumeStmt
 import byteback.syntax.scene.type.declaration.member.method.body.unit.CallStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.YieldStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.UnitEncoder;
-import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpEffectEvaluator;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
 import soot.*;
@@ -90,11 +89,7 @@ public class UnitToBplEncoder extends UnitEncoder {
 				printer.startItems(", ");
 
 				printer.separate();
-				if (newArrayExpr.getBaseType() instanceof final RefType refType) {
-					new ClassToBplEncoder(printer).encodeClassConstant(refType.getSootClass());
-				} else {
-					printer.print("Primitive");
-				}
+				new ValueToBplEncoder(printer).encodeTypeConstant(newArrayExpr.getType());
 
 				printer.separate();
 				valueEncoder.encodeValue(newArrayExpr.getSize());

@@ -54,12 +54,7 @@ public class TypeAccessToBplEncoder extends TypeAccessEncoder {
 			return;
 		}
 
-		if (type instanceof RefType) {
-			printer.print("Reference");
-			return;
-		}
-
-		if (type instanceof ArrayType) {
+		if (type instanceof RefLikeType) {
 			printer.print("Reference");
 			return;
 		}

@@ -1,17 +1,17 @@
 package byteback.syntax.scene.type.declaration.member.method.body.value;
 
 import byteback.syntax.scene.type.TypeType;
-import soot.RefType;
+import soot.RefLikeType;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.jimple.Constant;
 
 public class TypeConstant extends Constant implements DefaultCaseValue {
 
-	public final RefType value;
+	public final RefLikeType type;
 
-	public TypeConstant(final RefType type) {
-		this.value = type;
+	public TypeConstant(final RefLikeType type) {
+		this.type = type;
 	}
 
 	@Override
@@ -21,28 +21,28 @@ public class TypeConstant extends Constant implements DefaultCaseValue {
 
 	@Override
 	public Object clone() {
-		return new TypeConstant(value);
+		return new TypeConstant(type);
 	}
 
 	@Override
 	public boolean equivTo(final Object object) {
 		return object instanceof final TypeConstant typeConstant
-				&& typeConstant.value == value;
+				&& typeConstant.type == type;
 	}
 
 	@Override
 	public int equivHashCode() {
-		return value.getNumber() * 31;
+		return type.getNumber() * 31;
 	}
 
 	@Override
 	public void toString(final UnitPrinter printer) {
-		printer.literal("@" + value.toString());
+		printer.literal("@" + type.toString());
 	}
 
 	@Override
 	public String toString() {
-		return "@" + value.toString();
+		return "@" + type.toString();
 	}
 
 }

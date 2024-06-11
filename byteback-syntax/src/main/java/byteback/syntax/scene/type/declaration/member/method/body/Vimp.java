@@ -144,8 +144,8 @@ public class Vimp {
 		return new YieldStmt();
 	}
 
-	public TypeConstant newTypeConstant(final RefType refType) {
-		return new TypeConstant(refType);
+	public TypeConstant newTypeConstant(final RefLikeType type) {
+		return new TypeConstant(type);
 	}
 
 	public ExtendsExpr newExtendsExpr(final Value op1, final Value op2) {

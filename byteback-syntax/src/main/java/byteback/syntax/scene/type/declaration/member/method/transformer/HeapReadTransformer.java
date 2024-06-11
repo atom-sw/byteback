@@ -127,7 +127,7 @@ public class HeapReadTransformer extends MethodTransformer {
 			} else if (value instanceof final InstanceOfExpr instanceOfExpr) {
 				valueBox.setValue(Vimp.v().newCallExpr(PreludeInstanceOfRef.v(),
 						Vimp.v().nest(heap), Vimp.v().nest(instanceOfExpr.getOp()),
-						Vimp.v().newTypeConstant((RefType) instanceOfExpr.getCheckType())));
+						Vimp.v().newTypeConstant((RefLikeType) instanceOfExpr.getCheckType())));
 			} else if (value instanceof final ConcreteRef concreteRef
 					&& !(concreteRef instanceof IdentityRef)) {
 				final Value base;
