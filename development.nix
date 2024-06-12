@@ -3,7 +3,7 @@
 pkgs.mkShell {
 
   buildInputs = [
-    pkgs.graalvm-ce
+    pkgs.zulu17
     (pkgs.python3.withPackages(
       packages: with packages; [pandas lit filecheck click]
     ))
@@ -13,7 +13,7 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
-export PATH=$PATH:$PWD/byteback-cli/build/install/byteback-cli/bin
+export PATH=$PATH:$PWD/byteback-tool/build/install/byteback-tool/bin
 export CLASSPATH=$CLASSPATH:$PWD/byteback-annotations/build/libs/byteback-annotations.jar
   '';
 

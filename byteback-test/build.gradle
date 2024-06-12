@@ -2,7 +2,7 @@ import java.nio.file.Paths
 
 evaluationDependsOn(':byteback-tool')
 
-def scriptsDir = "$projectDir/scripts"
+def scriptsDir = "$projectDir/benchmark"
 
 def bytebackTestRoot = project(':byteback-test').projectDir
 
@@ -28,7 +28,7 @@ subprojects { test ->
 
 				def execute = { target ->
 						test.exec {
-								environment 'SUMMARY', summaryDir
+								environment 'SUMMARY', project.mkdir(summaryDir)
 								environment 'SRC_BASE', sourceDir
 								environment 'CLASS_BASE', compiledDir
 								environment 'BYTEBACK_ROOT', toolRoot
@@ -45,8 +45,6 @@ subprojects { test ->
 				if (boogieTimeLimitProperty == null) {
 						boogieTimeLimitProperty = 20
 				}
-
-				project.mkdir(summaryDir)
 
 				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
 
@@ -86,7 +84,6 @@ subprojects { test ->
 						test.exec {
 								def output = "$experimentsDir/results.csv"
 								environment 'BYTEBACK_ROOT', toolRoot
-								environment 'PATH', path
 								project.mkdir(experimentsDir)
 								commandLine 'python3', script,
 										'--output', output,
@@ -95,11 +92,11 @@ subprojects { test ->
 						}
 				}
 
-				dependsOn test.system
-
 				outputs.files fileTree(experimentsDir).matching {
 						include '*.csv'
 				} 
+
+				dependsOn test.system
 		}
 
 }
@@ -116,13 +113,12 @@ def results = tasks.register('results') {
 				}
 		}
 
-		subprojects { test ->
-				dependsOn test.experiments
-		}
-
 		outputs.files fileTree(experimentsDir).matching {
 				include '*.csv'
 				include '*.tex'
 		} 
-		
+
+		subprojects { test ->
+				dependsOn test.experiments
+		}
 }

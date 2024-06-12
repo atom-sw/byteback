@@ -65,7 +65,6 @@ public class SquareSortedArray {
 				i += 1;
 			}
 
-
 			c -= 1;
 		}
 

@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Iterator;
 
 /**
  * Encodes a Soot Scene into the Boogie Intermediate Verification
@@ -43,7 +44,10 @@ public class SceneToBplEncoder extends SceneEncoder {
 			throw new RuntimeException("Error reading the Boogie prelude.", exception);
 		}
 
-		for (final SootClass sootClass : scene.getClasses()) {
+		final Iterator<SootClass> iterator = scene.getClasses().snapshotIterator();
+
+		while (iterator.hasNext()) {
+			final SootClass sootClass = iterator.next();
 			new ClassToBplEncoder(printer).encodeClass(sootClass);
 		}
 	}

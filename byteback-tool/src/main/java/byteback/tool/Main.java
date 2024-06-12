@@ -245,8 +245,8 @@ public class Main implements Callable<Integer> {
 
 		final long endTime = System.currentTimeMillis();
 
-		System.out.println("Precise time (ms): ");
-		System.out.println(endTime - startTime);
+		System.out.println("Conversion completed in " + (endTime - startTime) + "ms");
+		System.out.println();
 
 		return 0;
 	}

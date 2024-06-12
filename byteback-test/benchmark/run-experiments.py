@@ -24,11 +24,9 @@ def run_command(command):
 
 def verification_benchmark(command):
     r = re.compile("Boogie program verifier finished with [0-9]+ verified, 0 errors")
+    
     def f():
         process = run_command(command)
-
-        if not r.search(process.stdout.decode("utf-8")):
-            raise RuntimeError("Boogie program could not be verified")
 
         if process.returncode != 0:
             raise RuntimeError("Boogie execution failed")
@@ -37,21 +35,16 @@ def verification_benchmark(command):
 
 
 def conversion_benchmark(command):
-    r = re.compile("Conversion completed in ([0-9])+ms, total time ([0-9])+ms")
+    r = re.compile("Conversion completed in ([0-9]+)ms")
     d = re.compile("[0-9]+")
 
-    process = run_command(command)
-    output = r.search(process.stderr.decode("utf-8"));
+    def f():
+        process = run_command(command)
 
-    if process.returncode != 0:
-        raise RuntimeError("ByteBack execution failed")
+        if process.returncode != 0:
+            raise RuntimeError("ByteBack execution failed")
 
-    if not output:
-        raise RuntimeError("Could not match byteback's output")
-
-    numbers = re.findall(d, output.group(0));
-
-    return int(numbers[0]), int(numbers[1])
+    return timeit(f)
 
 
 def benchmark(entry, repetitions):
@@ -59,22 +52,17 @@ def benchmark(entry, repetitions):
     total_conversion_overhead = 0
     total_conversion_time = 0
     total_verification_time = 0
-
     lg.info(f"Benchmarking {entry['Test']}")
 
     for _ in range(0, repetitions):
-        b, t = conversion_benchmark(entry["BytebackCommand"])
-        total_conversion_time += t
-        total_conversion_overhead +=  b / t
+        total_conversion_time += conversion_benchmark(entry["BytebackCommand"])
         total_verification_time += verification_benchmark(entry["BoogieCommand"])
 
     entry["ConversionTime"] = total_conversion_time / repetitions
     entry["VerificationTime"] = total_verification_time / repetitions
-    entry["ConversionOverhead"] = total_conversion_overhead / repetitions
     lg.info(f"Results:")
     lg.info(f"Conversion Time: {entry['ConversionTime']}")
     lg.info(f"Verification Time: {entry['VerificationTime']}")
-    lg.info(f"Conversion Overhead: {entry['ConversionOverhead']}")
 
     return entry
 
@@ -89,7 +77,7 @@ def main(output, repetitions, summary):
     idf = pd.read_csv(summary)
 
     for index, entry in idf.iterrows():
-        data.append(benchmark(entry, repetitions))
+        data.append(benchmark(entry, 1))
 
     df = pd.DataFrame(data)
     df.to_csv(output_path)

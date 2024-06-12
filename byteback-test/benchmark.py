@@ -1,65 +1,13 @@
-# -*- Python -*-
-import atexit
 import lit.util
 import lit.formats
 from lit import TestRunner
-from lit import Test
 import os
 import re
-import sys
 import threading
 from multiprocessing import Manager
-import glob as gb
-import subprocess as sp
 import pandas as pd
-
-# Do not return an error code for UNRESOLVED tests
-Test.UNRESOLVED.isFailure = False
-
-# Patching the default lit substitution macros
-get_default_substitutions = TestRunner.getDefaultSubstitutions
-
-
-def strip_extension(name):
-    return '.'.join(name.split('.')[:-1])
-
-
-def patch_get_default_substitutions(test, tmpDir, tmpBase, normalize_slashes=False):
-    substitutions = get_default_substitutions(test, tmpDir, tmpBase, normalize_slashes)
-    source_path = test.getSourcePath()
-    extension = source_path.split('.')[-1]
-
-    if any(source_path.endswith(suffix) for suffix in config.suffixes):
-        qualified_name = strip_extension(source_path.removeprefix(src_base).strip().strip("/")).split(os.sep)
-        qualified_path = qualified_name[:-1]
-        substitutions.append(('%{class}', '.'.join(qualified_name)))
-
-    return substitutions
-
-
-TestRunner.getDefaultSubstitutions = patch_get_default_substitutions
-byteback_executable = os.getenv('BYTEBACK_ROOT') + "/bin/byteback-tool"
-test_jar = os.getenv('TEST_JAR')
-boogie_time_limit = os.getenv('BOOGIE_TIME_LIMIT')
-src_base = os.getenv('SRC_BASE')
-
-
-# Tests configuration
-lit_config.note('using Python {}'.format(sys.version))
-
-
-config.name = 'ByteBack'
-config.test_format = lit.formats.ShTest(execute_external=False)
-config.suffixes = ['.java', '.scala', '.groovy', '.kt']
-config.substitutions.append(("%{byteback}", byteback_executable))
-config.substitutions.append(("%{jar}", test_jar))
-config.substitutions.append(("%{byteback-all}", "%{byteback} -cp %{jar}"))
-config.substitutions.append(("%{byteback-current}", "%{byteback-all} -c %{class}"))
-config.substitutions.append(("%{byteback-convert}", "%{byteback-current} -o %s.actual.bpl"))
-config.substitutions.append(("%{check-actual}", "diff %s.actual.bpl %s.expect.bpl"))
-config.substitutions.append(("%{verify}", f"boogie /timeLimit:{boogie_time_limit}"))
-
-# Benchmarking configuration
+import subprocess as sp
+import glob as gb
 
 manager = Manager()
 summary = manager.list()
@@ -91,9 +39,11 @@ def is_byteback_command(command):
     return command.startswith(byteback_executable)
 
 
+src_base = os.getenv('SRC_BASE')
 build_base = os.getenv('CLASS_BASE')
 tmp_base = os.getenv('TMP')
 summary_base = os.getenv('SUMMARY')
+boogie_time_limit = os.getenv('BOOGIE_TIME_LIMIT')
 
 
 def get_file_extension(path):
@@ -223,8 +173,3 @@ TestRunner._runShTest = patch_run_sh_test
 def print_summary(*args):
     df = pd.DataFrame(list(summary))
     df.to_csv(os.path.join(summary_base, "summary.csv"), index=False)
-
-atexit.register(print_summary)
-
-if 'JAVA_HOME' in os.environ:
-    config.environment['JAVA_HOME'] = os.environ['JAVA_HOME']
