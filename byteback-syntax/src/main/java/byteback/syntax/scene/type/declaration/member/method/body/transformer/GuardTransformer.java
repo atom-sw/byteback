@@ -1,8 +1,12 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
+import java.util.HashSet;
+
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.TrapCollectingIterator;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.BeforeThrownAssignmentTag;
+import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.BeforeThrownAssignmentTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
 import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
@@ -55,10 +59,16 @@ public class GuardTransformer extends BodyTransformer {
 			final Unit handlerUnit = trap.getHandlerUnit();
 			assert handlerUnit instanceof final AssignStmt assignStmt
 					&& assignStmt.getRightOp() instanceof CaughtExceptionRef;
+
+			if (BeforeThrownAssignmentTagMarker.v().hasTag(handlerUnit)) {
+				continue;
+			}
+
 			final AssignStmt thrownAssignStmt = Jimple.v().newAssignStmt(
 					thrownRef,
 					UnitConstant.v());
 			units.insertAfter(thrownAssignStmt, handlerUnit);
+			BeforeThrownAssignmentTagMarker.v().flag(handlerUnit);
 		}
 
 		while (unitIterator.hasNext()) {
