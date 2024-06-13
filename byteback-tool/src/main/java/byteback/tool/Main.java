@@ -10,6 +10,7 @@ import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ConditionsTagPropagator;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.BehaviorExprFolder;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.CheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ExplicitTypeCaster;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.FrameConditionFinder;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.FrameConditionValidator;
@@ -26,6 +27,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.transformer.Old
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.QuantifierValueTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ReturnEliminator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.SpecificationExprFolder;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.StrictCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.SwitchEliminator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ThisAssumptionInserter;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ThrownAssumptionInserter;
@@ -80,6 +82,9 @@ public class Main implements Callable<Integer> {
 	@Option(names = { "--iobe" }, description = "Models implicit IndexOutOfBoundsExceptions")
 	public boolean transformArrayCheck = false;
 
+	@Option(names = { "--strict" }, description = "Enforce the absence of implicit exceptions")
+	public boolean transformStrictCheck = false;
+
 	@Option(names = { "-o", "--output" }, description = "Path to the output verification conditions")
 	private Path outputPath;
 
@@ -119,6 +124,18 @@ public class Main implements Callable<Integer> {
 
 	public boolean getTransformArrayCheck() {
 		return transformArrayCheck;
+	}
+
+	public boolean getTransformStrictCheck() {
+		return transformStrictCheck;
+	}
+
+	private CheckTransformer strictifyCheckTransformer(final CheckTransformer checkTransformer) {
+		if (getTransformStrictCheck()) {
+			return new StrictCheckTransformer(checkTransformer);
+		} else {
+			return checkTransformer;
+		}
 	}
 
 	private final String[] ghostClasses = new String[] {
@@ -198,12 +215,12 @@ public class Main implements Callable<Integer> {
 		// Create explicit checks for implicit exceptions
 		if (getTransformArrayCheck()) {
 			scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.ict", new IndexCheckTransformer(scene)));
+			jtpPack.add(new Transform("jtp.ict", strictifyCheckTransformer(new IndexCheckTransformer(scene))));
 		}
 
 		if (getTransformNullCheck()) {
 			scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.nct", new NullCheckTransformer(scene)));
+			jtpPack.add(new Transform("jtp.nct", strictifyCheckTransformer(new NullCheckTransformer(scene))));
 		}
 
 		jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));

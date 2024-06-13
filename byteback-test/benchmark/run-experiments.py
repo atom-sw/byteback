@@ -77,7 +77,7 @@ def main(output, repetitions, summary):
     idf = pd.read_csv(summary)
 
     for index, entry in idf.iterrows():
-        data.append(benchmark(entry, 1))
+        data.append(benchmark(entry, repetitions))
 
     df = pd.DataFrame(data)
     df.to_csv(output_path)

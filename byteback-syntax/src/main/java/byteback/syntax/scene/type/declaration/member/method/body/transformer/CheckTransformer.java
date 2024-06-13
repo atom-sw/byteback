@@ -23,9 +23,9 @@ import java.util.Optional;
  */
 public abstract class CheckTransformer extends BodyTransformer {
 
-	public final Scene scene;
+	private final Scene scene;
 
-	public final String exceptionClassName;
+	private final String exceptionClassName;
 
 	/**
 	 * Constructs a new {@link CheckTransformer}
@@ -36,6 +36,14 @@ public abstract class CheckTransformer extends BodyTransformer {
 	public CheckTransformer(final Scene scene, final String exceptionClassName) {
 		this.scene = scene;
 		this.exceptionClassName = exceptionClassName;
+	}
+
+	public Scene getScene() {
+		return scene;
+	}
+
+	public String getExceptionClassName() {
+		return exceptionClassName;
 	}
 
 	/**
@@ -84,7 +92,7 @@ public abstract class CheckTransformer extends BodyTransformer {
 	 *                       for assigning the exception.
 	 * @return The units throwing the exception.
 	 */
-	private Chain<Unit> makeThrowUnits(final LocalGenerator localGenerator) {
+	protected Chain<Unit> makeHandlerUnits(final LocalGenerator localGenerator) {
 		final Chain<Unit> units = new HashChain<>();
 
 		// Create new local $e for containing the exception
@@ -118,7 +126,7 @@ public abstract class CheckTransformer extends BodyTransformer {
 		while (unitIterator.hasNext()) {
 			final Unit unit = unitIterator.next();
 			makeUnitCheck(unit).ifPresent((unitCheck) -> {
-				final Chain<Unit> throwUnits = makeThrowUnits(localGenerator);
+				final Chain<Unit> throwUnits = makeHandlerUnits(localGenerator);
 				units.insertBefore(throwUnits, unit);
 				final Unit checkStmt = Vimp.v().newIfStmt(Vimp.v().nest(unitCheck), unit);
 				units.insertBefore(checkStmt, throwUnits.getFirst());

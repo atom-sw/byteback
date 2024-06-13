@@ -85,7 +85,6 @@ def main(csvs, output_csv, output_tex, index, prefix):
             print_macro(f"/bbe/{group}/{identifier}/{field}", row[field])
 
         print_field("ConversionTime")
-        print_field("ConversionOverhead")
         print_field("VerificationTime")
         print_field("SourceLinesOfCode")
         print_field("BytecodeLinesOfCode")
@@ -111,7 +110,6 @@ def main(csvs, output_csv, output_tex, index, prefix):
         print_macro(f"/bbe/total/{column}", df[column].sum())
 
     print_mean("ConversionTime")
-    print_mean("ConversionOverhead")
     print_mean("VerificationTime")
     print_mean("SourceLinesOfCode")
     print_mean("BytecodeLinesOfCode")
@@ -126,7 +124,6 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_mean("SpecExceptionCount")
 
     print_total("ConversionTime")
-    print_total("ConversionOverhead")
     print_total("VerificationTime")
     print_total("SourceLinesOfCode")
     print_total("BytecodeLinesOfCode")
