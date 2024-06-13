@@ -1,11 +1,8 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
-import java.util.HashSet;
-
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.iterator.TrapCollectingIterator;
-import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.BeforeThrownAssignmentTag;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.BeforeThrownAssignmentTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.tag.ThrowTargetTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;

@@ -597,7 +597,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 		}
 
 		if (value instanceof final InstanceOfExpr instanceOfExpr) {
-			final TypeConstant checkTypeConstant = Vimp.v().newTypeConstant((RefType) instanceOfExpr.getCheckType());
+			final TypeConstant checkTypeConstant = Vimp.v().newTypeConstant((RefLikeType) instanceOfExpr.getCheckType());
 			encodeHeapFunctionCall("reference.instanceof", instanceOfExpr.getOp(), checkTypeConstant);
 			return;
 		}

@@ -47,7 +47,7 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
 		return unitToLabel;
 	}
 
-	public void encodeWhereClause(final Local local, final RefType refType) {
+	public void encodeWhereClause(final Local local, final RefLikeType refType) {
 		final Value whereValue = Jimple.v().newInstanceOfExpr(local, refType);
 		printer.print(" where ");
 		new ValueToBplEncoder(printer).encodeValue(whereValue);
@@ -66,7 +66,7 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
 			final Type localType = local.getType();
 			typeAccessToBplEncoder.encodeTypeAccess(localType);
 
-			if (localType instanceof final RefType refType) {
+			if (localType instanceof final RefLikeType refType) {
 				encodeWhereClause(local, refType);
 			}
 
