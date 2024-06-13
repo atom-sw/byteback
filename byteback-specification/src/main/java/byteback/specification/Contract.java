@@ -123,4 +123,8 @@ public class Contract {
 	public static void invariant(boolean behavior) {
 	}
 
+	public static Throwable thrown() {
+		return null;
+	}
+
 }

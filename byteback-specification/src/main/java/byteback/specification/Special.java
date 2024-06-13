@@ -1,10 +1,9 @@
 package byteback.specification;
 
-public class Special {
+import byteback.specification.Contract.Operator;
+import byteback.specification.Contract.Prelude;
 
-	public static Throwable thrown() {
-		return null;
-	}
+public class Special {
 
 	public static boolean old(final boolean value) {
 		return value;

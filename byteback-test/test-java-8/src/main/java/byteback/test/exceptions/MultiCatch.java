@@ -4,7 +4,6 @@
 package byteback.test.exceptions;
 
 import static byteback.specification.Contract.*;
-import static byteback.specification.Special.*;
 
 import byteback.test.exceptions.Basic.Exception4;
 

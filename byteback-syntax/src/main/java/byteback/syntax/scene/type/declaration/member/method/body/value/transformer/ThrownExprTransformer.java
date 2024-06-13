@@ -28,7 +28,7 @@ public class ThrownExprTransformer extends ValueTransformer {
 		if (value instanceof final InvokeExpr invokeExpr) {
 			final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
 
-			if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {
+			if (BBLibNames.v().isContractClass(invokedMethodRef.getDeclaringClass())) {
 				if (invokedMethodRef.getName().equals(BBLibNames.THROWN_NAME)) {
 					final ThrownRef thrownRef = Vimp.v().newThrownRef();
 					valueBox.setValue(thrownRef);
