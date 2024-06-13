@@ -101,4 +101,10 @@ public class Special {
 		}
 	}
 
+	@Operator
+	@Prelude("reference.is_void")
+	public static boolean isVoid(final Object object) {
+		return false;
+	}
+
 }
