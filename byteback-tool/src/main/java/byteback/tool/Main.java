@@ -10,6 +10,8 @@ import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ConditionsTagPropagator;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.BehaviorExprFolder;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.BodyLogger;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.CastCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.CheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ExplicitTypeCaster;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.FrameConditionFinder;
@@ -82,6 +84,9 @@ public class Main implements Callable<Integer> {
 	@Option(names = { "--iobe" }, description = "Models implicit IndexOutOfBoundsExceptions")
 	public boolean transformArrayCheck = false;
 
+	@Option(names = { "--cce" }, description = "Models implicit IndexOutOfBoundsExceptions")
+	public boolean transformClassCastCheck = false;
+
 	@Option(names = { "--strict" }, description = "Enforce the absence of implicit exceptions")
 	public boolean transformStrictCheck = false;
 
@@ -124,6 +129,10 @@ public class Main implements Callable<Integer> {
 
 	public boolean getTransformArrayCheck() {
 		return transformArrayCheck;
+	}
+
+	public boolean getTransformClassCastCheck() {
+		return transformClassCastCheck;
 	}
 
 	public boolean getTransformStrictCheck() {
@@ -221,6 +230,11 @@ public class Main implements Callable<Integer> {
 		if (getTransformNullCheck()) {
 			scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
 			jtpPack.add(new Transform("jtp.nct", strictifyCheckTransformer(new NullCheckTransformer(scene))));
+		}
+
+		if (getTransformClassCastCheck()) {
+			scene.addBasicClass("java.lang.ClassCastException", SootClass.SIGNATURES);
+			jtpPack.add(new Transform("jtp.clct", strictifyCheckTransformer(new CastCheckTransformer(scene))));
 		}
 
 		jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
