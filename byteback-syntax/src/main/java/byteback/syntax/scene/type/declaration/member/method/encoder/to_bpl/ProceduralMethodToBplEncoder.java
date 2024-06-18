@@ -1,6 +1,7 @@
 package byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl;
 
 import byteback.syntax.printer.Printer;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl.ProceduralBodyToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
@@ -32,12 +33,20 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 
 		for (final IdentityRef identityRef : inputRefs) {
 			printer.separate();
+			printer.endLine();
+			printer.print(SPEC_INDENT);
 			valueToBplEncoder.encodeInputRef(identityRef);
 			printer.print(": ");
 			final Type type = VimpTypeInterpreter.v().typeOf(identityRef);
 			typeAccessToBplEncoder.encodeTypeAccess(type);
+
+			if (type instanceof RefLikeType refLikeType) {
+				new ProceduralBodyToBplEncoder(printer).encodeWhereClause(Vimp.v().nest(identityRef), refLikeType);
+			}
 		}
 
+		printer.endLine();
+		printer.endItems();
 		printer.print(")");
 	}
 

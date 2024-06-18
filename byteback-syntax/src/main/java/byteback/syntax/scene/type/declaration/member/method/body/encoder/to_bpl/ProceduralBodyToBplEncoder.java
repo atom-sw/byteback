@@ -1,9 +1,12 @@
 package byteback.syntax.scene.type.declaration.member.method.body.encoder.to_bpl;
 
 import byteback.syntax.printer.Printer;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.BodyEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.to_bpl.UnitToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeWeakInstanceOfRef;
+import byteback.syntax.scene.type.declaration.member.method.body.value.HeapRef;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
 import soot.jimple.GotoStmt;
@@ -47,8 +50,10 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
 		return unitToLabel;
 	}
 
-	public void encodeWhereClause(final Local local, final RefLikeType refType) {
-		final Value whereValue = Jimple.v().newInstanceOfExpr(local, refType);
+	public void encodeWhereClause(final Value value, final RefLikeType refType) {
+		final Value whereValue = Vimp.v().newCallExpr(
+																									PreludeWeakInstanceOfRef.v(),
+																									new Value[] { Vimp.v().nest(Vimp.v().newHeapRef()), value, Vimp.v().newTypeConstant(refType) });
 		printer.print(" where ");
 		new ValueToBplEncoder(printer).encodeValue(whereValue);
 	}

@@ -6,6 +6,7 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.*;
+import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 
 import java.util.Optional;
 
@@ -27,7 +28,9 @@ public class CastCheckTransformer extends CheckTransformer {
 
 			if (value instanceof final CastExpr castExpr) {
 				if (castExpr.getCastType() instanceof RefLikeType castType) {
-					final Value checkExpr = Jimple.v().newInstanceOfExpr(castExpr.getOp(), castType);
+					final Value checkExpr = Jimple.v().newOrExpr(
+																											 Vimp.v().nest(Jimple.v().newInstanceOfExpr(castExpr.getOp(), castType)),
+																											 Vimp.v().nest(Jimple.v().newEqExpr(castExpr.getOp(), NullConstant.v())));
 
 					return Optional.of(checkExpr);
 				} else {

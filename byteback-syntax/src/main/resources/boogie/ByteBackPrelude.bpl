@@ -122,6 +122,11 @@ function {:inline} reference.instanceof(h: Store, r: Reference, t: Type) returns
 	type.extends(store.read(h, r, `java.lang.Object.#TYPE`), t)
 }
 
+function {:inline} reference.compatible(h: Store, r: Reference, t: Type) returns (bool)
+{
+	reference.instanceof(h, r, t) || r == `null`
+}
+
 axiom (forall h: Store, t: Type :: !reference.instanceof(h, `void`, t));
 
 axiom (forall h: Store, t: Type :: !reference.instanceof(h, `null`, t));

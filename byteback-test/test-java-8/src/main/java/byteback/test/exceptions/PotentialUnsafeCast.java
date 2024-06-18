@@ -33,8 +33,14 @@ public class PotentialUnsafeCast {
 
 	}
 
-	@Behavior public boolean x_is_instanceof_A(final Object x) {
+	@Behavior
+	public boolean x_is_instanceof_A(final Object x) {
 		return x instanceof A;
+	}
+
+	@Behavior
+	public boolean x_is_not_instanceof_A(final Object x) {
+		return not(x_is_instanceof_A(x));
 	}
 
 	@Return(when = "x_is_instanceof_A")
@@ -49,7 +55,13 @@ public class PotentialUnsafeCast {
 		}
 	}
 
-	@Behavior public boolean always() {
+	@Return
+	public void safeUpcast(final B b) {
+		A a = (A) b;
+	}
+
+	@Behavior
+	public boolean always() {
 		return true;
 	}
 
@@ -60,12 +72,12 @@ public class PotentialUnsafeCast {
 	}
 
 	@Return
-	public void validDownCast() {
-		A a = new B();
-		B b = (B) a;
+	public void validCastNull() {
+		A a = (A) null;
 	}
 
 }
 /**
- * RUN: %{verify} %t.bpl
+ * RUN: %{verify} %t.bpl | filecheck %s
+ * CHECK: Boogie program verifier finished with 6 verified, 0 errors
  */
