@@ -14,13 +14,13 @@ class PotentialIndexOutOfBounds {
 
 		@Behavior
 		def a_is_not_null(a: Array[Int]): Boolean = {
-				return neq(a, null);
+				return neq(a, null)
 		}
 
 		@Return
 		def passedTarget(a: Array[Int]): Unit = {
 				if (a.length > 0) {
-						val a_0: Int = a(0);
+						val a_0: Int = a(0)
 				}
 		}
 
@@ -41,12 +41,12 @@ class PotentialIndexOutOfBounds {
 		@Require("a_is_not_empty")
 		@Return
 		def constrainedTarget(a: Array[Int]): Unit = {
-				val a_0: Int = a(0);
+				val a_0: Int = a(0)
 		}
 
 		@Raise(exception = classOf[IndexOutOfBoundsException])
 		def expectedIndexOutOfBounds(a: Array[Int]): Unit = {
-				val a_m1: Int = a(-1);
+				val a_m1: Int = a(-1)
 		}
 
 }
