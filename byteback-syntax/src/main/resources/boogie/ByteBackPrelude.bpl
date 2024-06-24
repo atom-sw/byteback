@@ -146,7 +146,7 @@ function box<a>(a) returns (Box);
 
 function unbox<a>(Box) returns (a);
 
-axiom (forall <a> x : a :: { box(x) } unbox(box(x)) : a == x);
+axiom (forall <a> x: a :: { box(x) } unbox(box(x)) : a == x);
 
 function array.element(int) returns (Field Box);
 

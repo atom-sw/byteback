@@ -9,8 +9,8 @@ import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ConditionsTagPropagator;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.ArraySizeCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.BehaviorExprFolder;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.BodyLogger;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.CastCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.CheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ExplicitTypeCaster;
@@ -84,8 +84,11 @@ public class Main implements Callable<Integer> {
 	@Option(names = { "--iobe" }, description = "Models implicit IndexOutOfBoundsExceptions")
 	public boolean transformArrayCheck = false;
 
-	@Option(names = { "--cce" }, description = "Models implicit IndexOutOfBoundsExceptions")
+	@Option(names = { "--cce" }, description = "Models implicit ClassCastExceptions")
 	public boolean transformClassCastCheck = false;
+
+	@Option(names = { "--nas" }, description = "Models implicit NegativeArraySizeExceptions")
+	public boolean transformNegativeArraySizeCheck = false;
 
 	@Option(names = { "--strict" }, description = "Enforce the absence of implicit exceptions")
 	public boolean transformStrictCheck = false;
@@ -132,6 +135,10 @@ public class Main implements Callable<Integer> {
 	}
 
 	public boolean getTransformClassCastCheck() {
+		return transformClassCastCheck;
+	}
+
+	public boolean getTransformArraySizeCheck() {
 		return transformClassCastCheck;
 	}
 
@@ -197,6 +204,7 @@ public class Main implements Callable<Integer> {
 		jtpPack.add(new Transform("jtp.rte", ReturnEliminator.v()));
 		jtpPack.add(new Transform("jtp.i2j", IfConditionExtractor.v()));
 
+		// Start of \tr[exp]
 		// Introduce the new Vimp expression types
 		jtpPack.add(new Transform("jtp.vvt", LogicConstantTransformer.v()));
 		jtpPack.add(new Transform("jtp.etc", ExplicitTypeCaster.v()));
@@ -209,39 +217,56 @@ public class Main implements Callable<Integer> {
 
 		// - Transformations targeting behavioral methods
 		jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
-		// jtpPack.add(new Transform("jtp.btg", BehaviorBodyValidator.v()));
+		// End of \tr[exp]
 
 		// - Transformations targeting procedural methods
 		jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
-		jtpPack.add(new Transform("jtp.cai", ThrownAssumptionInserter.v()));
 
+		// Start of \tr[stm]
 		// Create the specification statements and expressions
 		jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
 		jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
 		jtpPack.add(new Transform("jtp.ias", InvokeAssigner.v()));
+		// End of \tr[stm]
 
+		// Start of \tr[exc]
 		// - Transformations of the exceptional control flow
 		// Create explicit checks for implicit exceptions
-		if (getTransformArrayCheck()) {
+		jtpPack.add(new Transform("jtp.cai", ThrownAssumptionInserter.v()));
+
+		if (transformArrayCheck) {
 			scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.ict", strictifyCheckTransformer(new IndexCheckTransformer(scene))));
+			jtpPack.add(new Transform("jtp.ict",
+					strictifyCheckTransformer(new IndexCheckTransformer(scene))));
 		}
 
-		if (getTransformNullCheck()) {
+		if (transformNullCheck) {
 			scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.nct", strictifyCheckTransformer(new NullCheckTransformer(scene))));
+			jtpPack.add(new Transform("jtp.nct",
+					strictifyCheckTransformer(new NullCheckTransformer(scene))));
 		}
 
-		if (getTransformClassCastCheck()) {
+		if (transformClassCastCheck) {
 			scene.addBasicClass("java.lang.ClassCastException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.clct", strictifyCheckTransformer(new CastCheckTransformer(scene))));
+			jtpPack.add(new Transform("jtp.clct",
+					strictifyCheckTransformer(new CastCheckTransformer(scene))));
+		}
+
+		if (transformNegativeArraySizeCheck) {
+			scene.addBasicClass("java.lang.NegativeArraySizeException", SootClass.SIGNATURES);
+			jtpPack.add(new Transform("jtp.asct",
+					strictifyCheckTransformer(new ArraySizeCheckTransformer(scene))));
 		}
 
 		jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
 		jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
 		jtpPack.add(new Transform("jtp.cst", CallStmtTransformer.v()));
 		jtpPack.add(new Transform("jtp.gat", GuardTransformer.v()));
+		// End of \tr[exc]
+
+		// Start of \tr[loop]
 		jtpPack.add(new Transform("jtp.ine", InvariantExpander.v()));
+		// End of \tr[loop]
 
 		// Cleanup the output
 		jtpPack.add(new Transform("jtp.ule2", UnusedLocalEliminator.v()));

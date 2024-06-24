@@ -29,8 +29,8 @@ public class CastCheckTransformer extends CheckTransformer {
 			if (value instanceof final CastExpr castExpr) {
 				if (castExpr.getCastType() instanceof RefLikeType castType) {
 					final Value checkExpr = Jimple.v().newOrExpr(
-																											 Vimp.v().nest(Jimple.v().newInstanceOfExpr(castExpr.getOp(), castType)),
-																											 Vimp.v().nest(Jimple.v().newEqExpr(castExpr.getOp(), NullConstant.v())));
+							Vimp.v().nest(Jimple.v().newInstanceOfExpr(castExpr.getOp(), castType)),
+							Vimp.v().nest(Jimple.v().newEqExpr(castExpr.getOp(), NullConstant.v())));
 
 					return Optional.of(checkExpr);
 				} else {

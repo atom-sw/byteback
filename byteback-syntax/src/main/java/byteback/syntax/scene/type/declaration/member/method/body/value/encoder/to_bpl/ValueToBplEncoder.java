@@ -47,8 +47,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 				printer.print(")");
 			}
 		} else if (type instanceof final RefType refType) {
-			new ClassToBplEncoder(printer)
-				.encodeClassConstant(refType.getSootClass());
+			new ClassToBplEncoder(printer).encodeClassConstant(refType.getSootClass());
 		} else {
 			throw new IllegalStateException("Unable to extract type constant from " + type);
 		}

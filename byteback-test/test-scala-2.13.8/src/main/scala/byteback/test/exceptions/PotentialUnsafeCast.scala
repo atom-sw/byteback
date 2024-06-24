@@ -1,22 +1,21 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$A -c %{class}$B --cce -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} --cce -o %t.bpl
  */
 package byteback.test.exceptions;
 
-import byteback.specification.Contract.*;
-import byteback.specification.Operators.*;
+import byteback.specification.Contract._;
+import byteback.specification.Operators._;
+import byteback.specification.Operators.{eq => equal};
+
+class B () extends A ()
+
+class C ()
 
 class PotentialUnsafeCast {
 
-  class A ()
-
-	class B () extends A
-
-	class C ()
-
 	@Behavior
 	def x_is_instanceof_A(x: Object): Boolean = {
-		return x.instanceOf[A]
+		return x.isInstanceOf[A]
 	}
 
 	@Return(when = "x_is_instanceof_A")
@@ -26,14 +25,14 @@ class PotentialUnsafeCast {
 
 	@Return
 	def safeDownCast(x: Object): Unit = {
-		if (x is A) {
+		if (x.isInstanceOf[A]) {
 			val a: A = x.asInstanceOf[A]
 		}
 	}
 
 	@Return
 	def safeUpcast(b: B): Unit = {
-		val a: A = b as A
+		val a: A = b.asInstanceOf[A]
 	}
 
 	@Behavior
@@ -41,14 +40,14 @@ class PotentialUnsafeCast {
 		return true
 	}
 
-	@Raise(exception = ClassCastException::class, when = "always")
+	@Raise(exception = classOf[ClassCastException], when = "always")
 	def invalidDownCast(): Unit = {
-		val a: A = new A()
-		val b: B = b.asInstanceOf[A]
+		val a: A = new A
+		val b: B = a.asInstanceOf[B]
 	}
 
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 7 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 5 verified, 0 errors
  */

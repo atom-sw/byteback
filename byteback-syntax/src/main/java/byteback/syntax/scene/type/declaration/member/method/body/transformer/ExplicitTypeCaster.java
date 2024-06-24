@@ -39,8 +39,10 @@ public class ExplicitTypeCaster extends BodyTransformer {
 				final Type type2 = VimpTypeInterpreter.v().typeOf(binopExpr.getOp2());
 				final Type joinedType = VimpTypeInterpreter.v().join(type1, type2);
 
-				castIfNeeded(binopExpr.getOp1Box(), joinedType);
-				castIfNeeded(binopExpr.getOp2Box(), joinedType);
+				if (joinedType != NullType.v()) {
+					castIfNeeded(binopExpr.getOp1Box(), joinedType);
+					castIfNeeded(binopExpr.getOp2Box(), joinedType);
+				}
 			}
 		}
 

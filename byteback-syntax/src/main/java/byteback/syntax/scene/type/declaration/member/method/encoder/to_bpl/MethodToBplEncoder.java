@@ -48,10 +48,15 @@ public class MethodToBplEncoder extends MethodEncoder {
 
 	@Override
 	public void encodeMethod(final SootMethod sootMethod) {
-		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
-			new BehaviorMethodToBplEncoder(printer).encodeMethod(sootMethod);
-		} else {
-			new ProceduralMethodToBplEncoder(printer).encodeMethod(sootMethod);
+		try {
+			if (BehaviorTagMarker.v().hasTag(sootMethod)) {
+				new BehaviorMethodToBplEncoder(printer).encodeMethod(sootMethod);
+			} else {
+				new ProceduralMethodToBplEncoder(printer).encodeMethod(sootMethod);
+			}
+		} catch (final Throwable throwable) {
+			System.err.println(sootMethod.getActiveBody());
+			throw new RuntimeException("Exception while converting method: " + sootMethod, throwable);
 		}
 
 		printer.endLine();

@@ -30,37 +30,41 @@ public class LogicConstantTransformer extends UnitTransformer {
 		if (unit instanceof final AssignStmt assignStmt) {
 			final Type expectedType = assignStmt.getLeftOp().getType();
 			final ValueBox rightValueBox = assignStmt.getRightOpBox();
-			transformValueOfType(expectedType, rightValueBox);
+			if (expectedType == BooleanType.v()) {
+				transformValueOfType(rightValueBox);
+			}
 		} else if (unit instanceof final IfStmt ifStmt) {
 			final ValueBox conditionValueBox = ifStmt.getConditionBox();
-			transformValueOfType(BooleanType.v(), conditionValueBox);
+			transformValueOfType(conditionValueBox);
 		} else if (unit instanceof final InvokeStmt invokeStmt) {
-			transformValueOfType(VoidType.v(), invokeStmt.getInvokeExprBox());
+			transformValueOfType(invokeStmt.getInvokeExprBox());
 		} else if (unit instanceof final SpecificationStmt specificationStmt) {
 			final ValueBox conditionValueBox = specificationStmt.getConditionBox();
-			transformValueOfType(BooleanType.v(), conditionValueBox);
+			transformValueOfType(conditionValueBox);
 		} else if (unit instanceof final ReturnStmt returnStmt) {
-			transformValueOfType(sootMethod.getReturnType(), returnStmt.getOpBox());
+			if (sootMethod.getReturnType() == BooleanType.v()) {
+				transformValueOfType(returnStmt.getOpBox());
+			}
 		}
 	}
 
-	public void transformValueOfType(final Type expectedType, final ValueBox valueBox) {
+	public void transformValueOfType(final ValueBox valueBox) {
 		final Value value = valueBox.getValue();
 
 		if (value instanceof final BinopExpr binopExpr) {
-			final Type op1Type = VimpTypeInterpreter.v().typeOf(binopExpr.getOp1());
-			final Type op2Type = VimpTypeInterpreter.v().typeOf(binopExpr.getOp2());
-			final Type type = VimpTypeInterpreter.v().join(op1Type, op2Type);
-			transformValueOfType(type, binopExpr.getOp1Box());
-			transformValueOfType(type, binopExpr.getOp2Box());
+			if (binopExpr instanceof AndExpr || binopExpr instanceof OrExpr) {
+				transformValueOfType(binopExpr.getOp1Box());
+				transformValueOfType(binopExpr.getOp2Box());
+			}
 		} else if (value instanceof final InvokeExpr invokeExpr) {
 			for (int i = 0; i < invokeExpr.getArgCount(); ++i) {
 				final ValueBox argBox = invokeExpr.getArgBox(i);
 				final Type argType = invokeExpr.getMethodRef().getParameterType(i);
-				transformValueOfType(argType, argBox);
+				if (argType == BooleanType.v()) {
+					transformValueOfType(argBox);
+				}
 			}
-		} else if (value instanceof final IntConstant intConstant
-				&& expectedType instanceof BooleanType) {
+		} else if (value instanceof final IntConstant intConstant) {
 			valueBox.setValue(LogicConstant.v(intConstant.value > 0));
 		}
 	}

@@ -32,7 +32,6 @@ public class GCD {
 	@Raise(exception = IllegalArgumentException.class, when = "arguments_are_negative")
 	@Ensure("result_is_gcd")
 	public static int gcd(final int a, final int b) {
-
 		if (a <= 0 || b <= 0) {
 			throw new IllegalArgumentException("Both arguments must be positive");
 		}
