@@ -103,7 +103,6 @@ public class FailOnPotentialIndexOutOfBounds {
 	}
 
 }
-
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
  * CHECK: Boogie program verifier finished with 6 verified, 5 errors

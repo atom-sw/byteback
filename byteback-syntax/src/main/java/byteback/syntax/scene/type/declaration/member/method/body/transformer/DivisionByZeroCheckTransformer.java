@@ -14,7 +14,7 @@ import soot.jimple.Jimple;
 public class DivisionByZeroCheckTransformer extends CheckTransformer {
 
 	public DivisionByZeroCheckTransformer(final Scene scene) {
-		super(scene, "java.lang.DivisionByZeroexception");
+		super(scene, "java.lang.ArithmeticException");
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ConditionsTagPropagator;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ArraySizeCheckTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.DivisionByZeroCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.BehaviorExprFolder;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.CastCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.CheckTransformer;
@@ -90,6 +91,9 @@ public class Main implements Callable<Integer> {
 	@Option(names = { "--nas" }, description = "Models implicit NegativeArraySizeExceptions")
 	public boolean transformNegativeArraySizeCheck = false;
 
+	@Option(names = { "--dbz" }, description = "Models implicit DivisionByZeroExceptions")
+	public boolean transformDivisionByZero = false;
+
 	@Option(names = { "--strict" }, description = "Enforce the absence of implicit exceptions")
 	public boolean transformStrictCheck = false;
 
@@ -126,28 +130,8 @@ public class Main implements Callable<Integer> {
 		return outputPath;
 	}
 
-	public boolean getTransformNullCheck() {
-		return transformNullCheck;
-	}
-
-	public boolean getTransformArrayCheck() {
-		return transformArrayCheck;
-	}
-
-	public boolean getTransformClassCastCheck() {
-		return transformClassCastCheck;
-	}
-
-	public boolean getTransformArraySizeCheck() {
-		return transformClassCastCheck;
-	}
-
-	public boolean getTransformStrictCheck() {
-		return transformStrictCheck;
-	}
-
 	private CheckTransformer strictifyCheckTransformer(final CheckTransformer checkTransformer) {
-		if (getTransformStrictCheck()) {
+		if (transformStrictCheck) {
 			return new StrictCheckTransformer(checkTransformer);
 		} else {
 			return checkTransformer;
@@ -256,6 +240,12 @@ public class Main implements Callable<Integer> {
 			scene.addBasicClass("java.lang.NegativeArraySizeException", SootClass.SIGNATURES);
 			jtpPack.add(new Transform("jtp.asct",
 					strictifyCheckTransformer(new ArraySizeCheckTransformer(scene))));
+		}
+
+		if (transformDivisionByZero) {
+			scene.addBasicClass("java.lang.ArithmeticException", SootClass.SIGNATURES);
+			jtpPack.add(new Transform("jtp.dbzt",
+					strictifyCheckTransformer(new DivisionByZeroCheckTransformer(scene))));
 		}
 
 		jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
