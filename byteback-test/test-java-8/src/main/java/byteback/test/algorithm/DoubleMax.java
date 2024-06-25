@@ -36,6 +36,7 @@ public class DoubleMax {
 	@Require("array_is_not_null")
 	@Require("array_is_not_empty")
 	@Ensure("result_is_max")
+	@Return
 	public static double max(double[] a) {
 		double t = a[0];
 

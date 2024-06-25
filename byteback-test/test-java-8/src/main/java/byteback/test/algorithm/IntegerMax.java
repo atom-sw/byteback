@@ -36,6 +36,7 @@ public class IntegerMax {
 	@Require("array_is_not_null")
 	@Require("array_is_not_empty")
 	@Ensure("result_is_max")
+	@Return
 	public static int max(int a[]) {
 		int t = a[0];
 
