@@ -119,9 +119,9 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 
 			if (InferredFramesTagAccessor.v().hasTag(body)) {
 				printer.print(SPEC_INDENT);
-				printer.printLine("modifies heap;");
+				printer.printLine("modifies `#H`;");
 				printer.print(SPEC_INDENT);
-				printer.printLine("free ensures heap.succeeds(old(heap), heap);");
+				printer.printLine("free ensures heap.succeeds(old(`#H`), `#H`);");
 			}
 
 			printer.printLine("{");

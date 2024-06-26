@@ -22,9 +22,7 @@ import com.google.common.base.Optional;
 
 public class ValueToBplEncoder extends ValueEncoder {
 
-	public static final String HEAP_SYMBOL = "heap";
-
-	public static final String OLD_HEAP_SYMBOL = "heap'";
+	public static final String HEAP_SYMBOL = "`#H`";
 
 	public static final String THROWN_SYMBOL = "`#e`";
 
@@ -140,10 +138,6 @@ public class ValueToBplEncoder extends ValueEncoder {
 			printer.separate();
 			encodeValue(argument);
 		}
-	}
-
-	public void encodeOldHeapReference() {
-		printer.print(OLD_HEAP_SYMBOL);
 	}
 
 	public void encodeHeapReference() {
@@ -304,7 +298,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 
 	public void encodeConcreteRef(final ConcreteRef concreteRef) {
 		if (concreteRef instanceof HeapRef) {
-			printer.print("heap");
+			printer.print(HEAP_SYMBOL);
 		} else if (concreteRef instanceof final FieldPointer fieldPointer) {
 			encodeFieldPointer(fieldPointer);
 			return;

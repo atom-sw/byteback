@@ -34,7 +34,7 @@ function heap.is_anchor(h: Store) returns (bool);
 
 function heap.allocated(Store, Reference) returns (bool);
 
-var heap: Store where heap.is_good(heap) && heap.is_anchor(heap);
+var `#H`: Store where heap.is_good(`#H`) && heap.is_anchor(`#H`);
 
 axiom (forall h1: Store, h2: Store, h3: Store ::
 	{ heap.succeeds(h1, h2), heap.succeeds(h2, h3) }
@@ -60,8 +60,8 @@ axiom (forall<a> h: Store, r: Reference, f: Field a, x: a ::
 procedure new(t: Type) returns (r: Reference, e: Reference);
 	ensures r != `null`;
 	ensures e == `void`;
-	ensures reference.typeof(heap, r) == t;
-	ensures heap.allocated(heap, r);
+	ensures reference.typeof(`#H`, r) == t;
+	ensures heap.allocated(`#H`, r);
 
 // -------------------------------------------------------------------
 // Type model
@@ -168,9 +168,9 @@ axiom (forall t: Type :: { array.type(t) } array.type_inverse(array.type(t)) == 
 procedure array(t: Type, l: int) returns (r: Reference, e: Reference);
 	ensures r != `null`;
 	ensures e == `void`;
-	ensures heap.allocated(heap, r);
+	ensures heap.allocated(`#H`, r);
 	ensures array.lengthof(r) == l;
-	ensures reference.typeof(heap, r) == t;
+	ensures reference.typeof(`#H`, r) == t;
 
 // -------------------------------------------------------------------
 // String model
@@ -179,7 +179,7 @@ procedure array(t: Type, l: int) returns (r: Reference, e: Reference);
 procedure string(chars: Reference) returns (r: Reference, e: Reference);
 	ensures r != `null`;
 	ensures e == `void`;
-	ensures heap.allocated(heap, r);
+	ensures heap.allocated(`#H`, r);
 
 function string.const(id: int) returns (r: Reference);
 
