@@ -84,16 +84,17 @@ public class ConditionsTagger extends MethodTransformer {
 				case (BBLibNames.RAISE_ANNOTATION) -> {
 					final PostconditionsTag postconditionsTag = PostconditionsTagAccessor.v()
 							.putIfAbsent(sootMethod, PostconditionsTag::new);
+
 					AnnotationTagReader.v().getElement(
 							annotationTag,
-							"when",
-							AnnotationStringElem.class)
-							.ifPresent((annotationStringElement) -> {
+							"exception",
+							AnnotationClassElem.class)
+							.ifPresentOrElse((classElement) -> {
 								AnnotationTagReader.v().getElement(
 										annotationTag,
-										"exception",
-										AnnotationClassElem.class)
-										.ifPresent((classElement) -> {
+										"when",
+										AnnotationStringElem.class)
+										.ifPresentOrElse((annotationStringElement) -> {
 											final String exceptionDesc = classElement.getDesc();
 											final RefType exceptionType = (RefType) AsmUtil.toJimpleType(exceptionDesc, Optional.absent());
 											final String behaviorName = annotationStringElement.getValue();
@@ -106,6 +107,33 @@ public class ConditionsTagger extends MethodTransformer {
 															Jimple.v().newInstanceOfExpr(
 																	Vimp.v().nest(Vimp.v().newThrownRef()),
 																	exceptionType)));
+											postconditionsTag.addCondition(condition);
+										}, () -> {
+											final String exceptionDesc = classElement.getDesc();
+											final RefType exceptionType = (RefType) AsmUtil.toJimpleType(exceptionDesc, Optional.absent());
+											final Value condition = Jimple.v().newInstanceOfExpr(
+													Vimp.v().nest(Vimp.v().newThrownRef()),
+													exceptionType);
+											postconditionsTag.addCondition(condition);
+										});
+							}, () -> {
+								AnnotationTagReader.v().getElement(
+										annotationTag,
+										"when",
+										AnnotationStringElem.class)
+										.ifPresentOrElse((annotationStringElement) -> {
+											final String behaviorName = annotationStringElement.getValue();
+											final Value behaviorCall = PreBehaviorResolver.v().resolveBehavior(
+													sootMethod, behaviorName);
+											final Value condition = Vimp.v().newImpliesExpr(
+													Vimp.v().nest(
+															Vimp.v().newOldExpr(Vimp.v().nest(behaviorCall))),
+													Vimp.v().nest(
+															Jimple.v().newNeExpr(Vimp.v().newThrownRef(), UnitConstant.v())));
+											postconditionsTag.addCondition(condition);
+										}, () -> {
+											final Value condition = Jimple.v().newNeExpr(Vimp.v().nest(Vimp.v().newThrownRef()),
+													UnitConstant.v());
 											postconditionsTag.addCondition(condition);
 										});
 							});

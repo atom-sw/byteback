@@ -76,7 +76,7 @@ public class Contract {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface Raise {
-		Class<?> exception();
+		Class<?> exception() default Throwable.class;
 
 		String when() default "[unassigned]";
 	}
