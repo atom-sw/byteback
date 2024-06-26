@@ -14,7 +14,6 @@ j8,/byteback/test/exceptions/Basic
 j8,/byteback/test/exceptions/Loop
 j8,/byteback/test/exceptions/TryFinally
 j8,/byteback/test/exceptions/TryWithResources
-j8,/byteback/test/algorithm/ArrayReverse
 j8,/byteback/test/algorithm/BinarySearch
 j8,/byteback/test/algorithm/GCD
 j8,/byteback/test/algorithm/LinearSearch
@@ -38,7 +37,6 @@ s2,/byteback/test/exceptions/PotentialUnsafeCast
 s2,/byteback/test/exceptions/MultiCatch
 s2,/byteback/test/exceptions/Basic
 s2,/byteback/test/exceptions/TryFinally
-s2,/byteback/test/algorithm/ArrayReverse
 s2,/byteback/test/instance/Counter
 s2,/byteback/test/algorithm/GCD
 s2,/byteback/test/algorithm/LinearSearch
@@ -51,7 +49,6 @@ k18,/byteback/test/exceptions/PotentialNullDereference
 k18,/byteback/test/exceptions/PotentialUnsafeCast
 k18,/byteback/test/exceptions/Basic
 k18,/byteback/test/exceptions/TryFinally
-k18,/byteback/test/algorithm/ArrayReverse
 k18,/byteback/test/algorithm/Counter
 k18,/byteback/test/algorithm/GCD
 k18,/byteback/test/algorithm/LinearSearch
