@@ -39,7 +39,8 @@ public class ThrownLocalInserter extends BodyTransformer {
 		locals.add(local);
 
 		for (final ValueBox useBox : body.getUseBoxes()) {
-			if (!(useBox instanceof IdentityRefBox) && useBox.getValue() instanceof ThrownRef) {
+			if (!(useBox instanceof IdentityRefBox)
+					&& useBox.getValue() instanceof ThrownRef) {
 				useBox.setValue(local);
 			}
 		}

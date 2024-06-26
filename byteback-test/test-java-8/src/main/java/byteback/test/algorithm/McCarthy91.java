@@ -1,7 +1,6 @@
 /**
  * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
-
 package byteback.test.algorithm;
 
 import static byteback.specification.Operators.eq;
