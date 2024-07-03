@@ -47,6 +47,8 @@ def main(csvs, output_csv, output_tex, index, prefix):
 
     print_macro("/bbe/count/non-exceptional", len(original_df.index) - len(df.index))
     print_macro("/bbe/count/java", len(df[df["Group"] == "j8"].index) + len(df[df["Group"] == "j17"].index))
+    print_macro("/bbe/count/scala", len(df[df["Group"] == "s2"].index))
+    print_macro("/bbe/count/kotlin", len(df[df["Group"] == "k18"].index))
 
     print_macro("/bbe/count", len(df.index))
     print_macro("/bbe/count/method", df["MethodCount"].sum())
@@ -58,22 +60,77 @@ def main(csvs, output_csv, output_tex, index, prefix):
     # Group-specific statistics
     for group in groups:
         # Experiments Count
-        print_macro(f"/bbe/count/{group}", len(df[df["Group"] == group].index))
+        gdf = df[df["Group"] == group]
+        print_macro(f"/bbe/count/{group}", len(gdf.index))
+
+        # Encoding Time
+        print_macro(
+            f"/bbe/total/{group}/ConversionTime",
+            gdf["ConversionTime"].sum())
+        print_macro(
+            f"/bbe/average/{group}/ConversionTime",
+            gdf["ConversionTime"].mean())
+
+        # Source Size
+        print_macro(
+            f"/bbe/total/{group}/SourceLinesOfCode",
+            gdf["SourceLinesOfCode"].sum())
+        print_macro(
+            f"/bbe/average/{group}/SourceLinesOfCode",
+            gdf["SourceLinesOfCode"].mean())
+
+        # Boogie Size
+        print_macro(
+            f"/bbe/total/{group}/BoogieLinesOfCode",
+            gdf["SourceLinesOfCode"].sum())
+        print_macro(
+            f"/bbe/average/{group}/BoogieLinesOfCode",
+            gdf["SourceLinesOfCode"].mean())
 
         # Methods count
-        print_macro(f"/bbe/count/method/{group}", df.loc[df["Group"] == group]["MethodCount"].sum())
+        print_macro(
+            f"/bbe/count/method/{group}",
+            gdf["MethodCount"].sum())
+        print_macro(
+            f"/bbe/average/method/{group}",
+            gdf["MethodCount"].mean())
 
-        # Annotation count
-        print_macro(f"/bbe/count/raises/{group}", df.loc[df["Group"] == group]["SpecRaiseCount"].sum())
+        # Raises count
+        print_macro(
+            f"/bbe/count/raises/{group}",
+            gdf["SpecRaiseCount"].sum())
+        print_macro(
+            f"/bbe/average/raises/{group}",
+            gdf["SpecRaiseCount"].mean())
 
         # Returns count
-        print_macro(f"/bbe/count/returns/{group}", df.loc[df["Group"] == group]["SpecReturnCount"].sum())
+        print_macro(
+            f"/bbe/count/returns/{group}",
+            gdf["SpecReturnCount"].sum())
+        print_macro(
+            f"/bbe/average/returns/{group}",
+            gdf["SpecReturnCount"].mean())
+
+        # Exceptional Behavior Annotations
+        gdf["SpecExceptionCount"] = gdf["SpecReturnCount"] + gdf["SpecRaiseCount"]
+        gdf["SpecFunctionalCount"] = gdf["SpecEnsureCount"] + gdf["SpecRequireCount"]
+        gdf["SpecIntermediateCount"] = gdf["SpecAssertionCount"] + gdf["SpecInvariantCount"]
 
         # Invariants count
-        print_macro(f"/bbe/count/invariants/{group}", df.loc[df["Group"] == group]["SpecInvariantCount"].sum())
+        print_macro(
+            f"/bbe/count/invariants/{group}",
+            gdf["SpecInvariantCount"].sum())
+        print_macro(
+            f"/bbe/average/invariants/{group}",
+            gdf["SpecInvariantCount"].mean())
 
-        # Invariants count
-        print_macro(f"/bbe/count/assertions/{group}", df.loc[df["Group"] == group]["SpecAssertionCount"].sum())
+        # Assertions count
+        print_macro(
+            f"/bbe/count/assertions/{group}",
+            gdf["SpecAssertionCount"].sum())
+        print_macro(
+            f"/bbe/average/assertions/{group}",
+            gdf["SpecAssertionCount"].mean())
 
     # Global statistics
     for index, row in df.iterrows():
