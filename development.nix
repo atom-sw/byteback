@@ -3,7 +3,7 @@
 pkgs.mkShell {
 
   buildInputs = [
-    pkgs.zulu17
+    pkgs.jdk17
     (pkgs.python3.withPackages(
       packages: with packages; [pandas lit filecheck click]
     ))
