@@ -39,6 +39,8 @@ s2,/byteback/test/exceptions/Basic
 s2,/byteback/test/exceptions/TryFinally
 s2,/byteback/test/instance/Counter
 s2,/byteback/test/algorithm/GCD
+s2,/byteback/test/algorithm/IntegerSelectionSort
+s2,/byteback/test/algorithm/DoubleSelectionSort
 s2,/byteback/test/algorithm/LinearSearch
 s2,/byteback/test/algorithm/IntegerMax
 s2,/byteback/test/algorithm/DoubleMax
@@ -51,6 +53,8 @@ k18,/byteback/test/exceptions/Basic
 k18,/byteback/test/exceptions/TryFinally
 k18,/byteback/test/algorithm/Counter
 k18,/byteback/test/algorithm/GCD
+k18,/byteback/test/algorithm/IntegerSelectionSort
+k18,/byteback/test/algorithm/DoubleSelectionSort
 k18,/byteback/test/algorithm/LinearSearch
 k18,/byteback/test/algorithm/IntegerMax
 k18,/byteback/test/algorithm/DoubleMax

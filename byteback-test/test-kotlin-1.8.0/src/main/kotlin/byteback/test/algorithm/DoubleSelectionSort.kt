@@ -9,43 +9,43 @@ import byteback.specification.Operators.*
 import byteback.specification.Quantifiers.*
 import byteback.specification.Special.*
 
-class DoubleSelectionSort {
+class IntegerSelectionSort {
 
     @Behavior
-    fun `bounded index`(a: IntArray, i: Int): Boolean {
+    fun `bounded index`(a: DoubleArray, i: Int): Boolean {
         return lte(0, i) and lt(i, a.size)
     }
 
     @Behavior
-    fun `bounded indices`(a: IntArray, i: Int, j: Int): Boolean {
+    fun `bounded indices`(a: DoubleArray, i: Int, j: Int): Boolean {
         return `bounded index`(a, i) and `bounded index`(a, j)
     }
 
     @Behavior
-    fun `bounded index`(a: IntArray, i: Int, m: Int): Boolean {
+    fun `bounded index`(a: DoubleArray, i: Int, m: Int): Boolean {
         return `bounded index`(a, m)
     }
 
     @Behavior
-    fun `is minimum`(a: IntArray, i: Int, j: Int, m: Int): Boolean {
+    fun `is minimum`(a: DoubleArray, i: Int, j: Int, m: Int): Boolean {
         val k = Bindings.integer()
         return forall(k, implies(lte(i, k) and lt(k, j), gte(a[k], a[m])))
     }
 
     @Behavior
-    fun `is minimum`(a: IntArray, i: Int, m: Int): Boolean {
+    fun `is minimum`(a: DoubleArray, i: Int, m: Int): Boolean {
         return `is minimum`(a, i, a.size, m)
     }
 
     @Behavior
-    fun sorted(a: IntArray, i: Int, j: Int): Boolean {
+    fun sorted(a: DoubleArray, i: Int, j: Int): Boolean {
         val k = Bindings.integer()
         val l = Bindings.integer()
         return forall(k, forall(l, implies(lte(i, k) and lt(k, l) and lt(l, j), lte(a[k], a[l]))))
     }
 
     @Behavior
-    fun partitioned(a: IntArray, i: Int): Boolean {
+    fun partitioned(a: DoubleArray, i: Int): Boolean {
         val k = Bindings.integer()
         val l = Bindings.integer()
         // forall k: int, l: int :: 0 <= k <= i < l <= a.length ==> a[k] <= a[l]
@@ -53,29 +53,29 @@ class DoubleSelectionSort {
     }
 
     @Behavior
-    fun `array is not empty`(a: IntArray): Boolean {
+    fun `array is not empty`(a: DoubleArray): Boolean {
         return gt(a.size, 1)
     }
 
     @Behavior
-    fun `array is sorted`(a: IntArray): Boolean {
+    fun `array is sorted`(a: DoubleArray): Boolean {
         return sorted(a, 0, a.size)
     }
 
     @Behavior
-    fun `array is not null`(a: IntArray): Boolean {
+    fun `array is not null`(a: DoubleArray): Boolean {
         return neq(a, null)
     }
 
     @TwoState
     @Behavior
-    fun `swapped elements`(a: IntArray, i: Int, j: Int): Boolean {
+    fun `swapped elements`(a: DoubleArray, i: Int, j: Int): Boolean {
         return eq(old(a[i]), a[j]) and eq(old(a[j]), a[i])
     }
 
     @TwoState
     @Behavior
-    fun `elements invariance`(a: IntArray, i: Int, j: Int): Boolean {
+    fun `elements invariance`(a: DoubleArray, i: Int, j: Int): Boolean {
         val k = Bindings.integer()
         return forall(k, implies(lte(0, k) and lt(k, a.size) and neq(k, i) and neq(k, j), eq(a[k], old(a[k]))))
     }
@@ -84,7 +84,7 @@ class DoubleSelectionSort {
     @Require("array is not null")
     @Require("array is not empty")
     @Ensure("array is sorted")
-    fun sort(a: IntArray) {
+    fun sort(a: DoubleArray) {
         var i = 0
         while (i < a.size) {
             invariant(lte(0, i) and lte(i, a.size))
