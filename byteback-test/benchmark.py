@@ -169,6 +169,7 @@ def patch_run_sh_test(test, litConfig, useExternalSh, script, tmpBase):
 TestRunner._runShTest = patch_run_sh_test
 
 
+
 def print_summary(*args):
     df = pd.DataFrame(list(summary))
     df.to_csv(os.path.join(summary_base, "summary.csv"), index=False)

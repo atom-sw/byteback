@@ -71,6 +71,14 @@ def main(csvs, output_csv, output_tex, index, prefix):
             f"/bbe/average/{group}/ConversionTime",
             gdf["ConversionTime"].mean())
 
+        # Verification Time
+        print_macro(
+            f"/bbe/total/{group}/VerificationTime",
+            gdf["VerificationTime"].sum())
+        print_macro(
+            f"/bbe/average/{group}/VerificationTime",
+            gdf["VerificationTime"].mean())
+
         # Source Size
         print_macro(
             f"/bbe/total/{group}/SourceLinesOfCode",
@@ -89,47 +97,50 @@ def main(csvs, output_csv, output_tex, index, prefix):
 
         # Methods count
         print_macro(
-            f"/bbe/count/method/{group}",
+            f"/bbe/count/{group}/MethodCount",
             gdf["MethodCount"].sum())
         print_macro(
-            f"/bbe/average/method/{group}",
+            f"/bbe/average/{group}/MethodCount",
             gdf["MethodCount"].mean())
 
         # Raises count
         print_macro(
-            f"/bbe/count/raises/{group}",
+            f"/bbe/count/{group}/SpecRaiseCount",
             gdf["SpecRaiseCount"].sum())
         print_macro(
-            f"/bbe/average/raises/{group}",
+            f"/bbe/average/{group}/SpecRaiseCount",
             gdf["SpecRaiseCount"].mean())
 
         # Returns count
         print_macro(
-            f"/bbe/count/returns/{group}",
+            f"/bbe/count/{group}/SpecReturnCount",
             gdf["SpecReturnCount"].sum())
         print_macro(
-            f"/bbe/average/returns/{group}",
+            f"/bbe/average/{group}/SpecReturnCount",
             gdf["SpecReturnCount"].mean())
 
         # Exceptional Behavior Annotations
-        gdf["SpecExceptionCount"] = gdf["SpecReturnCount"] + gdf["SpecRaiseCount"]
-        gdf["SpecFunctionalCount"] = gdf["SpecEnsureCount"] + gdf["SpecRequireCount"]
-        gdf["SpecIntermediateCount"] = gdf["SpecAssertionCount"] + gdf["SpecInvariantCount"]
+        print_macro(
+            f"/bbe/count/{group}/SpecExceptionCount",
+            gdf["SpecExceptionCount"].sum())
+        print_macro(
+            f"/bbe/average/{group}/SpecExceptionCount",
+            gdf["SpecExceptionCount"].mean())
 
         # Invariants count
         print_macro(
-            f"/bbe/count/invariants/{group}",
+            f"/bbe/count/{group}/SpecInvariantCount",
             gdf["SpecInvariantCount"].sum())
         print_macro(
-            f"/bbe/average/invariants/{group}",
+            f"/bbe/average/{group}/SpecInvariantCount",
             gdf["SpecInvariantCount"].mean())
 
         # Assertions count
         print_macro(
-            f"/bbe/count/assertions/{group}",
+            f"/bbe/count/{group}/SpecAssertionCount",
             gdf["SpecAssertionCount"].sum())
         print_macro(
-            f"/bbe/average/assertions/{group}",
+            f"/bbe/average/{group}/SpecAssertionCount",
             gdf["SpecAssertionCount"].mean())
 
     # Global statistics

@@ -1,16 +1,3 @@
-plugins {
-	id 'com.diffplug.spotless' version '6.3.0' apply false
-}
-
 allprojects { project ->
-	apply plugin: 'com.diffplug.spotless'
 	apply plugin: 'java'
-
-	spotless {
-		java {
-			targetExclude("build/generated/**")
-			importOrder()
-			eclipse()
-		}
-	}
 }
