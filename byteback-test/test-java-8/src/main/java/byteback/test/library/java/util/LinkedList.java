@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$Node -c %{class}$ListItr -c %{class}$LLSpliterator -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c '%{class}$Node' -c '%{class}$ListItr' -c '%{class}$LLSpliterator' -o %t.bpl
  */
 
 /*
