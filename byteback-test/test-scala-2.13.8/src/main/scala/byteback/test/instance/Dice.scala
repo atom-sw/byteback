@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$Die -c %{class}$FixedDie -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c '%{class}$Die' -c '%{class}$FixedDie' -o %t.bpl
  */
 package byteback.test.instance;
 

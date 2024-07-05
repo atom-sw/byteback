@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class}$Sequence -c %{class}$Snapshot -c %{class}$List -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c '%{class}$Sequence' -c '%{class}$Snapshot' -c '%{class}$List' -o %t.bpl
  */
 package byteback.test.generics;
 
