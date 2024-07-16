@@ -38,7 +38,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
 
     df["SpecExceptionCount"] = df["SpecReturnCount"] + df["SpecRaiseCount"]
     df["SpecFunctionalCount"] = df["SpecEnsureCount"] + df["SpecRequireCount"]
-    df["SpecCount"] = df["SpecReturnCount"] + df["SpecRaiseCount"]
+    df["SpecCount"] = df["SpecFunctionalCount"] + df["SpecExceptionCount"]
     df["SpecIntermediateCount"] = df["SpecAssertionCount"] + df["SpecInvariantCount"]
 
     df.index += 1
