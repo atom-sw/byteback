@@ -24,6 +24,7 @@ j8,a,/byteback/test/algorithm/IntegerSum
 j8,a,/byteback/test/algorithm/IntegerMax
 j8,a,/byteback/test/algorithm/DoubleMax
 j8,a,/byteback/test/instance/Counter
+j8,a,/byteback/test/generics/Sequences
 j8,a,/byteback/test/library/java/util/ArrayList
 j8,a,/byteback/test/library/java/util/LinkedList
 j17,f,/byteback/test/exceptions/TryWithResources

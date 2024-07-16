@@ -36,10 +36,9 @@ def main(csvs, output_csv, output_tex, index, prefix):
     df = df.reset_index()
     df["Type"] = idf["Type"]
 
-    print(df, file=sys.stderr)
-
     df["SpecExceptionCount"] = df["SpecReturnCount"] + df["SpecRaiseCount"]
     df["SpecFunctionalCount"] = df["SpecEnsureCount"] + df["SpecRequireCount"]
+    df["SpecCount"] = df["SpecReturnCount"] + df["SpecRaiseCount"]
     df["SpecIntermediateCount"] = df["SpecAssertionCount"] + df["SpecInvariantCount"]
 
     df.index += 1
@@ -217,6 +216,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_mean("SpecFunctionalCount")
     print_mean("SpecExceptionCount")
 
+    print_total("SpecCount")
     print_total("ConversionTime")
     print_total("VerificationTime")
     print_total("SourceLinesOfCode")
