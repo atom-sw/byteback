@@ -20,9 +20,9 @@ public class MethodToBplEncoder extends MethodEncoder {
 		printer.print(sootMethod.getDeclaringClass().getName());
 		printer.print(".");
 		final String methodName = sootMethod.getName()
-			.replace("<", "?LT?")
-			.replace(">", "?GT?")
-			.replace(" ", "?");
+				.replace("<", "?LT?")
+				.replace(">", "?GT?")
+				.replace(" ", "?");
 		printer.print(methodName);
 		printer.print("#");
 		printer.startItems("#");

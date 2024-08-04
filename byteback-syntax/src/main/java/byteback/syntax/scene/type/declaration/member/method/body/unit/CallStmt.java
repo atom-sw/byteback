@@ -20,8 +20,8 @@ public class CallStmt extends JInvokeStmt {
 	public CallStmt(final Value[] targets, final CallExpr callExpr) {
 		super(new InvokeExprBox(callExpr));
 		this.targetBoxes = Arrays.stream(targets)
-			.map(DefValueBox::new)
-			.toList();
+				.map(DefValueBox::new)
+				.toList();
 	}
 
 	public List<Value> getTargets() {

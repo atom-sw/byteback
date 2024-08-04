@@ -3,7 +3,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.unit.transform
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.value.LogicConstant;
-import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import soot.*;
 import soot.jimple.*;
 
