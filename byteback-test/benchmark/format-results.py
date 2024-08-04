@@ -6,7 +6,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-LATEX_MACRO = "\pgfkeyssetvalue"
+LATEX_MACRO = "\\pgfkeyssetvalue"
 
 def pairs(l):
     return zip(l[::2], l[1::2])
