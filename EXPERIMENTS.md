@@ -21,11 +21,11 @@ least 2 virtual CPU cores and 8GB of RAM.
 We ran this replication package in iFM 2023's virtual machine on a
 laptop with a CPU i7-7600U 4x 3.9Ghz and 8GB of RAM.  With the default
 settings the replication of all the experiments (task `results`)
-completed in 43 minutes.
+completed in 30 minutes.
 
 For reference, running the same experiments in the same virtual
 machine on better hardware (CPU i9-12950HX 24x 4.9Ghz, 64 GB of RAM)
-took 24 minutes.
+took 13 minutes.
 
 ## Test instructions
 
@@ -47,7 +47,7 @@ printing the message: `BUILD SUCCESSFUL`.
 
 The experiments run the annotated programs in
 [./byteback-test](./byteback-test). Experiments are subdivided in
-groups, corresponding to Table 4's column `LANG`: `j8` for Java 8
+groups, corresponding to Table 6's column `LANG`: `j8` for Java 8
 programs; `j17` for Java 17 programs; `s2` for Scala 2.13.8 programs;
 `k18` for Kotlin 1.8 programs.
 
@@ -62,7 +62,7 @@ message: `BUILD SUCCESSFUL`.
 
 Upon successful execution, file
 [./byteback-test/build/experiments/results.csv](./byteback-test/build/experiments/results.csv)
-will store the data corresponding to Table 4, as we detail next.
+will store the data corresponding to Table 6, as we detail next.
 
 The CSV file `results.csv` includes one row for each verified program.
 Each row has the columns described below.
@@ -118,7 +118,7 @@ SpecExceptionCount
 Total number of exception-related annotations used.
 
 SpecFunctionalCount   
-Total number of functional (`@Require` and `Ensure`) annotations used.
+Total number of functional (`@Require` and `@Ensure`) annotations used.
 
 SpecIntermediateCount   
 Total number of intermediate annotations (`assertion` and loop
