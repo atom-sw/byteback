@@ -68,6 +68,8 @@ public class BBLibNames {
 
 	public static final String ENSURE_ANNOTATION = "Lbyteback/specification/Contract$Ensure;";
 
+	public static final String ENSURE_ONLY_ANNOTATION = "Lbyteback/specification/Contract$EnsureOnly;";
+
 	public static final String IGNORE_ANNOTATION = "Lbyteback/specification/Contract$Ignore;";
 
 	public static final String ABSTRACT_ANNOTATION = "Lbyteback/specification/Contract$Abstract;";
@@ -75,6 +77,8 @@ public class BBLibNames {
 	public static final String RAISE_ANNOTATION = "Lbyteback/specification/Contract$Raise;";
 
 	public static final String REQUIRE_ANNOTATION = "Lbyteback/specification/Contract$Require;";
+
+	public static final String REQUIRE_ONLY_ANNOTATION = "Lbyteback/specification/Contract$RequireOnly;";
 
 	public static final String RETURN_ANNOTATION = "Lbyteback/specification/Contract$Return;";
 

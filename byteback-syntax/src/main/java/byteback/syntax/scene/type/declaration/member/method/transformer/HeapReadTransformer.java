@@ -18,6 +18,8 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeUn
 import byteback.syntax.scene.type.declaration.member.method.body.value.TypeConstant;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPostconditionsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPreconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
@@ -74,6 +76,14 @@ public class HeapReadTransformer extends MethodTransformer {
 			});
 
 			PostconditionsTagAccessor.v().get(sootMethod).ifPresent((postconditionsTag) -> {
+				valueBoxes.addAll(postconditionsTag.getUseBoxes());
+			});
+
+			OnlyPreconditionsTagAccessor.v().get(sootMethod).ifPresent((preconditionsTag) -> {
+				valueBoxes.addAll(preconditionsTag.getUseBoxes());
+			});
+
+			OnlyPostconditionsTagAccessor.v().get(sootMethod).ifPresent((postconditionsTag) -> {
 				valueBoxes.addAll(postconditionsTag.getUseBoxes());
 			});
 		}

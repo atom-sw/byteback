@@ -2,12 +2,15 @@ package byteback.syntax.scene.transformer;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPostconditionsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPreconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag;
@@ -17,7 +20,9 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Value;
+import soot.VoidType;
 import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
 import soot.util.NumberedString;
 
 /**
@@ -94,11 +99,12 @@ public class ConditionsTagPropagator extends SceneTransformer {
 						.computeIfAbsent(currentClass, ($) -> new HashMap<>());
 
 				if (currentClass.resolvingLevel() >= SootClass.SIGNATURES) {
-					for (final SootMethod currentMethod : currentClass.getMethods()) {
+					for (final SootMethod currentMethod : new ArrayList<>(currentClass.getMethods())) {
 						final NumberedString currentMethodSignature = currentMethod.getNumberedSubSignature();
 						final SootMethod parentMethod = parentMethods.get(currentMethodSignature);
 						final AtomicBoolean introducesSpecification = new AtomicBoolean(false);
 
+						// Handling automatic specification inheritance
 						PreconditionsTagAccessor.v().get(currentMethod).ifPresentOrElse((currentPreconditionsTag) -> {
 							if (parentMethod != null) {
 								PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
@@ -138,6 +144,43 @@ public class ConditionsTagPropagator extends SceneTransformer {
 						if (introducesSpecification.get()) {
 							parentMethods.put(currentMethodSignature, currentMethod);
 						}
+
+						// Handling precondition weakening and postcondition strengthening
+						OnlyPreconditionsTagAccessor.v().get(currentMethod).ifPresent((currentPreconditionsTag) -> {
+							if (parentMethod != null) {
+								PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
+									final SootMethod vcMethod = new SootMethod(
+											currentMethod.getName() + "#precondition_weakening",
+											Collections.emptyList(),
+											VoidType.v());
+									vcMethod.setActiveBody(new JimpleBody());
+									final PreconditionsTag preconditionsTag = parentPreconditionsTag;
+									final PostconditionsTag postconditionsTag = new PostconditionsTag(
+											currentPreconditionsTag.getConditions());
+									PreconditionsTagAccessor.v().put(vcMethod, preconditionsTag);
+									PostconditionsTagAccessor.v().put(vcMethod, postconditionsTag);
+									currentClass.addMethod(vcMethod);
+								});
+							}
+						});
+
+						OnlyPostconditionsTagAccessor.v().get(currentMethod).ifPresent((currentPostconditionTag) -> {
+							if (parentMethod != null) {
+								PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
+									final SootMethod vcMethod = new SootMethod(
+											currentMethod.getName() + "#postcondition_strenghtening",
+											Collections.emptyList(),
+											VoidType.v());
+									vcMethod.setActiveBody(new JimpleBody());
+									final PostconditionsTag postconditionsTag = parentPostconditionsTag;
+									final PostconditionsTag preconditionsTag = new PostconditionsTag(
+											currentPostconditionTag.getConditions());
+									PostconditionsTagAccessor.v().put(vcMethod, preconditionsTag);
+									PostconditionsTagAccessor.v().put(vcMethod, postconditionsTag);
+									currentClass.addMethod(vcMethod);
+								});
+							}
+						});
 
 					}
 				}
