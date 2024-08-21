@@ -164,8 +164,7 @@ public class Main implements Callable<Integer> {
 		Options.v().set_output_format(Options.output_format_none);
 
 		// By default, Soot includes the $CLASSPATH env variable. To this we append the
-		// classpath specified by the
-		// user.
+		// classpath specified by the user.
 		Options.v().set_prepend_classpath(true);
 		Options.v().set_soot_classpath(formatClassPaths());
 
