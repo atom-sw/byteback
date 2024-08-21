@@ -35,7 +35,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 	public void encodeTypeConstant(final Type type) {
 		if (type instanceof final ArrayType arrayType) {
 			final Type baseType = arrayType.getArrayElementType();
-			
+
 			if (baseType instanceof PrimType) {
 				new TypeAccessToBplEncoder(printer).encodeTypeAccess(baseType);
 				printer.print(".array");

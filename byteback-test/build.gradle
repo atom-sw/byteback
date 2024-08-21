@@ -70,7 +70,6 @@ subprojects { test ->
 		}
 
 		def experimentsDir = "$buildDir/experiments"
-		def output = "$experimentsDir/results.csv"
 
 		def experiments = tasks.register('experiments') {
 				def jar = test.shadowJar.archivePath
@@ -83,9 +82,10 @@ subprojects { test ->
 
 				doLast {
 						test.exec {
+								def output = "$experimentsDir/results.csv"
 								environment 'BYTEBACK_ROOT', toolRoot
 								project.mkdir(experimentsDir)
-								commandLine 'python', script,
+								commandLine 'python3', script,
 										'--output', output,
 										'--repetitions', repetitionsProperty,
 										'--summary', "$summaryDir/summary.csv"

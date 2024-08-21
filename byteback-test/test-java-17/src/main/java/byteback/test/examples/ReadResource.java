@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c '%{class}$Resource' -c java.lang.IllegalStateException --npe --iobe -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$Resource -c java.lang.IllegalStateException --npe --iobe -o %t.bpl
  */
 package byteback.test.examples;
 

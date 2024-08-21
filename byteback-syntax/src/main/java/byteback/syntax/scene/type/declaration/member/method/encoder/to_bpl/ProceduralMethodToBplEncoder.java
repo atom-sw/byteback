@@ -78,7 +78,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 		printer.endLine();
 
 		PreconditionsTagAccessor.v().get(sootMethod)
-			.ifPresent((preconditionsTag) -> {
+				.ifPresent((preconditionsTag) -> {
 					final List<ValueBox> conditionBoxes = preconditionsTag.getConditionBoxes();
 
 					for (final ValueBox valueBox : conditionBoxes) {
@@ -96,7 +96,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 				});
 
 		PostconditionsTagAccessor.v().get(sootMethod)
-			.ifPresent((postconditionsTag) -> {
+				.ifPresent((postconditionsTag) -> {
 					final List<ValueBox> conditionBoxes = postconditionsTag.getConditionBoxes();
 
 					for (final ValueBox valueBox : conditionBoxes) {

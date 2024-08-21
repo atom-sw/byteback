@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c '%{class}$LessThanComparator' -c '%{class}$GreaterThanComparator' -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$LessThanComparator -c %{class}$GreaterThanComparator -o %t.bpl
  */
 package byteback.test.instance;
 

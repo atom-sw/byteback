@@ -91,9 +91,6 @@ public class Main implements Callable<Integer> {
 	@Option(names = { "--nas" }, description = "Models implicit NegativeArraySizeExceptions")
 	public boolean transformNegativeArraySizeCheck = false;
 
-	@Option(names = { "--pei" }, description = "Models all implicit checks")
-	public boolean transformAllChecks = false;
-
 	@Option(names = { "--dbz" }, description = "Models implicit DivisionByZeroExceptions")
 	public boolean transformDivisionByZero = false;
 
@@ -220,31 +217,31 @@ public class Main implements Callable<Integer> {
 		// Create explicit checks for implicit exceptions
 		jtpPack.add(new Transform("jtp.cai", ThrownAssumptionInserter.v()));
 
-		if (transformAllChecks || transformArrayCheck) {
+		if (transformArrayCheck) {
 			scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
 			jtpPack.add(new Transform("jtp.ict",
 					strictifyCheckTransformer(new IndexCheckTransformer(scene))));
 		}
 
-		if (transformAllChecks || transformNullCheck) {
+		if (transformNullCheck) {
 			scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
 			jtpPack.add(new Transform("jtp.nct",
 					strictifyCheckTransformer(new NullCheckTransformer(scene))));
 		}
 
-		if (transformAllChecks || transformClassCastCheck) {
+		if (transformClassCastCheck) {
 			scene.addBasicClass("java.lang.ClassCastException", SootClass.SIGNATURES);
 			jtpPack.add(new Transform("jtp.clct",
 					strictifyCheckTransformer(new CastCheckTransformer(scene))));
 		}
 
-		if (transformAllChecks || transformNegativeArraySizeCheck) {
+		if (transformNegativeArraySizeCheck) {
 			scene.addBasicClass("java.lang.NegativeArraySizeException", SootClass.SIGNATURES);
 			jtpPack.add(new Transform("jtp.asct",
 					strictifyCheckTransformer(new ArraySizeCheckTransformer(scene))));
 		}
 
-		if (transformAllChecks || transformDivisionByZero) {
+		if (transformDivisionByZero) {
 			scene.addBasicClass("java.lang.ArithmeticException", SootClass.SIGNATURES);
 			jtpPack.add(new Transform("jtp.dbzt",
 					strictifyCheckTransformer(new DivisionByZeroCheckTransformer(scene))));

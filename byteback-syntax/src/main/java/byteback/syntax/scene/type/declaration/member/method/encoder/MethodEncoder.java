@@ -6,10 +6,10 @@ import soot.SootMethod;
 
 public abstract class MethodEncoder extends Encoder {
 
-    public MethodEncoder(final Printer printer) {
-        super(printer);
-    }
+	public MethodEncoder(final Printer printer) {
+		super(printer);
+	}
 
-    public abstract void encodeMethod(SootMethod sootMethod);
+	public abstract void encodeMethod(SootMethod sootMethod);
 
 }

@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} --pei --strict -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -o %t.bpl
  */
 package byteback.test.algorithm
 
@@ -9,7 +9,7 @@ import byteback.specification.Operators.*
 import byteback.specification.Quantifiers.*
 import byteback.specification.Special.*
 
-class DoubleSelectionSort {
+class IntegerSelectionSort {
 
     @Behavior
     fun `bounded index`(a: IntArray, i: Int): Boolean {

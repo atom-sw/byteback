@@ -26,7 +26,7 @@ public class ArraySizeCheckTransformer extends CheckTransformer {
 
 			if (value instanceof final NewArrayExpr newArrayExpr) {
 				final Value checkExpr = Jimple.v().newGeExpr(newArrayExpr.getSize(), IntConstant.v(0));
-				
+
 				return Optional.of(checkExpr);
 			}
 		}

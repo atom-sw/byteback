@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c '%{class}$SubList' -c java.lang.IllegalStateException -c '%{class}$Itr' -c '%{class}$ListItr' -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$SubList -c %{class}$Itr -c byteback.test.library.java.util.AbstractList -c byteback.test.library.java.util.SubList -c byteback.test.library.java.util.AbstractCollection -c byteback.test.library.java.util.SubList -o %t.bpl
  */
 
 /*
@@ -1569,5 +1569,5 @@ public class ArrayList<E> extends AbstractList<E>
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 81 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 119 verified, 0 errors
  */
