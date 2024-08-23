@@ -9,7 +9,6 @@ import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTa
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
 import byteback.syntax.tag.AnnotationTagReader;
-import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Value;
@@ -25,7 +24,7 @@ public class ClassInvariantTagger extends ClassTransformer {
 	}
 
 	@Override
-	public void transformClass(final Scene scene, final SootClass sootClass) {
+	public void transformClass(final SootClass sootClass) {
 		AnnotationTagReader.v().getAnnotation(sootClass, BBLibNames.CLASS_INVARIANT_ANNOTATION)
 				.flatMap(annotationTag -> AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class))
 				.ifPresent(annotationStringElement -> {

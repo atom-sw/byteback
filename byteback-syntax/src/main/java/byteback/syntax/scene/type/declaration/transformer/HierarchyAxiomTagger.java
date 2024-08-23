@@ -1,6 +1,5 @@
 package byteback.syntax.scene.type.declaration.transformer;
 
-import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.TypeType;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ForallExpr;
@@ -17,14 +16,14 @@ import java.util.List;
 
 public class HierarchyAxiomTagger extends ClassTransformer {
 
-	private static final Lazy<HierarchyAxiomTagger> INSTANCE = Lazy.from(HierarchyAxiomTagger::new);
+	final Hierarchy hierarchy;
 
-	public static HierarchyAxiomTagger v() {
-		return INSTANCE.get();
+	public HierarchyAxiomTagger(final Hierarchy hierarchy) {
+		this.hierarchy = hierarchy;
 	}
 
 	@Override
-	public void transformClass(final Scene scene, final SootClass sootClass) {
+	public void transformClass(final SootClass sootClass) {
 		if (sootClass.resolvingLevel() < SootClass.HIERARCHY) {
 			return;
 		}
@@ -38,7 +37,6 @@ public class HierarchyAxiomTagger extends ClassTransformer {
 
 		final Collection<SootClass> superInterfaces = sootClass.getInterfaces();
 		superTypes.addAll(superInterfaces);
-		final Hierarchy hierarchy = scene.getActiveHierarchy();
 		final AxiomsTag axiomsTag = AxiomsTagAccessor.v().putIfAbsent(sootClass, AxiomsTag::new);
 		final List<Value> axioms = axiomsTag.getAxioms();
 

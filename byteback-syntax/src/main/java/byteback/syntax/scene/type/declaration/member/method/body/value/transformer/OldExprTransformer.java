@@ -25,7 +25,7 @@ public class OldExprTransformer extends ValueTransformer {
 	}
 
 	@Override
-	public void transformValue(final SootMethod sootMethod, final Body body, final ValueBox valueBox) {
+	public void transformValue(final ValueBox valueBox) {
 		final Value value = valueBox.getValue();
 
 		if (value instanceof final InvokeExpr invokeExpr) {

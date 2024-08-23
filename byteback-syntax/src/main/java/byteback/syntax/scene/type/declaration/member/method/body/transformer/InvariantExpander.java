@@ -64,7 +64,7 @@ public class InvariantExpander extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
+	public void transformBody(final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final var loopFinder = new LoopFinder();
 		final var unitIterator = new LoopCollectingIterator(units, loopFinder.getLoops(body));

@@ -58,7 +58,7 @@ public class ExplicitTypeCaster extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
+	public void transformBody(final Body body) {
 		for (final Unit unit : body.getUnits()) {
 			if (unit instanceof final AssignStmt assignStmt) {
 				final ValueBox rightOpBox = assignStmt.getRightOpBox();

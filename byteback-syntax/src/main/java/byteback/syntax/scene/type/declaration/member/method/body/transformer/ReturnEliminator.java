@@ -3,7 +3,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.ReturnRef;
 import byteback.common.function.Lazy;
-import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import soot.*;
 import soot.jimple.Jimple;
 import soot.jimple.ReturnStmt;
@@ -30,11 +29,7 @@ public class ReturnEliminator extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
-		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
-			return;
-		}
-
+	public void transformBody(final Body body) {
 		final Type returnType = body.getMethod().getReturnType();
 		final Chain<Unit> units = body.getUnits();
 		final ReturnRef returnRef = new ReturnRef(returnType);

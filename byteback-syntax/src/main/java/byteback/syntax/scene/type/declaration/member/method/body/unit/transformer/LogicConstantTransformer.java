@@ -1,6 +1,5 @@
 package byteback.syntax.scene.type.declaration.member.method.body.unit.transformer;
 
-import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.SpecificationStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.value.LogicConstant;
 import soot.*;
@@ -13,17 +12,14 @@ import soot.jimple.*;
  */
 public class LogicConstantTransformer extends UnitTransformer {
 
-	private static final Lazy<LogicConstantTransformer> INSTANCE = Lazy.from(LogicConstantTransformer::new);
+	private final Type returnType;
 
-	private LogicConstantTransformer() {
-	}
-
-	public static LogicConstantTransformer v() {
-		return INSTANCE.get();
+	public LogicConstantTransformer(final Type returnType) {
+		this.returnType = returnType;
 	}
 
 	@Override
-	public void transformUnit(final SootMethod sootMethod, final Body body, final UnitBox unitBox) {
+	public void transformUnit(final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 
 		if (unit instanceof final AssignStmt assignStmt) {
@@ -41,7 +37,7 @@ public class LogicConstantTransformer extends UnitTransformer {
 			final ValueBox conditionValueBox = specificationStmt.getConditionBox();
 			transformValueOfType(conditionValueBox);
 		} else if (unit instanceof final ReturnStmt returnStmt) {
-			if (sootMethod.getReturnType() == BooleanType.v()) {
+			if (returnType == BooleanType.v()) {
 				transformValueOfType(returnStmt.getOpBox());
 			}
 		}

@@ -24,7 +24,7 @@ public class ConditionalExprTransformer extends ValueTransformer {
 	}
 
 	@Override
-	public void transformValue(final SootMethod sootMethod, final Body body, final ValueBox valueBox) {
+	public void transformValue(final ValueBox valueBox) {
 		final Value value = valueBox.getValue();
 
 		if (value instanceof final InvokeExpr invokeExpr) {
@@ -33,7 +33,7 @@ public class ConditionalExprTransformer extends ValueTransformer {
 			if (BBLibNames.v().isSpecialClass(invokedMethodRef.getDeclaringClass())) {
 				if (invokedMethodRef.getName().equals(BBLibNames.CONDITIONAL_NAME)) {
 					assert invokeExpr.getArgs().size() == 3
-							: "BBLib's definition of conditional takes only 3 arguments";
+							: "BBLib's definition of conditional takes only 3 arguments.";
 					valueBox.setValue(
 							Vimp.v().newConditionExpr(
 									invokeExpr.getArg(0),

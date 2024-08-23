@@ -5,7 +5,6 @@ import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarke
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.body.tag.InferredFramesTag;
 import soot.Body;
-import soot.SootMethod;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ArrayRef;
@@ -26,8 +25,8 @@ public class FrameConditionFinder extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
-		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
+	public void transformBody(final Body body) {
+		if (BehaviorTagMarker.v().hasTag(body.getMethod())) {
 			return;
 		}
 

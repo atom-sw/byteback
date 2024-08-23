@@ -181,7 +181,6 @@ public class ConditionsTagPropagator extends SceneTransformer {
 								});
 							}
 						});
-
 					}
 				}
 

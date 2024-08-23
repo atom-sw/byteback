@@ -1,7 +1,6 @@
 package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import soot.Body;
-import soot.SootMethod;
 
 public class BodyLogger extends BodyTransformer {
 
@@ -16,9 +15,9 @@ public class BodyLogger extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
+	public void transformBody(final Body body) {
 		if (methodName != null) {
-			if (sootMethod.getName().equals(methodName)) {
+			if (body.getMethod().getName().equals(methodName)) {
 				System.out.println(body);
 			}
 		} else {

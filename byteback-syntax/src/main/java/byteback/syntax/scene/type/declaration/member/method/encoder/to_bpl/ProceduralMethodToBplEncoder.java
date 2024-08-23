@@ -59,6 +59,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 		printer.print(" returns (");
 		printer.startItems(", ");
 		final Type returnType = sootMethod.getReturnType();
+		final boolean isAbstract = sootMethod.isAbstract() || !sootMethod.hasActiveBody();
 
 		if (returnType != VoidType.v()) {
 			printer.separate();
@@ -71,7 +72,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 		printer.print(")");
 		printer.endItems();
 
-		if (!sootMethod.hasActiveBody()) {
+		if (isAbstract) {
 			printer.print(";");
 		}
 
@@ -113,7 +114,7 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 					}
 				});
 
-		if (sootMethod.hasActiveBody()) {
+		if (!isAbstract) {
 			final var proceduralBodyToBplEncoder = new ProceduralBodyToBplEncoder(printer);
 			final Body body = sootMethod.getActiveBody();
 

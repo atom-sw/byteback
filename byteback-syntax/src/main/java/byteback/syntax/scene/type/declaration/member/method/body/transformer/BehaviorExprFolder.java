@@ -3,7 +3,6 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import soot.Body;
-import soot.SootMethod;
 import soot.Unit;
 import soot.ValueBox;
 import soot.jimple.ReturnStmt;
@@ -22,9 +21,9 @@ public class BehaviorExprFolder extends ExprFolder {
 	}
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
-		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
-			super.transformBody(sootMethod, body);
+	public void transformBody(final Body body) {
+		if (BehaviorTagMarker.v().hasTag(body.getMethod())) {
+			super.transformBody(body);
 		}
 	}
 

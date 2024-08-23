@@ -32,7 +32,7 @@ import java.util.Set;
 public abstract class ExprFolder extends BodyTransformer {
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
+	public void transformBody(final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final var blockGraph = new BriefBlockGraph(body);
 		final var unitGraph = new BriefUnitGraph(body);

@@ -20,7 +20,7 @@ public class ThrownAssignmentTransformer extends UnitTransformer {
 	}
 
 	@Override
-	public void transformUnit(final SootMethod sootMethod, final Body body, final UnitBox unitBox) {
+	public void transformUnit(final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 
 		if (unit instanceof final IdentityStmt identityStmt

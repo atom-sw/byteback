@@ -9,13 +9,13 @@ import soot.SootClass;
  *
  * @author paganma
  */
-public abstract class ClassTransformer extends SceneTransformer {
+public abstract class SceneClassTransformer extends SceneTransformer {
 
-	public abstract void transformClass(final SootClass sootClass);
+	public abstract void transformClass(final Scene scene, final SootClass sootClass);
 
 	public void transformScene(final Scene scene) {
 		for (final SootClass sootClass : scene.getClasses()) {
-			transformClass(sootClass);
+			transformClass(scene, sootClass);
 		}
 	}
 

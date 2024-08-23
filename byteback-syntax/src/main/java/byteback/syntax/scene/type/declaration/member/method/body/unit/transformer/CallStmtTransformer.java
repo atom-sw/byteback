@@ -7,9 +7,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.CallStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeNewRef;
-import soot.Body;
 import soot.RefType;
-import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Unit;
 import soot.UnitBox;
@@ -28,7 +26,7 @@ public class CallStmtTransformer extends UnitTransformer {
 		return INSTANCE.get();
 	}
 
-	public void transformUnit(final SootMethod sootMethod, final Body body, final UnitBox unitBox) {
+	public void transformUnit(final UnitBox unitBox) {
 		final Unit unit = unitBox.getUnit();
 		final SootMethodRef methodRef;
 		final ArrayList<Value> targets;

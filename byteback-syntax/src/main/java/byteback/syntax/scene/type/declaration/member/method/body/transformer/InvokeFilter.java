@@ -28,7 +28,7 @@ public class InvokeFilter extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
+	public void transformBody(final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final Iterator<Unit> unitsIterator = units.snapshotIterator();
 

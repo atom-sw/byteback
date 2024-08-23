@@ -2,6 +2,7 @@ package byteback.tool;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -10,10 +11,10 @@ import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ConditionsTagPropagator;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ArraySizeCheckTransformer;
-import byteback.syntax.scene.type.declaration.member.method.body.transformer.DivisionByZeroCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.BehaviorExprFolder;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.CastCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.CheckTransformer;
+import byteback.syntax.scene.type.declaration.member.method.body.transformer.DivisionByZeroCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ExplicitTypeCaster;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.FrameConditionFinder;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.FrameConditionValidator;
@@ -45,9 +46,10 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.transform
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.GhostInliner;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.OldExprTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.value.transformer.ThrownExprTransformer;
+import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.transformer.ConditionsTagger;
 import byteback.syntax.scene.type.declaration.member.method.transformer.HeapReadTransformer;
-import byteback.syntax.scene.type.declaration.member.method.transformer.InstanceChecksTagger;
 import byteback.syntax.scene.type.declaration.member.method.transformer.ModifierTagger;
 import byteback.syntax.scene.type.declaration.member.method.transformer.OldHeapReadTransformer;
 import byteback.syntax.scene.type.declaration.transformer.ClassInvariantTagger;
@@ -55,11 +57,13 @@ import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import soot.Pack;
+import soot.Body;
+import soot.LocalGenerator;
 import soot.PackManager;
 import soot.Scene;
 import soot.SootClass;
-import soot.Transform;
+import soot.SootMethod;
+import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
@@ -92,7 +96,7 @@ public class Main implements Callable<Integer> {
 	public boolean transformNegativeArraySizeCheck = false;
 
 	@Option(names = { "--dbz" }, description = "Models implicit DivisionByZeroExceptions")
-	public boolean transformDivisionByZero = false;
+	public boolean transformDivisionByZeroCheck = false;
 
 	@Option(names = { "--strict" }, description = "Enforce the absence of implicit exceptions")
 	public boolean transformStrictCheck = false;
@@ -147,142 +151,144 @@ public class Main implements Callable<Integer> {
 
 	public Integer call() throws Exception {
 		final long startTime = System.currentTimeMillis();
+		final Options options = Options.v();
+		final Scene scene = Scene.v();
 
 		// We will add the classes using Options.v().classes, instead of using the Soot
 		// main.
-		Options.v().set_weak_map_structures(true);
 		final List<String> startingClasses = getStartingClasses();
 		startingClasses.addAll(List.of(ghostClasses));
-		Options.v().classes().addAll(startingClasses);
 
-		// For now ByteBack will not produce any output. Especially since we still
-		// haven't defined how Vimp should be
-		// compiled.
-		Options.v().set_output_format(Options.output_format_none);
+		options.set_weak_map_structures(true);
+		options.classes().addAll(startingClasses);
 
 		// By default, Soot includes the $CLASSPATH env variable. To this we append the
 		// classpath specified by the user.
-		Options.v().set_prepend_classpath(true);
-		Options.v().set_soot_classpath(formatClassPaths());
+		options.set_prepend_classpath(true);
+		options.set_soot_classpath(formatClassPaths());
+		options.set_output_format(Options.output_format_none);
 
 		// Keeping the original names makes debugging the output simpler (though it is
 		// not strictly necessary).
-		Options.v().setPhaseOption("jb", "use-original-names:true");
+		options.setPhaseOption("jb", "use-original-names:true");
 
-		// We will put most of the transformations needed before the conversion to the
-		// IVL in this pack.
-		Options.v().setPhaseOption("jtp", "enabled:true");
-
-		final Pack jtpPack = PackManager.v().getPack("jtp");
-
-		final Scene scene = Scene.v();
-
-		// - Jimple transformations
-		jtpPack.add(new Transform("jtp.ivf", InvokeFilter.v()));
-		jtpPack.add(new Transform("jtp.gor", GhostInliner.v()));
-
-		// - Vimp transformations
-		// Initial structural transformations
-		jtpPack.add(new Transform("jtp.swe", SwitchEliminator.v()));
-		jtpPack.add(new Transform("jtp.rte", ReturnEliminator.v()));
-		jtpPack.add(new Transform("jtp.i2j", IfConditionExtractor.v()));
-
-		// Start of \tr[exp]
-		// Introduce the new Vimp expression types
-		jtpPack.add(new Transform("jtp.vvt", LogicConstantTransformer.v()));
-		jtpPack.add(new Transform("jtp.etc", ExplicitTypeCaster.v()));
-		jtpPack.add(new Transform("jtp.qft", QuantifierValueTransformer.v()));
-		jtpPack.add(new Transform("jtp.oet", OldExprTransformer.v()));
-		jtpPack.add(new Transform("jtp.tet", ThrownExprTransformer.v()));
-		jtpPack.add(new Transform("jtp.tat", ThrownAssignmentTransformer.v()));
-		jtpPack.add(new Transform("jtp.cot", ConditionalExprTransformer.v()));
-		jtpPack.add(new Transform("jtp.cet", CallExprTransformer.v()));
-
-		// - Transformations targeting behavioral methods
-		jtpPack.add(new Transform("jtp.bgg", BehaviorExprFolder.v()));
-		// End of \tr[exp]
-
-		// - Transformations targeting procedural methods
-		jtpPack.add(new Transform("jtp.tai", ThisAssumptionInserter.v()));
-
-		// Start of \tr[stm]
-		// Create the specification statements and expressions
-		jtpPack.add(new Transform("jtp.vut", SpecificationStmtTransformer.v()));
-		jtpPack.add(new Transform("jtp.vgg", SpecificationExprFolder.v()));
-		jtpPack.add(new Transform("jtp.ias", InvokeAssigner.v()));
-		// End of \tr[stm]
-
-		// Start of \tr[exc]
-		// - Transformations of the exceptional control flow
-		// Create explicit checks for implicit exceptions
-		jtpPack.add(new Transform("jtp.cai", ThrownAssumptionInserter.v()));
-
-		if (transformArrayCheck) {
-			scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.ict",
-					strictifyCheckTransformer(new IndexCheckTransformer(scene))));
-		}
+		// Transformations
+		final var checkTransformers = new ArrayList<CheckTransformer>();
 
 		if (transformNullCheck) {
 			scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.nct",
-					strictifyCheckTransformer(new NullCheckTransformer(scene))));
+			checkTransformers.add(strictifyCheckTransformer(new NullCheckTransformer(scene)));
 		}
 
-		if (transformClassCastCheck) {
-			scene.addBasicClass("java.lang.ClassCastException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.clct",
-					strictifyCheckTransformer(new CastCheckTransformer(scene))));
+		if (transformArrayCheck) {
+			scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
+			checkTransformers.add(strictifyCheckTransformer(new IndexCheckTransformer(scene)));
+		}
+
+		if (transformDivisionByZeroCheck) {
+			scene.addBasicClass("java.lang.ArithmeticException", SootClass.SIGNATURES);
+			checkTransformers.add(strictifyCheckTransformer(new DivisionByZeroCheckTransformer(scene)));
 		}
 
 		if (transformNegativeArraySizeCheck) {
 			scene.addBasicClass("java.lang.NegativeArraySizeException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.asct",
-					strictifyCheckTransformer(new ArraySizeCheckTransformer(scene))));
+			checkTransformers.add(strictifyCheckTransformer(new ArraySizeCheckTransformer(scene)));
 		}
 
-		if (transformDivisionByZero) {
-			scene.addBasicClass("java.lang.ArithmeticException", SootClass.SIGNATURES);
-			jtpPack.add(new Transform("jtp.dbzt",
-					strictifyCheckTransformer(new DivisionByZeroCheckTransformer(scene))));
+		if (transformClassCastCheck) {
+			scene.addBasicClass("java.lang.ClassCastException", SootClass.SIGNATURES);
+			checkTransformers.add(strictifyCheckTransformer(new CastCheckTransformer(scene)));
 		}
-
-		jtpPack.add(new Transform("jtp.eit", NormalLoopExitSpecifier.v()));
-		jtpPack.add(new Transform("jtp.cct", InvokeCheckTransformer.v()));
-		jtpPack.add(new Transform("jtp.cst", CallStmtTransformer.v()));
-		jtpPack.add(new Transform("jtp.gat", GuardTransformer.v()));
-		// End of \tr[exc]
-
-		// Start of \tr[loop]
-		jtpPack.add(new Transform("jtp.ine", InvariantExpander.v()));
-		// End of \tr[loop]
-
-		// Cleanup the output
-		jtpPack.add(new Transform("jtp.ule2", UnusedLocalEliminator.v()));
-		jtpPack.add(new Transform("jtp.lns", LocalNameStandardizer.v()));
-
-		// Assign local specification
-		jtpPack.add(new Transform("jtp.fif", FrameConditionFinder.v()));
-		jtpPack.add(new Transform("jtp.fcv", FrameConditionValidator.v()));
-		jtpPack.add(new Transform("jtp.tli", ThrownLocalInserter.v()));
-		jtpPack.add(new Transform("jtp.ohli", OldHeapLocalInserter.v()));
-		jtpPack.add(new Transform("jtp.hli", HeapLocalInserter.v()));
 
 		scene.loadBasicClasses();
 		scene.loadNecessaryClasses();
-
-		ModifierTagger.v().transform();
-		ImplementationPropagator.v().transform();
-
 		PackManager.v().runPacks();
 
-		ConditionsTagger.v().transform();
-		ClassInvariantTagger.v().transform();
-		HeapReadTransformer.v().transform();
-		OldHeapReadTransformer.v().transform();
-		ConditionsTagPropagator.v().transform();
-		InstanceChecksTagger.v().transform();
-		HierarchyAxiomTagger.v().transform();
+		ModifierTagger.v().transformScene(scene);
+		ImplementationPropagator.v().transformScene(scene);
+
+		for (final SootClass sootClass : scene.getClasses()) {
+			if (sootClass.resolvingLevel() <= SootClass.SIGNATURES) {
+				continue;
+			}
+
+			for (final SootMethod sootMethod : sootClass.getMethods()) {
+				if (sootMethod.isAbstract() || !sootMethod.hasActiveBody()) {
+					continue;
+				}
+
+				final Body body = sootMethod.getActiveBody();
+				new LogicConstantTransformer(sootMethod.getReturnType()).transformBody(body);
+
+				InvokeFilter.v().transformBody(body);
+				GhostInliner.v().transformBody(body);
+
+				if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
+					SwitchEliminator.v().transformBody(body);
+					ReturnEliminator.v().transformBody(body);
+					IfConditionExtractor.v().transformBody(body);
+				}
+
+				ExplicitTypeCaster.v().transformBody(body);
+				CallExprTransformer.v().transformBody(body);
+
+				QuantifierValueTransformer.v().transformBody(body);
+				OldExprTransformer.v().transformBody(body);
+				ThrownExprTransformer.v().transformBody(body);
+				ConditionalExprTransformer.v().transformBody(body);
+
+				if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
+					final var localGenerator = new DefaultLocalGenerator(body);
+					ThisAssumptionInserter.v().transformBody(body);
+					ThrownAssumptionInserter.v().transformBody(body);
+					ThrownAssignmentTransformer.v().transformBody(body);
+					SpecificationStmtTransformer.v().transformBody(body);
+					SpecificationExprFolder.v().transformBody(body);
+					new InvokeAssigner(localGenerator)
+						.transformBody(body);
+
+					for (final CheckTransformer checkTransformer : checkTransformers) {
+						checkTransformer.transformBody(body);
+					}
+
+					NormalLoopExitSpecifier.v().transformBody(body);
+					InvokeCheckTransformer.v().transformBody(body);
+					CallStmtTransformer.v().transformBody(body);
+					GuardTransformer.v().transformBody(body);
+					InvariantExpander.v().transformBody(body);
+				} else {
+					BehaviorExprFolder.v().transformBody(body);
+				}
+
+				if (BehaviorTagMarker.v().hasTag(sootMethod)) {
+					if (TwoStateTagMarker.v().hasTag(sootMethod)) {
+						OldHeapLocalInserter.v().transformBody(body);
+					}
+
+					ThrownLocalInserter.v().transformBody(body);
+					HeapLocalInserter.v().transformBody(body);
+				} else {
+					FrameConditionFinder.v().transformBody(body);
+					FrameConditionValidator.v().transformBody(body);
+				}
+
+				// Cleanup
+				UnusedLocalEliminator.v().transform(body);
+				LocalNameStandardizer.v().transform(body);
+			}
+		}
+
+		final var hierarchyAxiomTagger = new HierarchyAxiomTagger(scene.getActiveHierarchy());
+
+		for (final SootClass sootClass : scene.getClasses()) {
+			ConditionsTagger.v().transformClass(sootClass);
+			ClassInvariantTagger.v().transformClass(sootClass);
+			HeapReadTransformer.v().transformClass(sootClass);
+			OldHeapReadTransformer.v().transformClass(sootClass);
+			hierarchyAxiomTagger.transformClass(sootClass);;
+		}
+
+		ConditionsTagPropagator.v().transformScene(scene);
 
 		try (final Printer printer = new Printer(outputPath.toString())) {
 			new SceneToBplEncoder(printer).encodeScene(scene);

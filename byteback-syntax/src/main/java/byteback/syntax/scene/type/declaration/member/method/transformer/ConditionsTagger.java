@@ -33,8 +33,8 @@ public class ConditionsTagger extends MethodTransformer {
 	}
 
 	@Override
-	public void transformMethod(final Scene scene, final SootClass sootClass, final SootMethod sootMethod) {
-		if (sootClass.resolvingLevel() < SootClass.SIGNATURES) {
+	public void transformMethod(final SootMethod sootMethod) {
+		if (sootMethod.getDeclaringClass().resolvingLevel() < SootClass.SIGNATURES) {
 			return;
 		}
 
@@ -143,7 +143,6 @@ public class ConditionsTagger extends MethodTransformer {
 							});
 				}
 				case (BBLibNames.REQUIRE_ONLY_ANNOTATION) -> {
-					System.out.println("ADDED REQUIRE_ONLY to tags of " + sootMethod);
 					final OnlyPreconditionsTag onlyPreconditionsTag = OnlyPreconditionsTagAccessor.v()
 							.putIfAbsent(sootMethod, OnlyPreconditionsTag::new);
 					AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class)

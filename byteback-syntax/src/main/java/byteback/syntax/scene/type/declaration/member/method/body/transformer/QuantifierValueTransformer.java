@@ -33,7 +33,7 @@ public class QuantifierValueTransformer extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
+	public void transformBody(final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final Iterator<Unit> unitIterator = units.snapshotIterator();
 		final var unitGraph = new BriefUnitGraph(body);

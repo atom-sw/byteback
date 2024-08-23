@@ -36,7 +36,7 @@ public class NormalLoopExitSpecifier extends BodyTransformer {
 	}
 
 	@Override
-	public void transformBody(final SootMethod sootMethod, final Body body) {
+	public void transformBody(final Body body) {
 		final PatchingChain<Unit> units = body.getUnits();
 		final var loopFinder = new LoopFinder();
 		final var unitGraph = new BriefUnitGraph(body);

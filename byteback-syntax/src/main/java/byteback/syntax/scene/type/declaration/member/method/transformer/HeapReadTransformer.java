@@ -46,7 +46,7 @@ public class HeapReadTransformer extends MethodTransformer {
 	}
 
 	@Override
-	public void transformMethod(final Scene scene, final SootClass sootClass, final SootMethod sootMethod) {
+	public void transformMethod(final SootMethod sootMethod) {
 		final Value heap;
 		final Value oldHeap;
 		final Value thrown;

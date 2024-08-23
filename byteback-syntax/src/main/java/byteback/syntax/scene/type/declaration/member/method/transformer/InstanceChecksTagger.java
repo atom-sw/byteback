@@ -33,7 +33,7 @@ public class InstanceChecksTagger extends MethodTransformer {
 		}
 	}
 
-	public void transformMethod(final Scene scene, final SootClass sootClass, final SootMethod sootMethod) {
+	public void transformMethod(final SootMethod sootMethod) {
 		PreconditionsTagAccessor.v().get(sootMethod)
 			.ifPresent((preconditionsTag) -> tagValues(sootMethod, preconditionsTag.getUseBoxes()));
 
