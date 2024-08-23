@@ -1,13 +1,13 @@
-package byteback.syntax.scene.type.declaration.member.method.body.value;
+package byteback.syntax.scene.type.declaration.member.method.reference;
 
 import byteback.syntax.scene.type.BoxType;
 import byteback.syntax.scene.type.HeapType;
 import soot.RefType;
 import soot.Type;
 
-public class PreludeBoxRef extends PreludeRef {
+public class BoxRef extends ExternalRef {
 
-	public PreludeBoxRef(final BoxType boxType) {
+	public BoxRef(final BoxType boxType) {
 		super("box", boxType, new Type[] { HeapType.v(), RefType.v(), boxType.getContentType() });
 	}
 

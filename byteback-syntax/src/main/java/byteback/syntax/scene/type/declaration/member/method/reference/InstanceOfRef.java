@@ -1,4 +1,4 @@
-package byteback.syntax.scene.type.declaration.member.method.body.value;
+package byteback.syntax.scene.type.declaration.member.method.reference;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.HeapType;
@@ -7,15 +7,15 @@ import soot.BooleanType;
 import soot.RefType;
 import soot.Type;
 
-public class PreludeInstanceOfRef extends PreludeRef {
+public class InstanceOfRef extends ExternalRef {
 
-	private static final Lazy<PreludeInstanceOfRef> INSTANCE = Lazy.from(PreludeInstanceOfRef::new);
+	private static final Lazy<InstanceOfRef> INSTANCE = Lazy.from(InstanceOfRef::new);
 
-	public static PreludeInstanceOfRef v() {
+	public static InstanceOfRef v() {
 		return INSTANCE.get();
 	}
 
-	private PreludeInstanceOfRef() {
+	private InstanceOfRef() {
 		super("reference.instanceof", BooleanType.v(), new Type[] { HeapType.v(), RefType.v(), TypeType.v() });
 	}
 

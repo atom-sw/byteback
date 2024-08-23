@@ -3,7 +3,7 @@ package byteback.syntax.scene.type;
 import soot.Type;
 
 /**
- * A type for a heap reference.
+ * A type for a pointer (heap reference).
  *
  * @author paganma
  */

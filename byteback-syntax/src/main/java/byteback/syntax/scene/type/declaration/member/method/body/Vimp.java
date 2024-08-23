@@ -46,10 +46,6 @@ public class Vimp {
 		return new InvariantStmt(condition);
 	}
 
-	public IffExpr newIffExpr(final Value op1, final Value op2) {
-		return new IffExpr(op1, op2);
-	}
-
 	public ImpliesExpr newImpliesExpr(final Value op1, final Value op2) {
 		return new ImpliesExpr(op1, op2);
 	}

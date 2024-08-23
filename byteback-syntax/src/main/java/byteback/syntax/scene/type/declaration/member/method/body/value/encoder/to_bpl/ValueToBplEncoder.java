@@ -8,6 +8,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.*;
 import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.VimpTypeInterpreter;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.ValueEncoder;
 import byteback.syntax.scene.type.declaration.member.method.encoder.to_bpl.MethodToBplEncoder;
+import byteback.syntax.scene.type.declaration.member.method.reference.ExternalRef;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreludeTagAccessor;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
@@ -168,7 +169,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 	public void encodeCallExpr(final InvokeExpr invokeExpr) {
 		final SootMethodRef sootMethodRef = invokeExpr.getMethodRef();
 
-		if (sootMethodRef instanceof PreludeRef) {
+		if (sootMethodRef instanceof ExternalRef) {
 			printer.print(sootMethodRef.getName());
 		} else {
 			final SootMethod calledMethod = invokeExpr.getMethod();

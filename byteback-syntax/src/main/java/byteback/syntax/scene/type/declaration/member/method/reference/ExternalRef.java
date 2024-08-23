@@ -1,4 +1,4 @@
-package byteback.syntax.scene.type.declaration.member.method.body.value;
+package byteback.syntax.scene.type.declaration.member.method.reference;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +9,7 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.util.NumberedString;
 
-public class PreludeRef implements SootMethodRef {
+public class ExternalRef implements SootMethodRef {
 
 	private final static SootClass PRELUDE_CLASS = new SootClass("Prelude");
 
@@ -19,7 +19,7 @@ public class PreludeRef implements SootMethodRef {
 
 	final Type[] parameterTypes;
 
-	public PreludeRef(final String name, final Type returnType, final Type[] argumentTypes) {
+	public ExternalRef(final String name, final Type returnType, final Type[] argumentTypes) {
 		this.name = name;
 		this.returnType = returnType;
 		this.parameterTypes = argumentTypes;

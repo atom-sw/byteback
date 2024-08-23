@@ -1,13 +1,13 @@
-package byteback.syntax.scene.type.declaration.member.method.body.value;
+package byteback.syntax.scene.type.declaration.member.method.reference;
 
 import byteback.syntax.scene.type.HeapType;
 import byteback.syntax.scene.type.PointerType;
 import soot.RefType;
 import soot.Type;
 
-public class PreludeUpdateRef extends PreludeRef {
+public class UpdateRef extends ExternalRef {
 
-	public PreludeUpdateRef(final PointerType pointerType) {
+	public UpdateRef(final PointerType pointerType) {
 		super("store.update", HeapType.v(),
 				new Type[] { HeapType.v(), RefType.v(), pointerType, pointerType.getPointedType() });
 	}

@@ -1,6 +1,5 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
-import java.sql.CallableStatement;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -11,10 +10,10 @@ import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterLo
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
 import byteback.syntax.scene.type.declaration.member.method.body.value.Pointer;
-import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeInstanceOfRef;
-import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeReadRef;
-import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeTypeToObjectRef;
-import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeUnboxRef;
+import byteback.syntax.scene.type.declaration.member.method.reference.InstanceOfRef;
+import byteback.syntax.scene.type.declaration.member.method.reference.ReadRef;
+import byteback.syntax.scene.type.declaration.member.method.reference.TypeToObjectRef;
+import byteback.syntax.scene.type.declaration.member.method.reference.UnboxRef;
 import byteback.syntax.scene.type.declaration.member.method.body.value.TypeConstant;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
@@ -135,7 +134,7 @@ public class HeapReadTransformer extends MethodTransformer {
 				final CallExpr newCallExpr = Vimp.v().newCallExpr(callExpr.getMethodRef(), arguments);
 				valueBox.setValue(newCallExpr);
 			} else if (value instanceof final InstanceOfExpr instanceOfExpr) {
-				valueBox.setValue(Vimp.v().newCallExpr(PreludeInstanceOfRef.v(),
+				valueBox.setValue(Vimp.v().newCallExpr(InstanceOfRef.v(),
 						Vimp.v().nest(heap), Vimp.v().nest(instanceOfExpr.getOp()),
 						Vimp.v().newTypeConstant((RefLikeType) instanceOfExpr.getCheckType())));
 			} else if (value instanceof final ConcreteRef concreteRef
@@ -149,21 +148,21 @@ public class HeapReadTransformer extends MethodTransformer {
 					} else if (fieldRef instanceof final StaticFieldRef staticFieldRef) {
 						final RefType declaringClassType = staticFieldRef.getField().getDeclaringClass().getType();
 						final TypeConstant typeConstant = Vimp.v().newTypeConstant(declaringClassType);
-						base = Vimp.v().newCallExpr(PreludeTypeToObjectRef.v(), typeConstant);
+						base = Vimp.v().newCallExpr(TypeToObjectRef.v(), typeConstant);
 					} else {
 						throw new IllegalStateException("Unable to convert field reference " + fieldRef + ".");
 					}
 
 					pointer = Vimp.v().newFieldPointer(fieldRef.getFieldRef());
-					final var readRef = new PreludeReadRef(pointer.getType());
+					final var readRef = new ReadRef(pointer.getType());
 					valueBox.setValue(
 							Vimp.v().newCallExpr(readRef,
 									Vimp.v().nest(heap), Vimp.v().nest(base), Vimp.v().nest(pointer)));
 				} else if (value instanceof final ArrayRef arrayRef) {
 					base = arrayRef.getBase();
 					pointer = Vimp.v().newArrayPointer(arrayRef.getType(), arrayRef.getIndex());
-					final var readRef = new PreludeReadRef(new PointerType(new BoxType(pointer.getType())));
-					final var unboxRef = new PreludeUnboxRef(pointer.getType());
+					final var readRef = new ReadRef(new PointerType(new BoxType(pointer.getType())));
+					final var unboxRef = new UnboxRef(pointer.getType());
 					valueBox.setValue(
 							Vimp.v().newCallExpr(unboxRef,
 									Vimp.v().nest(

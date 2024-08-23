@@ -6,7 +6,7 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.CallStmt;
 import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
-import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeNewRef;
+import byteback.syntax.scene.type.declaration.member.method.reference.NewRef;
 import soot.RefType;
 import soot.SootMethodRef;
 import soot.Unit;
@@ -56,7 +56,7 @@ public class CallStmtTransformer extends UnitTransformer {
 			} else if (assignedValue instanceof final NewExpr newExpr) {
 				targets.add(Vimp.v().newThrownRef());
 
-				methodRef = PreludeNewRef.v();
+				methodRef = NewRef.v();
 				arguments.add(Vimp.v().newTypeConstant((RefType) newExpr.getType()));
 			} else {
 				return;

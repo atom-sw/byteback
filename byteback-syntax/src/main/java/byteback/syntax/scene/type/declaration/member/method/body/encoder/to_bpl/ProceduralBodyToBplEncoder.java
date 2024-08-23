@@ -5,7 +5,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.encoder.BodyEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.unit.encoder.to_bpl.UnitToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
-import byteback.syntax.scene.type.declaration.member.method.body.value.PreludeWeakInstanceOfRef;
+import byteback.syntax.scene.type.declaration.member.method.reference.CompatibleRef;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
 import soot.jimple.GotoStmt;
@@ -50,7 +50,7 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
 
 	public void encodeWhereClause(final Value value, final RefLikeType refType) {
 		final Value whereValue = Vimp.v().newCallExpr(
-				PreludeWeakInstanceOfRef.v(),
+				CompatibleRef.v(),
 				new Value[] { Vimp.v().nest(Vimp.v().newHeapRef()), value, Vimp.v().newTypeConstant(refType) });
 		printer.print(" where ");
 		new ValueToBplEncoder(printer).encodeValue(whereValue);

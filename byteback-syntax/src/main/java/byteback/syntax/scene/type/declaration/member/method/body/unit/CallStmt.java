@@ -6,21 +6,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import byteback.syntax.scene.type.declaration.member.method.body.value.CallExpr;
-import byteback.syntax.scene.type.declaration.member.method.body.value.box.DefValueBox;
+import byteback.syntax.scene.type.declaration.member.method.body.value.box.ValueBox;
 import soot.UnitPrinter;
 import soot.Value;
-import soot.ValueBox;
 import soot.jimple.internal.InvokeExprBox;
 import soot.jimple.internal.JInvokeStmt;
 
 public class CallStmt extends JInvokeStmt {
 
-	final List<DefValueBox> targetBoxes;
+	final List<ValueBox> targetBoxes;
 
 	public CallStmt(final Value[] targets, final CallExpr callExpr) {
 		super(new InvokeExprBox(callExpr));
 		this.targetBoxes = Arrays.stream(targets)
-				.map(DefValueBox::new)
+				.map(ValueBox::new)
 				.toList();
 	}
 
@@ -29,7 +28,7 @@ public class CallStmt extends JInvokeStmt {
 	}
 
 	@Override
-	public List<ValueBox> getDefBoxes() {
+	public List<soot.ValueBox> getDefBoxes() {
 		return Collections.unmodifiableList(targetBoxes);
 	}
 
