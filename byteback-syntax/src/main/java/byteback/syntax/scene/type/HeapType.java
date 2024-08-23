@@ -21,7 +21,7 @@ public class HeapType extends Type implements DefaultCaseType {
 
 	@Override
 	public String toString() {
-		return "heap";
+		return "Heap";
 	}
 
 }

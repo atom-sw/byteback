@@ -8,21 +8,19 @@ import soot.Type;
  *
  * @author paganma
  */
-public class BoxType extends Type implements DefaultCaseType {
-
-	public final Type contentType;
+public class BoxType extends ParametricType implements DefaultCaseType {
 
 	public BoxType(final Type contentType) {
-		this.contentType = contentType;
+		super(new Type[] { contentType });
 	}
 
 	public Type getContentType() {
-		return contentType;
+		return typeParameters[0];
 	}
 
 	@Override
-	public String toString() {
-		return "Box<" + contentType.toString() + ">";
+	public String getConstructorName() {
+		return "Box";
 	}
 
 }

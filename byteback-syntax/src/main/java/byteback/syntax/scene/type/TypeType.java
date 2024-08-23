@@ -21,7 +21,7 @@ public class TypeType extends Type implements DefaultCaseType {
 
 	@Override
 	public String toString() {
-		return "type";
+		return "Type";
 	}
 
 }

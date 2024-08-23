@@ -7,21 +7,19 @@ import soot.Type;
  *
  * @author paganma
  */
-public class PointerType extends Type implements DefaultCaseType {
-
-	public final Type pointedType;
+public class PointerType extends ParametricType {
 
 	public PointerType(final Type pointedType) {
-		this.pointedType = pointedType;
+		super(new Type[] { pointedType });
 	}
 
 	public Type getPointedType() {
-		return pointedType;
+		return typeParameters[0];
 	}
 
 	@Override
-	public String toString() {
-		return "Pointer<" + pointedType.toString() + ">";
+	public String getConstructorName() {
+		return "Pointer";
 	}
 
 }
