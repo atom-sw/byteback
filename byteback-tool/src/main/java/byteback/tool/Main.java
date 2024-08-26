@@ -10,6 +10,7 @@ import byteback.syntax.printer.Printer;
 import byteback.syntax.scene.encoder.to_bpl.SceneToBplEncoder;
 import byteback.syntax.scene.transformer.ConditionsTagPropagator;
 import byteback.syntax.scene.transformer.ImplementationPropagator;
+import byteback.syntax.scene.transformer.MethodResolver;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.ArraySizeCheckTransformer;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.BehaviorExprFolder;
 import byteback.syntax.scene.type.declaration.member.method.body.transformer.CastCheckTransformer;
@@ -204,6 +205,7 @@ public class Main implements Callable<Integer> {
 		scene.loadNecessaryClasses();
 		PackManager.v().runPacks();
 
+		MethodResolver.v().transformScene(scene);
 		ModifierTagger.v().transformScene(scene);
 		ImplementationPropagator.v().transformScene(scene);
 

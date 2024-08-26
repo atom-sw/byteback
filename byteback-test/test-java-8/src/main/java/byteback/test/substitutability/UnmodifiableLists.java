@@ -5,26 +5,29 @@ package byteback.test.substitutability;
 
 import byteback.specification.ghost.Ghost.Attach;
 import byteback.specification.ghost.Ghost.Export;
-
 import byteback.specification.Contract.Behavior;
-import byteback.specification.Contract.Raise;
+import byteback.specification.Contract.Return;
 
 public class UnmodifiableLists {
 
 	@Attach("java.util.List")
-	public interface ListSpec<T> {
+	public static interface ListSpec<T> {
 
-		@Export
 		@Behavior
-		boolean is_modifiable();
+		@Export
+		boolean is_mutable();
 
-		@Raise(exception = UnsupportedOperationException.class,
-					 when = "is_unmodifiable")
+		@Behavior
+		@Export
+		default boolean is_mutable(final T element) {
+			return is_mutable();
+		}
+
+		@Return(when = "is_mutable")
 		@Export
 		void add(T element);
 
-		@Raise(exception = UnsupportedOperationException.class,
-					 when = "is_unmodifiable")
+		@Return(when = "is_mutable")
 		@Export
 		void remove(T element);
 

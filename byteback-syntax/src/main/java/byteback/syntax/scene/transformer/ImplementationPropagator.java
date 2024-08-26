@@ -85,6 +85,7 @@ public class ImplementationPropagator extends SceneTransformer {
 			final var methodsSnapshot = new ArrayList<>(methods);
 
 			for (final SootMethod pluginMethod : methodsSnapshot) {
+
 				if (ExportTagMarker.v().hasTag(pluginMethod)) {
 					final SootMethod attachingMethod = cloneMethodImplementation(pluginMethod);
 					final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();

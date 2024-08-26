@@ -55,7 +55,7 @@ public class MethodToBplEncoder extends MethodEncoder {
 				new ProceduralMethodToBplEncoder(printer).encodeMethod(sootMethod);
 			}
 		} catch (final Throwable throwable) {
-			System.err.println(sootMethod.getActiveBody());
+			//System.err.println(sootMethod.getActiveBody());
 			throw new RuntimeException("Exception while converting method: " + sootMethod, throwable);
 		}
 

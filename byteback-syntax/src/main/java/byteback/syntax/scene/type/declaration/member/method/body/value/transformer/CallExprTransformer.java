@@ -33,9 +33,9 @@ public class CallExprTransformer extends ValueTransformer {
 
 		if (value instanceof final InvokeExpr invokeExpr) {
 			final SootMethodRef invokedMethodRef = invokeExpr.getMethodRef();
-			final SootMethod invokedMethod = invokedMethodRef.resolve();
+			final SootMethod invokedMethod = invokedMethodRef.tryResolve();
 
-			if (BehaviorTagMarker.v().hasTag(invokedMethod)) {
+			if (invokedMethod != null && BehaviorTagMarker.v().hasTag(invokedMethod)) {
 				final var args = new ArrayList<>(invokeExpr.getArgs());
 
 				if (invokeExpr instanceof final InstanceInvokeExpr instanceInvokeExpr) {
