@@ -83,15 +83,20 @@ public class ConditionsTagPropagator extends SceneTransformer {
 		final Hierarchy hierarchy = scene.getActiveHierarchy();
 		final var nextClasses = new ArrayDeque<SootClass>();
 
-		for (final SootClass sootClass : scene.getClasses()) {
-			if (sootClass.resolvingLevel() < SootClass.HIERARCHY
-					|| sootClass.getSuperclassUnsafe() != null
-					|| sootClass.getInterfaceCount() > 0) {
+		for (final SootClass startingClass : scene.getClasses()) {
+			if ((startingClass.resolvingLevel() < SootClass.HIERARCHY)
+					||
+					(startingClass.isConcrete() && (startingClass.getSuperclassUnsafe() != null))
+					||
+					(startingClass.isInterface() &&
+					 (!startingClass.getSuperclass().getName().equals("java.lang.Object")))
+					||
+					startingClass.getInterfaceCount() != 0) {
 				continue;
 			}
 
 			final var classToParentMethods = new HashMap<SootClass, HashMap<NumberedString, SootMethod>>();
-			nextClasses.push(sootClass);
+			nextClasses.push(startingClass);
 
 			while (!nextClasses.isEmpty()) {
 				final SootClass currentClass = nextClasses.pop();
@@ -150,7 +155,7 @@ public class ConditionsTagPropagator extends SceneTransformer {
 							if (parentMethod != null) {
 								PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
 									final SootMethod vcMethod = new SootMethod(
-											currentMethod.getName() + "#precondition_weakening",
+											currentMethod.getName() + "?weakening",
 											Collections.emptyList(),
 											VoidType.v());
 									vcMethod.setActiveBody(new JimpleBody());
@@ -168,7 +173,7 @@ public class ConditionsTagPropagator extends SceneTransformer {
 							if (parentMethod != null) {
 								PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
 									final SootMethod vcMethod = new SootMethod(
-											currentMethod.getName() + "#postcondition_strenghtening",
+											currentMethod.getName() + "?strenghtening",
 											Collections.emptyList(),
 											VoidType.v());
 									vcMethod.setActiveBody(new JimpleBody());
@@ -187,7 +192,8 @@ public class ConditionsTagPropagator extends SceneTransformer {
 				final List<SootClass> childClasses;
 
 				if (currentClass.isInterface()) {
-					childClasses = hierarchy.getDirectImplementersOf(currentClass);
+					childClasses = new ArrayList<>(hierarchy.getDirectImplementersOf(currentClass));
+					childClasses.addAll(hierarchy.getDirectSubinterfacesOf(currentClass));
 				} else {
 					childClasses = hierarchy.getDirectSubclassesOf(currentClass);
 				}

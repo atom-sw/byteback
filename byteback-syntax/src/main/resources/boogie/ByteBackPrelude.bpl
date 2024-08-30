@@ -295,6 +295,12 @@ function {:never_pattern true} not(a: bool) returns (bool)
 	!a
 }
 
+function {:never_pattern true} int.or(a: int, b: int) returns (int);
+
+function {:never_pattern true} int.and(a: int, b: int) returns (int);
+
+function {:never_pattern true} int.ushr(a: int, b: int) returns (int);
+
 // -------------------------------------------------------------------
 // Casting operators
 // -------------------------------------------------------------------

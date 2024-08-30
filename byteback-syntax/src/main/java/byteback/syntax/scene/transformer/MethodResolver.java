@@ -2,6 +2,7 @@ package byteback.syntax.scene.transformer;
 
 import byteback.common.function.Lazy;
 import soot.Body;
+import soot.Modifier;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -30,6 +31,13 @@ public class MethodResolver extends SceneTransformer {
 					methodRef.getName(),
 					methodRef.getParameterTypes(),
 					methodRef.getReturnType());
+
+			if (methodRef.isStatic()) {
+				newSootMethod.setModifiers(newSootMethod.getModifiers() | Modifier.STATIC);
+			}
+
+			newSootMethod.setModifiers(newSootMethod.getModifiers() | Modifier.ABSTRACT);
+
 			declaringClass.addMethod(newSootMethod);
 		}
 	}

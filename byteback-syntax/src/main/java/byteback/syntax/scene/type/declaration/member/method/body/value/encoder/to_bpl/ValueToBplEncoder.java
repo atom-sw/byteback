@@ -226,7 +226,7 @@ public class ValueToBplEncoder extends ValueEncoder {
 
 	public void encodeClassConstant(final ClassConstant classConstant) {
 		final String classDescriptor = classConstant.getValue();
-		final RefLikeType constantType = (RefLikeType) AsmUtil.toJimpleRefType(classDescriptor, Optional.absent());
+		final RefLikeType constantType = (RefLikeType) AsmUtil.toJimpleType(classDescriptor, Optional.absent());
 		printer.print("type.const(");
 		printer.print(Integer.toString(constantType.getNumber()));
 		printer.print(")");
@@ -465,6 +465,11 @@ public class ValueToBplEncoder extends ValueEncoder {
 				encodeBinaryExpr(andExpr, " && ");
 				return;
 			}
+
+			if (VimpTypeInterpreter.toMachineType(type) == IntType.v()) {
+				encodeFunctionCall("int.and", andExpr.getOp1(), andExpr.getOp2());
+				return;
+			}
 		}
 
 		if (value instanceof final OrExpr orExpr) {
@@ -472,6 +477,11 @@ public class ValueToBplEncoder extends ValueEncoder {
 
 			if (type == BooleanType.v()) {
 				encodeBinaryExpr(orExpr, " || ");
+				return;
+			}
+
+			if (VimpTypeInterpreter.toMachineType(type) == IntType.v()) {
+				encodeFunctionCall("int.or", orExpr.getOp1(), orExpr.getOp2());
 				return;
 			}
 		}
@@ -483,6 +493,11 @@ public class ValueToBplEncoder extends ValueEncoder {
 				encodeBinaryExpr(xorExpr, " != ");
 				return;
 			}
+		}
+
+		if (value instanceof final UshrExpr ushrExpr) {
+			encodeFunctionCall("int.ushr", ushrExpr.getOp1(), ushrExpr.getOp2());
+			return;
 		}
 
 		if (value instanceof final SubExpr subExpr) {

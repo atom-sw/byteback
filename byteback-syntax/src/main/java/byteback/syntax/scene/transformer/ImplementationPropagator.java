@@ -69,11 +69,20 @@ public class ImplementationPropagator extends SceneTransformer {
 				continue;
 			}
 
-			final SootClass attachedClass = scene.getSootClassUnsafe(attachedName);
+			final SootClass attachedClass;
+			final SootClass maybeAttachedClass = scene.getSootClassUnsafe(attachedName);
 
-			if (attachedClass == null) {
+			if (maybeAttachedClass == null) {
 				LOGGER.warn("Unable to find class: " + attachedName + " for attaching " + pluginClass + ".");
-				continue;
+				attachedClass = new SootClass(attachedName);
+				attachedClass.setResolvingLevel(SootClass.SIGNATURES);
+				scene.addClass(attachedClass);
+			} else {
+				attachedClass = maybeAttachedClass;
+
+				if (attachedClass.resolvingLevel() < SootClass.SIGNATURES) {
+					attachedClass.setResolvingLevel(SootClass.SIGNATURES);
+				}
 			}
 
 			AnnotationTagReader.v()

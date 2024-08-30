@@ -223,9 +223,9 @@ public class Main implements Callable<Integer> {
 				new LogicConstantTransformer(sootMethod.getReturnType()).transformBody(body);
 
 				InvokeFilter.v().transformBody(body);
-				GhostInliner.v().transformBody(body);
 
 				if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
+					GhostInliner.v().transformBody(body);
 					SwitchEliminator.v().transformBody(body);
 					ReturnEliminator.v().transformBody(body);
 					IfConditionExtractor.v().transformBody(body);
