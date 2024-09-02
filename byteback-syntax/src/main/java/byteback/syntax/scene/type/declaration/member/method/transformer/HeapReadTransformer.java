@@ -15,6 +15,7 @@ import byteback.syntax.scene.type.declaration.member.method.reference.ReadRef;
 import byteback.syntax.scene.type.declaration.member.method.reference.TypeToObjectRef;
 import byteback.syntax.scene.type.declaration.member.method.reference.UnboxRef;
 import byteback.syntax.scene.type.declaration.member.method.body.value.TypeConstant;
+import byteback.syntax.scene.type.declaration.member.method.body.value.box.tag.HeapReaderTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPostconditionsTagAccessor;
@@ -101,6 +102,10 @@ public class HeapReadTransformer extends MethodTransformer {
 
 		// Convert heap uses
 		for (final ValueBox valueBox : valueBoxes) {
+			if (HeapReaderTagMarker.v().hasTag(valueBox)) {
+				continue;
+			}
+
 			final Value value = valueBox.getValue();
 
 			if (value instanceof final CallExpr callExpr) {
@@ -133,6 +138,7 @@ public class HeapReadTransformer extends MethodTransformer {
 
 				final CallExpr newCallExpr = Vimp.v().newCallExpr(callExpr.getMethodRef(), arguments);
 				valueBox.setValue(newCallExpr);
+				HeapReaderTagMarker.v().flag(valueBox);
 			} else if (value instanceof final InstanceOfExpr instanceOfExpr) {
 				valueBox.setValue(Vimp.v().newCallExpr(InstanceOfRef.v(),
 						Vimp.v().nest(heap), Vimp.v().nest(instanceOfExpr.getOp()),

@@ -2,6 +2,7 @@ package byteback.syntax.scene.type.declaration.member.method.body.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.HeapType;
+import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterLocalFinder;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import soot.Body;
 import soot.Local;
@@ -23,11 +24,13 @@ public class OldHeapLocalInserter extends BodyTransformer {
 
 	@Override
 	public void transformBody(final Body body) {
-		final PatchingChain<Unit> units = body.getUnits();
-		final Chain<Local> locals = body.getLocals();
-		final Local local = Jimple.v().newLocal("h'#", HeapType.v());
-		units.addFirst(Jimple.v().newIdentityStmt(local, Vimp.v().newOldHeapRef()));
-		locals.add(local);
+		if (ParameterLocalFinder.v().findOldHeapLocal(body) == null) {
+			final PatchingChain<Unit> units = body.getUnits();
+			final Chain<Local> locals = body.getLocals();
+			final Local local = Jimple.v().newLocal("h'#", HeapType.v());
+			units.addFirst(Jimple.v().newIdentityStmt(local, Vimp.v().newOldHeapRef()));
+			locals.add(local);
+		}
 	}
 
 }

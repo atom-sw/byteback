@@ -56,7 +56,8 @@ public class ImplementationPropagator extends SceneTransformer {
 			final SootClass pluginClass = classIterator.next();
 			final AnnotationTag annotationTag;
 			final String attachedName;
-			final Optional<AnnotationTag> annotationOptional = AnnotationTagReader.v().getAnnotation(pluginClass,
+			final Optional<AnnotationTag> annotationOptional = AnnotationTagReader.v().getAnnotation(
+					pluginClass,
 					BBLibNames.ATTACH_ANNOTATION);
 
 			if (annotationOptional.isPresent()) {
@@ -85,6 +86,8 @@ public class ImplementationPropagator extends SceneTransformer {
 				}
 			}
 
+			attachedClass.addAllTagsOf(pluginClass);
+
 			AnnotationTagReader.v()
 					.getAnnotations(pluginClass)
 					.filter((t) -> t.getName().equals(BBLibNames.ATTACH_ANNOTATION))
@@ -94,7 +97,6 @@ public class ImplementationPropagator extends SceneTransformer {
 			final var methodsSnapshot = new ArrayList<>(methods);
 
 			for (final SootMethod pluginMethod : methodsSnapshot) {
-
 				if (ExportTagMarker.v().hasTag(pluginMethod)) {
 					final SootMethod attachingMethod = cloneMethodImplementation(pluginMethod);
 					final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();

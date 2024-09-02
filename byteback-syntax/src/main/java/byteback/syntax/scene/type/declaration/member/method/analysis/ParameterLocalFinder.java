@@ -35,8 +35,7 @@ public class ParameterLocalFinder {
 			}
 		}
 
-		throw new IllegalArgumentException(
-				"Body does not assigns local to reference of type " + identityRefType.getCanonicalName() + ".");
+		return null;
 	}
 
 	public Local findThisLocal(final Body body) {

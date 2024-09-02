@@ -207,6 +207,8 @@ public class Main implements Callable<Integer> {
 
 		MethodResolver.v().transformScene(scene);
 		ModifierTagger.v().transformScene(scene);
+		ConditionsTagger.v().transformScene(scene);
+		ClassInvariantTagger.v().transformScene(scene);
 		ImplementationPropagator.v().transformScene(scene);
 
 		for (final SootClass sootClass : scene.getClasses()) {
@@ -283,8 +285,6 @@ public class Main implements Callable<Integer> {
 		final var hierarchyAxiomTagger = new HierarchyAxiomTagger(scene.getActiveHierarchy());
 
 		for (final SootClass sootClass : scene.getClasses()) {
-			ConditionsTagger.v().transformClass(sootClass);
-			ClassInvariantTagger.v().transformClass(sootClass);
 			HeapReadTransformer.v().transformClass(sootClass);
 			OldHeapReadTransformer.v().transformClass(sootClass);
 			hierarchyAxiomTagger.transformClass(sootClass);;
