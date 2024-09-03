@@ -3,6 +3,7 @@ package byteback.syntax.scene.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.tag.ExportTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.Scene;
 import soot.SootClass;
@@ -75,15 +76,9 @@ public class ImplementationPropagator extends SceneTransformer {
 
 			if (maybeAttachedClass == null) {
 				LOGGER.warn("Unable to find class: " + attachedName + " for attaching " + pluginClass + ".");
-				attachedClass = new SootClass(attachedName);
-				attachedClass.setResolvingLevel(SootClass.SIGNATURES);
-				scene.addClass(attachedClass);
+				continue;
 			} else {
 				attachedClass = maybeAttachedClass;
-
-				if (attachedClass.resolvingLevel() < SootClass.SIGNATURES) {
-					attachedClass.setResolvingLevel(SootClass.SIGNATURES);
-				}
 			}
 
 			attachedClass.addAllTagsOf(pluginClass);
@@ -97,7 +92,7 @@ public class ImplementationPropagator extends SceneTransformer {
 			final var methodsSnapshot = new ArrayList<>(methods);
 
 			for (final SootMethod pluginMethod : methodsSnapshot) {
-				if (ExportTagMarker.v().hasTag(pluginMethod)) {
+				if (!TwoStateTagMarker.v().hasTag(pluginMethod)) {
 					final SootMethod attachingMethod = cloneMethodImplementation(pluginMethod);
 					final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();
 					final SootMethod attachedMethod = attachedClass.getMethodUnsafe(attachedSubSignature);

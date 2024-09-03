@@ -1,11 +1,10 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$ListSpec -c java.util.List -c java.util.ArrayList -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$ListSpec -c java.util.List -c java.util.ArrayList -c java.util.Collections -o %t.bpl
  */
 package byteback.test.substitutability;
 
 import byteback.specification.ghost.Ghost;
 import byteback.specification.ghost.Ghost.Attach;
-import byteback.specification.ghost.Ghost.Export;
 
 import static byteback.specification.Contract.assertion;
 
@@ -23,27 +22,9 @@ public class UnmodifiableLists {
 	@Attach("java.util.Collections")
 	public static interface CollectionsSpec {
 
-		@Export
 		@Abstract
 		public static <T> List<T> unmodifiableList() {
 			throw new UnsupportedOperationException();
-		}
-
-	}
-
-	@Attach("java.util.ArrayList")
-	public static class ArrayListSpec<T> {
-
-		@Behavior
-		public boolean is_mutable() {
-			return Ghost.of(ListSpec.class, this).is_mutable();
-		}
-
-		@Export
-		@Abstract
-		@Return
-		@Ensure("is_mutable")
-		public ArrayListSpec() {
 		}
 
 	}
@@ -60,11 +41,27 @@ public class UnmodifiableLists {
 			return is_mutable();
 		}
 
-		@Export
+		@Return(when = "is_mutable")
 		boolean add(T element);
 
-		@Export
+		@Return(when = "is_mutable")
 		boolean remove(T element);
+
+	}
+
+	@Attach("java.util.ArrayList")
+	public static class ArrayListSpec<T> {
+
+		@Behavior
+		public boolean is_mutable() {
+			return Ghost.of(ListSpec.class, this).is_mutable();
+		}
+
+		@Abstract
+		@Return
+		@Ensure("is_mutable")
+		public ArrayListSpec() {
+		}
 
 	}
 

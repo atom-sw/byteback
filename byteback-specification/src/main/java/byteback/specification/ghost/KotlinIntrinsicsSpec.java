@@ -3,7 +3,6 @@ package byteback.specification.ghost;
 import static byteback.specification.Operators.*;
 
 import byteback.specification.Contract.Ignore;
-import byteback.specification.ghost.Ghost.Export;
 import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Behavior;
 
@@ -20,20 +19,17 @@ public abstract class KotlinIntrinsicsSpec {
 		return neq(parameter, null);
 	}
 
-	@Export
 	@Abstract
 	public KotlinIntrinsicsSpec() {
 	}
 
 	@Ignore
-	@Export
 	@Abstract
 	public static void checkNotNull(Object o) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Ignore
-	@Export
 	@Abstract
 	public static void checkNotNullParameter(Object parameter, String name) {
 		throw new UnsupportedOperationException();

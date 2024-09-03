@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -86,10 +87,11 @@ public class ConditionsTagPropagator extends SceneTransformer {
 		for (final SootClass startingClass : scene.getClasses()) {
 			if ((startingClass.resolvingLevel() < SootClass.HIERARCHY)
 					||
-					(startingClass.isConcrete() && (startingClass.getSuperclassUnsafe() != null))
+					(startingClass.isConcrete() &&
+							(startingClass.getSuperclassUnsafe() != null))
 					||
 					(startingClass.isInterface() &&
-					 (!startingClass.getSuperclass().getName().equals("java.lang.Object")))
+							(!startingClass.getSuperclass().getName().equals("java.lang.Object")))
 					||
 					startingClass.getInterfaceCount() != 0) {
 				continue;
@@ -123,7 +125,9 @@ public class ConditionsTagPropagator extends SceneTransformer {
 						}, () -> {
 							if (parentMethod != null) {
 								PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
-									PreconditionsTagAccessor.v().put(currentMethod, parentPreconditionsTag);
+									PreconditionsTagAccessor.v().put(
+											currentMethod,
+											parentPreconditionsTag);
 								});
 							}
 						});
@@ -141,7 +145,9 @@ public class ConditionsTagPropagator extends SceneTransformer {
 						}, () -> {
 							if (parentMethod != null) {
 								PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
-									PostconditionsTagAccessor.v().put(currentMethod, parentPostconditionsTag);
+									PostconditionsTagAccessor.v().put(
+											currentMethod,
+											parentPostconditionsTag);
 								});
 							}
 						});
