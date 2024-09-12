@@ -53,6 +53,7 @@ import byteback.syntax.scene.type.declaration.member.method.transformer.Conditio
 import byteback.syntax.scene.type.declaration.member.method.transformer.HeapReadTransformer;
 import byteback.syntax.scene.type.declaration.member.method.transformer.ModifierTagger;
 import byteback.syntax.scene.type.declaration.member.method.transformer.OldHeapReadTransformer;
+import byteback.syntax.scene.type.declaration.transformer.ClassInvariantExpander;
 import byteback.syntax.scene.type.declaration.transformer.ClassInvariantTagger;
 import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
 import picocli.CommandLine;
@@ -225,9 +226,9 @@ public class Main implements Callable<Integer> {
 				new LogicConstantTransformer(sootMethod.getReturnType()).transformBody(body);
 
 				InvokeFilter.v().transformBody(body);
+				GhostInliner.v().transformBody(body);
 
 				if (!BehaviorTagMarker.v().hasTag(sootMethod)) {
-					GhostInliner.v().transformBody(body);
 					SwitchEliminator.v().transformBody(body);
 					ReturnEliminator.v().transformBody(body);
 					IfConditionExtractor.v().transformBody(body);
@@ -282,6 +283,9 @@ public class Main implements Callable<Integer> {
 			}
 		}
 
+		ConditionsTagPropagator.v().transformScene(scene);
+		ClassInvariantExpander.v().transformScene(scene);
+
 		final var hierarchyAxiomTagger = new HierarchyAxiomTagger(scene.getActiveHierarchy());
 
 		for (final SootClass sootClass : scene.getClasses()) {
@@ -289,8 +293,6 @@ public class Main implements Callable<Integer> {
 			OldHeapReadTransformer.v().transformClass(sootClass);
 			hierarchyAxiomTagger.transformClass(sootClass);;
 		}
-
-		ConditionsTagPropagator.v().transformScene(scene);
 
 		try (final Printer printer = new Printer(outputPath.toString())) {
 			new SceneToBplEncoder(printer).encodeScene(scene);

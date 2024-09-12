@@ -1,18 +1,12 @@
-
 package byteback.syntax.scene.type.declaration.transformer;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
-import byteback.syntax.scene.type.declaration.member.method.body.value.box.tag.FreeTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
-import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
+import byteback.syntax.scene.type.declaration.tag.InvariantsTag;
+import byteback.syntax.scene.type.declaration.tag.InvariantsTagAccessor;
 import byteback.syntax.tag.AnnotationTagReader;
 import soot.SootClass;
-import soot.SootMethod;
 import soot.Value;
-import soot.grimp.internal.ExprBox;
 import soot.tagkit.AnnotationStringElem;
 
 public class ClassInvariantTagger extends ClassTransformer {
@@ -30,19 +24,8 @@ public class ClassInvariantTagger extends ClassTransformer {
 				.ifPresent(annotationStringElement -> {
 			final String behaviorName = annotationStringElement.getValue();
 			final Value behaviorValue = InvariantBehaviorResolver.v().resolveBehavior(sootClass, behaviorName);
-
-			for (final SootMethod sootMethod : sootClass.getMethods()) {
-				final var preconditionBox = new ExprBox(behaviorValue);
-				FreeTagMarker.v().flag(preconditionBox);
-				final var postconditionBox = new ExprBox(behaviorValue);
-
-				PreconditionsTagAccessor.v()
-						.putIfAbsent(sootMethod, PreconditionsTag::new)
-						.addConditionBox(preconditionBox);
-				PostconditionsTagAccessor.v()
-						.putIfAbsent(sootMethod, PostconditionsTag::new)
-						.addConditionBox(postconditionBox);
-			}
+			final var invariantsTag = InvariantsTagAccessor.v().putIfAbsent(sootClass, InvariantsTag::new);
+			invariantsTag.addCondition(behaviorValue);
 		});
 	}
 

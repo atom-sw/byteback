@@ -138,7 +138,6 @@ public class HeapReadTransformer extends MethodTransformer {
 
 				final CallExpr newCallExpr = Vimp.v().newCallExpr(callExpr.getMethodRef(), arguments);
 				valueBox.setValue(newCallExpr);
-				HeapReaderTagMarker.v().flag(valueBox);
 			} else if (value instanceof final InstanceOfExpr instanceOfExpr) {
 				valueBox.setValue(Vimp.v().newCallExpr(InstanceOfRef.v(),
 						Vimp.v().nest(heap), Vimp.v().nest(instanceOfExpr.getOp()),
@@ -178,6 +177,8 @@ public class HeapReadTransformer extends MethodTransformer {
 					throw new IllegalStateException("Unable to convert reference " + concreteRef + " to pointer.");
 				}
 			}
+
+			HeapReaderTagMarker.v().flag(valueBox);
 		}
 	}
 
