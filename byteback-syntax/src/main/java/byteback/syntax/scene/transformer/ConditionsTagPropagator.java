@@ -174,7 +174,7 @@ public class ConditionsTagPropagator extends SceneTransformer {
 				continue;
 			}
 
-			for (final SootMethod targetMethod : sootClass.getMethods()) {
+			for (final SootMethod targetMethod : new ArrayList<>(sootClass.getMethods())) {
 				for (final SootMethod parentMethod : resolveParentMethods(targetMethod)) {
 					// Handling automatic specification inheritance
 					PreconditionsTagAccessor.v().get(targetMethod).ifPresentOrElse((currentPreconditionsTag) -> {
