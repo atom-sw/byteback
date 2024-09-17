@@ -66,7 +66,7 @@ public class SwitchEliminator extends BodyTransformer {
 							.rangeClosed(tableSwitchStmt.getLowIndex(), tableSwitchStmt.getHighIndex())
 							.mapToObj((index) -> new AbstractMap.SimpleEntry<>(
 									IntConstant.v(index),
-									tableSwitchStmt.getTarget(index)));
+									tableSwitchStmt.getTarget(index - 1)));
 				} else {
 					throw new TransformationException("Unrecognized switch statement.", unit);
 				}
