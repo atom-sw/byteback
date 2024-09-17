@@ -7,14 +7,13 @@ import byteback.specification.ghost.Ghost;
 import byteback.specification.ghost.Ghost.Attach;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Ensure;
+import byteback.specification.Contract.Implicit;
 import byteback.specification.Contract.Invariant;
-import byteback.specification.Contract.Operator;
 import byteback.specification.Contract.Return;
 
 public class UnmodifiableLists {
@@ -22,12 +21,15 @@ public class UnmodifiableLists {
 	@Attach("java.util.List")
 	public static interface ListSpec<T> {
 
-		@Operator
+		@Implicit
 		@Behavior
 		boolean is_mutable();
 
+		@Return(when = "is_mutable")
+		void clear();
+
 		@Behavior
-		default boolean is_mutable(final T element) {
+		default boolean is_mutable(T element) {
 			return is_mutable();
 		}
 
@@ -36,6 +38,9 @@ public class UnmodifiableLists {
 
 		@Return(when = "is_mutable")
 		boolean remove(T element);
+
+		@Return(when = "is_mutable")
+		boolean add(int index, T element);
 
 	}
 
@@ -78,8 +83,16 @@ public class UnmodifiableLists {
 		main1(l0);
 	}
 
+	@Return
+	void main3(final List<Object> l0) {
+		if (l0 instanceof ArrayList) {
+			final ArrayList<Object> l1 = (ArrayList<Object>) l0;
+			l1.add(new Object());
+		}
+	}
+
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 4 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 5 verified, 0 errors
  */

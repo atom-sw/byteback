@@ -31,6 +31,8 @@ public class BBLibNames {
 	public static final String OF_NAME = "of";
 
 	/** Behavior annotations */
+	public static final String IMPLICIT_ANNOTATION = "Lbyteback/specification/Contract$Implicit;";
+
 	public static final String BEHAVIOR_ANNOTATION = "Lbyteback/specification/Contract$Behavior;";
 
 	public static final String TWOSTATE_ANNOTATION = "Lbyteback/specification/Contract$TwoState;";

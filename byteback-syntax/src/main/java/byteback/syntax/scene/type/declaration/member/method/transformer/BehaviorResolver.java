@@ -1,6 +1,9 @@
 package byteback.syntax.scene.type.declaration.member.method.transformer;
 
+import java.util.Collections;
+
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.ImplicitTagMarker;
 import byteback.syntax.transformer.TransformationException;
 import soot.*;
 import soot.util.NumberedString;
@@ -29,6 +32,12 @@ public abstract class BehaviorResolver {
 
 			return behaviorMethod;
 		} else {
+			final SootMethod implicitBehaviorMethod = declaringClass.getMethod(behaviorName, Collections.emptyList());
+
+			if (implicitBehaviorMethod != null && ImplicitTagMarker.v().hasTag(implicitBehaviorMethod)) {
+				return implicitBehaviorMethod;
+			}
+
 			throw new TransformationException(
 					"Could not find behavior method: "
 							+ behaviorName,

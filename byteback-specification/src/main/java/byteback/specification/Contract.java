@@ -13,6 +13,11 @@ public class Contract {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD })
+	public @interface Implicit {
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.METHOD })
 	public @interface Behavior {
 	}
 

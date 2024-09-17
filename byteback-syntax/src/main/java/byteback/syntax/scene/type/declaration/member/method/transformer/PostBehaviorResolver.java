@@ -3,10 +3,12 @@ package byteback.syntax.scene.type.declaration.member.method.transformer;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterRefFinder;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.tag.ImplicitTagMarker;
 import soot.*;
 import soot.util.NumberedString;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,15 +35,21 @@ public class PostBehaviorResolver extends BehaviorResolver {
 
 	@Override
 	protected Value makeBehaviorExpr(final SootMethod targetMethod, final SootMethod behaviorMethod) {
-		final List<Value> behaviorAguments = ParameterRefFinder.v().findInputRefs(targetMethod).stream()
-				.map(Vimp.v()::nest).collect(Collectors.toCollection(ArrayList<Value>::new));
-		final Type returnType = targetMethod.getReturnType();
+		final List<Value> behaviorArguments;
 
-		if (returnType != VoidType.v()) {
-			behaviorAguments.add(Vimp.v().nest(Vimp.v().newReturnRef(returnType)));
+		if (!ImplicitTagMarker.v().hasTag(behaviorMethod)) {
+			behaviorArguments = ParameterRefFinder.v().findInputRefs(targetMethod).stream()
+			.map(Vimp.v()::nest).collect(Collectors.toCollection(ArrayList<Value>::new));
+			final Type returnType = targetMethod.getReturnType();
+
+			if (returnType != VoidType.v()) {
+				behaviorArguments.add(Vimp.v().nest(Vimp.v().newReturnRef(returnType)));
+			}
+		} else {
+			behaviorArguments = Collections.emptyList();
 		}
 
-		return Vimp.v().newCallExpr(behaviorMethod.makeRef(), behaviorAguments);
+		return Vimp.v().newCallExpr(behaviorMethod.makeRef(), behaviorArguments);
 	}
 
 }
