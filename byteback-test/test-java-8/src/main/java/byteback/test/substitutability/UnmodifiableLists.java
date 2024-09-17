@@ -28,11 +28,6 @@ public class UnmodifiableLists {
 		@Return(when = "is_mutable")
 		void clear();
 
-		@Behavior
-		default boolean is_mutable(T element) {
-			return is_mutable();
-		}
-
 		@Return(when = "is_mutable")
 		boolean add(T element);
 
