@@ -4,18 +4,18 @@ import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Return;
 import byteback.specification.ghost.Ghost.Attach;
 
-@Attach("java.lang.Exception")
-public abstract class ExceptionSpec {
+@Attach("java.lang.UnsupportedOperationException")
+public abstract class UnsupportedOperationExceptionSpec {
 
 	@Return
 	@Abstract
-	public ExceptionSpec() {
+	public UnsupportedOperationExceptionSpec() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Return
 	@Abstract
-	public ExceptionSpec(final String message) {
+	public UnsupportedOperationExceptionSpec(final String message) {
 		throw new UnsupportedOperationException();
 	}
 

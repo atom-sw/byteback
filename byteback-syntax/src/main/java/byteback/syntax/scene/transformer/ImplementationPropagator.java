@@ -79,6 +79,10 @@ public class ImplementationPropagator extends SceneTransformer {
 				continue;
 			} else {
 				attachedClass = maybeAttachedClass;
+
+				if (attachedClass.resolvingLevel() < SootClass.SIGNATURES) {
+					continue;
+				}
 			}
 
 			attachedClass.addAllTagsOf(pluginClass);

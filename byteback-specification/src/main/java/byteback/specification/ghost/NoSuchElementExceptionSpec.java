@@ -4,18 +4,18 @@ import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Return;
 import byteback.specification.ghost.Ghost.Attach;
 
-@Attach("java.lang.Exception")
-public abstract class ExceptionSpec {
+@Attach("java.util.NoSuchElementException")
+public abstract class NoSuchElementExceptionSpec {
 
 	@Return
 	@Abstract
-	public ExceptionSpec() {
+	public NoSuchElementExceptionSpec() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Return
 	@Abstract
-	public ExceptionSpec(final String message) {
+	public NoSuchElementExceptionSpec(final String message) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -145,10 +145,19 @@ public class Main implements Callable<Integer> {
 	}
 
 	private final String[] ghostClasses = new String[] {
-			"byteback.specification.ghost.ObjectSpec",
+			"byteback.specification.ghost.ArithmeticExceptionSpec",
+			"byteback.specification.ghost.ClassCastExceptionSpec",
 			"byteback.specification.ghost.ExceptionSpec",
+			"byteback.specification.ghost.IllegalArgumentExceptionSpec",
+			"byteback.specification.ghost.IndexOutOfBoundsExceptionSpec",
 			"byteback.specification.ghost.InvokeDynamicSpec",
-			"byteback.specification.ghost.KotlinIntrinsicsSpec"
+			"byteback.specification.ghost.KotlinIntrinsicsSpec",
+			"byteback.specification.ghost.NegativeArraySizeExceptionSpec",
+			"byteback.specification.ghost.NoSuchElementExceptionSpec",
+			"byteback.specification.ghost.NullPointerExceptionSpec",
+			"byteback.specification.ghost.ObjectSpec",
+			"byteback.specification.ghost.RuntimeExceptionSpec",
+			"byteback.specification.ghost.UnsupportedOperationExceptionSpec"
 	};
 
 	public Integer call() throws Exception {
@@ -177,28 +186,33 @@ public class Main implements Callable<Integer> {
 		// Transformations
 		final var checkTransformers = new ArrayList<CheckTransformer>();
 
+		scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
+
 		if (transformNullCheck) {
-			scene.addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
 			checkTransformers.add(strictifyCheckTransformer(new NullCheckTransformer(scene)));
 		}
 
+		scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
+
 		if (transformArrayCheck) {
-			scene.addBasicClass("java.lang.IndexOutOfBoundsException", SootClass.SIGNATURES);
 			checkTransformers.add(strictifyCheckTransformer(new IndexCheckTransformer(scene)));
 		}
 
+		scene.addBasicClass("java.lang.ArithmeticException", SootClass.SIGNATURES);
+
 		if (transformDivisionByZeroCheck) {
-			scene.addBasicClass("java.lang.ArithmeticException", SootClass.SIGNATURES);
 			checkTransformers.add(strictifyCheckTransformer(new DivisionByZeroCheckTransformer(scene)));
 		}
 
+		scene.addBasicClass("java.lang.NegativeArraySizeException", SootClass.SIGNATURES);
+
 		if (transformNegativeArraySizeCheck) {
-			scene.addBasicClass("java.lang.NegativeArraySizeException", SootClass.SIGNATURES);
 			checkTransformers.add(strictifyCheckTransformer(new ArraySizeCheckTransformer(scene)));
 		}
 
+		scene.addBasicClass("java.lang.ClassCastException", SootClass.SIGNATURES);
+
 		if (transformClassCastCheck) {
-			scene.addBasicClass("java.lang.ClassCastException", SootClass.SIGNATURES);
 			checkTransformers.add(strictifyCheckTransformer(new CastCheckTransformer(scene)));
 		}
 

@@ -4,18 +4,18 @@ import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Return;
 import byteback.specification.ghost.Ghost.Attach;
 
-@Attach("java.lang.Exception")
-public abstract class ExceptionSpec {
+@Attach("java.lang.NullPointerException")
+public abstract class NullPointerExceptionSpec {
 
 	@Return
 	@Abstract
-	public ExceptionSpec() {
+	public NullPointerExceptionSpec() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Return
 	@Abstract
-	public ExceptionSpec(final String message) {
+	public NullPointerExceptionSpec(final String message) {
 		throw new UnsupportedOperationException();
 	}
 

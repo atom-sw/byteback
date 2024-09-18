@@ -50,7 +50,6 @@ public class UnmodifiableLists {
 
 		@Abstract
 		@Return
-		@Ensure("is_mutable")
 		public ArrayListSpec() {
 		}
 

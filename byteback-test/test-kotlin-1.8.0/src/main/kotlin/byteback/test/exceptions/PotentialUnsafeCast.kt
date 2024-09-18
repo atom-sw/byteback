@@ -10,6 +10,8 @@ import byteback.specification.Operators.*;
 class PotentialUnsafeCast {
 
 		open class A {
+				@Return
+				constructor()
 		}
 
 		class B : A() {

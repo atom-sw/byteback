@@ -8,13 +8,6 @@ import static byteback.specification.Contract.*;
 
 public class Basic {
 
-	public static class Exception4 extends Exception {
-
-		public Exception4() {
-		}
-
-	}
-
 	public Exception tryCatchBlock() {
 		try {
 			throw new Exception();

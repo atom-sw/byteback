@@ -12,8 +12,8 @@ import java.util.Map;
 import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Ensure;
+import byteback.specification.Contract.Implicit;
 import byteback.specification.Contract.Invariant;
-import byteback.specification.Contract.Operator;
 import byteback.specification.Contract.Return;
 
 public class UnmodifiableMaps {
@@ -21,22 +21,12 @@ public class UnmodifiableMaps {
 	@Attach("java.util.Map")
 	public static interface MapSpec<K, V> {
 
-		@Operator
+		@Implicit
 		@Behavior
 		boolean is_mutable();
 
-		@Behavior
-		default boolean is_mutable(final K key, final V value) {
-			return is_mutable();
-		}
-
 		@Return(when = "is_mutable")
 		V put(K key, V value);
-
-		@Behavior
-		default boolean is_mutable(final K key) {
-			return is_mutable();
-		}
 
 		@Return(when = "is_mutable")
 		boolean remove(K key);
@@ -54,7 +44,6 @@ public class UnmodifiableMaps {
 
 		@Abstract
 		@Return
-		@Ensure("is_mutable")
 		public HashMapSpec() {
 		}
 
