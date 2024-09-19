@@ -60,7 +60,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import soot.Body;
-import soot.LocalGenerator;
 import soot.PackManager;
 import soot.Scene;
 import soot.SootClass;

@@ -1,59 +1,18 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$ListSpec -c %{class}$ArrayListSpec -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}ListSpec -c %{ghost}ArrayListSpec -o %t.bpl
  */
 package byteback.test.substitutability;
 
 import byteback.specification.ghost.Ghost;
-import byteback.specification.ghost.Ghost.Attach;
+import byteback.specification.ghost.ListSpec;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Behavior;
-import byteback.specification.Contract.Ensure;
-import byteback.specification.Contract.Implicit;
-import byteback.specification.Contract.Invariant;
 import byteback.specification.Contract.Return;
 
 public class UnmodifiableLists {
-
-	@Attach("java.util.List")
-	public static interface ListSpec<T> {
-
-		@Implicit
-		@Behavior
-		boolean is_mutable();
-
-		@Return(when = "is_mutable")
-		void clear();
-
-		@Return(when = "is_mutable")
-		boolean add(T element);
-
-		@Return(when = "is_mutable")
-		boolean remove(T element);
-
-		@Return(when = "is_mutable")
-		boolean add(int index, T element);
-
-	}
-
-	@Attach("java.util.ArrayList")
-	@Invariant("is_mutable")
-	public static class ArrayListSpec<T> {
-
-		@Behavior
-		public boolean is_mutable() {
-			return Ghost.of(ListSpec.class, this).is_mutable();
-		}
-
-		@Abstract
-		@Return
-		public ArrayListSpec() {
-		}
-
-	}
 
 	@Return
 	public void main0() {

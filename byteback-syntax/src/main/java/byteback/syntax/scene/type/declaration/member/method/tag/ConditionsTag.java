@@ -6,6 +6,7 @@ import soot.grimp.internal.ExprBox;
 import soot.tagkit.Tag;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,10 @@ public abstract class ConditionsTag implements Tag {
 
 	public void addConditionBox(final ValueBox conditionBox) {
 		conditionBoxes.add(conditionBox);
+	}
+
+	public void addConditionBoxes(final Collection<ValueBox> conditionBoxes) {
+		conditionBoxes.addAll(conditionBoxes);
 	}
 
 	public void addCondition(final Value condition) {

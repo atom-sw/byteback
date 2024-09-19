@@ -14,6 +14,8 @@ import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTa
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
+import byteback.syntax.scene.type.declaration.tag.InvariantsTag;
+import byteback.syntax.scene.type.declaration.tag.InvariantsTagAccessor;
 import soot.Hierarchy;
 import soot.Scene;
 import soot.SootClass;
@@ -172,6 +174,13 @@ public class ConditionsTagPropagator extends SceneTransformer {
 		for (final SootClass sootClass : sortedClasses) {
 			if (sootClass.resolvingLevel() < SootClass.SIGNATURES) {
 				continue;
+			}
+
+			for (final SootClass parentClass : superTypesOf(sootClass)) {
+				InvariantsTagAccessor.v().get(parentClass).ifPresent((invariantsTag) -> {
+						InvariantsTagAccessor.v().putIfAbsent(sootClass, InvariantsTag::new)
+							.addConditionBoxes(invariantsTag.getConditionBoxes());
+					});
 			}
 
 			for (final SootMethod targetMethod : new ArrayList<>(sootClass.getMethods())) {
