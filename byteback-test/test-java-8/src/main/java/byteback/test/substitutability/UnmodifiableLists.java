@@ -37,7 +37,7 @@ public class UnmodifiableLists {
 	}
 
 	@Return
-	void main3(final List<Object> l0) {
+	public void main3(final List<Object> l0) {
 		if (l0 instanceof ArrayList) {
 			final ArrayList<Object> l1 = (ArrayList<Object>) l0;
 			l1.add(new Object());

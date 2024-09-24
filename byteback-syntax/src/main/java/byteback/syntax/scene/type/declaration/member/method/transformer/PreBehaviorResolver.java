@@ -40,7 +40,8 @@ public class PreBehaviorResolver extends BehaviorResolver {
 		} else {
 			behaviorArguments = ParameterRefFinder.v().findInputRefs(targetMethod).stream()
 				.filter((inputRef) -> inputRef instanceof HeapRef || inputRef instanceof ThisRef)
-				.map(Vimp.v()::nest).collect(Collectors.toCollection(ArrayList<Value>::new));
+				.map(Vimp.v()::nest)
+				.collect(Collectors.toCollection(ArrayList<Value>::new));
 		}
 
 		return Vimp.v().newCallExpr(behaviorMethod.makeRef(), behaviorArguments);

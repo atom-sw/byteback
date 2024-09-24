@@ -6,6 +6,8 @@ import java.util.List;
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
+import byteback.syntax.scene.type.declaration.tag.InvariantMethodsTag;
+import byteback.syntax.scene.type.declaration.tag.InvariantMethodsTagAccessor;
 import byteback.syntax.transformer.TransformationException;
 import soot.*;
 import soot.jimple.Jimple;
@@ -34,6 +36,10 @@ public class InvariantBehaviorResolver {
 		final SootMethod behaviorMethod = sootClass.getMethodUnsafe(behaviorName, Collections.emptyList(), BooleanType.v());
 
 		if (behaviorMethod != null) {
+			InvariantMethodsTagAccessor.v()
+				.putIfAbsent(sootClass, InvariantMethodsTag::new)
+				.addInvariantMethod(behaviorMethod);
+
 			if (!BehaviorTagMarker.v().hasTag(behaviorMethod)) {
 				throw new TransformationException(
 						"Not a behavior method: "
