@@ -107,5 +107,5 @@ public class UnmodifiableLists {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 10 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 11 verified, 0 errors
  */
