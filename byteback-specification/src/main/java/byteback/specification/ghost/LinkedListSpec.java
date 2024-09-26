@@ -7,9 +7,9 @@ import byteback.specification.Contract.NoState;
 import byteback.specification.Contract.Return;
 import byteback.specification.ghost.Ghost.Attach;
 
-@Attach("java.util.ArrayList")
+@Attach("java.util.LinkedList")
 @Invariant("is_mutable")
-public class ArrayListSpec<T> {
+public class LinkedListSpec<T> {
 
 	@NoState
 	@Behavior
@@ -19,7 +19,7 @@ public class ArrayListSpec<T> {
 
 	@Abstract
 	@Return
-	public ArrayListSpec() {
+	public LinkedListSpec() {
 	}
 
 }

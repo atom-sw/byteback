@@ -23,12 +23,12 @@ public class Contract {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD })
-	public @interface Operator {
+	public @interface Exceptional {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD })
-	public @interface Exceptional {
+	public @interface NoState {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)

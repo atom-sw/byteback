@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}ListSpec -c %{ghost}ArrayListSpec -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}ListSpec -c %{ghost}ArrayListSpec -c %{ghost}LinkedListSpec -o %t.bpl
  */
 package byteback.test.substitutability;
 
@@ -7,9 +7,11 @@ import byteback.specification.ghost.Ghost;
 import byteback.specification.ghost.ListSpec;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import byteback.specification.Contract.Behavior;
+import byteback.specification.Contract.Ensure;
 import byteback.specification.Contract.Return;
 
 public class UnmodifiableLists {
@@ -44,8 +46,66 @@ public class UnmodifiableLists {
 		}
 	}
 
+	@Behavior
+	public boolean returns_mutable(final int i, final List<Object> r) {
+		return Ghost.of(ListSpec.class, r).is_mutable();
+	}
+
+	@Ensure("returns_mutable")
+	@Return
+	public List<Object> main4(int i) {
+		final List<Object> l1;
+
+		if (i % 2 == 0) {
+			l1 = new ArrayList<Object>();
+		} else {
+			l1 = new LinkedList<Object>();
+		}
+
+		return l1;
+	}
+
+	@Behavior
+	public boolean returns_mutable(final List<Object> r) {
+		return Ghost.of(ListSpec.class, r).is_mutable();
+	}
+
+	@Return
+	@Ensure("returns_mutable")
+	public List<Object> makeMutableList() {
+		return new ArrayList<>();
+	}
+
+	@Return
+	public void main5() {
+		final List<Object> l1 = makeMutableList();
+		main1(l1);
+	}
+
+	@Ensure("returns_mutable")
+	@Return
+	public List<Object> main6() {
+		final List<Object> l1 = main4(2);
+
+		return l1;
+	}
+
+	@Ensure("returns_mutable")
+	@Return
+	public List<Object> main7() {
+		final List<Object> l1 = main4(2);
+		l1.add(new Object());
+
+		return l1;
+	}
+
+	public void main8() {
+		final List<Integer> l1 = List.of(1, 2, 3);
+		l1.add(4);
+	}
+
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 5 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 10 verified, 0 errors
  */

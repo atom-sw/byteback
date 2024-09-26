@@ -1,7 +1,7 @@
 package byteback.specification;
 
 import byteback.specification.Contract.Behavior;
-import byteback.specification.Contract.Operator;
+import byteback.specification.Contract.NoState;
 import byteback.specification.Contract.Prelude;
 
 public class Special {
@@ -102,7 +102,7 @@ public class Special {
 		}
 	}
 
-	@Operator
+	@NoState
 	@Behavior
 	@Prelude("reference.is_void")
 	public static boolean isVoid(final Object object) {

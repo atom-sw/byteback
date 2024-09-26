@@ -39,7 +39,7 @@ public class BBLibNames {
 
 	public static final String EXCEPTIONAL_ANNOTATION = "Lbyteback/specification/Contract$Exceptional;";
 
-	public static final String OPERATOR_ANNOTATION = "Lbyteback/specification/Contract$Operator;";
+	public static final String OPERATOR_ANNOTATION = "Lbyteback/specification/Contract$NoState;";
 
 	public static final String PRELUDE_ANNOTATION = "Lbyteback/specification/Contract$Prelude;";
 

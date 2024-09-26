@@ -1,15 +1,18 @@
 package byteback.specification.ghost;
 
 import java.util.Collection;
+import java.util.List;
 
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Implicit;
+import byteback.specification.Contract.NoState;
 import byteback.specification.Contract.Return;
 import byteback.specification.ghost.Ghost.Attach;
 
 @Attach("java.util.List")
 public interface ListSpec<T> {
 
+	@NoState
 	@Implicit
 	@Behavior
 	boolean is_mutable();
