@@ -14,7 +14,6 @@ import java.util.List;
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Ensure;
 import byteback.specification.Contract.Raise;
-import byteback.specification.Contract.Raises;
 import byteback.specification.Contract.Return;
 
 public class UnmodifiableLists {

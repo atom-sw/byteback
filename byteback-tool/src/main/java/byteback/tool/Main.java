@@ -169,6 +169,7 @@ public class Main implements Callable<Integer> {
 		final List<String> startingClasses = getStartingClasses();
 		startingClasses.addAll(List.of(ghostClasses));
 
+		options.set_allow_phantom_refs(true);
 		options.set_weak_map_structures(true);
 		options.classes().addAll(startingClasses);
 
@@ -215,7 +216,6 @@ public class Main implements Callable<Integer> {
 			checkTransformers.add(strictifyCheckTransformer(new CastCheckTransformer(scene)));
 		}
 
-		scene.loadBasicClasses();
 		scene.loadNecessaryClasses();
 		PackManager.v().runPacks();
 

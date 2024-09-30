@@ -22,7 +22,7 @@ public class MethodResolver extends SceneTransformer {
 	private MethodResolver() {
 	}
 
-	public void ensureExists(final Scene scene, final SootMethodRef methodRef) {
+	public void ensureMethod(final Scene scene, final SootMethodRef methodRef) {
 		final SootMethod sootMethod = methodRef.tryResolve();
 
 		if (sootMethod == null) {
@@ -50,7 +50,7 @@ public class MethodResolver extends SceneTransformer {
 			}
 
 			for (final SootMethod sootMethod : sootClass.getMethods()) {
-				if (sootMethod.isAbstract()) {
+				if (sootMethod.isPhantom() || sootMethod.isAbstract()) {
 					continue;
 				}
 
@@ -61,7 +61,7 @@ public class MethodResolver extends SceneTransformer {
 
 					if (value instanceof final InvokeExpr invokeExpr) {
 						final SootMethodRef methodRef = invokeExpr.getMethodRef();
-						ensureExists(scene, methodRef);
+						ensureMethod(scene, methodRef);
 					}
 				}
 			}
