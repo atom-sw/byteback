@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}ListSpec -c %{ghost}ArrayListSpec -c %{ghost}LinkedListSpec -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}ListSpec -c %{ghost}ArrayListSpec -c %{ghost}LinkedListSpec -c %{ghost}CollectionsSpec -o %t.bpl
  */
 package byteback.test.substitutability;
 
@@ -7,11 +7,14 @@ import byteback.specification.ghost.Ghost;
 import byteback.specification.ghost.ListSpec;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Ensure;
+import byteback.specification.Contract.Raise;
+import byteback.specification.Contract.Raises;
 import byteback.specification.Contract.Return;
 
 public class UnmodifiableLists {
@@ -104,8 +107,14 @@ public class UnmodifiableLists {
 		l1.add(4);
 	}
 
+	@Raise(exception = UnsupportedOperationException.class)
+	public void main9() {
+		final List<Object> l = Collections.unmodifiableList(new ArrayList<>());
+		l.add(new Object());
+	}
+
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 11 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 13 verified, 0 errors
  */
