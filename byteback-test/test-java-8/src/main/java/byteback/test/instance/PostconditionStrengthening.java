@@ -31,7 +31,8 @@ public class PostconditionStrengthening {
 		}
 
 		@Override
-		@EnsureOnly("p2")
+		@EnsureOnly
+		@Ensure("p2")
 		public void test() {
 		}
 

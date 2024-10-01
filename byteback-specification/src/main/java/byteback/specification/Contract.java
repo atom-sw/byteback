@@ -64,17 +64,9 @@ public class Contract {
 		Require[] value();
 	}
 
-	@Repeatable(RequireOnlys.class)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface RequireOnly {
-		String value();
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
-	public @interface RequireOnlys {
-		RequireOnly[] value();
 	}
 
 	@Repeatable(Ensures.class)
@@ -90,17 +82,9 @@ public class Contract {
 		Ensure[] value();
 	}
 
-	@Repeatable(EnsureOnlys.class)
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 	public @interface EnsureOnly {
-		String value();
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
-	public @interface EnsureOnlys {
-		EnsureOnly[] value();
 	}
 
 	@Repeatable(Raises.class)

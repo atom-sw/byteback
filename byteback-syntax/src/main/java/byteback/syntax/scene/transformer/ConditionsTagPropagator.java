@@ -8,8 +8,8 @@ import java.util.List;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
-import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPostconditionsTagAccessor;
-import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPreconditionsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.EnsureOnlyTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.RequireOnlyTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag;
@@ -178,9 +178,9 @@ public class ConditionsTagPropagator extends SceneTransformer {
 
 			for (final SootClass parentClass : superTypesOf(sootClass)) {
 				InvariantsTagAccessor.v().get(parentClass).ifPresent((invariantsTag) -> {
-						InvariantsTagAccessor.v().putIfAbsent(sootClass, InvariantsTag::new)
+					InvariantsTagAccessor.v().putIfAbsent(sootClass, InvariantsTag::new)
 							.addConditionBoxes(invariantsTag.getConditionBoxes());
-					});
+				});
 			}
 
 			for (final SootMethod targetMethod : new ArrayList<>(sootClass.getMethods())) {
@@ -189,67 +189,69 @@ public class ConditionsTagPropagator extends SceneTransformer {
 				}
 
 				for (final SootMethod parentMethod : resolveParentMethods(targetMethod)) {
-					// Handling automatic specification inheritance
-					PreconditionsTagAccessor.v().get(targetMethod).ifPresentOrElse((currentPreconditionsTag) -> {
-						PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
-							PreconditionsTagAccessor.v().put(
-									targetMethod,
-									weakenPreconditions(parentPreconditionsTag, currentPreconditionsTag));
-						});
-					}, () -> {
-						PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
-							PreconditionsTagAccessor.v().put(
-									targetMethod,
-									parentPreconditionsTag);
-						});
-					});
 
-					PostconditionsTagAccessor.v().get(targetMethod).ifPresentOrElse((currentPostconditionsTag) -> {
-						PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
-							PostconditionsTagAccessor.v().put(
-									targetMethod,
-									strenghtenPostconditions(parentPostconditionsTag, currentPostconditionsTag));
+					if (RequireOnlyTagMarker.v().hasTag(targetMethod)) {
+						PreconditionsTagAccessor.v().get(targetMethod).ifPresent((currentPreconditionsTag) -> {
+							PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
+								final SootMethod vcMethod = new SootMethod(
+										targetMethod.getName() + "?weakening",
+										Collections.emptyList(),
+										VoidType.v());
+								vcMethod.setActiveBody(new JimpleBody());
+								final PreconditionsTag preconditionsTag = parentPreconditionsTag;
+								final PostconditionsTag postconditionsTag = new PostconditionsTag(
+										currentPreconditionsTag.getConditions());
+								PreconditionsTagAccessor.v().put(vcMethod, preconditionsTag);
+								PostconditionsTagAccessor.v().put(vcMethod, postconditionsTag);
+								sootClass.addMethod(vcMethod);
+							});
 						});
-					}, () -> {
-						PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
-							PostconditionsTagAccessor.v().put(
-									targetMethod,
-									parentPostconditionsTag);
+					} else {
+						PreconditionsTagAccessor.v().get(targetMethod).ifPresentOrElse((currentPreconditionsTag) -> {
+							PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
+								PreconditionsTagAccessor.v().put(
+										targetMethod,
+										weakenPreconditions(parentPreconditionsTag, currentPreconditionsTag));
+							});
+						}, () -> {
+							PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
+								PreconditionsTagAccessor.v().put(
+										targetMethod,
+										parentPreconditionsTag);
+							});
 						});
-					});
-
-					// Handling precondition weakening and postcondition strengthening
-					OnlyPreconditionsTagAccessor.v().get(targetMethod).ifPresent((currentPreconditionsTag) -> {
-						PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
-							final SootMethod vcMethod = new SootMethod(
-									targetMethod.getName() + "?weakening",
-									Collections.emptyList(),
-									VoidType.v());
-							vcMethod.setActiveBody(new JimpleBody());
-							final PreconditionsTag preconditionsTag = parentPreconditionsTag;
-							final PostconditionsTag postconditionsTag = new PostconditionsTag(
-									currentPreconditionsTag.getConditions());
-							PreconditionsTagAccessor.v().put(vcMethod, preconditionsTag);
-							PostconditionsTagAccessor.v().put(vcMethod, postconditionsTag);
-							sootClass.addMethod(vcMethod);
+					}
+					if (EnsureOnlyTagMarker.v().hasTag(targetMethod)) {
+						PostconditionsTagAccessor.v().get(targetMethod).ifPresent((currentPostconditionsTag) -> {
+							PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
+								final SootMethod vcMethod = new SootMethod(
+										targetMethod.getName() + "?strenghtening",
+										Collections.emptyList(),
+										VoidType.v());
+								vcMethod.setActiveBody(new JimpleBody());
+								final PostconditionsTag postconditionsTag = parentPostconditionsTag;
+								final PostconditionsTag preconditionsTag = new PostconditionsTag(
+										currentPostconditionsTag.getConditions());
+								PostconditionsTagAccessor.v().put(vcMethod, preconditionsTag);
+								PostconditionsTagAccessor.v().put(vcMethod, postconditionsTag);
+								sootClass.addMethod(vcMethod);
+							});
 						});
-					});
-
-					OnlyPostconditionsTagAccessor.v().get(targetMethod).ifPresent((currentPostconditionTag) -> {
-						PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
-							final SootMethod vcMethod = new SootMethod(
-									targetMethod.getName() + "?strenghtening",
-									Collections.emptyList(),
-									VoidType.v());
-							vcMethod.setActiveBody(new JimpleBody());
-							final PostconditionsTag postconditionsTag = parentPostconditionsTag;
-							final PostconditionsTag preconditionsTag = new PostconditionsTag(
-									currentPostconditionTag.getConditions());
-							PostconditionsTagAccessor.v().put(vcMethod, preconditionsTag);
-							PostconditionsTagAccessor.v().put(vcMethod, postconditionsTag);
-							sootClass.addMethod(vcMethod);
+					} else {
+						PostconditionsTagAccessor.v().get(targetMethod).ifPresentOrElse((currentPostconditionsTag) -> {
+							PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
+								PostconditionsTagAccessor.v().put(
+										targetMethod,
+										strenghtenPostconditions(parentPostconditionsTag, currentPostconditionsTag));
+							});
+						}, () -> {
+							PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
+								PostconditionsTagAccessor.v().put(
+										targetMethod,
+										parentPostconditionsTag);
+							});
 						});
-					});
+					}
 				}
 			}
 		}

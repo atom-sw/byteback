@@ -31,7 +31,8 @@ public class PreconditionWeakening {
 		}
 
 		@Override
-		@RequireOnly("p2")
+		@RequireOnly
+		@Require("p2")
 		public void test() {
 		}
 

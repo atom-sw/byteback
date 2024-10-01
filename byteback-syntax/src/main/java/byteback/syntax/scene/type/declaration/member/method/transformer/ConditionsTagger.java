@@ -6,10 +6,6 @@ import byteback.common.function.Lazy;
 import byteback.syntax.name.BBLibNames;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
-import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPostconditionsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPostconditionsTagAccessor;
-import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPreconditionsTag;
-import byteback.syntax.scene.type.declaration.member.method.tag.OnlyPreconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag;
@@ -140,26 +136,6 @@ public class ConditionsTagger extends MethodTransformer {
 													UnitConstant.v());
 											postconditionsTag.addCondition(condition);
 										});
-							});
-				}
-				case (BBLibNames.REQUIRE_ONLY_ANNOTATION) -> {
-					final OnlyPreconditionsTag onlyPreconditionsTag = OnlyPreconditionsTagAccessor.v()
-							.putIfAbsent(sootMethod, OnlyPreconditionsTag::new);
-					AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class)
-							.ifPresent(annotationStringElement -> {
-								final String behaviorName = annotationStringElement.getValue();
-								final Value condition = PreBehaviorResolver.v().resolveBehavior(sootMethod, behaviorName);
-								onlyPreconditionsTag.addCondition(condition);
-							});
-				}
-				case (BBLibNames.ENSURE_ONLY_ANNOTATION) -> {
-					final OnlyPostconditionsTag onlyPostconditionTag = OnlyPostconditionsTagAccessor.v()
-							.putIfAbsent(sootMethod, OnlyPostconditionsTag::new);
-					AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class)
-							.ifPresent(annotationStringElement -> {
-								final String behaviorName = annotationStringElement.getValue();
-								final Value condition = PreBehaviorResolver.v().resolveBehavior(sootMethod, behaviorName);
-								onlyPostconditionTag.addCondition(condition);
 							});
 				}
 			}
