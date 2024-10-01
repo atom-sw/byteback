@@ -18,7 +18,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.TypeConst
 import byteback.syntax.scene.type.declaration.member.method.body.value.box.tag.HeapReaderTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.NoStateTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
@@ -104,7 +104,7 @@ public class HeapReadTransformer extends MethodTransformer {
 
 				final var arguments = new ArrayList<>(callExpr.getArgs());
 
-				if (!OperatorTagMarker.v().hasTag(calledMethod)) {
+				if (!NoStateTagMarker.v().hasTag(calledMethod)) {
 					arguments.add(index++, Vimp.v().nest(heap));
 				}
 

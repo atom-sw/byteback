@@ -7,7 +7,7 @@ import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterLo
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.OldExpr;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.NoStateTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import soot.*;
 
@@ -29,7 +29,7 @@ public class OldHeapReadTransformer extends MethodTransformer {
 		final Value oldHeap;
 
 		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
-			if (!OperatorTagMarker.v().hasTag(sootMethod)) {
+			if (!NoStateTagMarker.v().hasTag(sootMethod)) {
 				heap = ParameterLocalFinder.v().findHeapLocal(sootMethod);
 			} else {
 				return;

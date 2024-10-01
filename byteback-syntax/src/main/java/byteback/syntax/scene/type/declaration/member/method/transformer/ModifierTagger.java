@@ -43,7 +43,7 @@ public class ModifierTagger extends MethodTransformer {
 						case BBLibNames.REQUIRE_ONLY_ANNOTATION ->
 							RequireOnlyTagMarker.v().flag(sootMethod);
 						case BBLibNames.OPERATOR_ANNOTATION ->
-							OperatorTagMarker.v().flag(sootMethod);
+							NoStateTagMarker.v().flag(sootMethod);
 						case BBLibNames.IMPLICIT_ANNOTATION ->
 							ImplicitTagMarker.v().flag(sootMethod);
 						case BBLibNames.TWOSTATE_ANNOTATION ->

@@ -4,17 +4,17 @@ import byteback.common.function.Lazy;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
-public class OperatorTag implements Tag {
+public class NoStateTag implements Tag {
 
 	public static final String NAME = "OperatorTag";
 
-	private static final Lazy<OperatorTag> INSTANCE = Lazy.from(OperatorTag::new);
+	private static final Lazy<NoStateTag> INSTANCE = Lazy.from(NoStateTag::new);
 
-	public static OperatorTag v() {
+	public static NoStateTag v() {
 		return INSTANCE.get();
 	}
 
-	private OperatorTag() {
+	private NoStateTag() {
 	}
 
 	@Override

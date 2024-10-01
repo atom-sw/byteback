@@ -8,7 +8,7 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.ReturnRef
 import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
 import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.ExceptionalTagMarker;
-import byteback.syntax.scene.type.declaration.member.method.tag.OperatorTagMarker;
+import byteback.syntax.scene.type.declaration.member.method.tag.NoStateTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import soot.*;
 import soot.jimple.*;
@@ -32,7 +32,7 @@ public class ParameterRefFinder {
 		final var inputRefs = new ArrayList<IdentityRef>();
 
 		if (BehaviorTagMarker.v().hasTag(sootMethod)) {
-			if (!OperatorTagMarker.v().hasTag(sootMethod)) {
+			if (!NoStateTagMarker.v().hasTag(sootMethod)) {
 				final HeapRef heapRef = Vimp.v().newHeapRef();
 				inputRefs.add(heapRef);
 			}
