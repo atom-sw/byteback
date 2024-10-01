@@ -14,7 +14,7 @@ public class ArrayListSpec<T> {
 	@NoState
 	@Behavior
 	public boolean is_mutable() {
-		return Ghost.of(ListSpec.class, this).is_mutable();
+		return Ghost.of(CollectionSpec.class, this).is_mutable();
 	}
 
 	@Abstract

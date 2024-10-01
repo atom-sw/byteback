@@ -1,8 +1,9 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}ListSpec -c %{ghost}ArrayListSpec -c %{ghost}LinkedListSpec -c %{ghost}CollectionsSpec -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}CollectionSpec -c %{ghost}ListSpec -c %{ghost}ArrayListSpec -c %{ghost}LinkedListSpec -c %{ghost}CollectionsSpec -o %t.bpl
  */
 package byteback.test.substitutability;
 
+import byteback.specification.ghost.CollectionSpec;
 import byteback.specification.ghost.Ghost;
 import byteback.specification.ghost.ListSpec;
 
@@ -26,7 +27,7 @@ public class UnmodifiableLists {
 
 	@Behavior
 	public boolean l0_is_mutable(final List<Object> l0) {
-		return Ghost.of(ListSpec.class, l0).is_mutable();
+		return Ghost.of(CollectionSpec.class, l0).is_mutable();
 	}
 
 	@Return(when = "l0_is_mutable")
@@ -50,7 +51,7 @@ public class UnmodifiableLists {
 
 	@Behavior
 	public boolean returns_mutable(final int i, final List<Object> r) {
-		return Ghost.of(ListSpec.class, r).is_mutable();
+		return Ghost.of(CollectionSpec.class, r).is_mutable();
 	}
 
 	@Ensure("returns_mutable")
@@ -69,7 +70,7 @@ public class UnmodifiableLists {
 
 	@Behavior
 	public boolean returns_mutable(final List<Object> r) {
-		return Ghost.of(ListSpec.class, r).is_mutable();
+		return Ghost.of(CollectionSpec.class, r).is_mutable();
 	}
 
 	@Return
