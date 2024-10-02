@@ -8,6 +8,7 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterRefFinder;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
 import byteback.syntax.scene.type.declaration.member.method.body.value.HeapRef;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ThrownRef;
 import byteback.syntax.scene.type.declaration.member.method.tag.ImplicitTagMarker;
 import soot.*;
 import soot.jimple.ThisRef;
@@ -39,7 +40,7 @@ public class PreBehaviorResolver extends BehaviorResolver {
 				.map(Vimp.v()::nest).collect(Collectors.toCollection(ArrayList<Value>::new));
 		} else {
 			behaviorArguments = ParameterRefFinder.v().findInputRefs(targetMethod).stream()
-				.filter((inputRef) -> inputRef instanceof HeapRef || inputRef instanceof ThisRef)
+				.filter((inputRef) -> inputRef instanceof HeapRef || inputRef instanceof ThisRef || inputRef instanceof ThrownRef)
 				.map(Vimp.v()::nest)
 				.collect(Collectors.toCollection(ArrayList<Value>::new));
 		}
