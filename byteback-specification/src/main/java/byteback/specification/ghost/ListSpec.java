@@ -107,43 +107,83 @@ public interface ListSpec<T> {
 	@Return(when = "is_mutable")
 	boolean retainAll(Collection<?> c);
 
+	@Behavior
+	default boolean index_is_in_bounds(int index, T element) {
+		return lte(0, index) & lt(index, size());
+	}
+
+	@Behavior
+	default boolean index_is_out_of_bounds(int index, T element) {
+		return lt(index, 0) | lte(size(), index);
+	}
+
 	@Raise(exception = UnsupportedOperationException.class, when = "is_immutable")
-	@Require("is_modifiable")
+	@Raise(exception = IndexOutOfBoundsException.class, when = "index_is_out_of_bounds")
+	@Return(when = "index_is_in_bounds")
 	T set(int index, T element);
 
 	@Behavior
-	static <E> boolean returns_immutable(List<E> l) {
+	public static <E> boolean returns_immutable(List<E> l) {
 		return Ghost.of(ListSpec.class, l).is_immutable();
+	}
+
+	@Behavior
+	public static <E> boolean returns_non_nullable(List<E> l) {
+		return not(Ghost.of(CollectionSpec.class, l).is_nullable());
 	}
 
 	@Abstract
 	@Return
 	@Ensure("returns_immutable")
-	static <E> List<E> of() {
+	@Ensure("returns_non_nullable")
+	public static <E> List<E> of() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Behavior
-	static <E> boolean returns_immutable(E e1, List<E> l) {
+	public static <E> boolean returns_immutable(E e1, List<E> l) {
 		return Ghost.of(ListSpec.class, l).is_immutable();
+	}
+
+	@Behavior
+	public static <E> boolean returns_non_nullable(E e1, List<E> l) {
+		return not(Ghost.of(CollectionSpec.class, l).is_nullable());
+	}
+
+	@Behavior
+	public static <E> boolean arguments_are_null(E e1) {
+		return eq(e1, null);
 	}
 
 	@Abstract
 	@Return
 	@Ensure("returns_immutable")
-	static <E> List<E> of(E e1) {
+	@Ensure("returns_non_nullable")
+	@Raise(exception = NullPointerException.class, when = "arguments_are_null")
+	public static <E> List<E> of(E e1) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Behavior
-	static <E> boolean returns_immutable(E e1, E e2, List<E> l) {
+	public static <E> boolean arguments_are_null(E e1, E e2) {
+		return eq(e1, null) | eq(e2, null);
+	}
+
+	@Behavior
+	public static <E> boolean returns_immutable(E e1, E e2, List<E> l) {
 		return Ghost.of(ListSpec.class, l).is_immutable();
+	}
+
+	@Behavior
+	public static <E> boolean returns_non_nullable(E e1, E e2, List<E> l) {
+		return not(Ghost.of(CollectionSpec.class, l).is_nullable());
 	}
 
 	@Abstract
 	@Return
 	@Ensure("returns_immutable")
-	static <E> List<E> of(E e1, E e2) {
+	@Ensure("returns_non_nullable")
+	public static <E> List<E> of(E e1, E e2) {
 		throw new UnsupportedOperationException();
 	}
 

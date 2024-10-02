@@ -38,8 +38,6 @@ public class ThrownLocalInserter extends BodyTransformer {
 				useBox.setValue(local);
 			}
 		}
-
-		System.out.println(body);
 	}
 
 }
