@@ -1,11 +1,10 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}CollectionSpec -c %{ghost}ListSpec -c %{ghost}ArrayListSpec -c %{ghost}LinkedListSpec -c %{ghost}CollectionsSpec -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}CollectionSpec -c %{ghost}ListSpec -c %{ghost}ArraysSpec -c %{ghost}ArrayListSpec -c %{ghost}LinkedListSpec -c %{ghost}CollectionsSpec -o %t.bpl
  */
 package byteback.test.substitutability;
 
 import byteback.specification.ghost.CollectionSpec;
 import byteback.specification.ghost.Ghost;
-import byteback.specification.ghost.ListSpec;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,5 +115,5 @@ public class UnmodifiableLists {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 13 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 14 verified, 0 errors
  */

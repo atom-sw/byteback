@@ -11,6 +11,7 @@ import byteback.specification.Contract.Ensure;
 import byteback.specification.Contract.Implicit;
 import byteback.specification.Contract.NoState;
 import byteback.specification.Contract.Raise;
+import byteback.specification.Contract.Require;
 import byteback.specification.Contract.Return;
 import byteback.specification.ghost.Ghost.Attach;
 
@@ -75,7 +76,7 @@ public interface ListSpec<T> {
 	boolean retainAll(Collection<?> c);
 
 	@Raise(exception = UnsupportedOperationException.class, when = "is_immutable")
-	@Return(when = "is_modifiable")
+	@Require("is_modifiable")
 	T set(int index, T element);
 
 	@Behavior
