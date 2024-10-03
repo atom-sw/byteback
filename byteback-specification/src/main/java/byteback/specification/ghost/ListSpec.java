@@ -15,7 +15,6 @@ import byteback.specification.Contract.Implicit;
 import byteback.specification.Contract.Invariant;
 import byteback.specification.Contract.NoState;
 import byteback.specification.Contract.Raise;
-import byteback.specification.Contract.Require;
 import byteback.specification.Contract.Return;
 import byteback.specification.Contract.TwoState;
 import byteback.specification.ghost.Ghost.Attach;

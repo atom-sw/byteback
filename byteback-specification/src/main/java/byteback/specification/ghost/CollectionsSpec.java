@@ -3,6 +3,7 @@ package byteback.specification.ghost;
 import static byteback.specification.Operators.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import byteback.specification.Contract.Abstract;
@@ -35,6 +36,18 @@ public class CollectionsSpec {
 	@Ensure("returns_immutable")
 	@Abstract
 	public static <T> Set<T> unmodifiableSet(final Set<? extends T> l) {
+		throw new UnsupportedOperationException();
+	}
+
+	@NoState
+	@Behavior
+	public static <T> boolean returns_immutable(final Map<?, ?> l, final Map<?, ?> r) {
+		return not(Ghost.of(CollectionSpec.class, l).is_mutable());
+	}
+
+	@Ensure("returns_immutable")
+	@Abstract
+	public static <K, V> Map<K, V> unmodifiableMap(final Map<? extends K, ? extends V> l) {
 		throw new UnsupportedOperationException();
 	}
 
