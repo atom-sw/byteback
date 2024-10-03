@@ -19,7 +19,7 @@ import byteback.specification.Contract.Return;
 public class UnmodifiableLists {
 
 	@Return
-	public void main0() {
+	public void main1() {
 		final ArrayList<Object> l0 = new ArrayList<>();
 		l0.add(new Object());
 	}
@@ -30,18 +30,18 @@ public class UnmodifiableLists {
 	}
 
 	@Return(when = "l0_is_mutable")
-	public void main1(final List<Object> l0) {
+	public void main2(final List<Object> l0) {
 		l0.add(new Object());
 	}
 
 	@Return
-	public void main2() {
+	public void main3() {
 		final ArrayList<Object> l0 = new ArrayList<>();
-		main1(l0);
+		main2(l0);
 	}
 
 	@Return
-	public void main3(final List<Object> l0) {
+	public void main4(final List<Object> l0) {
 		if (l0 instanceof ArrayList) {
 			final ArrayList<Object> l1 = (ArrayList<Object>) l0;
 			l1.add(new Object());
@@ -55,7 +55,7 @@ public class UnmodifiableLists {
 
 	@Ensure("returns_mutable")
 	@Return
-	public List<Object> main4(int i) {
+	public List<Object> main5(int i) {
 		final List<Object> l1;
 
 		if (i % 2 == 0) {
@@ -79,35 +79,35 @@ public class UnmodifiableLists {
 	}
 
 	@Return
-	public void main5() {
+	public void main6() {
 		final List<Object> l1 = makeMutableList();
-		main1(l1);
-	}
-
-	@Ensure("returns_mutable")
-	@Return
-	public List<Object> main6() {
-		final List<Object> l1 = main4(2);
-
-		return l1;
+		main2(l1);
 	}
 
 	@Ensure("returns_mutable")
 	@Return
 	public List<Object> main7() {
-		final List<Object> l1 = main4(2);
+		final List<Object> l1 = main5(2);
+
+		return l1;
+	}
+
+	@Ensure("returns_mutable")
+	@Return
+	public List<Object> main8() {
+		final List<Object> l1 = main5(2);
 		l1.add(new Object());
 
 		return l1;
 	}
 
-	public void main8() {
+	public void main9() {
 		final List<Integer> l1 = List.of(1, 2, 3);
 		l1.add(4);
 	}
 
 	@Raise(exception = UnsupportedOperationException.class)
-	public void main9() {
+	public void main10() {
 		final List<Object> l = Collections.unmodifiableList(new ArrayList<>());
 		l.add(new Object());
 	}

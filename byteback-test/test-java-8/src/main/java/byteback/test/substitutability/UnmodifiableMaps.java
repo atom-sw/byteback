@@ -15,7 +15,7 @@ import byteback.specification.Contract.Return;
 public class UnmodifiableMaps {
 
 	@Return
-	public void main0() {
+	public void main1() {
 		final HashMap<Object, Object> m0 = new HashMap<>();
 		m0.put(new Object(), new Object());
 	}
@@ -26,14 +26,14 @@ public class UnmodifiableMaps {
 	}
 
 	@Return(when = "m0_is_mutable")
-	public void main1(final Map<Object, Object> m0) {
+	public void main2(final Map<Object, Object> m0) {
 		m0.put(new Object(), new Object());
 	}
 
 	@Return
-	public void main2() {
+	public void main3() {
 		final HashMap<Object, Object> m0 = new HashMap<>();
-		main1(m0);
+		main2(m0);
 	}
 
 }

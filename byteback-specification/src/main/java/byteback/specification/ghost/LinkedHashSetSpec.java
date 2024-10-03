@@ -8,9 +8,9 @@ import byteback.specification.Contract.Return;
 import byteback.specification.Contract.NoState;
 import byteback.specification.ghost.Ghost.Attach;
 
-@Attach("java.util.HashSet")
+@Attach("java.util.LinkedHashSet")
 @Invariant("is_mutable")
-public class HashSetSpec<K, V> {
+public class LinkedHashSetSpec<K, V> {
 
 	@NoState
 	@Behavior
@@ -21,7 +21,7 @@ public class HashSetSpec<K, V> {
 	@Abstract
 	@Return
 	@Ensure("is_mutable")
-	public HashSetSpec() {
+	public LinkedHashSetSpec() {
 	}
 
 }

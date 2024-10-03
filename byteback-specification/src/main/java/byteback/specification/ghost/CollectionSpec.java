@@ -1,5 +1,7 @@
 package byteback.specification.ghost;
 
+import static byteback.specification.Operators.not;
+
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Implicit;
 import byteback.specification.Contract.NoState;
@@ -28,6 +30,13 @@ public interface CollectionSpec {
 	@Behavior
 	default boolean is_mutable() {
 		return is_modifiable() & is_resizeable() & is_nullable();
+	}
+
+	@NoState
+	@Implicit
+	@Behavior
+	default boolean is_immutable() {
+		return not(is_mutable());
 	}
 
 }
