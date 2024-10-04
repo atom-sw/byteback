@@ -154,10 +154,15 @@ public interface ListSpec<T> {
 		return eq(e1, null);
 	}
 
+	@Behavior
+	public static <E> boolean arguments_are_not_null(E e1) {
+		return not(eq(e1, null));
+	}
+
 	@Abstract
-	@Return
 	@Ensure("returns_immutable")
 	@Ensure("returns_non_nullable")
+	@Return(when = "arguments_are_not_null")
 	@Raise(exception = NullPointerException.class, when = "arguments_are_null")
 	public static <E> List<E> of(E e1) {
 		throw new UnsupportedOperationException();
@@ -166,6 +171,11 @@ public interface ListSpec<T> {
 	@Behavior
 	public static <E> boolean arguments_are_null(E e1, E e2) {
 		return eq(e1, null) | eq(e2, null);
+	}
+
+	@Behavior
+	public static <E> boolean arguments_are_not_null(E e1, E e2) {
+		return not(eq(e1, null) | eq(e2, null));
 	}
 
 	@Behavior
@@ -179,7 +189,8 @@ public interface ListSpec<T> {
 	}
 
 	@Abstract
-	@Return
+	@Return(when = "arguments_are_not_null")
+	@Raise(exception = NullPointerException.class, when = "arguments_are_null")
 	@Ensure("returns_immutable")
 	@Ensure("returns_non_nullable")
 	public static <E> List<E> of(E e1, E e2) {

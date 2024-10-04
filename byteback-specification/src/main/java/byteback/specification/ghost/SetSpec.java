@@ -25,21 +25,34 @@ public interface SetSpec<V> {
 		return Ghost.of(CollectionSpec.class, this).is_mutable();
 	}
 
+	@NoState
+	@Implicit
+	@Behavior
+	default boolean is_immutable() {
+		return not(is_mutable());
+	}
+
+	@Raise(exception = UnsupportedOperationException.class, when = "is_immutable")
 	@Return(when = "is_mutable")
 	boolean add(V e);
 
+	@Raise(exception = UnsupportedOperationException.class, when = "is_immutable")
 	@Return(when = "is_mutable")
 	boolean addAll(final Collection<V> c);
 
+	@Raise(exception = UnsupportedOperationException.class, when = "is_immutable")
 	@Return(when = "is_mutable")
 	boolean clear();
 
+	@Raise(exception = UnsupportedOperationException.class, when = "is_immutable")
 	@Return(when = "is_mutable")
 	boolean remove(V e);
 
+	@Raise(exception = UnsupportedOperationException.class, when = "is_immutable")
 	@Return(when = "is_mutable")
 	boolean removeAll(Collection<V> c);
 
+	@Raise(exception = UnsupportedOperationException.class, when = "is_immutable")
 	@Return(when = "is_mutable")
 	boolean retainAll(Collection<V> c);
 
@@ -76,10 +89,15 @@ public interface SetSpec<V> {
 		return eq(e1, null);
 	}
 
+	@Behavior
+	public static <E> boolean arguments_are_not_null(E e1) {
+		return not(eq(e1, null));
+	}
+
 	@Abstract
-	@Return
 	@Ensure("returns_immutable")
 	@Ensure("returns_non_nullable")
+	@Return(when = "arguments_are_not_null")
 	@Raise(exception = NullPointerException.class, when = "arguments_are_null")
 	public static <E> Set<E> of(E e1) {
 		throw new UnsupportedOperationException();
@@ -88,6 +106,11 @@ public interface SetSpec<V> {
 	@Behavior
 	public static <E> boolean arguments_are_null(E e1, E e2) {
 		return eq(e1, null) | eq(e2, null);
+	}
+
+	@Behavior
+	public static <E> boolean arguments_are_not_null(E e1, E e2) {
+		return not(eq(e1, null) | eq(e2, null));
 	}
 
 	@Behavior
@@ -101,7 +124,8 @@ public interface SetSpec<V> {
 	}
 
 	@Abstract
-	@Return
+	@Return(when = "arguments_are_not_null")
+	@Raise(exception = NullPointerException.class, when = "arguments_are_null")
 	@Ensure("returns_immutable")
 	@Ensure("returns_non_nullable")
 	public static <E> Set<E> of(E e1, E e2) {

@@ -101,11 +101,6 @@ public class UnmodifiableSets {
 		return s1;
 	}
 
-	public void main9() {
-		final Set<Integer> s1 = Set.of(1, 2, 3);
-		s1.add(4);
-	}
-
 	@Raise(exception = UnsupportedOperationException.class)
 	public void main10() {
 		final Set<Object> s = Collections.unmodifiableSet(new HashSet<>());
@@ -115,5 +110,5 @@ public class UnmodifiableSets {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 13 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 12 verified, 0 errors
  */

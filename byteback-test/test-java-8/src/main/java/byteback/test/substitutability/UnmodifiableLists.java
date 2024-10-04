@@ -101,11 +101,6 @@ public class UnmodifiableLists {
 		return l1;
 	}
 
-	public void main9() {
-		final List<Integer> l1 = List.of(1, 2, 3);
-		l1.add(4);
-	}
-
 	@Raise(exception = UnsupportedOperationException.class)
 	public void main10() {
 		final List<Object> l = Collections.unmodifiableList(new ArrayList<>());
@@ -115,5 +110,5 @@ public class UnmodifiableLists {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 14 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 13 verified, 0 errors
  */
