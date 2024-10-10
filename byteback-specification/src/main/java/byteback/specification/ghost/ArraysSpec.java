@@ -26,7 +26,7 @@ public class ArraysSpec {
 
 	@Behavior
 	public static <T> boolean consistent_size(T[] a, List<T> r) {
-		return eq(Ghost.of(ListSpec.class, r).size(), a.length);
+		return eq(Ghost.of(CollectionSpec.class, r).size(), a.length);
 	}
 
 

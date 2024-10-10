@@ -9,6 +9,7 @@ import java.util.Set;
 import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Ensure;
+import byteback.specification.Contract.Return;
 import byteback.specification.Contract.NoState;
 import byteback.specification.ghost.Ghost.Attach;
 
@@ -21,6 +22,7 @@ public class CollectionsSpec {
 		return not(Ghost.of(CollectionSpec.class, l).is_mutable());
 	}
 
+	@Return
 	@Ensure("returns_immutable")
 	@Abstract
 	public static <T> List<T> unmodifiableList(final List<? extends T> l) {
@@ -33,6 +35,7 @@ public class CollectionsSpec {
 		return not(Ghost.of(CollectionSpec.class, l).is_mutable());
 	}
 
+	@Return
 	@Ensure("returns_immutable")
 	@Abstract
 	public static <T> Set<T> unmodifiableSet(final Set<? extends T> l) {
@@ -45,6 +48,7 @@ public class CollectionsSpec {
 		return not(Ghost.of(CollectionSpec.class, l).is_mutable());
 	}
 
+	@Return
 	@Ensure("returns_immutable")
 	@Abstract
 	public static <K, V> Map<K, V> unmodifiableMap(final Map<? extends K, ? extends V> l) {

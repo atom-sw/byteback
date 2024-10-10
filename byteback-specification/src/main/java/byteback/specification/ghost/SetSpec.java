@@ -25,24 +25,6 @@ public interface SetSpec<V> {
 		return Ghost.of(CollectionSpec.class, this).is_mutable();
 	}
 
-	@Return(when = "is_mutable")
-	boolean add(V e);
-
-	@Return(when = "is_mutable")
-	boolean addAll(final Collection<V> c);
-
-	@Return(when = "is_mutable")
-	boolean clear();
-
-	@Return(when = "is_mutable")
-	boolean remove(V e);
-
-	@Return(when = "is_mutable")
-	boolean removeAll(Collection<V> c);
-
-	@Return(when = "is_mutable")
-	boolean retainAll(Collection<V> c);
-
 	@Behavior
 	public static <E> boolean returns_immutable(Set<E> l) {
 		return Ghost.of(CollectionSpec.class, l).is_immutable();
@@ -76,11 +58,16 @@ public interface SetSpec<V> {
 		return eq(e1, null);
 	}
 
+	@Behavior
+	public static <E> boolean arguments_are_not_null(E e1) {
+		return not(arguments_are_null(e1));
+	}
+
 	@Abstract
-	@Return
+	@Return(when = "arguments_are_not_null")
+	@Raise(exception = NullPointerException.class, when = "arguments_are_null")
 	@Ensure("returns_immutable")
 	@Ensure("returns_non_nullable")
-	@Raise(exception = NullPointerException.class, when = "arguments_are_null")
 	public static <E> Set<E> of(E e1) {
 		throw new UnsupportedOperationException();
 	}
@@ -88,6 +75,11 @@ public interface SetSpec<V> {
 	@Behavior
 	public static <E> boolean arguments_are_null(E e1, E e2) {
 		return eq(e1, null) | eq(e2, null);
+	}
+
+	@Behavior
+	public static <E> boolean arguments_are_not_null(E e1, E e2) {
+		return not(arguments_are_null(e1, e2));
 	}
 
 	@Behavior
@@ -101,7 +93,8 @@ public interface SetSpec<V> {
 	}
 
 	@Abstract
-	@Return
+	@Return(when = "arguments_are_not_null")
+	@Raise(exception = NullPointerException.class, when = "arguments_are_null")
 	@Ensure("returns_immutable")
 	@Ensure("returns_non_nullable")
 	public static <E> Set<E> of(E e1, E e2) {

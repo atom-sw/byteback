@@ -1,10 +1,11 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}CollectionSpec -c %{ghost}ListSpec -c %{ghost}ArraysSpec -c %{ghost}ArrayListSpec -c %{ghost}LinkedListSpec -c %{ghost}CollectionsSpec -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{ghost}ListSpec -c %{ghost}ArrayListSpec -c %{ghost}LinkedListSpec -c %{ghost}CollectionsSpec -c %{ghost}CollectionSpec -o %t.bpl
  */
 package byteback.test.substitutability;
 
-import byteback.specification.ghost.CollectionSpec;
 import byteback.specification.ghost.Ghost;
+import byteback.specification.ghost.ListSpec;
+import byteback.specification.ghost.CollectionSpec;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,107 +14,54 @@ import java.util.List;
 
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Ensure;
+import byteback.specification.Contract.Require;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 
 public class UnmodifiableLists {
 
-	@Return
-	public void main1() {
-		final ArrayList<Object> l0 = new ArrayList<>();
+	@Raise(exception = UnsupportedOperationException.class)
+	public void Add_To_UnmodifiableList() {
+		final List<Object> l = Collections.unmodifiableList(new ArrayList<>());
+		l.add(new Object());
+	}
+
+	@Behavior
+	public boolean l0_is_unmodifiable(final List<Object> l0) {
+		return Ghost.of(CollectionSpec.class, l0).is_unmodifiable();
+	}
+
+	@Require("l0_is_unmodifiable")
+	@Raise(exception = UnsupportedOperationException.class)
+	public void Add_To_Unmodifiable_List(final List<Object> l0) {
 		l0.add(new Object());
 	}
 
 	@Behavior
-	public boolean l0_is_mutable(final List<Object> l0) {
-		return Ghost.of(CollectionSpec.class, l0).is_mutable();
-	}
-
-	@Return(when = "l0_is_mutable")
-	public void main2(final List<Object> l0) {
-		l0.add(new Object());
+	public boolean returns_unmodifiable(final List<Object> r) {
+		return Ghost.of(CollectionSpec.class, r).is_unmodifiable();
 	}
 
 	@Return
-	public void main3() {
-		final ArrayList<Object> l0 = new ArrayList<>();
-		main2(l0);
+	@Ensure("returns_unmodifiable")
+	public List<Object> Make_Unmodifiable_List() {
+		return Collections.unmodifiableList(new ArrayList<>());
 	}
 
 	@Return
-	public void main4(final List<Object> l0) {
-		if (l0 instanceof ArrayList) {
-			final ArrayList<Object> l1 = (ArrayList<Object>) l0;
-			l1.add(new Object());
-		}
-	}
-
-	@Behavior
-	public boolean returns_mutable(final int i, final List<Object> r) {
-		return Ghost.of(CollectionSpec.class, r).is_mutable();
-	}
-
-	@Ensure("returns_mutable")
-	@Return
-	public List<Object> main5(int i) {
-		final List<Object> l1;
-
-		if (i % 2 == 0) {
-			l1 = new ArrayList<Object>();
-		} else {
-			l1 = new LinkedList<Object>();
-		}
-
-		return l1;
-	}
-
-	@Behavior
-	public boolean returns_mutable(final List<Object> r) {
-		return Ghost.of(CollectionSpec.class, r).is_mutable();
-	}
-
-	@Return
-	@Ensure("returns_mutable")
-	public List<Object> makeMutableList() {
-		return new ArrayList<>();
-	}
-
-	@Return
-	public void main6() {
-		final List<Object> l1 = makeMutableList();
-		main2(l1);
-	}
-
-	@Ensure("returns_mutable")
-	@Return
-	public List<Object> main7() {
-		final List<Object> l1 = main5(2);
-
-		return l1;
-	}
-
-	@Ensure("returns_mutable")
-	@Return
-	public List<Object> main8() {
-		final List<Object> l1 = main5(2);
-		l1.add(new Object());
-
-		return l1;
-	}
-
-	public void main9() {
-		final List<Integer> l1 = List.of(1, 2, 3);
-		l1.add(4);
+	@Ensure("returns_unmodifiable")
+	public List<Object> Make_Empty_Unmodifiable_List() {
+		return Collections.unmodifiableList(new ArrayList<>());
 	}
 
 	@Raise(exception = UnsupportedOperationException.class)
-	public void main10() {
-		final List<Object> l = Collections.unmodifiableList(new ArrayList<>());
-		l.add(new Object());
+	public void Indirect_Add_To_Unmodifiable_List() {
+		final List<Object> l0 = Collections.unmodifiableList(new ArrayList<>());
+		Add_To_Unmodifiable_List(l0);
 	}
 
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 14 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 7 verified, 0 errors
  */
