@@ -32,6 +32,24 @@ public class ModifiableLists {
 		l0.add(new Object());
 	}
 
+	@Return(when = "l0_is_mutable")
+	public void Add_To_Mutable_List_In_Loop(final List<Object> l0) {
+		for (int i = 0; i < 10; ++i) {
+			l0.add(new Object());
+		}
+	}
+
+	@Return
+	public void Add_To_Mutable_List_In_Loop_If_Mutable(final List<Object> l0) {
+		if (l0 instanceof ArrayList) {
+			final ArrayList<Object> l1 = (ArrayList<Object>) l0;
+
+			for (int i = 0; i < 10; ++i) {
+				l1.add(new Object());
+			}
+		}
+	}
+
 	@Return
 	public void Indirect_Add_To_ArrayList() {
 		final ArrayList<Object> l0 = new ArrayList<>();
@@ -102,5 +120,5 @@ public class ModifiableLists {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 12 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 14 verified, 0 errors
  */
