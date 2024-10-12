@@ -1,12 +1,12 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c byteback.test.substitutability.ImmutableGuavaCollectionSpec -c %{class}$ImmutableGuavaCollectionSpec -c %{class}$ImmutableGuavaListSpec -c %{ghost}CollectionSpec -c %{ghost}ListSpec -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c byteback.test.substitutability.ImmutableGuavaCollectionSpec -c %{class}$ImmutableGuavaCollectionSpec -c %{class}$ImmutableGuavaSetSpec -c %{ghost}CollectionSpec -c %{ghost}SetSpec -o %t.bpl
  */
 
 package byteback.test.substitutability;
 
-import java.util.List;
+import java.util.Set;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import byteback.specification.Contract.Abstract;
 import byteback.specification.Contract.Behavior;
@@ -18,69 +18,69 @@ import byteback.specification.ghost.CollectionSpec;
 import byteback.specification.ghost.Ghost;
 import byteback.specification.ghost.Ghost.Attach;
 
-public class ImmutableGuavaLists<T> {
+public class ImmutableGuavaSets<T> {
 
-	@Attach("com.google.common.collect.ImmutableList")
-	public static class ImmutableGuavaListSpec {
+	@Attach("com.google.common.collect.ImmutableSet")
+	public static class ImmutableGuavaSetSpec {
 
 		@Abstract
 		@Return
-		public static <T> ImmutableList<T> of() {
+		public static <T> ImmutableSet<T> of() {
 			throw new UnsupportedOperationException();
 		}
 
 		@Abstract
 		@Return
-		public static <T> ImmutableList<T> of(T e1) {
+		public static <T> ImmutableSet<T> of(T e1) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Abstract
 		@Return
-		public static <T> ImmutableList<T> of(T e1, T e2) {
+		public static <T> ImmutableSet<T> of(T e1, T e2) {
 			throw new UnsupportedOperationException();
 		}
 
 	}
 
 	@Raise(exception = UnsupportedOperationException.class)
-	public void Add_To_UnmodifiableList() {
-		final ImmutableList<Object> l = ImmutableList.of(new Object(), new Object());
+	public void Add_To_UnmodifiableSet() {
+		final ImmutableSet<Object> l = ImmutableSet.of(new Object(), new Object());
 		l.add(new Object());
 	}
 
 	@Behavior
-	public boolean l0_is_unmodifiable(final List<Object> l0) {
+	public boolean l0_is_unmodifiable(final Set<Object> l0) {
 		return Ghost.of(CollectionSpec.class, l0).is_unmodifiable();
 	}
 
 	@Require("l0_is_unmodifiable")
 	@Raise(exception = UnsupportedOperationException.class)
-	public void Add_To_Unmodifiable_List(final List<Object> l0) {
+	public void Add_To_Unmodifiable_Set(final Set<Object> l0) {
 		l0.add(new Object());
 	}
 
 	@Behavior
-	public boolean returns_unmodifiable(final List<Object> r) {
+	public boolean returns_unmodifiable(final Set<Object> r) {
 		return Ghost.of(CollectionSpec.class, r).is_unmodifiable();
 	}
 
 	@Return
 	@Ensure("returns_unmodifiable")
-	public List<Object> Make_Unmodifiable_List() {
-		return ImmutableList.of(new Object());
+	public Set<Object> Make_Unmodifiable_Set() {
+		return ImmutableSet.of(new Object());
 	}
 
 	@Return
 	@Ensure("returns_unmodifiable")
-	public List<Object> Make_Empty_Unmodifiable_List() {
-		return ImmutableList.of();
+	public Set<Object> Make_Empty_Unmodifiable_Set() {
+		return ImmutableSet.of();
 	}
 
 	@Raise(exception = UnsupportedOperationException.class)
-	public void Indirect_Add_To_Unmodifiable_List() {
-		final List<Object> l0 = ImmutableList.of();
-		Add_To_Unmodifiable_List(l0);
+	public void Indirect_Add_To_Unmodifiable_Set() {
+		final Set<Object> l0 = ImmutableSet.of();
+		Add_To_Unmodifiable_Set(l0);
 	}
 
 }
