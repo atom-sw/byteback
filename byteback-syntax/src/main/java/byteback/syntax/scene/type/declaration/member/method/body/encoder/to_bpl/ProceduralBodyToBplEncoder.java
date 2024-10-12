@@ -48,10 +48,10 @@ public class ProceduralBodyToBplEncoder extends BodyEncoder {
 		return unitToLabel;
 	}
 
-	public void encodeWhereClause(final Value value, final RefLikeType refType) {
-		final Value whereValue = Vimp.v().newCallExpr(
+	public void encodeWhereClause(final Value value, final RefLikeType refLikeType) {
+		Value whereValue = Vimp.v().newCallExpr(
 				CompatibleRef.v(),
-				new Value[] { Vimp.v().nest(Vimp.v().newHeapRef()), value, Vimp.v().newTypeConstant(refType) });
+				new Value[] { Vimp.v().nest(Vimp.v().newHeapRef()), value, Vimp.v().newTypeConstant(refLikeType) });
 		printer.print(" where ");
 
 		new ValueToBplEncoder(printer).encodeValue(whereValue);

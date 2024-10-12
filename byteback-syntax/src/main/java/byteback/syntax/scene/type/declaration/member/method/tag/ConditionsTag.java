@@ -54,6 +54,12 @@ public abstract class ConditionsTag implements Tag {
 		addConditionBox(new ExprBox(condition));
 	}
 
+	public void addConditions(final List<Value> conditions) {
+		for (final Value condition : conditions) {
+			addCondition(condition);
+		}
+	}
+
 	@Override
 	public byte[] getValue() {
 		return new byte[0];

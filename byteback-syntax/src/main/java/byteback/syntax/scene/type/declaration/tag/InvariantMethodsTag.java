@@ -26,6 +26,10 @@ public class InvariantMethodsTag implements Tag {
 		invariantMethods.add(invariantMethod);
 	}
 
+	public void addInvariantMethods(final List<SootMethod> invariantMethods) {
+		this.invariantMethods.addAll(invariantMethods);
+	}
+
 	@Override
 	public String getName() {
 		return NAME;

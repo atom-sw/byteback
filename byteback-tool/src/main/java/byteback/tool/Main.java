@@ -51,6 +51,7 @@ import byteback.syntax.scene.type.declaration.member.method.tag.BehaviorTagMarke
 import byteback.syntax.scene.type.declaration.member.method.tag.TwoStateTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.transformer.ConditionsTagger;
 import byteback.syntax.scene.type.declaration.member.method.transformer.HeapReadTransformer;
+import byteback.syntax.scene.type.declaration.member.method.transformer.InvariantInstantiator;
 import byteback.syntax.scene.type.declaration.member.method.transformer.ModifierTagger;
 import byteback.syntax.scene.type.declaration.member.method.transformer.OldHeapReadTransformer;
 import byteback.syntax.scene.type.declaration.transformer.ClassInvariantExpander;
@@ -297,6 +298,7 @@ public class Main implements Callable<Integer> {
 		}
 
 		ConditionsTagPropagator.v().transformScene(scene);
+		InvariantInstantiator.v().transformScene(scene);
 		ClassInvariantExpander.v().transformScene(scene);
 
 		final var hierarchyAxiomTagger = new HierarchyAxiomTagger(scene.getActiveHierarchy());

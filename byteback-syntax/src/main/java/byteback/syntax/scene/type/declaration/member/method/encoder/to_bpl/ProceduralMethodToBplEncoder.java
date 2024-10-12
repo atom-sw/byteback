@@ -8,7 +8,9 @@ import byteback.syntax.scene.type.declaration.member.method.body.value.analyzer.
 import byteback.syntax.scene.type.declaration.member.method.body.value.box.tag.FreeTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.body.value.encoder.to_bpl.ValueToBplEncoder;
 import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterRefFinder;
+import byteback.syntax.scene.type.declaration.member.method.tag.PostassumptionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
+import byteback.syntax.scene.type.declaration.member.method.tag.PreassumptionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
 import byteback.syntax.scene.type.encoder.to_bpl.TypeAccessToBplEncoder;
 import soot.*;
@@ -108,6 +110,34 @@ public class ProceduralMethodToBplEncoder extends MethodToBplEncoder {
 							printer.print("free ");
 						}
 
+						printer.print("ensures ");
+						new ValueToBplEncoder(printer).encodeValue(value);
+						printer.printLine(";");
+					}
+				});
+
+		PreassumptionsTagAccessor.v().get(sootMethod)
+				.ifPresent((preassumptionsTag) -> {
+					final List<ValueBox> conditionBoxes = preassumptionsTag.getConditionBoxes();
+
+					for (final ValueBox valueBox : conditionBoxes) {
+						final Value value = valueBox.getValue();
+						printer.print(SPEC_INDENT);
+						printer.print("free ");
+						printer.print("requires ");
+						new ValueToBplEncoder(printer).encodeValue(value);
+						printer.printLine(";");
+					}
+				});
+
+		PostassumptionsTagAccessor.v().get(sootMethod)
+				.ifPresent((postassumptionsTag) -> {
+					final List<ValueBox> conditionBoxes = postassumptionsTag.getConditionBoxes();
+
+					for (final ValueBox valueBox : conditionBoxes) {
+						final Value value = valueBox.getValue();
+						printer.print(SPEC_INDENT);
+						printer.print("free ");
 						printer.print("ensures ");
 						new ValueToBplEncoder(printer).encodeValue(value);
 						printer.printLine(";");

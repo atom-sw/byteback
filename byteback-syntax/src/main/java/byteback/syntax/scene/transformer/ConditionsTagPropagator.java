@@ -14,6 +14,8 @@ import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTa
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
+import byteback.syntax.scene.type.declaration.tag.InvariantMethodsTag;
+import byteback.syntax.scene.type.declaration.tag.InvariantMethodsTagAccessor;
 import byteback.syntax.scene.type.declaration.tag.InvariantsTag;
 import byteback.syntax.scene.type.declaration.tag.InvariantsTagAccessor;
 import soot.Hierarchy;
@@ -82,7 +84,7 @@ public class ConditionsTagPropagator extends SceneTransformer {
 	private List<SootClass> superTypesOf(final SootClass sootClass) {
 		final var superTypes = new ArrayList<SootClass>();
 
-		if (sootClass.isConcrete()) {
+		if (!sootClass.isInterface()) {
 			final SootClass superClass = sootClass.getSuperclassUnsafe();
 
 			if (superClass != null) {
@@ -135,6 +137,7 @@ public class ConditionsTagPropagator extends SceneTransformer {
 			visitedClasses.add(currentClass);
 
 			for (final SootClass subClass : subTypesOf(hierarchy, currentClass)) {
+
 				if (!visitedClasses.contains(subClass) && visitedClasses.containsAll(superTypesOf(subClass))) {
 					nextClasses.add(subClass);
 				}
@@ -172,6 +175,7 @@ public class ConditionsTagPropagator extends SceneTransformer {
 		final List<SootClass> sortedClasses = topologicalSort(scene, hierarchy);
 
 		for (final SootClass sootClass : sortedClasses) {
+
 			if (sootClass.resolvingLevel() < SootClass.SIGNATURES) {
 				continue;
 			}
@@ -180,6 +184,10 @@ public class ConditionsTagPropagator extends SceneTransformer {
 				InvariantsTagAccessor.v().get(parentClass).ifPresent((invariantsTag) -> {
 					InvariantsTagAccessor.v().putIfAbsent(sootClass, InvariantsTag::new)
 							.addConditionBoxes(invariantsTag.getConditionBoxes());
+				});
+				InvariantMethodsTagAccessor.v().get(parentClass).ifPresent((invariantMethodsTag) -> {
+					InvariantMethodsTagAccessor.v().putIfAbsent(sootClass, InvariantMethodsTag::new)
+							.addInvariantMethods(invariantMethodsTag.getInvariantMethods());
 				});
 			}
 
