@@ -24,13 +24,17 @@ subprojects { test ->
 				def jobsProperty = project.findProperty("TEST_JOBS")
 				def boogieTimeLimitProperty = project.findProperty("BOOGIE_TIME_LIMIT")
 				def compiledDir = null;
+				def specCompiledDir = project(':byteback-specification').sourceSets.main.output.classesDirs.first()
 				def sourceDir = null;
+				def specSourceDir = project(':byteback-specification').sourceSets.main.java.srcDirs.first()
 
 				def execute = { target ->
 						test.exec {
 								environment 'SUMMARY', project.mkdir(summaryDir)
 								environment 'SRC_BASE', sourceDir
+								environment 'SRC_SPEC_BASE', specSourceDir
 								environment 'CLASS_BASE', compiledDir
+								environment 'SPEC_CLASS_BASE', specCompiledDir
 								environment 'BYTEBACK_ROOT', toolRoot
 								environment 'TEST_JAR', project.shadowJar.archivePath
 								environment 'BOOGIE_TIME_LIMIT', boogieTimeLimitProperty
@@ -118,7 +122,7 @@ def results = tasks.register('results') {
 				include '*.tex'
 		} 
 
-		subprojects { test ->
-				dependsOn test.experiments
-		}
+		//subprojects { test ->
+		//		dependsOn test.experiments
+		//}
 }

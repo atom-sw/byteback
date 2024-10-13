@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$ -c %{ghost}SetSpec -c byteback.test.conversion.JavaSetConvertersSpec -c byteback.test.conversion.AsScalaSetSpec -c byteback.test.conversion.AsJavaSetSpec -c byteback.test.conversion.ScalaSetSpec -c %{ghost}HashSetSpec -c byteback.test.conversion.HashSetSpec -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c %{class}$ -c %{ghost}SetSpec -c byteback.test.conversion.JavaConvertersSpec -c byteback.test.conversion.AsScalaSetSpec -c byteback.test.conversion.AsJavaSetSpec -c byteback.test.conversion.SetSpec -c %{ghost}HashSetSpec -c byteback.test.conversion.HashSetSpec -o %t.bpl
  */
 package byteback.test.conversion
 
@@ -9,57 +9,6 @@ import byteback.specification.ghost.Ghost._
 
 import collection.JavaConverters._
 import collection.mutable._
-
-@Attach("scala.collection.JavaConverters$")
-abstract class JavaSetConvertersSpec {
-
-  @Behavior
-  def s_is_mutable[A](s: java.util.Set[A]): Boolean = {
-    return Ghost.of(classOf[SetSpec[A]], s).is_mutable();
-  }
-
-  @Require("s_is_mutable")
-  @Return
-  def asScalaSetConverter[A](s: java.util.Set[A]): AsScala[Set[A]]
-
-  @Return
-  def mutableSetAsJavaSetConverter[A](s: Set[A]): AsJava[java.util.Set[A]]
-}
-
-@Attach("scala.collection.JavaConverters$AsScala")
-abstract class AsScalaSetSpec {
-
-  @Return
-  def asScala[A](): Set[A]
-}
-
-@Attach("scala.collection.JavaConverters$AsJava")
-abstract class AsJavaSetSpec {
-
-  @Behavior
-  def returns_mutable[A](r: java.util.Set[A]): Boolean = {
-    return Ghost.of(classOf[SetSpec[A]], r).is_mutable();
-  }
-
-  @Ensure("returns_mutable")
-  @Return
-  def asJava[A](): java.util.Set[A]
-}
-
-@Attach("scala.collection.mutable.Set")
-abstract class ScalaSetSpec[A] {
-
-  @Return
-  def +=(elem: A): Growable[A]
-}
-
-@Attach("scala.collection.mutable.HashSet$")
-abstract class HashSetSpec[A] {
-
-  @Return
-  def empty[A](): HashSet[A]
-
-}
 
 object JavaSetToScala {
 

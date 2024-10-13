@@ -54,6 +54,10 @@ def benchmark(entry, repetitions):
     total_verification_time = 0
     lg.info(f"Benchmarking {entry['Test']}")
 
+    # To account for cold start
+    conversion_benchmark(entry["BytebackCommand"])
+    verification_benchmark(entry["BoogieCommand"])
+
     for _ in range(0, repetitions):
         total_conversion_time += conversion_benchmark(entry["BytebackCommand"])
         total_verification_time += verification_benchmark(entry["BoogieCommand"])

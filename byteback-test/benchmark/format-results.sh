@@ -6,6 +6,6 @@ python3 ./benchmark/format-results.py ./test-java-8/build/experiments/results.cs
 				s2 ./test-kotlin-1.8.0/build/experiments/results.csv \
 				k18 --prefix /byteback/test/ --output-tex ./build/experiments/experiments.tex \
 				--output-csv ./build/experiments/results.csv \
-				--index ./benchmark/bbe-index.csv &&
+				--index ./benchmark/bbs-index.csv &&
 
 echo "% DATE: $(date)" >> ./build/experiments/experiments.tex
