@@ -47,6 +47,12 @@ public class Contract {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.TYPE })
+	public @interface InvariantOnly {
+		String value();
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.TYPE })
 	public @interface Invariant {
 		String value();
 	}

@@ -12,6 +12,8 @@ j17,/byteback/test/substitutability/NonNullableLists
 j17,/byteback/test/substitutability/NonNullableMaps
 j17,/byteback/test/substitutability/NonNullableSets
 j17,/byteback/test/substitutability/NonResizeableList
+j17,/byteback/test/substitutability/PostconditionStrengthening
+j17,/byteback/test/substitutability/PreconditionWeakening
 s2,/byteback/test/conversion/JavaListToScala
 s2,/byteback/test/conversion/JavaMapToScala
 s2,/byteback/test/conversion/JavaSetToScala

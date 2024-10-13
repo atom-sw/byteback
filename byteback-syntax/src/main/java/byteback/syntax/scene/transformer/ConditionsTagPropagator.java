@@ -8,6 +8,7 @@ import java.util.List;
 
 import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.value.ReturnRef;
 import byteback.syntax.scene.type.declaration.member.method.tag.EnsureOnlyTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.RequireOnlyTagMarker;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
@@ -16,13 +17,16 @@ import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTag
 import byteback.syntax.scene.type.declaration.member.method.tag.PreconditionsTagAccessor;
 import byteback.syntax.scene.type.declaration.tag.InvariantMethodsTag;
 import byteback.syntax.scene.type.declaration.tag.InvariantMethodsTagAccessor;
+import byteback.syntax.scene.type.declaration.tag.InvariantOnlyTagMarker;
 import byteback.syntax.scene.type.declaration.tag.InvariantsTag;
 import byteback.syntax.scene.type.declaration.tag.InvariantsTagAccessor;
 import soot.Hierarchy;
 import soot.Scene;
+import soot.Type;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Value;
+import soot.ValueBox;
 import soot.VoidType;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
@@ -181,14 +185,33 @@ public class ConditionsTagPropagator extends SceneTransformer {
 			}
 
 			for (final SootClass parentClass : superTypesOf(sootClass)) {
-				InvariantsTagAccessor.v().get(parentClass).ifPresent((invariantsTag) -> {
-					InvariantsTagAccessor.v().putIfAbsent(sootClass, InvariantsTag::new)
-							.addConditionBoxes(invariantsTag.getConditionBoxes());
-				});
-				InvariantMethodsTagAccessor.v().get(parentClass).ifPresent((invariantMethodsTag) -> {
-					InvariantMethodsTagAccessor.v().putIfAbsent(sootClass, InvariantMethodsTag::new)
-							.addInvariantMethods(invariantMethodsTag.getInvariantMethods());
-				});
+				if (!InvariantOnlyTagMarker.v().hasTag(sootClass)) {
+					InvariantsTagAccessor.v().get(parentClass).ifPresent((invariantsTag) -> {
+						InvariantsTagAccessor.v().putIfAbsent(sootClass, InvariantsTag::new)
+								.addConditionBoxes(invariantsTag.getConditionBoxes());
+					});
+					InvariantMethodsTagAccessor.v().get(parentClass).ifPresent((invariantMethodsTag) -> {
+						InvariantMethodsTagAccessor.v().putIfAbsent(sootClass, InvariantMethodsTag::new)
+								.addInvariantMethods(invariantMethodsTag.getInvariantMethods());
+					});
+				} else {
+					InvariantsTagAccessor.v().get(parentClass).ifPresent((parentInvariantTag) -> {
+						InvariantsTagAccessor.v().get(sootClass).ifPresent((currentInvariantTag) -> {
+							final SootMethod vcMethod = new SootMethod(
+									"inv?strenghtening",
+									Collections.emptyList(),
+									VoidType.v());
+							vcMethod.setActiveBody(new JimpleBody());
+							final PostconditionsTag postconditionsTag = new PostconditionsTag(
+									parentInvariantTag.getConditions());
+							final PreconditionsTag preconditionsTag = new PreconditionsTag(
+									currentInvariantTag.getConditions());
+							PreconditionsTagAccessor.v().put(vcMethod, preconditionsTag);
+							PostconditionsTagAccessor.v().put(vcMethod, postconditionsTag);
+							sootClass.addMethod(vcMethod);
+						});
+					});
+				}
 			}
 
 			for (final SootMethod targetMethod : new ArrayList<>(sootClass.getMethods())) {
@@ -199,11 +222,11 @@ public class ConditionsTagPropagator extends SceneTransformer {
 				for (final SootMethod parentMethod : resolveParentMethods(targetMethod)) {
 
 					if (RequireOnlyTagMarker.v().hasTag(targetMethod)) {
-						PreconditionsTagAccessor.v().get(targetMethod).ifPresent((currentPreconditionsTag) -> {
-							PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
+						PreconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPreconditionsTag) -> {
+							PreconditionsTagAccessor.v().get(targetMethod).ifPresent((currentPreconditionsTag) -> {
 								final SootMethod vcMethod = new SootMethod(
 										targetMethod.getName() + "?weakening",
-										Collections.emptyList(),
+										targetMethod.getParameterTypes(),
 										VoidType.v());
 								vcMethod.setActiveBody(new JimpleBody());
 								final PreconditionsTag preconditionsTag = parentPreconditionsTag;
@@ -230,17 +253,35 @@ public class ConditionsTagPropagator extends SceneTransformer {
 						});
 					}
 					if (EnsureOnlyTagMarker.v().hasTag(targetMethod)) {
-						PostconditionsTagAccessor.v().get(targetMethod).ifPresent((currentPostconditionsTag) -> {
-							PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
+						PostconditionsTagAccessor.v().get(parentMethod).ifPresent((parentPostconditionsTag) -> {
+							PostconditionsTagAccessor.v().get(targetMethod).ifPresent((currentPostconditionsTag) -> {
+								final var parameterTypes = new ArrayList<Type>();
+								final PostconditionsTag postconditionsTag = new PostconditionsTag();
+								Value lhs = null;
+								Value rhs = null;
+
+								for (final Value currentPostcondition : currentPostconditionsTag.getConditions()) {
+									if (lhs == null) {
+										lhs = currentPostcondition;
+									} else {
+										lhs = Jimple.v().newAndExpr(lhs, currentPostcondition);
+									}
+								}
+
+								for (final Value parentPostcondition : parentPostconditionsTag.getConditions()) {
+									if (rhs == null) {
+										rhs = parentPostcondition;
+									} else {
+										rhs = Jimple.v().newAndExpr(lhs, parentPostcondition);
+									}
+								}
+
 								final SootMethod vcMethod = new SootMethod(
 										targetMethod.getName() + "?strenghtening",
-										Collections.emptyList(),
-										VoidType.v());
+										parameterTypes,
+										targetMethod.getReturnType());
 								vcMethod.setActiveBody(new JimpleBody());
-								final PostconditionsTag postconditionsTag = parentPostconditionsTag;
-								final PostconditionsTag preconditionsTag = new PostconditionsTag(
-										currentPostconditionsTag.getConditions());
-								PostconditionsTagAccessor.v().put(vcMethod, preconditionsTag);
+								postconditionsTag.addCondition(Vimp.v().newImpliesExpr(Vimp.v().nest(lhs), Vimp.v().nest(rhs)));
 								PostconditionsTagAccessor.v().put(vcMethod, postconditionsTag);
 								sootClass.addMethod(vcMethod);
 							});

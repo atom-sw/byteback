@@ -117,10 +117,10 @@ def results = tasks.register('results') {
 				}
 		}
 
-		outputs.files fileTree(experimentsDir).matching {
-				include '*.csv'
-				include '*.tex'
-		} 
+		//outputs.files fileTree(experimentsDir).matching {
+		//		include '*.csv'
+		//		include '*.tex'
+		//} 
 
 		//subprojects { test ->
 		//		dependsOn test.experiments

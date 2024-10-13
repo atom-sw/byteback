@@ -45,35 +45,41 @@ def main(csvs, output_csv, output_tex, index, prefix):
     def print_macro(key, value):
         print(f"{LATEX_MACRO}{{{key}}}{{{value}}}", file=output_tex_file)
 
-    print_macro("/bbe/count/non-exceptional", len(original_df.index) - len(df.index))
-    print_macro("/bbe/count/java", len(df[df["Group"] == "j8"].index) + len(df[df["Group"] == "j17"].index))
+    print_macro("/bbs/count/non-exceptional", len(original_df.index) - len(df.index))
+    print_macro("/bbs/count/java", len(df[df["Group"] == "j8"].index) + len(df[df["Group"] == "j17"].index))
 
-    print_macro("/bbe/count", len(df.index))
-    print_macro("/bbe/count/method", df["MethodCount"].sum())
-    print_macro("/bbe/count/raises", df["SpecRaiseCount"].sum())
-    print_macro("/bbe/count/returns", df["SpecReturnCount"].sum())
-    print_macro("/bbe/count/invariants", df["SpecInvariantCount"].sum())
-    print_macro("/bbe/count/assertions", df["SpecAssertionCount"].sum())
+    print_macro("/bbs/count", len(df.index))
+    print_macro("/bbs/count/method", df["MethodCount"].sum())
+    print_macro("/bbs/count/raises", df["SpecRaiseCount"].sum())
+    print_macro("/bbs/count/returns", df["SpecReturnCount"].sum())
+    print_macro("/bbs/count/invariants", df["SpecInvariantCount"].sum())
+    print_macro("/bbs/count/assertions", df["SpecAssertionCount"].sum())
+
+    jdf = df[(df["Group"] == "j17") | (df["Group"] == "k18")]
+    print_macro("/bbs/j17-k18/SourceToBoogieRatio", jdf["BoogieLinesOfCode"].sum() / jdf["SourceLinesOfCode"].sum())
+
+    sdf = df[(df["Group"] == "s2")]
+    print_macro("/bbs/s2/SourceToBoogieRatio", sdf["BoogieLinesOfCode"].sum() / sdf["SourceLinesOfCode"].sum())
 
     # Group-specific statistics
     for group in groups:
         # Experiments Count
-        print_macro(f"/bbe/count/{group}", len(df[df["Group"] == group].index))
+        print_macro(f"/bbs/count/{group}", len(df[df["Group"] == group].index))
 
         # Methods count
-        print_macro(f"/bbe/count/method/{group}", df.loc[df["Group"] == group]["MethodCount"].sum())
+        print_macro(f"/bbs/count/method/{group}", df.loc[df["Group"] == group]["MethodCount"].sum())
 
         # Annotation count
-        print_macro(f"/bbe/count/raises/{group}", df.loc[df["Group"] == group]["SpecRaiseCount"].sum())
+        print_macro(f"/bbs/count/raises/{group}", df.loc[df["Group"] == group]["SpecRaiseCount"].sum())
 
         # Returns count
-        print_macro(f"/bbe/count/returns/{group}", df.loc[df["Group"] == group]["SpecReturnCount"].sum())
+        print_macro(f"/bbs/count/returns/{group}", df.loc[df["Group"] == group]["SpecReturnCount"].sum())
 
         # Invariants count
-        print_macro(f"/bbe/count/invariants/{group}", df.loc[df["Group"] == group]["SpecInvariantCount"].sum())
+        print_macro(f"/bbs/count/invariants/{group}", df.loc[df["Group"] == group]["SpecInvariantCount"].sum())
 
         # Invariants count
-        print_macro(f"/bbe/count/assertions/{group}", df.loc[df["Group"] == group]["SpecAssertionCount"].sum())
+        print_macro(f"/bbs/count/assertions/{group}", df.loc[df["Group"] == group]["SpecAssertionCount"].sum())
 
     # Global statistics
     for index, row in df.iterrows():
@@ -82,7 +88,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
         identifier = row["Test"].removeprefix(prefix)
 
         def print_field(field):
-            print_macro(f"/bbe/{group}/{identifier}/{field}", row[field])
+            print_macro(f"/bbs/{group}/{identifier}/{field}", row[field])
 
         print_field("ConversionTime")
         print_field("VerificationTime")
@@ -104,10 +110,10 @@ def main(csvs, output_csv, output_tex, index, prefix):
         print_field("SpecIntermediateCount")
 
     def print_mean(column):
-        print_macro(f"/bbe/average/{column}", df[column].mean())
+        print_macro(f"/bbs/average/{column}", df[column].mean())
 
     def print_total(column):
-        print_macro(f"/bbe/total/{column}", df[column].sum())
+        print_macro(f"/bbs/total/{column}", df[column].sum())
 
     print_mean("ConversionTime")
     print_mean("VerificationTime")
@@ -122,6 +128,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_mean("SpecBehaviorCount")
     print_mean("SpecFunctionalCount")
     print_mean("SpecExceptionCount")
+    print_mean("SpecAttachCount")
 
     print_total("ConversionTime")
     print_total("VerificationTime")
