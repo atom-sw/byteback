@@ -14,5 +14,4 @@ dependencies {
 
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
-		main.java.outputDir = file("$buildDir/classes/kotlin/main")
 }

@@ -263,8 +263,7 @@ public class Main implements Callable<Integer> {
 					ThrownAssignmentTransformer.v().transformBody(body);
 					SpecificationStmtTransformer.v().transformBody(body);
 					SpecificationExprFolder.v().transformBody(body);
-					new InvokeAssigner(localGenerator)
-						.transformBody(body);
+					new InvokeAssigner(localGenerator).transformBody(body);
 
 					for (final CheckTransformer checkTransformer : checkTransformers) {
 						checkTransformer.transformBody(body);

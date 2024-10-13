@@ -22,12 +22,13 @@ public class ClassInvariantTagger extends ClassTransformer {
 	public void transformClass(final SootClass sootClass) {
 		AnnotationTagReader.v().getAnnotation(sootClass, BBLibNames.INVARIANT_ONLY_ANNOTATION)
 				.ifPresent((annotationTag) -> {
-						InvariantOnlyTagMarker.v().flag(sootClass);
+					InvariantOnlyTagMarker.v().flag(sootClass);
 				});
 
-		AnnotationTagReader.v().getAnnotation(sootClass, BBLibNames.CLASS_INVARIANT_ANNOTATION)
-				.flatMap(annotationTag -> AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class))
-				.ifPresent(annotationStringElement -> {
+		AnnotationTagReader.v().getAnnotations(sootClass)
+				.filter(annotationTag -> annotationTag.getType().equals(BBLibNames.CLASS_INVARIANT_ANNOTATION))
+				.flatMap(annotationTag -> AnnotationTagReader.v().getValue(annotationTag, AnnotationStringElem.class).stream())
+				.forEach(annotationStringElement -> {
 					final String behaviorName = annotationStringElement.getValue();
 					final Value behaviorValue = InvariantBehaviorResolver.v().resolveBehavior(sootClass, behaviorName);
 					final var invariantsTag = InvariantsTagAccessor.v().putIfAbsent(sootClass, InvariantsTag::new);

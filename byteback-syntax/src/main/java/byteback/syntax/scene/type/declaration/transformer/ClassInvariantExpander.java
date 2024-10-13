@@ -24,6 +24,10 @@ public class ClassInvariantExpander extends ClassTransformer {
 		InvariantsTagAccessor.v().get(sootClass).ifPresent((invariantsTag) -> {
 				for (final Value behaviorValue : invariantsTag.getConditions()) {
 					for (final SootMethod sootMethod : sootClass.getMethods()) {
+						if (sootMethod.getName().contains("strenghtening") || sootMethod.getName().contains("weakening")) {
+							continue;
+						}
+
 						if (!sootMethod.isStatic()) {
 							final var preconditionBox = new ExprBox(behaviorValue);
 							FreeTagMarker.v().flag(preconditionBox);

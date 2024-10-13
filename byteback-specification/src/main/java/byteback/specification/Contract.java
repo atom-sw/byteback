@@ -48,13 +48,19 @@ public class Contract {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.TYPE })
 	public @interface InvariantOnly {
+	}
+
+	@Repeatable(Invariants.class)
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.TYPE })
+	public @interface Invariant {
 		String value();
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.TYPE })
-	public @interface Invariant {
-		String value();
+	public @interface Invariants {
+		Invariant[] value();
 	}
 
 	@Repeatable(Requires.class)

@@ -195,17 +195,18 @@ public class ConditionsTagPropagator extends SceneTransformer {
 								.addInvariantMethods(invariantMethodsTag.getInvariantMethods());
 					});
 				} else {
-					InvariantsTagAccessor.v().get(parentClass).ifPresent((parentInvariantTag) -> {
-						InvariantsTagAccessor.v().get(sootClass).ifPresent((currentInvariantTag) -> {
+					InvariantsTagAccessor.v().get(parentClass).ifPresent((parentInvariantsTag) -> {
+						InvariantsTagAccessor.v().get(sootClass).ifPresent((currentInvariantsTag) -> {
 							final SootMethod vcMethod = new SootMethod(
 									"inv?strenghtening",
 									Collections.emptyList(),
 									VoidType.v());
 							vcMethod.setActiveBody(new JimpleBody());
 							final PostconditionsTag postconditionsTag = new PostconditionsTag(
-									parentInvariantTag.getConditions());
+									parentInvariantsTag.getConditions());
 							final PreconditionsTag preconditionsTag = new PreconditionsTag(
-									currentInvariantTag.getConditions());
+									currentInvariantsTag.getConditions());
+							
 							PreconditionsTagAccessor.v().put(vcMethod, preconditionsTag);
 							PostconditionsTagAccessor.v().put(vcMethod, postconditionsTag);
 							sootClass.addMethod(vcMethod);
