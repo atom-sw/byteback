@@ -96,19 +96,17 @@ public class ImplementationPropagator extends SceneTransformer {
 			final var methodsSnapshot = new ArrayList<>(methods);
 
 			for (final SootMethod pluginMethod : methodsSnapshot) {
-				if (!TwoStateTagMarker.v().hasTag(pluginMethod)) {
-					final SootMethod attachingMethod = cloneMethodImplementation(pluginMethod);
-					final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();
-					final SootMethod attachedMethod = attachedClass.getMethodUnsafe(attachedSubSignature);
-					attachingMethod.setDeclared(false);
+				final SootMethod attachingMethod = cloneMethodImplementation(pluginMethod);
+				final NumberedString attachedSubSignature = attachingMethod.getNumberedSubSignature();
+				final SootMethod attachedMethod = attachedClass.getMethodUnsafe(attachedSubSignature);
+				attachingMethod.setDeclared(false);
 
-					if (attachedMethod != null) {
-						attachedClass.removeMethod(attachedMethod);
-					}
-
-					attachedClass.addMethod(attachingMethod);
-					attachingMethod.setDeclared(true);
+				if (attachedMethod != null) {
+					attachedClass.removeMethod(attachedMethod);
 				}
+
+				attachedClass.addMethod(attachingMethod);
+				attachingMethod.setDeclared(true);
 			}
 		}
 	}
