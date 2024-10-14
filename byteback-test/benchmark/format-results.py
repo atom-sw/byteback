@@ -108,6 +108,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
         print_field("SpecExceptionCount")
         print_field("SpecFunctionalCount")
         print_field("SpecIntermediateCount")
+        print_field("ClassesCount")
 
     def print_mean(column):
         print_macro(f"/bbs/average/{column}", df[column].mean())
@@ -129,6 +130,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_mean("SpecFunctionalCount")
     print_mean("SpecExceptionCount")
     print_mean("SpecAttachCount")
+    print_mean("ClassesCount")
 
     print_total("ConversionTime")
     print_total("VerificationTime")
@@ -148,6 +150,7 @@ def main(csvs, output_csv, output_tex, index, prefix):
     print_total("SpecFunctionalCount")
     print_total("SpecExceptionCount")
     print_total("SpecIntermediateCount")
+    print_total("ClassesCount")
 
 
 main()

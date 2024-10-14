@@ -13,13 +13,13 @@ import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 import byteback.specification.ghost.Ghost.Attach;
 
-import static byteback.specification.Operators.*;
 import static byteback.specification.Contract.*;
 
 @Attach("java.util.Collection")
 @Invariant("this_size_is_gte_0")
 public interface CollectionSpec<T> {
 
+	@NoState
 	@Behavior
 	default boolean this_size_is_gte_0() {
 		return gt(size(), 0);
@@ -68,6 +68,7 @@ public interface CollectionSpec<T> {
 		return not(is_modifiable());
 	}
 
+	@NoState
 	@Behavior
 	int size();
 

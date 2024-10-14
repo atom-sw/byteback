@@ -7,6 +7,7 @@ import byteback.common.function.Lazy;
 import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterLocalFinder;
 import byteback.syntax.scene.type.declaration.member.method.analysis.ParameterRefFinder;
 import byteback.syntax.scene.type.declaration.member.method.body.Vimp;
+import byteback.syntax.scene.type.declaration.member.method.body.value.UnitConstant;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostassumptionsTag;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostassumptionsTagAccessor;
 import byteback.syntax.scene.type.declaration.member.method.tag.PostconditionsTag;
@@ -54,22 +55,46 @@ public class InvariantInstantiator extends MethodTransformer {
 		return invariantValues;
 	}
 
+	private List<Value> instantiateReturnInvariants(final Value value) {
+		final List<Value> returnInvariantValues = new ArrayList<>();
+		final List<Value> invariantValues = instantiateInvariants(value);
+
+		for (final Value invariantValue : invariantValues) {
+			returnInvariantValues.add(Vimp.v().newImpliesExpr(
+					Vimp.v().nest(Jimple.v().newEqExpr(
+							Vimp.v().nest(Vimp.v().newThrownRef()),
+							UnitConstant.v())),
+					Vimp.v().nest(invariantValue)));
+		}
+
+		return returnInvariantValues;
+	}
+
 	@Override
 	public void transformMethod(final SootMethod sootMethod) {
 		final PreassumptionsTag preassumptionsTag = PreassumptionsTagAccessor.v().putIfAbsent(sootMethod,
 				PreassumptionsTag::new);
-		final PostassumptionsTag postassumptionsTag = PostassumptionsTagAccessor.v().putIfAbsent(sootMethod,
-				PostassumptionsTag::new);
+		final PostconditionsTag postconditionsTag = PostconditionsTagAccessor.v().putIfAbsent(sootMethod,
+				PostconditionsTag::new);
 
 		for (int i = 0; i < sootMethod.getParameterCount(); ++i) {
 			final ParameterRef parameterRef = Jimple.v().newParameterRef(sootMethod.getParameterType(i), i);
 			final List<Value> parameterInvariantValues = instantiateInvariants(parameterRef);
 			preassumptionsTag.addConditions(parameterInvariantValues);
+			postconditionsTag.addConditions(parameterInvariantValues);
 		}
 
-		final List<Value> returnInvariantValues = instantiateInvariants(
+		if (!sootMethod.isStatic()) {
+			final List<Value> thisInvariantValues = instantiateInvariants(
+					Jimple.v().newThisRef(sootMethod.getDeclaringClass().getType()));
+			preassumptionsTag.addConditions(thisInvariantValues);
+			postconditionsTag.addConditions(thisInvariantValues);
+		}
+
+		final List<Value> returnInvariantValues = instantiateReturnInvariants(
 				Vimp.v().newReturnRef(sootMethod.getReturnType()));
-		postassumptionsTag.addConditions(returnInvariantValues);
+
+		postconditionsTag.addConditions(returnInvariantValues);
 	}
 
 }

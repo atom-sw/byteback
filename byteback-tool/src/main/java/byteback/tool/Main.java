@@ -298,7 +298,6 @@ public class Main implements Callable<Integer> {
 
 		ConditionsTagPropagator.v().transformScene(scene);
 		InvariantInstantiator.v().transformScene(scene);
-		ClassInvariantExpander.v().transformScene(scene);
 
 		final var hierarchyAxiomTagger = new HierarchyAxiomTagger(scene.getActiveHierarchy());
 

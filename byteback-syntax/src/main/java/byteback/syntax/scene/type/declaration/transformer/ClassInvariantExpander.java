@@ -28,7 +28,7 @@ public class ClassInvariantExpander extends ClassTransformer {
 							continue;
 						}
 
-						if (!sootMethod.isStatic()) {
+						if (!sootMethod.isStatic() || sootMethod.isConstructor()) {
 							final var preconditionBox = new ExprBox(behaviorValue);
 							FreeTagMarker.v().flag(preconditionBox);
 							final var postconditionBox = new ExprBox(behaviorValue);

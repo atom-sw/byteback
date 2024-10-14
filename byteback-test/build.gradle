@@ -23,7 +23,7 @@ subprojects { test ->
 				def targetProperty = project.findProperty("TEST_TARGET")
 				def jobsProperty = project.findProperty("TEST_JOBS")
 				def boogieTimeLimitProperty = project.findProperty("BOOGIE_TIME_LIMIT")
-				def compiledDir = null;
+				def compiledDir = compiledDirs.first();
 				def specCompiledDir = project(':byteback-specification').sourceSets.main.output.classesDirs.first()
 				def sourceDir = null;
 				def specSourceDir = project(':byteback-specification').sourceSets.main.java.srcDirs.first()
@@ -49,6 +49,8 @@ subprojects { test ->
 				if (boogieTimeLimitProperty == null) {
 						boogieTimeLimitProperty = 20
 				}
+
+				println(compiledDir)
 
 				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
 

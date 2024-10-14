@@ -86,5 +86,5 @@ public class ImmutableGuavaLists<T> {
 }
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 8 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 7 verified, 0 errors
  */

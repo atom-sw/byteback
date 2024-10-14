@@ -7,6 +7,7 @@ package byteback.test.substitutability;
 import byteback.specification.Contract.Behavior;
 import byteback.specification.Contract.Invariant;
 import byteback.specification.Contract.InvariantOnly;
+import byteback.specification.Contract.*;
 import static byteback.specification.Operators.*;
 
 public class InvariantStrenghtening {
@@ -25,7 +26,12 @@ public class InvariantStrenghtening {
 
 		@Behavior
 		public boolean p2() {
-			return lte(1, i);
+			return lte(0, i);
+		}
+
+		@Return
+		public A() {
+			i = 10;
 		}
 
 	}
@@ -35,6 +41,11 @@ public class InvariantStrenghtening {
 	@Invariant("p2")
 	public static class B extends A {
 
+		@Return
+		public B() {
+			i = 10;
+		}
+
 		@Behavior
 		public boolean p1() {
 			return true;
@@ -42,7 +53,7 @@ public class InvariantStrenghtening {
 
 		@Behavior
 		public boolean p2() {
-			return lte(0, i);
+			return lte(1, i);
 		}
 
 	}
@@ -51,5 +62,5 @@ public class InvariantStrenghtening {
 
 /**
  * RUN: %{verify} %t.bpl | filecheck %s
- * CHECK: Boogie program verifier finished with 12 verified, 0 errors
+ * CHECK: Boogie program verifier finished with 4 verified, 0 errors
  */
