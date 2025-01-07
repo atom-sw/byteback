@@ -11,7 +11,7 @@ import java.util.List;
 import byteback.specification.Contract.Raise;
 import byteback.specification.Contract.Return;
 
-public class NonResizeableList {
+public class NonResizeableLists {
 
 	@Raise(exception = UnsupportedOperationException.class)
 	public void main1() {

@@ -13,6 +13,25 @@ dependencies {
 }
 
 sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
-		main.java.outputDir = file("$buildDir/classes/kotlin/main")
+    main.java.srcDirs = ['src/main/kotlin']
+		main.kotlin.srcDirs = ['src/main/kotlin']
+}
+
+tasks.register('copyJavaClassesToKotlin', Copy) {
+    from "$buildDir/classes/java/main"
+    into "$buildDir/classes/kotlin/main"
+
+		doLast {
+				delete "$buildDir/classes/java/main" 
+		}
+
+    dependsOn 'compileJava'
+}
+
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+		dependsOn 'copyJavaClassesToKotlin'
+}
+
+tasks.named('jar', Jar) {
+		dependsOn 'copyJavaClassesToKotlin'
 }

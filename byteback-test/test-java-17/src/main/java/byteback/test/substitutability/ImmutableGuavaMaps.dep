@@ -1,3 +1,0 @@
-byteback/test/substitutability/ImmutableGuavaMapSpec
-%{ghost}CollectionSpec
-%{ghost}MapSpec

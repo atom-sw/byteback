@@ -1,5 +1,5 @@
 /**
- * RUN: %{byteback} -cp %{jar} -c %{class} -c byteback.test.substitutability.ImmutableGuavaCollectionSpec -c %{class}$ImmutableGuavaCollectionSpec -c %{class}$ImmutableGuavaListSpec -c %{ghost}CollectionSpec -c %{ghost}ListSpec -o %t.bpl
+ * RUN: %{byteback} -cp %{jar} -c %{class} -c byteback.test.substitutability.ImmutableGuavaCollectionSpec -c %{class}$ImmutableGuavaListSpec -c %{ghost}CollectionSpec -c %{ghost}ListSpec -o %t.bpl
  */
 
 package byteback.test.substitutability;

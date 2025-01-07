@@ -16,6 +16,9 @@ subprojects { test ->
 		def summaryDir = "$buildDir/summary"
 
 		def system = tasks.register('system') {
+				dependsOn tool.installDist
+				dependsOn test.shadowJar
+
 				def sourceSet = project.sourceSets.main
 				def sourceDirs = sourceSet.allSource.srcDirs
 				def compiledDirs = sourceSet.output.classesDirs
@@ -23,7 +26,7 @@ subprojects { test ->
 				def targetProperty = project.findProperty("TEST_TARGET")
 				def jobsProperty = project.findProperty("TEST_JOBS")
 				def boogieTimeLimitProperty = project.findProperty("BOOGIE_TIME_LIMIT")
-				def compiledDir = compiledDirs.first();
+				def compiledDir = null;
 				def specCompiledDir = project(':byteback-specification').sourceSets.main.output.classesDirs.first()
 				def sourceDir = null;
 				def specSourceDir = project(':byteback-specification').sourceSets.main.java.srcDirs.first()
@@ -50,11 +53,13 @@ subprojects { test ->
 						boogieTimeLimitProperty = 20
 				}
 
-				println(compiledDir)
-
 				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
 
 				doLast {
+						compiledDirs.each { dir ->
+								if (dir.exists())
+										compiledDir = dir
+						}
 						sourceDirs.each { dir ->
 								if (testDirs.contains(dir.getName()) && dir.exists()) {
 										sourceDir = dir
@@ -70,9 +75,6 @@ subprojects { test ->
 								}
 						}
 				}
-
-				dependsOn tool.installDist
-				dependsOn test.shadowJar
 		}
 
 		def experimentsDir = "$buildDir/experiments"
@@ -119,12 +121,12 @@ def results = tasks.register('results') {
 				}
 		}
 
-		//outputs.files fileTree(experimentsDir).matching {
-		//		include '*.csv'
-		//		include '*.tex'
-		//} 
+		outputs.files fileTree(experimentsDir).matching {
+				include '*.csv'
+				include '*.tex'
+		} 
 
-		//subprojects { test ->
-		//		dependsOn test.experiments
-		//}
+		subprojects { test ->
+				dependsOn test.experiments
+		}
 }
