@@ -46,14 +46,12 @@ subprojects { test ->
 				}
 
 				if (jobsProperty == null) {
-						jobsProperty = 4
+						jobsProperty = 2
 				}
 
 				if (boogieTimeLimitProperty == null) {
 						boogieTimeLimitProperty = 20
 				}
-
-				compiledDirs.each { dir -> if (dir.exists()) compiledDir = dir }
 
 				doLast {
 						compiledDirs.each { dir ->
