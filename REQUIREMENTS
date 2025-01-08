@@ -1,0 +1,26 @@
+# Hardware requirements
+
+The docker image has been built for the amd64 (x86-64) architecture,
+and has only been tested on its native architecture. Therefore this
+architecture is a requirement for running the replication package.
+
+# Resource requirements
+
+This replication package does not have specific resource requirements.
+
+For smoothly running the experiments we suggest a configuration of at
+least 4 CPU cores and 8GB of RAM.
+
+We ran this replication package on a laptop with a CPU i7-7600U 4x
+3.9Ghz and 8GB of RAM. With the default settings the replication of
+all the experiments (task results) completed in 18 minutes.
+
+For reference, running the same experiments on better hardware (CPU
+i9-12950HX 24x 4.9Ghz, 64 GB of RAM) took 8 minutes.
+
+# Software requirements
+
+In order to deploy the container image it is necessary to install
+either [Docker](https://docker.com) or [Podman](https://podman.io).
+The container image includes all necessary dependencies to build and
+run ByteBack and its experiments.

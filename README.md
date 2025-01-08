@@ -47,14 +47,14 @@ After loading the image:
 docker images
 ```
 
-should list the image `localhost/byteback`.
+should list the image `localhost/paganma/byteback:fase25`.
 
 #### Running the container
 
 Run the image in a container:
 
 ``` bash
-docker run -it localhost/byteback:latest
+docker run -it localhost/paganma/byteback:fase25
 ```
 
 This command runs a shell in a container with ByteBack and this
