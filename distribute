@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+git archive --format=tar.gz HEAD > byteback-fase25.tar.gz; 
+
+mkdir byteback-fase25;
+
+tar xvf byteback-fase25.tar.gz -C byteback-fase25
+
+cd byteback-fase25/;
+
+podman build -t paganma/byteback:fase25 .;
+
+rm -f image/byteback.tar;
+
+mkdir image;
+
+podman save -o image/byteback.tar paganma/byteback:fase25;
+
+podman push paganma/byteback:fase25;
+
+rm -f distribute
+rm -f .gitignore 
+
+cd ..;
+
+zip byteback-fase25.zip -r9 byteback-fase25
