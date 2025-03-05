@@ -54,7 +54,6 @@ import byteback.syntax.scene.type.declaration.member.method.transformer.HeapRead
 import byteback.syntax.scene.type.declaration.member.method.transformer.InvariantInstantiator;
 import byteback.syntax.scene.type.declaration.member.method.transformer.ModifierTagger;
 import byteback.syntax.scene.type.declaration.member.method.transformer.OldHeapReadTransformer;
-import byteback.syntax.scene.type.declaration.transformer.ClassInvariantExpander;
 import byteback.syntax.scene.type.declaration.transformer.ClassInvariantTagger;
 import byteback.syntax.scene.type.declaration.transformer.HierarchyAxiomTagger;
 import picocli.CommandLine;
