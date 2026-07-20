@@ -38,7 +38,7 @@ This command builds:
 - The `.jar` archive with `byteback-tool`'s implementation in
   [./byteback-tool/build/libs/byteback-tool.jar](./byteback-tool/build/libs/byteback-tool.jar).
 - The `byteback-annotations` library (BBLib) in
-  [./byteback-annotations/build/libs/byteback-annotations.jar](./byteback-annotations/build/libs/byteback-annotations.jar).
+  [./byteback-specification/build/libs/byteback-specification.jar](./byteback-specification/build/libs/byteback-specification.jar).
 
 ### Dependencies <span id="subsec:dependencies"></span>
 
@@ -97,7 +97,7 @@ and follow these steps:
 1. Compile `Main.java`, including the `BBlib` `.jar` in the classpath:
 
 ``` bash
-javac Main.java -cp ../byteback-specification/build/libs/byteback-annotations.jar
+javac Main.java -cp ../byteback-specification/build/libs/byteback-specification.jar
 ```
 
   This generates bytecode for class `Main`.
@@ -109,7 +109,7 @@ javac Main.java -cp ../byteback-specification/build/libs/byteback-annotations.ja
 export PATH="$PATH:../byteback-tool/build/install/byteback-tool/bin/"
 
 byteback-tool \
-	-cp ../byteback-annotations/build/libs/byteback-annotations.jar \
+	-cp ../byteback-specification/build/libs/byteback-specification.jar \
 	-cp . \
 	-c Main \
 	-o Main.bpl

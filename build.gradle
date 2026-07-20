@@ -1,0 +1,6 @@
+tasks.register('install') {
+    group = 'distribution'
+    description = 'Builds the ByteBack tool distribution and specification library.'
+    dependsOn project(':byteback-tool').installDist
+		dependsOn project(':byteback-specification').jar
+}

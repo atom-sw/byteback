@@ -11,6 +11,7 @@ import byteback.specification.Contract.Ensure;
 import byteback.specification.Contract.Return;
 import byteback.specification.ghost.Ghost.Attach;
 
+@SuppressWarnings("unchecked")
 @Attach("java.util.Arrays")
 public class ArraysSpec {
 
