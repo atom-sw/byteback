@@ -28,3 +28,6 @@ bin/
 
 # Intellij IDEA
 .idea
+
+# Python cache
+__pycache__/
