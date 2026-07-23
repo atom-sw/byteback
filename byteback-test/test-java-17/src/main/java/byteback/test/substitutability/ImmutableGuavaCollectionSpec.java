@@ -1,3 +1,7 @@
+/*
+ * RUN: true
+ * UNSUPPORTED: true
+ */
 package byteback.test.substitutability;
 
 import byteback.specification.Contract.Behavior;

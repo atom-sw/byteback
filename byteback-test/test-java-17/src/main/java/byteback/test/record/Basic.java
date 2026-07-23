@@ -1,3 +1,7 @@
+/*
+ * RUN: true
+ * UNSUPPORTED: true
+ */
 package byteback.test.record;
 
 public class Basic {
