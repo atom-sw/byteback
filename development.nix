@@ -8,6 +8,7 @@ pkgs.mkShell {
     ))
     pkgs.boogie
     pkgs.z3
+    pkgs.openjdk17
   ];
 
   shellHook = ''
